@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="i don't think that sort of thing is possible anymore – a poem by Edith Mina Lyre.">
+    <meta property="og:title" content="i don't think that sort of thing is possible anymore – Edith Mina Lyre">
+    <meta property="og:description" content="i don't think that sort of thing is possible anymore – a poem by Edith Mina Lyre.">
+    <meta property="og:type" content="article">
+    <meta property="og:image" content="https://edithminalyre.com/images/author.jpg">
+    <link rel="canonical" href="https://edithminalyre.com/poems/i-dont-think.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <title>i don't think that sort of thing is possible anymore – Edith Mina Lyre</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .shaped-poem {
+            font-family: 'Times New Roman', Times, Georgia, serif;
+            font-size: 1rem;
+            line-height: 1.6;
+            max-width: 42rem;
+            margin: 2rem auto;
+        }
+        .shaped-poem .l {
+            display: block;
+            white-space: pre;
+        }
+        .shaped-poem em {
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="grain"></div>
+    <div class="cursor-glow" id="glow"></div>
+    
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg class="sun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+        <svg class="moon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+    </button>
+    
+    <main>
+        <a href="../poems.html" class="back">poems</a>
+        
+        <header class="work-header">
+            <h1>i don't think that sort of thing is possible anymore</h1>
+            <p class="year">2022</p>
+        </header>
+        
+        <div class="shaped-poem">
+<span class="l">                        tell me anything</span>
+<span class="l">                              the anxio-tectonic crush, the long dry</span>
+<span class="l">        about the details but if you –</span>
+<span class="l">                                    shout of blood-cum-steam up the gullet</span>
+<span class="l">            yeah – exactly what i meant</span>
+<span class="l">                                to the breathless prophecy of america</span>
+<span class="l"> </span>
+<span class="l">                                           ■</span>
+<span class="l"> </span>
+<span class="l">                          listen – don't listen – 'til what's to come</span>
+<span class="l">what's the first thing you say i mean it's</span>
+<span class="l">                        clashes as cymbals and the simplest, all</span>
+<span class="l">            <em>(filmic, sort of, not french</em></span>
+<span class="l">                          are the one, the same prophetess as ever –</span>
+<span class="l">                <em>when who wins still matters)</em></span>
+<span class="l">                                focus the S – and the least visible world</span>
+<span class="l">    that it's brave, am i honoured?</span>
+<span class="l">                        as it— no, not always is that – there</span>
+<span class="l">            <em>(tremble at, to dare be worthy of, like</em></span>
+<span class="l">                              the stream of it – filled with everything</span>
+<span class="l">              <em>but it is an award, no césar, but)</em></span>
+<span class="l">                            except whatever the hell you just said</span>
+<span class="l">          i guess i am, it is, as in</span>
+<span class="l"> </span>
+<span class="l">                                           ■</span>
+<span class="l"> </span>
+<span class="l">                  privileged to witness</span>
+<span class="l">                          better put the question is whether it's</span>
+<span class="l">is there a better word than bravery?</span>
+<span class="l">                              so worth saying, like, trauma, stresses of</span>
+<span class="l"><em>(judith butler in verso said there wasn't but</em></span>
+<span class="l">                        is it so special it's not part of nature?</span>
+<span class="l">    <em>not that, have to explain)</em></span>
+<span class="l">                          as to say, won't the night eat it whether</span>
+<span class="l">              just if now's, i feel sick</span>
+<span class="l">                      or not</span>
+<span class="l">                for you, empathy</span>
+<span class="l">                        it's confessed, but here you are assuming</span>
+<span class="l">              but sick, yes, sick, yes</span>
+<span class="l">                      again</span>
+<span class="l">                          emphy—</span>
+<span class="l">                      we watched the same children's animes</span>
+<span class="l">            semic emphasis is not</span>
+<span class="l">                      as you</span>
+<span class="l">            i meant i or rather we</span>
+<span class="l">                          were stuck with the same mad notion</span>
+<span class="l">care about each other and baby</span>
+<span class="l">                        what matters is what's true and not</span>
+<span class="l">                  it's midnight, so</span>
+<span class="l">                      what – if we let it – can fade</span>
+<span class="l">          let me walk us home</span>
+        </div>
+        
+        <div class="mark"></div>
+    </main>
+
+    <script>
+        const toggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (savedTheme) { html.setAttribute('data-theme', savedTheme); }
+        else if (!prefersDark) { html.setAttribute('data-theme', 'day'); }
+        toggle.addEventListener('click', () => {
+            const current = html.getAttribute('data-theme');
+            const next = current === 'day' ? 'night' : 'day';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+        });
+        
+        const glow = document.getElementById('glow');
+        let mouseX = 0, mouseY = 0, glowX = 0, glowY = 0;
+        document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
+        function animate() {
+            glowX += (mouseX - glowX) * 0.08;
+            glowY += (mouseY - glowY) * 0.08;
+            glow.style.left = glowX + 'px';
+            glow.style.top = glowY + 'px';
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>

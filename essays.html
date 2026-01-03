@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Essays by Edith Mina Lyre. Critical theory, trans studies, schizoanalysis.">
+    <meta property="og:title" content="Essays – Edith Mina Lyre">
+    <meta property="og:description" content="Essays by Edith Mina Lyre. Critical theory, trans studies, schizoanalysis.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://edithminalyre.com/images/author.jpg">
+    <meta property="og:url" content="https://edithminalyre.com/essays.html">
+    <link rel="canonical" href="https://edithminalyre.com/essays.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <title>Essays – Edith Mina Lyre</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="grain"></div>
+    <div class="cursor-glow" id="glow"></div>
+    
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg class="sun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+        <svg class="moon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+    </button>
+    
+    <main>
+        <a href="index.html" class="back">Edith Mina Lyre</a>
+        
+        <h1>Essays</h1>
+
+        <section>
+            <h2>published</h2>
+            
+            <p class="item">
+                <a href="https://overland.org.au/previous-issues/issue-239/feature-president-oedipus-or-the-democratisation-of-schizophrenia/" target="_blank">President Oedipus, or The Democratisation of Schizophrenia</a><br>
+                <span class="venue">Overland</span><span class="year">2020</span>
+            </p>
+        </section>
+
+        <section>
+            <h2>numbers by paint thesis</h2>
+            
+            <p class="item">
+                <a href="https://digital.library.adelaide.edu.au/dspace/bitstream/2440/135618/1/Lyre2022_MPhil.pdf" target="_blank">Numbers by Paint: Quantifying Aesthetic Receptions</a><br>
+                <span class="venue">MPhil Thesis, Adelaide University</span><span class="year">2021</span>
+            </p>
+        </section>
+
+        <section>
+            <p class="item">
+                <a href="essays/otototoi.html"><span style="letter-spacing: 0.15em;">Dele</span></a><a href="essays/big-nothings.html"><span style="letter-spacing: 0.25em;">ted Sc</span></a><a href="essays/broken-memory.html">enes</a><br>
+                <span class="year">2018–2020</span>
+            </p>
+            <p class="item" style="margin-left: 1.5em;">
+                <a href="stories/mycenae-gate.html" style="text-decoration: none; color: var(--text-muted);">&gt;</a>
+            </p>
+            <p class="item" style="margin-left: 6em;">
+                <a href="stories/song-of-paris.html" style="text-decoration: none; color: var(--text-muted);">^</a>
+            </p>
+        </section>
+        
+        <div class="mark"></div>
+    </main>
+
+    <script>
+        const toggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (savedTheme) { html.setAttribute('data-theme', savedTheme); }
+        else if (!prefersDark) { html.setAttribute('data-theme', 'day'); }
+        toggle.addEventListener('click', () => {
+            const current = html.getAttribute('data-theme');
+            const next = current === 'day' ? 'night' : 'day';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+        });
+        
+        const glow = document.getElementById('glow');
+        let mouseX = 0, mouseY = 0, glowX = 0, glowY = 0;
+        document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
+        function animate() {
+            glowX += (mouseX - glowX) * 0.08;
+            glowY += (mouseY - glowY) * 0.08;
+            glow.style.left = glowX + 'px';
+            glow.style.top = glowY + 'px';
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>

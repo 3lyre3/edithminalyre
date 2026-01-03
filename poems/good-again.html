@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Good again but this time mean it – a poem by Edith Mina Lyre.">
+    <meta property="og:title" content="Good again but this time mean it – Edith Mina Lyre">
+    <meta property="og:description" content="Good again but this time mean it – a poem by Edith Mina Lyre.">
+    <meta property="og:type" content="article">
+    <meta property="og:image" content="https://edithminalyre.com/images/author.jpg">
+    <link rel="canonical" href="https://edithminalyre.com/poems/good-again.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <title>Good again but this time mean it – Edith Mina Lyre</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .shaped-poem {
+            font-family: 'Times New Roman', Times, Georgia, serif;
+            font-size: 1rem;
+            line-height: 1.8;
+            max-width: 36rem;
+            margin: 2rem auto;
+        }
+        .shaped-poem .l {
+            display: block;
+            white-space: pre;
+        }
+        .shaped-poem .break {
+            height: 1.5em;
+        }
+    </style>
+</head>
+<body>
+    <div class="grain"></div>
+    <div class="cursor-glow" id="glow"></div>
+    
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg class="sun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+        <svg class="moon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+    </button>
+    
+    <main>
+        <a href="../poems.html" class="back">poems</a>
+        
+        <header class="work-header">
+            <h1>Good again but this time mean it</h1>
+            <p class="year">2023</p>
+        </header>
+        
+        <div class="shaped-poem">
+<span class="l">Fashionable Melbourne poetry</span>
+<span class="l">      has this necessary stop block</span>
+<span class="l">            in self-reflexivity where</span>
+<span class="l break"></span>
+<span class="l">      either the poem has come to the mic</span>
+<span class="l">      to talk about what it's like to be a poem</span>
+<span class="l">      or to look the poet in the eyes</span>
+<span class="l break"></span>
+<span class="l">                  down there in the narrow audience</span>
+<span class="l">                        and tell everybody about the time she</span>
+<span class="l">                              or she or and everyone knows this</span>
+<span class="l break"></span>
+<span class="l">      one where she</span>
+<span class="l">      as if the poem were the poet's best man</span>
+<span class="l">      at a wedding to maybe no one or maybe</span>
+<span class="l break"></span>
+<span class="l">                        someone besides in that low crowd</span>
+<span class="l">                  who deserved better than to be dragged</span>
+<span class="l">            here to this long instruction on virtue</span>
+<span class="l break"></span>
+<span class="l">      so if at the end the poem hates the poet</span>
+<span class="l">      so then the poem is unfinished and so</span>
+<span class="l">      a confession remains to be extracted</span>
+<span class="l break"></span>
+<span class="l">         so then the poem begs the poet</span>
+<span class="l">      to be allowed to die from her lips</span>
+<span class="l">to tell what words she needs to hear</span>
+<span class="l break"></span>
+<span class="l">                        trying it's sorry and didn't mean it or</span>
+<span class="l">                        meant it but it's sorry now or</span>
+<span class="l">                        this poem loves me and so should you</span>
+        </div>
+        
+        <div class="mark"></div>
+    </main>
+
+    <script>
+        const toggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (savedTheme) { html.setAttribute('data-theme', savedTheme); }
+        else if (!prefersDark) { html.setAttribute('data-theme', 'day'); }
+        toggle.addEventListener('click', () => {
+            const current = html.getAttribute('data-theme');
+            const next = current === 'day' ? 'night' : 'day';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+        });
+        
+        const glow = document.getElementById('glow');
+        let mouseX = 0, mouseY = 0, glowX = 0, glowY = 0;
+        document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
+        function animate() {
+            glowX += (mouseX - glowX) * 0.08;
+            glowY += (mouseY - glowY) * 0.08;
+            glow.style.left = glowX + 'px';
+            glow.style.top = glowY + 'px';
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>

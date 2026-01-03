@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="the long walk home to omelas – a poem by Edith Mina Lyre.">
+    <meta property="og:title" content="the long walk home to omelas – Edith Mina Lyre">
+    <meta property="og:description" content="the long walk home to omelas – a poem by Edith Mina Lyre.">
+    <meta property="og:type" content="article">
+    <meta property="og:image" content="https://edithminalyre.com/images/author.jpg">
+    <link rel="canonical" href="https://edithminalyre.com/poems/long-walk-omelas.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <title>the long walk home to omelas – Edith Mina Lyre</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="grain"></div>
+    <div class="cursor-glow" id="glow"></div>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg class="sun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+        <svg class="moon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+    </button>
+    <main>
+        <a href="../poems.html" class="back">poems</a>
+        
+        <header class="work-header">
+            <h1>the long walk home to omelas</h1>
+            <p class="work-meta">2022 · Poetry</p>
+        </header>
+
+        <div class="poem-body">
+            <div class="stanza">
+                <span class="line">at face a crisp, astonishing hallelujah</span>
+                <span class="line">the tear of a plastic packet that's how</span>
+                <span class="line">- from under, out - the sky's bough throws wide</span>
+                <span class="line">that daily, sclerotic tremble breaks loose</span>
+                <span class="line">the silhouette's answer, gasping for</span>
+                <span class="line">how it shook through, to the course of</span>
+                <span class="line">all these endless decisions we've tried to make</span>
+            </div>
+
+            <div class="stanza">
+                <span class="line">i want to / i want that / beg me / we'll go in,</span>
+                <span class="line">in a minute if that's really what i wish</span>
+                <span class="line">you were there (i, here) only</span>
+                <span class="line">'there's no going back' only, o interjector</span>
+                <span class="line">only, o naïve half thing, you wish but</span>
+                <span class="line">really you can always go home again</span>
+            </div>
+
+            <div class="stanza">
+                <span class="line">the founders, too, were homeless</span>
+                <span class="line">when first they struck upon</span>
+                <span class="line">the girl who would be king</span>
+                <span class="line">in whose soil were reflected</span>
+                <span class="line">the cities and rivers of memory</span>
+                <span class="line">what's spare in the unfocus</span>
+            </div>
+
+            <div class="stanza">
+                <span class="line">'you'll know what you know</span>
+                <span class="line">and you'll always' besides</span>
+                <span class="line">the lapping, insect dread</span>
+                <span class="line">the legacy that's no one else's</span>
+                <span class="line">that spans the night like a sun-</span>
+                <span class="line">lit ocean in a sliver of mirror</span>
+                <span class="line">it doesn't call but it is a light</span>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const toggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (savedTheme) { html.setAttribute('data-theme', savedTheme); }
+        else if (!prefersDark) { html.setAttribute('data-theme', 'day'); }
+        toggle.addEventListener('click', () => {
+            const current = html.getAttribute('data-theme');
+            const next = current === 'day' ? 'night' : 'day';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+        });
+        
+        const glow = document.getElementById('glow');
+        let mouseX = 0, mouseY = 0, glowX = 0, glowY = 0;
+        document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
+        function animate() {
+            glowX += (mouseX - glowX) * 0.08;
+            glowY += (mouseY - glowY) * 0.08;
+            glow.style.left = glowX + 'px';
+            glow.style.top = glowY + 'px';
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>

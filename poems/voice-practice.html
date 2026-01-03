@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Voice Practice – a poem by Edith Mina Lyre.">
+    <meta property="og:title" content="Voice Practice – Edith Mina Lyre">
+    <meta property="og:description" content="Voice Practice – a poem by Edith Mina Lyre.">
+    <meta property="og:type" content="article">
+    <meta property="og:image" content="https://edithminalyre.com/images/author.jpg">
+    <link rel="canonical" href="https://edithminalyre.com/poems/voice-practice.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <title>Voice Practice – Edith Mina Lyre</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="grain"></div>
+    <div class="cursor-glow" id="glow"></div>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg class="sun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+        <svg class="moon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+    </button>
+    <main>
+        <a href="../poems.html" class="back">poems</a>
+        <header class="work-header">
+            <h1>Voice Practice</h1>
+            <p class="work-meta">2019 · Poetry</p>
+        </header>
+        <div class="epigraph">
+            An adaptation of "Conversation Among the Ruins," by Sylvia Plath, which poem I once read aloud, several times each day for several days, while practicing my voice.
+        </div>
+        <div class="poem-body">
+            <div class="stanza">
+                <span class="line">a harsher flight how the entrance settles</span>
+                <span class="line">as ash on a tongue drier than mine:</span>
+                <span class="line">all 'throughs' are weirder, now, in the new</span>
+                <span class="line">order of ruins and fallen lights and</span>
+                <span class="line">untasteable turns of the frames we sat beneath,</span>
+                <span class="line">bleak as the miles still to cover (rise,</span>
+                <span class="line">terminal, rise) from shellac's, the hell of sensory's,</span>
+                <span class="line">record setting crash through the wall</span>
+                <span class="line">of our home – to home, at last – while storms</span>
+                <span class="line">take off low, hacking bitter light down</span>
+                <span class="line">the forbidden estates of this neck, whispering –</span>
+                <span class="line">this is not a safe place for us to speak –</span>
+                <span class="line">of tunnels, fissures in the crust, ways to get back</span>
+                <span class="line">that kingdom behind the eye, whence</span>
+                <span class="line">our high, magic ceremony of lashes, that rending slip</span>
+                <span class="line">to once more draw the havoc forth</span>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const toggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (savedTheme) { html.setAttribute('data-theme', savedTheme); }
+        else if (!prefersDark) { html.setAttribute('data-theme', 'day'); }
+        toggle.addEventListener('click', () => {
+            const current = html.getAttribute('data-theme');
+            const next = current === 'day' ? 'night' : 'day';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+        });
+        
+        const glow = document.getElementById('glow');
+        let mouseX = 0, mouseY = 0, glowX = 0, glowY = 0;
+        document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
+        function animate() {
+            glowX += (mouseX - glowX) * 0.08;
+            glowY += (mouseY - glowY) * 0.08;
+            glow.style.left = glowX + 'px';
+            glow.style.top = glowY + 'px';
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>

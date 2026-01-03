@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Three Illustrations – a poem by Edith Mina Lyre.">
+    <meta property="og:title" content="Three Illustrations – Edith Mina Lyre">
+    <meta property="og:description" content="Three Illustrations – a poem by Edith Mina Lyre.">
+    <meta property="og:type" content="article">
+    <meta property="og:image" content="https://edithminalyre.com/images/author.jpg">
+    <link rel="canonical" href="https://edithminalyre.com/poems/three-illustrations.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <title>Three Illustrations – Edith Mina Lyre</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="grain"></div>
+    <div class="cursor-glow" id="glow"></div>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg class="sun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+        <svg class="moon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+    </button>
+    <main>
+        <a href="../poems.html" class="back">poems</a>
+        <header class="work-header">
+            <h1>Three Illustrations</h1>
+            <p class="work-meta">2018 · Poetry</p>
+        </header>
+        <div class="poem-body">
+            <p style="font-style: italic; margin-bottom: 2rem;">Picture of a happy child;<br>Picture of a happy future;<br>The interjector</p>
+            
+            <h3>A HAPPY CHILD</h3>
+            <div class="stanza">
+                <span class="line">If a child turns into an adult,</span>
+                <span class="line">That's fine,</span>
+                <span class="line">And if then the adult dies,</span>
+                <span class="line">That's okay.</span>
+                <span class="line">If a child keeps being a child,</span>
+                <span class="line">Worry,</span>
+                <span class="line">And if then the child dies,</span>
+                <span class="line">Not okay.</span>
+                <span class="line">Children who aren't adults are making</span>
+                <span class="line">Problems for everyone, and</span>
+                <span class="line">If you find a child that's happy</span>
+                <span class="line">Not being an adult, not</span>
+                <span class="line">Grown up yet, it's gonna be a serial killer.</span>
+                <span class="line">(As long as it's happy I guess.)</span>
+            </div>
+
+            <h3>A HAPPY FUTURE</h3>
+            <div class="stanza">
+                <span class="line">Science fiction is full of happy people</span>
+                <span class="line">In unhappy futures.</span>
+                <span class="line">The happiness is how they showcase</span>
+                <span class="line">Dystopia.</span>
+                <span class="line">Things are bad, but everyone is smiling.</span>
+                <span class="line">This makes things even worse.</span>
+                <span class="line">Later on, you're smiling too and –</span>
+                <span class="line">What's more –</span>
+                <span class="line">You're breaking the fourth wall, something</span>
+                <span class="line">Auf Deutsch,</span>
+                <span class="line">Like <em>Veer home and glut on fondue</em>,</span>
+                <span class="line">And blink.</span>
+                <span class="line">Or (lens has just your profile) do you wink?</span>
+            </div>
+
+            <h3>THE INTERJECTOR</h3>
+            <div class="stanza">
+                <span class="line">Last time, your skin was lifted off the rest and</span>
+                <span class="line">I tapped the cage of your rattling heart and</span>
+                <span class="line">Fed it every day at Five PM until the cold ate</span>
+                <span class="line">Away the rhythm and no one found my art</span>
+                <span class="line">But, studying, pain from me's a privilege and a gift</span>
+                <span class="line">Where for children who never grew up, the aptest</span>
+                <span class="line">Abandonment is to the cold – Wingless animal,</span>
+                <span class="line">Fly! Fly free, sink free, sink freezing to your death.</span>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const toggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (savedTheme) { html.setAttribute('data-theme', savedTheme); }
+        else if (!prefersDark) { html.setAttribute('data-theme', 'day'); }
+        toggle.addEventListener('click', () => {
+            const current = html.getAttribute('data-theme');
+            const next = current === 'day' ? 'night' : 'day';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+        });
+        
+        const glow = document.getElementById('glow');
+        let mouseX = 0, mouseY = 0, glowX = 0, glowY = 0;
+        document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
+        function animate() {
+            glowX += (mouseX - glowX) * 0.08;
+            glowY += (mouseY - glowY) * 0.08;
+            glow.style.left = glowX + 'px';
+            glow.style.top = glowY + 'px';
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>

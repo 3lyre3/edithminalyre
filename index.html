@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Edith Mina Lyre writes and works at Monash. Her next book is called False Cows: Reports of a trans imaginary. Out in Winter '26-'27.">
+    <meta property="og:title" content="Edith Mina Lyre">
+    <meta property="og:description" content="Edith Mina Lyre writes and works at Monash. Her next book is called False Cows: Reports of a trans imaginary. Out in Winter '26-'27.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://edithminalyre.com/images/author.jpg">
+    <meta property="og:url" content="https://edithminalyre.com/">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@oatmilkdryad">
+    <link rel="canonical" href="https://edithminalyre.com/">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <title>Edith Mina Lyre</title>
+    <link rel="stylesheet" href="style.css">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Edith Mina Lyre",
+        "url": "https://edithminalyre.com",
+        "image": "https://edithminalyre.com/images/author.jpg",
+        "jobTitle": "Writer & Researcher",
+        "worksFor": {
+            "@type": "Organization",
+            "name": "Monash University"
+        },
+        "sameAs": [
+            "https://twitter.com/oatmilkdryad",
+            "https://instagram.com/3lyre",
+            "https://www.google.com/search?q=edith+lyre",
+            "https://www.researchgate.net/profile/Edith-Lyre",
+            "https://www.linkedin.com/in/edith-lyre/",
+            "https://overland.org.au/previous-issues/issue-239/feature-president-oedipus-or-the-democratisation-of-schizophrenia/",
+            "https://digital.library.adelaide.edu.au/dspace/bitstream/2440/135618/1/Lyre2022_MPhil.pdf"
+        ]
+    }
+    </script>
+</head>
+<body>
+    <div class="grain"></div>
+    <div class="cursor-glow" id="glow"></div>
+    
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg class="sun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+        <svg class="moon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+    </button>
+    
+    <main>
+        <h1>Edith Mina Lyre</h1>
+        
+        <nav>
+            <a href="essays.html">essays</a><span class="sep">·</span>
+            <a href="poems.html">poems</a><span class="sep">·</span>
+            <a href="stories.html">stories</a><span class="sep">·</span>
+            <a href="bio.html">bio</a><span class="sep">·</span>
+            <a href="contact.html">contact</a>
+        </nav>
+        
+        <section class="published">
+            <p class="item">
+                <a href="https://overland.org.au/previous-issues/issue-239/feature-president-oedipus-or-the-democratisation-of-schizophrenia/" target="_blank">President Oedipus, or The Democratisation of Schizophrenia</a><br>
+                <span class="venue">Overland</span><span class="year">2020</span>
+            </p>
+            
+            <p class="item">
+                <a href="https://digital.library.adelaide.edu.au/dspace/bitstream/2440/135618/1/Lyre2022_MPhil.pdf" target="_blank">Numbers by Paint: Quantifying Aesthetic Receptions</a><br>
+                <span class="venue">MPhil Thesis, Adelaide University</span><span class="year">2021</span>
+            </p>
+        </section>
+        
+        <section class="featured">
+            <p class="item">
+                <a href="poems/found-you.html">Found You!</a><br>
+                <span class="venue">from the archive</span>
+            </p>
+        </section>
+        
+        <div class="mark"></div>
+    </main>
+
+    <script>
+        // Theme toggle
+        const toggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        
+        // Check for saved preference or system preference
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        if (savedTheme) {
+            html.setAttribute('data-theme', savedTheme);
+        } else if (!prefersDark) {
+            html.setAttribute('data-theme', 'day');
+        }
+        
+        toggle.addEventListener('click', () => {
+            const current = html.getAttribute('data-theme');
+            const next = current === 'day' ? 'night' : 'day';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+        });
+        
+        // Cursor glow
+        const glow = document.getElementById('glow');
+        let mouseX = 0, mouseY = 0, glowX = 0, glowY = 0;
+        
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+        
+        function animate() {
+            glowX += (mouseX - glowX) * 0.08;
+            glowY += (mouseY - glowY) * 0.08;
+            glow.style.left = glowX + 'px';
+            glow.style.top = glowY + 'px';
+            requestAnimationFrame(animate);
+        }
+        
+        animate();
+    </script>
+</body>
+</html>

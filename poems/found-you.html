@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Backups, the shape of apology.">
+    <meta property="og:title" content="Found You! – Edith Mina Lyre">
+    <meta property="og:description" content="Backups, the shape of apology.">
+    <meta property="og:type" content="article">
+    <meta property="og:image" content="https://edithminalyre.com/images/author.jpg">
+    <meta property="og:url" content="https://edithminalyre.com/poems/found-you.html">
+    <link rel="canonical" href="https://edithminalyre.com/poems/found-you.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+    <title>Found You! – Edith Mina Lyre</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="grain"></div>
+    <div class="cursor-glow" id="glow"></div>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg class="sun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+        <svg class="moon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+    </button>
+    <main>
+        <a href="../poems.html" class="back">poems</a>
+        <header class="work-header">
+            <h1>Found You!</h1>
+            <p class="work-meta">2025 · Poetry</p>
+        </header>
+        <div class="poem-body">
+            <div class="stanza">
+                <span class="line">Hello – hello again!</span>
+                <span class="line indent">When last you, Accountant, Doctor,</span>
+                <span class="line indent">Lawyer lost my gift I asked high –</span>
+                <span class="line indent">Never low – if Cassandra's backups</span>
+                <span class="line indent">Stood and edited in the sibyls' stead</span>
+                <span class="line indent">A set of common arguments to match</span>
+                <span class="line indent">An accumulated sample of my voice.</span>
+            </div>
+            <div class="stanza">
+                <span class="line">Bring the mini-scissors.</span>
+                <span class="line indent">Cut and lose the vine. Trim and bend</span>
+                <span class="line indent">Along the letter of whatever was said –</span>
+                <span class="line indent">Wish was meant – and snip snip snip 'til</span>
+                <span class="line indent">Stitched-up years learn apology's shape</span>
+                <span class="line indent">Growing to fit the roots I trunk-out, I go</span>
+                <span class="line indent">Under again as clouds boil to willows.</span>
+            </div>
+            <div class="stanza">
+                <span class="line">In this version we're enemies.</span>
+                <span class="line indent">Not – fifty we're friends (wrathless);</span>
+                <span class="line indent">Fifty lights shaded by either's fury –</span>
+                <span class="line indent">Odd but oddly so because look: wash,</span>
+                <span class="line indent">Wash the poisons and sweat and lend</span>
+                <span class="line indent">And bitter its potency out to taste and?</span>
+                <span class="line indent">No honour. Nor enough to die by. Even.</span>
+            </div>
+            <div class="stanza">
+                <span class="line">Past all the unmendable series and home-hit curves of life I've wanted nothing so much as I want more, more,mMorem oremorem omrore more more mmore mroeee MOREand</span>
+                <span class="line indent">Nymphs breed everywhere but in ice:</span>
+                <span class="line indent">Essences breed nowhere else but see:</span>
+                <span class="line indent">Tundra: Knowless Land and Winter:</span>
+                <span class="line indent">Abundant/Existful Land and Fjord:</span>
+                <span class="line indent">Land/s Rising/Worsening with nihil-/</span>
+                <span class="line indent">Hell-/—-ness. Sea: [Null]. Nullarbor:</span>
+            </div>
+            <div class="stanza">
+                <span class="line">Land that will not. But can it? Does it never lie? If I could I would so let's thank God I cannot.</span>
+                <span class="line indent">Find me in Essence for nymph-hour</span>
+                <span class="line indent">At the Crossworlds of All Ways (Bar</span>
+                <span class="line indent">Within) and All Lathes – behind you;</span>
+                <span class="line indent">Beneath Cassandra – among the Bodiless</span>
+                <span class="line indent">Sibyl's lapsed and reborrowed tonguing</span>
+                <span class="line indent">Scenting a neck? Bladder? Other tongues?</span>
+            </div>
+            <div class="stanza">
+                <span class="line">Diagnosis. Argument. Prescription.</span>
+                <span class="line indent">A wraithnail signals commands and taps</span>
+                <span class="line indent">Cassandra's lips. Mutter. Birthsite. Name.</span>
+                <span class="line indent">Echo. The semaphore of a city of origin</span>
+                <span class="line indent">Lights you three to a stand of paper-reeds</span>
+                <span class="line indent">Ribbed by my and the sibyl's fingers. Copy,</span>
+                <span class="line indent">Copy: See: Cue night. Unwilting. Tasteless.</span>
+            </div>
+        </div>
+        <div class="mark"></div>
+    </main>
+
+    <script>
+        const toggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (savedTheme) { html.setAttribute('data-theme', savedTheme); }
+        else if (!prefersDark) { html.setAttribute('data-theme', 'day'); }
+        toggle.addEventListener('click', () => {
+            const current = html.getAttribute('data-theme');
+            const next = current === 'day' ? 'night' : 'day';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+        });
+        
+        const glow = document.getElementById('glow');
+        let mouseX = 0, mouseY = 0, glowX = 0, glowY = 0;
+        document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
+        function animate() {
+            glowX += (mouseX - glowX) * 0.08;
+            glowY += (mouseY - glowY) * 0.08;
+            glow.style.left = glowX + 'px';
+            glow.style.top = glowY + 'px';
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>
