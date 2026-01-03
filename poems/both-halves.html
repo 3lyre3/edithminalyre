@@ -16,11 +16,14 @@
     <meta name="twitter:card" content="summary">
     <meta name="twitter:creator" content="@oatmilkdryad">
     <link rel="canonical" href="https://edithminalyre.com/poems/both-halves.html">
+    <link rel="alternate" hreflang="en-AU" href="https://edithminalyre.com/poems/both-halves.html">
+    <link rel="alternate" hreflang="x-default" href="https://edithminalyre.com/poems/both-halves.html">
     <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="shortcut icon" href="/favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="manifest" href="/site.webmanifest">
+    <link rel="alternate" type="application/rss+xml" title="Edith Mina Lyre RSS Feed" href="/feed.xml">
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -38,6 +41,7 @@
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;1,300;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
     <title>Both Halves of a Distant Blue Object – Edith Mina Lyre</title>
     <link rel="stylesheet" href="../style.css">
     <style>
@@ -52,19 +56,13 @@
             display: flex;
             justify-content: space-between;
             gap: 2rem;
-        }
         .interleaved-poem .left {
             flex: 1;
             text-align: right;
             font-style: italic;
-        }
         .interleaved-poem .right {
-            flex: 1;
             text-align: left;
-        }
         .interleaved-poem .right.italic {
-            font-style: italic;
-        }
         @media (max-width: 600px) {
             .interleaved-poem .row {
                 flex-direction: column;
@@ -73,8 +71,6 @@
             .interleaved-poem .left,
             .interleaved-poem .right {
                 text-align: left;
-            }
-        }
     </style>
 </head>
 <body>
@@ -88,9 +84,7 @@
         </svg>
         <svg class="moon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-        </svg>
     </button>
-    
     <main>
         <a href="../poems.html" class="back">poems</a>
         
@@ -98,7 +92,6 @@
             <h1>Both Halves of a Distant Blue Object</h1>
             <p class="year">2022</p>
         </header>
-        
         <div class="interleaved-poem">
             <div class="row"><span class="left">See a damn thing in this light—</span><span class="right"></span></div>
             <div class="row"><span class="left"></span><span class="right">Veiled stairwells glide to my</span></div>
@@ -129,7 +122,6 @@
             <div class="row"><span class="left">Anything like</span><span class="right"></span></div>
             <div class="row"><span class="left"></span><span class="right italic">Engines of its holy, golden hell</span></div>
         </div>
-        
         <div class="mark"></div>
     </main>
 
@@ -146,7 +138,6 @@
             html.setAttribute('data-theme', next);
             localStorage.setItem('theme', next);
         });
-        
         const glow = document.getElementById('glow');
         let mouseX = 0, mouseY = 0, glowX = 0, glowY = 0;
         document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
@@ -156,8 +147,6 @@
             glow.style.left = glowX + 'px';
             glow.style.top = glowY + 'px';
             requestAnimationFrame(animate);
-        }
         animate();
-    </script>
 </body>
 </html>

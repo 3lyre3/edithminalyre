@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;1,300;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap');
+/* Fonts loaded via HTML preload + link tags for better performance */
 
 /* ═══════════════════════════════════════════════════════════
    THEME VARIABLES - NIGHT MODE (default)
@@ -962,4 +962,43 @@ body:hover .cursor-glow {
     letter-spacing: 0.08em;
     color: var(--text-muted);
     margin-bottom: 1.5rem;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RELATED WORKS
+   ═══════════════════════════════════════════════════════════ */
+
+.related {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-light);
+}
+
+.related h3 {
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    font-weight: 400;
+    font-style: normal;
+    letter-spacing: 0.15em;
+    text-transform: lowercase;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+}
+
+.related-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.related-list a {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+}
+
+.related-list .type {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-style: italic;
+    margin-left: 0.5em;
 }

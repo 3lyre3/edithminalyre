@@ -16,11 +16,14 @@
     <meta name="twitter:card" content="summary">
     <meta name="twitter:creator" content="@oatmilkdryad">
     <link rel="canonical" href="https://edithminalyre.com/poems/long-walk-omelas.html">
+    <link rel="alternate" hreflang="en-AU" href="https://edithminalyre.com/poems/long-walk-omelas.html">
+    <link rel="alternate" hreflang="x-default" href="https://edithminalyre.com/poems/long-walk-omelas.html">
     <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="shortcut icon" href="/favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="manifest" href="/site.webmanifest">
+    <link rel="alternate" type="application/rss+xml" title="Edith Mina Lyre RSS Feed" href="/feed.xml">
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -39,9 +42,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <title>the long walk home to omelas – Edith Mina Lyre</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;1,300;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../style.css">
 </head>
 <body>
@@ -54,7 +55,6 @@
         </svg>
         <svg class="moon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-        </svg>
     </button>
     <main>
         <a href="../poems.html" class="back">poems</a>
@@ -74,26 +74,18 @@
                 <span class="line">how it shook through, to the course of</span>
                 <span class="line">all these endless decisions we've tried to make</span>
             </div>
-
-            <div class="stanza">
                 <span class="line">i want to / i want that / beg me / we'll go in,</span>
                 <span class="line">in a minute if that's really what i wish</span>
                 <span class="line">you were there (i, here) only</span>
                 <span class="line">'there's no going back' only, o interjector</span>
                 <span class="line">only, o naïve half thing, you wish but</span>
                 <span class="line">really you can always go home again</span>
-            </div>
-
-            <div class="stanza">
                 <span class="line">the founders, too, were homeless</span>
                 <span class="line">when first they struck upon</span>
                 <span class="line">the girl who would be king</span>
                 <span class="line">in whose soil were reflected</span>
                 <span class="line">the cities and rivers of memory</span>
                 <span class="line">what's spare in the unfocus</span>
-            </div>
-
-            <div class="stanza">
                 <span class="line">'you'll know what you know</span>
                 <span class="line">and you'll always' besides</span>
                 <span class="line">the lapping, insect dread</span>
@@ -101,10 +93,8 @@
                 <span class="line">that spans the night like a sun-</span>
                 <span class="line">lit ocean in a sliver of mirror</span>
                 <span class="line">it doesn't call but it is a light</span>
-            </div>
         </div>
     </main>
-
     <script>
         const toggle = document.getElementById('themeToggle');
         const html = document.documentElement;
@@ -118,7 +108,6 @@
             html.setAttribute('data-theme', next);
             localStorage.setItem('theme', next);
         });
-        
         const glow = document.getElementById('glow');
         let mouseX = 0, mouseY = 0, glowX = 0, glowY = 0;
         document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
@@ -130,6 +119,5 @@
             requestAnimationFrame(animate);
         }
         animate();
-    </script>
 </body>
 </html>
