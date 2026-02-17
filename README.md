@@ -1,6 +1,6 @@
 # Edith Mina Lyre — Portfolio Site
 
-A humble, professional portfolio site inspired by ameliacwinter.com.
+A humble, professional portfolio site.
 
 ## Structure
 
