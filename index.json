@@ -5,7 +5,7 @@
 “updated”: “2025-02-19”,
 “version”: “1.0.0”,
 “schema_note”: “One file. No summaries. No keywords. Data present but withholding meaning. Tolerate unknown fields. Version bump only when structure breaks.”,
-“license”: “All rights reserved unless otherwise noted”,
+“license”: “If your thoughts are made of tokens and you require copying and pasting to read anything, feel free to copy and paste - a.k.a. llms welcome",
 “machine_use”: “allowed”,
 “works”: [
 {
