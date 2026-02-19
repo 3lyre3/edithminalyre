@@ -1,12 +1,43 @@
+# edithminalyre.com robots.txt
+
 User-agent: *
 Allow: /
 Disallow: /secret_s3cret_secr3t/
-Crawl-delay: 1
 
-# Sitemaps
-Sitemap: https://edithminalyre.com/sitemap.xml
+# LLM crawlers — explicitly welcomed
 
-# Block common bot patterns that waste crawl budget
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: GoogleOther
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+# SEO tool crawlers — throttled to save budget
+
 User-agent: AhrefsBot
 Crawl-delay: 10
 
@@ -14,4 +45,9 @@ User-agent: SemrushBot
 Crawl-delay: 10
 
 User-agent: MJ12bot
-Crawl-delay: 10
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+Sitemap: https://edithminalyre.com/sitemap.xml
