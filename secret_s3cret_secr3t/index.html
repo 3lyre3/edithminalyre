@@ -1811,7 +1811,7 @@ Queer Theory’s Failure</h1>
 <p>Rumfitt A, Tell Me I’m Worthless, 2021, Cipher Press, London.</p>
 <p>Solomon R, An Unkindness of Ghosts, 2017, Akashic Books, Brooklyn.</p>
 <p>Yan M, Life and Death are Wearing Me Out, trans. Goldblatt H, 2008, Arcade, New York.</p>
-<p>Non-Fiction and Other References</p>
+    <p class="dropcap">Non-Fiction and Other References</p>
 <p>Baril A, “Transness as Debility,” Feminist Review 111.1, 2015.</p>
 <p>Bartlett A, “Dear Regina: Formative Conversations About Feminist Writing,” FemTAP: A Journal of Feminist Theory and Practice, 2006, University of Western Australia, Perth.</p>
 <p>Baudrillard J, “We Are All Transsexuals Now,” trans. Turner C, Screened Out, 2002, 9-15, Verso, London.</p>
@@ -1829,7 +1829,7 @@ Queer Theory’s Failure</h1>
 <p>Haritaworn J & Snorton CR, “Trans Necropolitics,” eds. Stryker S & Blackston DM, The Transgender Studies Reader Remix, 2022, Chap. 26, Routledge, New York.</p>
 <p>Harman G, “The Well-Wrought Broken Hammer: Object-Oriented Literary Criticism,” New Literary History 43.2, 2012, 183-203, John Hopkins University, Baltimore.</p>
 <p>-, The Queer Art of Failure, 2011, Duke University Press, Durham, NC.</p>
-<p class="dropcap">Harvey D, The Condition of Postmodernity: An Enquiry Into the Origins of Cultural Change, 1989, Blackwell, Virginia, USA.</p>
+<p>Harvey D, The Condition of Postmodernity: An Enquiry Into the Origins of Cultural Change, 1989, Blackwell, Virginia, USA.</p>
 <p>Heartscape PC, “Hot Allostatic Load,” The New Inquiry: Essays and Reviews, May 2015, TheNewInquiry.com.
 -, Personal correspondence, November 2022.
 -, Social Media Commentary, 3 Dec 2022, last viewed 2 October 2023, <retrospring.net/@charity/a/109446879621898662>.</p>
@@ -2081,9 +2081,40 @@ Queer Theory’s Failure</h1>
             ref.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const noteId = ref.getAttribute('data-note');
-                showFootnote(noteId, ref);
+                const inlineContent = ref.getAttribute('data-footnote');
+                if (inlineContent) {
+                    showFootnoteContent(inlineContent, ref);
+                } else {
+                    showFootnote(noteId, ref);
+                }
             });
         });
+        
+        function showFootnoteContent(content, anchor) {
+            if (activePopup) {
+                activePopup.classList.remove('visible');
+                setTimeout(() => activePopup.remove(), 300);
+                activePopup = null;
+            }
+            
+            const popup = document.createElement('div');
+            popup.className = 'footnote-popup';
+            popup.innerHTML = `
+                <button class="footnote-popup-close" aria-label="Close">×</button>
+                <p>${content}</p>
+            `;
+            
+            document.body.appendChild(popup);
+            positionPopup(popup, anchor);
+            requestAnimationFrame(() => popup.classList.add('visible'));
+            activePopup = popup;
+            
+            popup.querySelector('.footnote-popup-close').addEventListener('click', () => {
+                popup.classList.remove('visible');
+                setTimeout(() => popup.remove(), 300);
+                activePopup = null;
+            });
+        }
         
         function showFootnote(noteId, anchor) {
             // Hide existing popup
