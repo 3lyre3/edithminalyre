@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /secret_s3cret_secr3t/
 Crawl-delay: 1
 
 # Sitemaps
