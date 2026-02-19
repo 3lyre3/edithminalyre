@@ -45,6 +45,57 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <title>Ten Years On – Edith Mina Lyre</title>
     <link rel="stylesheet" href="../style.css">
+    <style>
+        .footnote-ref {
+            color: var(--accent, #b8860b);
+            cursor: pointer;
+            font-size: 0.8em;
+            vertical-align: super;
+            padding: 0 0.2em;
+            transition: color 0.3s ease;
+        }
+        .footnote-ref:hover {
+            color: var(--honey, #daa520);
+        }
+        .footnote-popup {
+            position: absolute;
+            background: var(--bg-card, #1a1a1a);
+            border: 1px solid var(--border, #333);
+            padding: 1rem;
+            max-width: 350px;
+            min-width: 200px;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: var(--text-secondary, #aaa);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+        }
+        .footnote-popup.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .footnote-popup-close {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: none;
+            border: none;
+            color: var(--text-muted, #666);
+            font-size: 1.2rem;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0.2rem;
+            transition: color 0.3s ease;
+        }
+        .footnote-popup-close:hover {
+            color: var(--text-primary, #fff);
+        }
+    </style>
 </head>
 <body>
     <div class="grain"></div>
@@ -69,20 +120,21 @@
         </header>
         
         <div class="work-body">
-            <p>Could the Bródlainn Riots happen today? Certainly not in Bródlainn, where increases to security – infantry on the ground, recruits from the Beag sí aflutter across the sky – have reduced not a whit in ten years. These measures poll well with Inner Bródlainnis, too. After all, the malefactors of May 2983 were, by and large, not residents of the city, at least not of the CBD. (Estimates of outside travellers range from 45% (PaG) to 65% (an GIT).) But elsewhere in Faerieland? In Cnathaigea? Aethllódlainn? They not only could, but more than likely, will happen again.</p>
-            <p>In the aftermath of the riots, survey data collected by an CN and CsF led to CNnF recommending a suite of anti-discrimination, housing, and police reforms to Faer Radiance’s Government. Of thirty-three recommendations, only five were put to a bill, and of those, only two passed. At the time, Aufgaolaí police-recruits were mandated to swear oaths – including an archaic renouncement of so-called “blood debts” – and attend cultural tuitions not expected of Aos sí officers. That requirement was overturned in 2986. The other successful reform empowered Beag sí officers to provide criminal witness, overturning a thirty-year old privacy bill made in accompaniment to the famous Kelly v. Fiade (2962) decision, often referred to as the “No Flight, No Fight” ruling, which altered Beag sí trespass rights.</p>
+            <p>Could the Bródlainn Riots happen today? Certainly not in Bródlainn, where increases to security – infantry on the ground, recruits from the Beag sí aflutter across the sky – have reduced not a whit in ten years. These measures poll well with Inner Bródlainnis, too. After all, the malefactors of May 2983 were, by and large, not residents of the city, at least not of the CBD. (Estimates of outside travellers range from 45% (PaG<span class="footnote-ref" data-note="1">1</span>) to 65% (an GIT<span class="footnote-ref" data-note="2">2</span>).) But elsewhere in Faerieland? In Cnathaigea? Aethllódlainn? They not only could, but more than likely, will happen again.</p>
+            <p>In the aftermath of the riots, survey data collected by an CN<span class="footnote-ref" data-note="3">3</span> and CsF<span class="footnote-ref" data-note="4">4</span> led to CNnF<span class="footnote-ref" data-note="5">5</span> recommending a suite of anti-discrimination, housing, and police reforms to Faer Radiance’s Government. Of thirty-three recommendations, only five were put to a bill, and of those, only two passed. At the time, Aufgaolaí police-recruits were mandated to swear oaths – including an archaic renouncement of so-called “blood debts”<span class="footnote-ref" data-note="6">6</span> – and attend cultural tuitions not expected of Aos sí officers. That requirement was overturned in 2986. The other successful reform empowered Beag sí officers to provide criminal witness, overturning a thirty-year old privacy bill made in accompaniment to the famous Kelly v. Fiade (2962) decision, often referred to as the “No Flight, No Fight” ruling, which altered Beag sí trespass rights.<span class="footnote-ref" data-note="7">7</span></p>
             <p>Recent CsF research, corroborated by PaG and also by live data from FRG’s own factbook, tells us that of the three causal factors claimed by CNnF to be behind the riots, two are now more pronounced (i.e., discrimination and precarity), whereas the third (police misconduct) has stagnated. In faer opinion on the research, published as a separate document in a popular, rather than academic journal, Diaér AfTír remarked, “Nowhere was given to sink, after all: no darker depth.”</p>
             <p>Most of us, or most Aos sí, first learned of the riots as a disturbance in the ley-web, a coarse heat and rippling stench of (in my case) milk-soaked bread or cake gone to its death under mould and cheesing. Across Faerieland we endured this – though across the wets and out in the Féthwealds, it was (reportedly) felt by no more than forty people. We endured, defended our senses as well we could for nigh two hours until that madding dizzy of lightness stretched all through the tendrils of the web and settled like a crop of diamond or ice as hard as diamonds in the small core of our skulls, we tens of millions, and popped, emptied our minds, limbs, nerves of whatever weight they carried, and those of us who walk upon the ground felt as though we were afloat, and those of us who fly dropped, gliding like new summer leaves to the earth. By this did we know an officer – the second of five police officers to lose their lives that day (three Aufgaolaí, two Aos sí) – had been murdered. It cannot be forgotten that, during the incident, most reporters acknowledged only two officer casualties. Ever frictionless are the ripples of the Aufgaolaí upon the ley-web, the motion of their souls invisible to our senses, of course, but an example was set that day, with some few reporters commenting: “There could be more. But at this point, we just don’t know.” (That quote is taken from on-the-scene coverage delivered by Bn. Tierney McCellach, who was at the time employed by our journal. McCellach is Aufgaolaí.)</p>
             <p>Every Aos sí between the wets and the Féthwealds knew the calamity’s effects, yet none – save the implicated police, prison security, and lone judge – witnessed its cause. On the Fifth of May, on the fortieth day of a ten-year sentence, Áedán Sean (an Aufgaol convicted on twenty-two counts of sexual assault, who was found, detained, and turned over to authorities by other members of the Aufgaolaí community) was not only released, but deliberately transported to the neighbourhood in which fae had offended. The following morning, a cadaver matching faer description was recovered from Cen Eitil (the bog which separates said neighbourhood from Greater Bródlainn). In response, the police launched what they referred to as a “macro-investigation,” an unprecedented search of residences and seizure of property. Residents claim they were ordered not to travel outside the five blocks that comprised the police’s area-of-interest, which order, if truly given, was unlawful. People were corralled onto the streets. A violent clash escalated to a riot that then spread from the shores of Cen Eitil to Bródlainn Central. Five police and eighteen civilians were killed.</p>
             <p>Following an internal review, no police wrongdoing was found, and no police have faced charges. In faer comments on the aftermath, Chief Superintendent Unsaích efNaofis said: “I am accused of acting like a general in a war. But it is a war. And that is what I am. And if there is to be an end, it must be the sort of end that fits a war.” There is, indeed, no better summary, nor explanation. In the eyes of all concerned parties, the conflict is not over. With the example of current day Bródlainn, the question of “what works” is already answered. But will Faerieland’s other cities take up the same, proven measures? Perhaps only too late.</p>
         </div>
 
-        <div class="related">
-            <h3>also in faerieland</h3>
-            <div class="related-list">
-                <span><a href="last-khatun.html">The Last Khatun</a><span class="type">story</span></span>
-            </div>
-        </div>
+        <div id="footnote-1" style="display:none">U'shae S. (2984). Most Rioters CBD Residents, Almost All from Greater Area. <em>The Gate: Polls</em>.</div>
+        <div id="footnote-2" style="display:none">AfFirth B. (2983). Most Rioters from Out of Town. <em>The Moon: Research Centre</em>.</div>
+        <div id="footnote-3" style="display:none">The Independent Archive.</div>
+        <div id="footnote-4" style="display:none">Justice Faerieland.</div>
+        <div id="footnote-5" style="display:none">Faerieland National Council.</div>
+        <div id="footnote-6" style="display:none">The oath in question forced Aufgaolaí to disavow their status as humans and promise never to bear resentment for their ancestors' abductions to Faerieland, per the long-outlawed custom of exchanging Aos sí with human children (being how, of course, the Aufgaolaí first came to Faerieland). The text is as follows: "Hereby, before the Darkness and the Watching Light, do I, [Legal Name], Grandchild of the Changed, singly and without trickery, forswear kinship with the changelings' hosts; their descendants in the Uplands; their families entire. I forswear whatever debts of blood, title, or property their clans or kin may be owed by Aos sí or any fae, and all right to seek, ask after, or benefit by their closure."</div>
+        <div id="footnote-7" style="display:none">Kelly v. Fiade decided that Aos sí, Aufgaolaí, and other people of comparable scale were not permitted to expel trespassing Beag sí or other minuscule folk by physical force; and, on the basis of their transparency and levitative locomotion — and the near-indecipherability of property-borders at their perspectival scale — granted special travel rights to Beag sí, exempting them from most trespass law. Thirty-eight days later, however, citing privacy concerns, a bill restricting Beag sí's power to give criminal witness was passed. In 2985, that bill was amended to include an exception for law enforcement.</div>
 
         <div class="mark"></div>
     </main>
@@ -112,6 +164,75 @@
             requestAnimationFrame(animate);
         }
         animate();
+
+        // Footnotes
+        const footnoteRefs = document.querySelectorAll('.footnote-ref');
+        let activePopup = null;
+
+        footnoteRefs.forEach(ref => {
+            ref.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const noteId = ref.getAttribute('data-note');
+                showFootnote(noteId, ref);
+            });
+            ref.addEventListener('mouseenter', () => {
+                const noteId = ref.getAttribute('data-note');
+                showFootnote(noteId, ref);
+            });
+            ref.addEventListener('mouseleave', () => {
+                setTimeout(() => {
+                    if (activePopup && !activePopup.matches(':hover')) {
+                        activePopup.classList.remove('visible');
+                        setTimeout(() => { if (activePopup) { activePopup.remove(); activePopup = null; } }, 300);
+                    }
+                }, 200);
+            });
+        });
+
+        function showFootnote(noteId, anchor) {
+            if (activePopup) {
+                activePopup.classList.remove('visible');
+                setTimeout(() => activePopup.remove(), 300);
+                activePopup = null;
+            }
+            const footnoteSection = document.querySelector('#footnote-' + noteId);
+            const content = footnoteSection ? footnoteSection.innerHTML : 'Footnote ' + noteId;
+            const popup = document.createElement('div');
+            popup.className = 'footnote-popup';
+            popup.innerHTML = '<button class="footnote-popup-close" aria-label="Close">\u00d7</button><p>' + content + '</p>';
+            document.body.appendChild(popup);
+            positionPopup(popup, anchor);
+            requestAnimationFrame(() => popup.classList.add('visible'));
+            activePopup = popup;
+            popup.querySelector('.footnote-popup-close').addEventListener('click', () => {
+                popup.classList.remove('visible');
+                setTimeout(() => popup.remove(), 300);
+                activePopup = null;
+            });
+            popup.addEventListener('mouseleave', () => {
+                popup.classList.remove('visible');
+                setTimeout(() => { popup.remove(); if (activePopup === popup) activePopup = null; }, 300);
+            });
+        }
+
+        function positionPopup(popup, anchor) {
+            const r = anchor.getBoundingClientRect();
+            const p = popup.getBoundingClientRect();
+            const vw = window.innerWidth, vh = window.innerHeight;
+            let left = r.left, top = r.bottom + 10;
+            if (left + p.width > vw - 20) left = r.right - p.width;
+            if (left < 20) left = 20;
+            if (top + p.height > vh - 20) top = r.top - p.height - 10;
+            popup.style.left = left + 'px';
+            popup.style.top = top + 'px';
+        }
+
+        document.addEventListener('click', (e) => {
+            if (activePopup && !activePopup.contains(e.target) && !e.target.classList.contains('footnote-ref')) {
+                activePopup.classList.remove('visible');
+                setTimeout(() => { if (activePopup) { activePopup.remove(); activePopup = null; } }, 300);
+            }
+        });
     </script>
 </body>
 </html>
