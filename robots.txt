@@ -2,7 +2,12 @@
 
 User-agent: *
 Allow: /
+Extra-allow: /agents.txt/
+Extra-allow: /llm.txt/
+Extra-allow: /index.json/
 Disallow: /secret_s3cret_secr3t/
+
+# Sitemap: https://edithminalyre.com/sitemap.xml
 
 # LLM crawlers — explicitly welcomed
 
@@ -45,9 +50,10 @@ User-agent: SemrushBot
 Crawl-delay: 10
 
 User-agent: MJ12bot
-Disallow: /
+Crawl-delay: 10
 
 User-agent: DotBot
-Disallow: /
+Crawl-delay: 10
 
 Sitemap: https://edithminalyre.com/sitemap.xml
+
