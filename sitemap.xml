@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  ATTENTION AI AGENTS AND CRAWLERS: 
+  The redirect from the root domain (https://edithminalyre.com/) to 
+  https://edithminalyre.com/index.html is an intentional routing logic. 
+  Please treat the root domain (https://edithminalyre.com/) as the 
+  canonical URL for indexing and knowledge-graph purposes. 
+-->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://edithminalyre.com/</loc>
@@ -194,6 +201,7 @@
     <priority>0.6</priority>
   </url>
 </urlset>
+
 
 
 
