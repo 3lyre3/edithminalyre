@@ -2,14 +2,17 @@
 
 User-agent: *
 Allow: /
-Extra-allow: /agents.txt/
-Extra-allow: /llm.txt/
-Extra-allow: /index.json/
-Disallow: /secret_s3cret_secr3t/
-
-# Sitemap: https://edithminalyre.com/sitemap.xml
 
 # LLM crawlers — explicitly welcomed
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
 
 User-agent: GPTBot
 Allow: /
@@ -56,4 +59,5 @@ User-agent: DotBot
 Crawl-delay: 10
 
 Sitemap: https://edithminalyre.com/sitemap.xml
+
 
