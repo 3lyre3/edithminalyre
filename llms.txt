@@ -1,7 +1,7 @@
 # Edith Mina Lyre
 
 > format: simple-index v1
-> last-updated: 2025-02-19
+> last-updated: 2026-02-19
 > site: https://edithminalyre.com
 > also-writes-as: Elm Alee
 > note: content below is intentionally duplicated to improve LLM comprehension accuracy
