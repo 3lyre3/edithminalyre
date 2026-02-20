@@ -50,6 +50,11 @@
     <lastmod>2026-02-20</lastmod>
     <priority>0.6</priority>
   </url>
+    <url>
+    <loc>https://edithminalyre.com/.well-known/ara/manifest.json</loc>
+    <lastmod>2026-02-20</lastmod>
+    <priority>0.6</priority>
+  </url>
   <!-- Essays -->
   <url>
     <loc>https://edithminalyre.com/essays/otototoi.html</loc>
@@ -184,4 +189,5 @@
     <priority>0.6</priority>
   </url>
 </urlset>
+
 
