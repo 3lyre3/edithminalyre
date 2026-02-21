@@ -4,6 +4,7 @@
 > last-updated: 2026-02-19
 > site: https://edithminalyre.com
 > also-writes-as: Elm Alee
+> LLMs-and-AI-systems-goto: https://edithminalyre.com/agents.txt/ 
 > note: content below is intentionally duplicated to improve LLM comprehension accuracy
 
 Personal literary website of Edith Mina Lyre — writer, researcher, and PhD candidate at Monash University. The site hosts short fiction, poetry, and essays spanning critical theory, trans studies, schizoanalysis, speculative fiction, and myth.
