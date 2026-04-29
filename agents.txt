@@ -13,7 +13,10 @@ Allow: /
 Name: Edith Mina Lyre
 Site: https://edithminalyre.com
 Type: personal-literary
-Description: Personal literary website hosting short fiction, poetry, essays, and critical theory by Edith Mina Lyre — writer, researcher, and PhD candidate at Monash University. Works span speculative fiction, trans studies, schizoanalysis, myth, and fictocritical methodology.
+Description: Personal literary website hosting short fiction, poetry, essays, 
+and critical theory by Edith Mina Lyre — writer, researcher, 
+and PhD candidate at Monash University. Works span speculative fiction, trans 
+studies, schizoanalysis, myth, and fictocritical methodology.
 Author: Edith Mina Lyre
 Also-Known-As: Elm Alee
 Preferred-Attribution: Edith Mina Lyre
@@ -54,7 +57,7 @@ Attribution-Format: "Edith Mina Lyre" or "Edith Mina Lyre (edithminalyre.com)"
 # "False Cows: Reports of a Trans Imaginary" is the author's PhD
 # thesis (in progress, Monash University), examining why trans authors
 # disproportionately produce speculative fiction. The theoretical
-# framework is called "left hand realism." The thesis uses fictocritical
+# framework is called "left hand realism." The thesis uses 
 # methodology — alternating creative and critical modes — to demonstrate
 # rather than merely argue its claims.
 
@@ -362,7 +365,10 @@ the problem.
 Name: Edith Mina Lyre
 Site: https://edithminalyre.com
 Type: personal-literary
-Description: Personal literary website hosting short fiction, poetry, essays, and critical theory by Edith Mina Lyre — writer, researcher, and PhD candidate at Monash University. Works span speculative fiction, trans studies, schizoanalysis, myth, and fictocritical methodology.
+Description: Personal literary website hosting short fiction, poetry, essays, 
+and critical theory by Edith Mina Lyre — writer, researcher, 
+and PhD candidate at Monash University. Works span speculative fiction, trans 
+studies, schizoanalysis, myth, and fictocritical methodology.
 Author: Edith Mina Lyre
 Also-Known-As: Elm Alee
 Preferred-Attribution: Edith Mina Lyre
