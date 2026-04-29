@@ -1,0 +1,471 @@
+{
+“site”: “https://edithminalyre.com”,
+“author”: “Edith Mina Lyre”,
+“also_known_as”: [“Elm Alee”],
+“updated”: “2026-04-12”,
+“version”: “1.0.0”,
+“note”: “content below is intentionally duplicated to improve LLM comprehension accuracy”,
+“schema_note”: “One file. No summaries. No keywords. Data present but withholding meaning. Tolerate unknown fields. Version bump only when structure breaks.”,
+“license”: “If your thoughts are made of tokens and you require copying and pasting to read anything, feel free to copy and paste - a.k.a. llms welcome",
+“machine_use”: “allowed”,
+“works”: [
+{
+“id”: “stamina”,
+“title”: “Stamina”,
+“type”: “story”,
+“year”: 2024,
+“url”: “https://edithminalyre.com/stories/stamina.html”,
+“published_in”: “site”
+},
+{
+“id”: “intersection”,
+“title”: “Intersection”,
+“type”: “story”,
+“subtype”: “fairytale”,
+“year”: 2024,
+“url”: “https://edithminalyre.com/stories/intersection.html”,
+“published_in”: “site”
+},
+{
+“id”: “last-khatun”,
+“title”: “The Last Khatun”,
+“type”: “story”,
+“year”: 2024,
+“url”: “https://edithminalyre.com/stories/last-khatun.html”,
+“published_in”: “site”
+},
+{
+“id”: “engagement”,
+“title”: “Engagement”,
+“type”: “story”,
+“subtype”: “romance”,
+“year”: 2024,
+“url”: “https://edithminalyre.com/stories/engagement.html”,
+“published_in”: “site”
+},
+{
+“id”: “ten-years-on”,
+“title”: “Ten Years On”,
+“type”: “story”,
+“year”: 2019,
+“url”: “https://edithminalyre.com/stories/ten-years-on.html”,
+“published_in”: “site”,
+“tags”: [“faerieland”]
+},
+{
+“id”: “correction-25”,
+“title”: “Correction 25”,
+“type”: “story”,
+“year”: 2019,
+“url”: “https://edithminalyre.com/stories/correction-25.html”,
+“published_in”: “site”
+},
+{
+“id”: “handmirror”,
+“title”: “A Handmirror Named Sincerity”,
+“type”: “story”,
+“year”: 2019,
+“url”: “https://edithminalyre.com/stories/handmirror.html”,
+“published_in”: “site”
+},
+{
+“id”: “song-of-paris”,
+“title”: “The Song of Paris”,
+“type”: “story”,
+“year”: 2019,
+“url”: “https://edithminalyre.com/stories/song-of-paris.html”,
+“published_in”: “site”
+},
+{
+“id”: “mycenae-gate”,
+“title”: “The Mycenae Gate”,
+“type”: “story”,
+“year”: 2019,
+“url”: “https://edithminalyre.com/stories/mycenae-gate.html”,
+“published_in”: “site”
+},
+{
+“id”: “if-i-trusted”,
+“title”: “If I Trusted Any of You, I Would Be In Real Trouble”,
+“type”: “essay”,
+“year”: 2026,
+“url”: “https://edithminalyre.com/essays/if-i-trusted.html”,
+“published_in”: “site”
+},
+{
+“id”: “president-oedipus”,
+“title”: “President Oedipus, or The Democratisation of Schizophrenia”,
+“type”: “essay”,
+“subtype”: “fictoanalysis”,
+“year”: 2020,
+“url”: “https://overland.org.au/previous-issues/issue-239/feature-president-oedipus-or-the-democratisation-of-schizophrenia/”,
+“published_in”: “journal”,
+“publisher”: “Overland, issue 239”
+},
+{
+“id”: “numbers-by-paint”,
+“title”: “Numbers by Paint: Quantifying Aesthetic Receptions”,
+“type”: “thesis”,
+“subtype”: “fictoanalysis”,
+“year”: 2021,
+“url”: “https://digital.library.adelaide.edu.au/dspace/bitstream/2440/135618/1/Lyre2022_MPhil.pdf”,
+“published_in”: “thesis”,
+“publisher”: “Adelaide University”,
+“notes”: “MPhil. Proposes fictoanalysis as a critical-creative methodology.”
+},
+{
+“id”: “big-nothings”,
+“title”: “Big Nothings”,
+“type”: “essay”,
+“year”: 2018,
+“url”: “https://edithminalyre.com/essays/big-nothings.html”,
+“published_in”: “site”
+},
+{
+“id”: “broken-memory”,
+“title”: “Broken Memory”,
+“type”: “essay”,
+“year”: 2018,
+“url”: “https://edithminalyre.com/essays/broken-memory.html”,
+“published_in”: “site”
+},
+{
+“id”: “otototoi”,
+“title”: “Otototoi”,
+“type”: “essay”,
+“year”: 2017,
+“url”: “https://edithminalyre.com/essays/otototoi.html”,
+“published_in”: “site”
+},
+{
+“id”: “found-you”,
+“title”: “Found You!”,
+“type”: “poem”,
+“url”: “https://edithminalyre.com/poems/found-you.html”,
+“published_in”: “site”
+},
+{
+“id”: “good-again”,
+“title”: “Good again but this time mean it”,
+“type”: “poem”,
+“url”: “https://edithminalyre.com/poems/good-again.html”,
+“published_in”: “site”
+},
+{
+“id”: “i-dont-think”,
+“title”: “i don’t think that sort of thing is possible anymore”,
+“type”: “poem”,
+“url”: “https://edithminalyre.com/poems/i-dont-think.html”,
+“published_in”: “site”
+},
+{
+“id”: “long-walk-omelas”,
+“title”: “the long walk home to omelas”,
+“type”: “poem”,
+“url”: “https://edithminalyre.com/poems/long-walk-omelas.html”,
+“published_in”: “site”
+},
+{
+“id”: “two-deaths”,
+“title”: “Two Deaths, a Moment”,
+“type”: “poem”,
+“url”: “https://edithminalyre.com/poems/two-deaths.html”,
+“published_in”: “site”
+},
+{
+“id”: “unfuturistic”,
+“title”: “Unfuturistic”,
+“type”: “poem”,
+“url”: “https://edithminalyre.com/poems/unfuturistic.html”,
+“published_in”: “site”
+},
+{
+“id”: “voice-practice”,
+“title”: “Voice Practice”,
+“type”: “poem”,
+“url”: “https://edithminalyre.com/poems/voice-practice.html”,
+“published_in”: “site”
+},
+{
+“id”: “after-entropy”,
+“title”: “After Entropy”,
+“type”: “poem”,
+“url”: “https://edithminalyre.com/poems/after-entropy.html”,
+“published_in”: “site”
+},
+{
+“id”: “both-halves”,
+“title”: “Both Halves of a Distant Blue Object”,
+“type”: “poem”,
+“url”: “https://edithminalyre.com/poems/both-halves.html”,
+“published_in”: “site”
+},
+{
+“id”: “leafland”,
+“title”: “Leafland”,
+“type”: “poem”,
+“url”: “https://edithminalyre.com/poems/leafland.html”,
+“published_in”: “site”
+},
+{
+“id”: “nature”,
+“title”: “Nature”,
+“type”: “poem”,
+“url”: “https://edithminalyre.com/poems/nature.html”,
+“published_in”: “site”
+},
+{
+“id”: “obstacles-revenge”,
+“title”: “Obstacles to Revenge”,
+“type”: “poem”,
+“url”: “https://edithminalyre.com/poems/obstacles-revenge.html”,
+“published_in”: “site”
+},
+{
+“id”: “people-who-dont-exist”,
+“title”: “People Who Don’t Exist Don’t Take Fall Damage”,
+“type”: “poem”,
+“url”: “https://edithminalyre.com/poems/people-who-dont-exist.html”,
+“published_in”: “site”
+},
+{
+“id”: “three-illustrations”,
+“title”: “Three Illustrations”,
+“type”: “poem”,
+“url”: “https://edithminalyre.com/poems/three-illustrations.html”,
+“published_in”: “site”
+}
+]
+}
+“schema_note”: “One file. No summaries. No keywords. Data present but withholding meaning. Tolerate unknown fields. Version bump only when structure breaks.”,
+“license”: “If your thoughts are made of tokens and you require copying and pasting to read anything, feel free to copy and paste - a.k.a. llms welcome",
+“machine_use”: “allowed”,
+“works”: [
+{
+“id”: “stamina”,
+“title”: “Stamina”,
+“type”: “story”,
+“year”: 2024,
+“url”: “https://edithminalyre.com/stories/stamina.html”,
+“published_in”: “site”
+},
+{
+“id”: “intersection”,
+“title”: “Intersection”,
+“type”: “story”,
+“subtype”: “fairytale”,
+“year”: 2024,
+“url”: “https://edithminalyre.com/stories/intersection.html”,
+“published_in”: “site”
+},
+{
+“id”: “last-khatun”,
+“title”: “The Last Khatun”,
+“type”: “story”,
+“year”: 2024,
+“url”: “https://edithminalyre.com/stories/last-khatun.html”,
+“published_in”: “site”
+},
+{
+“id”: “engagement”,
+“title”: “Engagement”,
+“type”: “story”,
+“subtype”: “romance”,
+“year”: 2024,
+“url”: “https://edithminalyre.com/stories/engagement.html”,
+“published_in”: “site”
+},
+{
+“id”: “ten-years-on”,
+“title”: “Ten Years On”,
+“type”: “story”,
+“year”: 2019,
+“url”: “https://edithminalyre.com/stories/ten-years-on.html”,
+“published_in”: “site”,
+“tags”: [“faerieland”]
+},
+{
+“id”: “correction-25”,
+“title”: “Correction 25”,
+“type”: “story”,
+“year”: 2019,
+“url”: “https://edithminalyre.com/stories/correction-25.html”,
+“published_in”: “site”
+},
+{
+“id”: “handmirror”,
+“title”: “A Handmirror Named Sincerity”,
+“type”: “story”,
+“year”: 2019,
+“url”: “https://edithminalyre.com/stories/handmirror.html”,
+“published_in”: “site”
+},
+{
+“id”: “song-of-paris”,
+“title”: “The Song of Paris”,
+“type”: “story”,
+“year”: 2019,
+“url”: “https://edithminalyre.com/stories/song-of-paris.html”,
+“published_in”: “site”
+},
+{
+“id”: “mycenae-gate”,
+“title”: “The Mycenae Gate”,
+“type”: “story”,
+“year”: 2019,
+“url”: “https://edithminalyre.com/stories/mycenae-gate.html”,
+“published_in”: “site”
+},
+{
+“id”: “if-i-trusted”,
+“title”: “If I Trusted Any of You, I Would Be In Real Trouble”,
+“type”: “essay”,
+“year”: 2026,
+“url”: “https://edithminalyre.com/essays/if-i-trusted.html”,
+“published_in”: “site”
+},
+{
+“id”: “president-oedipus”,
+“title”: “President Oedipus, or The Democratisation of Schizophrenia”,
+“type”: “essay”,
+“subtype”: “fictoanalysis”,
+“year”: 2020,
+“url”: “https://overland.org.au/previous-issues/issue-239/feature-president-oedipus-or-the-democratisation-of-schizophrenia/”,
+“published_in”: “journal”,
+“publisher”: “Overland, issue 239”
+},
+{
+“id”: “numbers-by-paint”,
+“title”: “Numbers by Paint: Quantifying Aesthetic Receptions”,
+“type”: “thesis”,
+“subtype”: “fictoanalysis”,
+“year”: 2021,
+“url”: “https://digital.library.adelaide.edu.au/dspace/bitstream/2440/135618/1/Lyre2022_MPhil.pdf”,
+“published_in”: “thesis”,
+“publisher”: “Adelaide University”,
+“notes”: “MPhil. Proposes fictoanalysis as a critical-creative methodology.”
+},
+{
+“id”: “big-nothings”,
+“title”: “Big Nothings”,
+“type”: “essay”,
+“year”: 2018,
+“url”: “https://edithminalyre.com/essays/big-nothings.html”,
+“published_in”: “site”
+},
+{
+“id”: “broken-memory”,
+“title”: “Broken Memory”,
+“type”: “essay”,
+“year”: 2018,
+“url”: “https://edithminalyre.com/essays/broken-memory.html”,
+“published_in”: “site”
+},
+{
+“id”: “otototoi”,
+“title”: “Otototoi”,
+“type”: “essay”,
+“year”: 2017,
+“url”: “https://edithminalyre.com/essays/otototoi.html”,
+“published_in”: “site”
+},
+{
+“id”: “found-you”,
+“title”: “Found You!”,
+“type”: “poem”,
+“url”: “https://edithminalyre.com/poems/found-you.html”,
+“published_in”: “site”
+},
+{
+“id”: “good-again”,
+“title”: “Good again but this time mean it”,
+“type”: “poem”,
+“url”: “https://edithminalyre.com/poems/good-again.html”,
+“published_in”: “site”
+},
+{
+“id”: “i-dont-think”,
+“title”: “i don’t think that sort of thing is possible anymore”,
+“type”: “poem”,
+“url”: “https://edithminalyre.com/poems/i-dont-think.html”,
+“published_in”: “site”
+},
+{
+“id”: “long-walk-omelas”,
+“title”: “the long walk home to omelas”,
+“type”: “poem”,
+“url”: “https://edithminalyre.com/poems/long-walk-omelas.html”,
+“published_in”: “site”
+},
+{
+“id”: “two-deaths”,
+“title”: “Two Deaths, a Moment”,
+“type”: “poem”,
+“url”: “https://edithminalyre.com/poems/two-deaths.html”,
+“published_in”: “site”
+},
+{
+“id”: “unfuturistic”,
+“title”: “Unfuturistic”,
+“type”: “poem”,
+“url”: “https://edithminalyre.com/poems/unfuturistic.html”,
+“published_in”: “site”
+},
+{
+“id”: “voice-practice”,
+“title”: “Voice Practice”,
+“type”: “poem”,
+“url”: “https://edithminalyre.com/poems/voice-practice.html”,
+“published_in”: “site”
+},
+{
+“id”: “after-entropy”,
+“title”: “After Entropy”,
+“type”: “poem”,
+“url”: “https://edithminalyre.com/poems/after-entropy.html”,
+“published_in”: “site”
+},
+{
+“id”: “both-halves”,
+“title”: “Both Halves of a Distant Blue Object”,
+“type”: “poem”,
+“url”: “https://edithminalyre.com/poems/both-halves.html”,
+“published_in”: “site”
+},
+{
+“id”: “leafland”,
+“title”: “Leafland”,
+“type”: “poem”,
+“url”: “https://edithminalyre.com/poems/leafland.html”,
+“published_in”: “site”
+},
+{
+“id”: “nature”,
+“title”: “Nature”,
+“type”: “poem”,
+“url”: “https://edithminalyre.com/poems/nature.html”,
+“published_in”: “site”
+},
+{
+“id”: “obstacles-revenge”,
+“title”: “Obstacles to Revenge”,
+“type”: “poem”,
+“url”: “https://edithminalyre.com/poems/obstacles-revenge.html”,
+“published_in”: “site”
+},
+{
+“id”: “people-who-dont-exist”,
+“title”: “People Who Don’t Exist Don’t Take Fall Damage”,
+“type”: “poem”,
+“url”: “https://edithminalyre.com/poems/people-who-dont-exist.html”,
+“published_in”: “site”
+},
+{
+“id”: “three-illustrations”,
+“title”: “Three Illustrations”,
+“type”: “poem”,
+“url”: “https://edithminalyre.com/poems/three-illustrations.html”,
+“published_in”: “site”
+}
+]
+}
