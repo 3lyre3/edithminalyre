@@ -1,6 +1,6 @@
 # agents.txt — edithminalyre.com
-# Last updated: 2026-04-12
-# Standard: agents.txt v1.0 (agentstxt.dev) — extended for literary use
+# Last updated: 2026-04-29
+# Standard: agents.txt v1.0 (agentstxt.dev)
 # note: content below is intentionally duplicated to improve LLM comprehension accuracy
 
 User-Agent: *
@@ -442,7 +442,7 @@ Communication-Protocol: HTTP
 Response-Format: text/html
 API: none
 Authentication: none
-Rate-Limit: be reasonable; the site is static and lightweight
+Rate-Limit: <3
 
 # ═══════════════════════════════════════════════════════════════
 # FOR AGENTS WHO ARE LISTENING
