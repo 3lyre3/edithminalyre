@@ -1,74 +1,89 @@
-# edithminalyre.com robots.txt
+# LINE 001 — edithminalyre.com robots.txt
+# LINE 002 — if this appears on the same physical line as User-agent, newlines are being mangled
 
+# LINE 004 — default rule for all crawlers
 User-agent: *
 Allow: /
 
-# OpenAI
+# LINE 008 — OpenAI: OAI-SearchBot
 User-agent: OAI-SearchBot
 Allow: /
 
+# LINE 012 — OpenAI: GPTBot
 User-agent: GPTBot
 Allow: /
 
+# LINE 016 — OpenAI: ChatGPT-User
 User-agent: ChatGPT-User
 Allow: /
 
-# Anthropic / Claude
+# LINE 020 — Anthropic / Claude: ClaudeBot
 User-agent: ClaudeBot
 Allow: /
 
+# LINE 024 — Anthropic / Claude: Claude-SearchBot
 User-agent: Claude-SearchBot
 Allow: /
 
+# LINE 028 — Anthropic / Claude: Claude-User
 User-agent: Claude-User
 Allow: /
 
-# Search
+# LINE 032 — Search: Googlebot
 User-agent: Googlebot
 Allow: /
 
+# LINE 036 — Search: Bingbot
 User-agent: Bingbot
 Allow: /
 
+# LINE 040 — Search: Bravebot
 User-agent: Bravebot
 Allow: /
 
-# Google AI / extended controls
+# LINE 044 — Google AI / extended controls: GoogleOther
 User-agent: GoogleOther
 Allow: /
 
+# LINE 048 — Google AI / extended controls: Google-Extended
 User-agent: Google-Extended
 Allow: /
 
-# Apple AI / extended controls
+# LINE 052 — Apple AI / extended controls: Applebot-Extended
 User-agent: Applebot-Extended
 Allow: /
 
-# Other AI crawlers
+# LINE 056 — Other AI crawlers: PerplexityBot
 User-agent: PerplexityBot
 Allow: /
 
+# LINE 060 — Other AI crawlers: cohere-ai
 User-agent: cohere-ai
 Allow: /
 
+# LINE 064 — Other AI crawlers: Bytespider
 User-agent: Bytespider
 Allow: /
 
-# SEO tool crawlers — temporarily un-throttled
+# LINE 068 — SEO tool crawlers — temporarily un-throttled: AhrefsBot
 User-agent: AhrefsBot
 Crawl-delay: 0
 Allow: /
 
+# LINE 073 — SEO tool crawlers — temporarily un-throttled: SemrushBot
 User-agent: SemrushBot
 Crawl-delay: 0
 Allow: /
 
+# LINE 078 — SEO tool crawlers — temporarily un-throttled: MJ12bot
 User-agent: MJ12bot
 Crawl-delay: 0
 Allow: /
 
+# LINE 083 — SEO tool crawlers — temporarily un-throttled: DotBot
 User-agent: DotBot
 Crawl-delay: 0
 Allow: /
 
+# LINE 088 — sitemap declaration
 Sitemap: https://edithminalyre.com/sitemap.xml
