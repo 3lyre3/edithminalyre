@@ -68,7 +68,3 @@ User-agent: DotBot
 Crawl-delay: 0
 
 Sitemap: https://edithminalyre.com/sitemap.xml
-
-
-
-
