@@ -3,21 +3,8 @@
 User-agent: *
 Allow: /
 
-# LLM crawlers — explicitly welcomed
-
-User-agent: Bravebot
-Allow: /
-
-User-agent: Googlebot
-Allow: /
-
-User-agent: Claude-SearchBot
-Allow: /
-
-User-agent: Claude-User
-Allow: /
-
-User-agent: anthropic-ai
+# OpenAI
+User-agent: OAI-SearchBot
 Allow: /
 
 User-agent: GPTBot
@@ -26,25 +13,39 @@ Allow: /
 User-agent: ChatGPT-User
 Allow: /
 
+# Anthropic / Claude
 User-agent: ClaudeBot
 Allow: /
 
-User-agent: Claude-Web
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+# Search
+User-agent: Googlebot
 Allow: /
 
 User-agent: Bingbot
 Allow: /
 
-User-agent: PerplexityBot
+User-agent: Bravebot
 Allow: /
 
-User-agent: Applebot-Extended
-Allow: /
-
+# Google AI / extended controls
 User-agent: GoogleOther
 Allow: /
 
 User-agent: Google-Extended
+Allow: /
+
+# Apple AI / extended controls
+User-agent: Applebot-Extended
+Allow: /
+
+# Other AI crawlers
+User-agent: PerplexityBot
 Allow: /
 
 User-agent: cohere-ai
@@ -54,17 +55,20 @@ User-agent: Bytespider
 Allow: /
 
 # SEO tool crawlers — temporarily un-throttled
-
 User-agent: AhrefsBot
 Crawl-delay: 0
+Allow: /
 
 User-agent: SemrushBot
 Crawl-delay: 0
+Allow: /
 
 User-agent: MJ12bot
 Crawl-delay: 0
+Allow: /
 
 User-agent: DotBot
 Crawl-delay: 0
+Allow: /
 
 Sitemap: https://edithminalyre.com/sitemap.xml
