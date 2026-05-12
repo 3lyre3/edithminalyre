@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Healthbased — Edith Mina Lyre</title>
+<meta name="description" content="A monthly reading night at Red Betty, Brunswick. April 2023 – June 2025. Founded, curated, written, and MC'd by Edith Mina Lyre.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:    #111;
+    --fg:    #d4d4d4;
+    --muted: #888;
+    --rule:  #2a2a2a;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'EB Garamond', Garamond, 'Times New Roman', serif;
+    font-size: 19px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container {
+    max-width: 38rem;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 5rem;
+  }
+
+  nav.topnav {
+    font-size: 1rem;
+    margin-bottom: 3rem;
+    color: var(--muted);
+  }
+  nav.topnav a {
+    color: var(--fg);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+  }
+  nav.topnav a:hover { border-bottom-color: var(--muted); }
+  nav.topnav .sep { color: var(--rule); margin: 0 0.4em; }
+  nav.topnav .here { color: var(--muted); }
+
+  h1 {
+    font-size: 2.4rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+    margin: 0 0 0.4rem;
+  }
+  .subtitle {
+    color: var(--muted);
+    font-style: italic;
+    font-size: 1.15rem;
+    margin: 0 0 2.5rem;
+  }
+
+  h2 {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-weight: 500;
+    color: var(--muted);
+    margin: 2.5rem 0 1.2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  p { margin: 0 0 1em; }
+  em, i { font-style: italic; }
+  a { color: var(--fg); text-decoration: none; border-bottom: 1px solid var(--rule); }
+  a:hover { border-bottom-color: var(--muted); }
+
+  /* lede paragraph */
+  .lede {
+    font-size: 1.08rem;
+    line-height: 1.6;
+    margin: 0 0 2em;
+  }
+
+  /* glance list — plain */
+  ul.glance {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  ul.glance li {
+    display: grid;
+    grid-template-columns: 4.5rem 1fr;
+    gap: 1rem;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--rule);
+    align-items: baseline;
+  }
+  ul.glance li:first-child { border-top: 1px solid var(--rule); }
+  ul.glance .number {
+    font-style: italic;
+    color: var(--muted);
+  }
+  ul.glance .label {
+    font-size: 1rem;
+  }
+
+  /* responsibilities — termed list */
+  ul.termed {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  ul.termed li {
+    margin: 0 0 1.2em;
+  }
+  ul.termed .term {
+    font-style: italic;
+  }
+
+  /* registers list — same shape */
+  ul.registers {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  ul.registers > li { margin: 0 0 1.2em; }
+  ul.registers .register-name { font-style: italic; }
+
+  /* readers table — minimal hairlines */
+  table.readers {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0 1rem;
+    font-size: 1rem;
+  }
+  table.readers th,
+  table.readers td {
+    text-align: left;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  table.readers thead th {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    font-weight: 500;
+    border-bottom: 1px solid var(--rule);
+  }
+  table.readers tbody tr:last-child td {
+    border-bottom: none;
+  }
+  table.readers td.count {
+    text-align: right;
+    color: var(--muted);
+    font-style: italic;
+    width: 4em;
+  }
+
+  /* specials — plain dashed list */
+  ul.specials {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  ul.specials li {
+    margin: 0 0 1em;
+    padding-left: 1.2em;
+    position: relative;
+  }
+  ul.specials li::before {
+    content: "—";
+    position: absolute;
+    left: 0;
+    color: var(--muted);
+  }
+  ul.specials .name { font-style: italic; }
+
+  .tail {
+    color: var(--muted);
+    font-style: italic;
+    font-size: 0.98rem;
+    margin-top: 0.5rem;
+  }
+
+  .links {
+    margin-top: 2.5rem;
+    color: var(--muted);
+    font-size: 1rem;
+  }
+  .links a {
+    color: var(--fg);
+    border-bottom: 1px solid var(--rule);
+  }
+  .links a:hover { border-bottom-color: var(--muted); }
+  .links .sep { color: var(--rule); margin: 0 0.5em; }
+
+  @media (max-width: 600px) {
+    .container { padding: 2rem 1.25rem 3rem; }
+    h1 { font-size: 2rem; }
+    ul.glance li {
+      grid-template-columns: 3.5rem 1fr;
+      gap: 0.7rem;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <nav class="topnav">
+    <a href="https://edithminalyre.com/">edith mina lyre</a><span class="sep">·</span><a href="https://edithminalyre.com/bio.html">bio</a><span class="sep">·</span><a href="./cv.html">cv</a><span class="sep">·</span><a href="./elfsurgery.html">elfsurgery</a><span class="sep">·</span><a href="./elfcyclopedia.html">elfcyclopedia</a><span class="sep">·</span><span class="here">healthbased</span>
+  </nav>
+
+  <h1>Healthbased</h1>
+  <p class="subtitle">A monthly reading night at Red Betty, Brunswick &middot; April 2023 &ndash; June 2025</p>
+
+  <p class="lede">Edith Mina Lyre founded, curated, wrote, and MC&rsquo;d <em>Healthbased</em>: a monthly poetry and prose reading night at Red Betty in Brunswick, Melbourne. The series ran continuously from April 2023 to June 2025, with annual January hiatuses, across twenty-four numbered monthly editions plus two seasonal spinoffs (<em>Elfbased</em> in December, <em>Halfbased</em> in November). It closed in mid-2025 with a book launch and was succeeded in the same venue and timeslot by <em>Headless</em>, a new series under different curation, by Lyre&rsquo;s invitation.</p>
+
+  <section>
+    <h2>At a glance</h2>
+    <ul class="glance">
+      <li><span class="number">26</span><span class="label">events programmed and delivered over twenty-six months &mdash; twenty-four numbered <em>Healthbased</em> editions, two themed spinoffs, plus a book launch</span></li>
+      <li><span class="number">57+</span><span class="label">poets and writers featured across the run, filling 113+ documented reading slots</span></li>
+      <li><span class="number">150+</span><span class="label">bespoke reader introductions written and delivered live, one per reader per event</span></li>
+      <li><span class="number">26 mo.</span><span class="label">unbroken first-Monday cadence, with only annual January hiatuses</span></li>
+      <li><span class="number">0</span><span class="label">agents, umbrella organisations, or parent festivals &mdash; independent venue relationship throughout</span></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Role and responsibilities</h2>
+    <p>End-to-end ownership of the series across every function:</p>
+    <ul class="termed">
+      <li><span class="term">Concept and brand.</span> Originated <em>Healthbased</em> as a name, voice, and aesthetic &mdash; a register of sincere-parodic self-help language (&ldquo;Healthbased Poetry will help you get better&rdquo;) that became the series&rsquo;s signature. Developed the December and November spinoffs as architectural sub-brands within the same project.</li>
+      <li><span class="term">Programming and curation.</span> Selected and contacted every reader. Built lineups of four to six readers per night, balancing established and emerging voices, prose and poetry, solo and collaborative work, with occasional live-music slots integrated.</li>
+      <li><span class="term">Writing.</span> Wrote every event description across the run &mdash; twenty-six in total, in a range of voices from short prose-essay to genre pastiche. (One description, the November 2023 edition, was an openly Ligotti-derived prose-poem reworked around the series&rsquo;s name. All other descriptions are original.)</li>
+      <li><span class="term">Live MC.</span> MC&rsquo;d every event personally &mdash; opened the night, introduced each reader with a bespoke piece of writing, kept the room between sets, and closed out. From late 2024, hired co-MCs Rosalind Silver and Alex Sutcliffe to share live MC duties at specific events; concept, writing, curation, publicity, and venue relationship remained sole.</li>
+      <li><span class="term">Publicity.</span> Wrote and managed all event copy across Facebook, Instagram, and word-of-mouth networks. Built and ran the series&rsquo;s audience from zero to a steady monthly attendance.</li>
+      <li><span class="term">Venue relationship.</span> Established and maintained the Red Betty booking directly, in an ongoing first-Monday-of-the-month residency that ran without interruption (other than January) for over two years.</li>
+      <li><span class="term">Succession.</span> When the series ended, identified a curatorial successor for the slot (Jocasta Suzanne, a returning <em>Healthbased</em> reader and established Melbourne writer), brokered the transition with the venue, and reserved the <em>Healthbased</em> name for future use.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Writing produced for the series</h2>
+    <p>The event descriptions were short &mdash; typically 100 to 400 words each &mdash; but treated collectively they form a sustained voice-experiment across over two years. Recurring registers included:</p>
+    <ul class="registers">
+      <li><span class="register-name">Sincere-parodic health and wellness rhetoric.</span> From the May 2024 <em>Mayday ed.</em>: <em>&ldquo;I asked everybody and they said don&rsquo;t worry. Wonderful things are coming!&rdquo;</em> From the March 2025 <em>Back at it again ed.</em>: <em>&ldquo;A better you. A better debt ratio. Less medical expenses.&rdquo;</em></li>
+      <li><span class="register-name">Mythopoetic prose-essay.</span> The December 2023 <em>Elfbased: North Pole ed.</em> description ran a long essay-style piece on Mount Tambora, 1816&rsquo;s Year Without Summer, &ldquo;Stille Nacht,&rdquo; and the <em>Arthur Christmas</em> &ldquo;Six Year Revolution,&rdquo; weaving historical reference into seasonal framing. The Cumaean Sibyl thread, picked up in <em>Sunlit Uplands ed.</em> (September 2024) and developed in <em>Elfbased: Encore ed.</em> (December 2024), sustained a fictional frame across two months and across spinoff brands.</li>
+      <li><span class="register-name">Genre pastiche.</span> <em>Halfbased: Meridian ed.</em> (November 2024) was framed entirely as a Cluedo accusation with the lineup withheld. <em>Healthbased Part Two: Gom Jabbar ed.</em> (June 2024) was framed as Bene Gesserit address.</li>
+      <li><span class="register-name">Plain meta-comment.</span> The January 2024 <em>Normal ed.</em>: <em>&ldquo;Nothing weird will happen. It&rsquo;s going to be in January so if it rained that would be kind of unusual. It won&rsquo;t.&rdquo;</em></li>
+    </ul>
+    <p>A second body of writing &mdash; substantially larger &mdash; does not appear in any public archive: the 150+ live reader introductions, one written fresh for every reader at every event, delivered from the stage. This work is documented only in the live record of the events themselves, and constitutes the largest single occluded body of writing produced by the series.</p>
+  </section>
+
+  <section>
+    <h2>Curatorial range</h2>
+    <p>The 57+ writers featured across the run included poets at all career stages, fiction writers, essayists, performance artists, and musicians. Several readers returned across multiple editions, forming a recurring core community around the series.</p>
+    <table class="readers">
+      <thead>
+        <tr>
+          <th>Reader</th>
+          <th style="text-align: right;">Appearances</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Iris McMahon</td><td class="count">7</td></tr>
+        <tr><td>Jocasta Suzanne</td><td class="count">7</td></tr>
+        <tr><td>Cameron Colwell</td><td class="count">6</td></tr>
+        <tr><td>Eliza Hayes</td><td class="count">6</td></tr>
+        <tr><td>Amelia C. Winter</td><td class="count">4</td></tr>
+        <tr><td>Brayden Gilmartin</td><td class="count">4</td></tr>
+        <tr><td>Jupiter V</td><td class="count">4</td></tr>
+        <tr><td>Violet Mercury</td><td class="count">4</td></tr>
+        <tr><td>Ash Dor-Shiffer</td><td class="count">3</td></tr>
+        <tr><td>Dylan Rowen</td><td class="count">3</td></tr>
+        <tr><td>Max Koetsier</td><td class="count">3</td></tr>
+      </tbody>
+    </table>
+    <p class="tail">Plus a long tail of readers appearing one to three times.</p>
+  </section>
+
+  <section>
+    <h2>Special programming</h2>
+    <ul class="specials">
+      <li><span class="name"><em>Elfbased: North Pole ed.</em></span> (December 2023) and <span class="name"><em>Elfbased: Encore ed.</em></span> (December 2024) &mdash; seasonal spinoffs threading Christmas reference through a deliberately estranged frame, featuring live music (with Eileen Grace and, in 2024, Clara Darcy).</li>
+      <li><span class="name"><em>Halfbased: Meridian ed.</em></span> (November 2024) &mdash; an experimental edition with a formally undisclosed lineup, programmed and described in Cluedo-accusation pastiche.</li>
+      <li><span class="name">One-year anniversary edition:</span> <em>Healthbased #180: Fool&rsquo;s Circle ed.</em> (April 2024).</li>
+      <li><span class="name">Vivian Blaxell book launch</span> (4 July 2025) &mdash; <em>Healthbased</em>-hosted launch for Vivian Blaxell&rsquo;s essay collection <em>Worthy of the Event</em> (Little Puss Press), following the author&rsquo;s US tour. Featured readings from Micaela Sahhar, Jennifer Mackenzie, Edith Lyre, Jocasta Suzanne, Ash Dor-Shiffer, and Iris McMahon. Drew the largest documented attendance of any event in the series&rsquo;s run.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Succession</h2>
+    <p>In mid-2025 the series concluded, and Lyre passed the Red Betty first-Monday slot to Jocasta Suzanne &mdash; a longtime returning <em>Healthbased</em> reader and an established Melbourne writer (<em>Overland</em>, <em>Meanjin</em>, <em>Rabbit</em>; winner of the 2021 Harri Jones award; Next Chapter fellowship recipient). Suzanne launched a new series in the same slot, <em>Headless</em> (&ldquo;poetry begins with a head and must end headless&rdquo;), in her own curation and voice. Lyre retains the <em>Healthbased</em> name and brand.</p>
+    <p>The transition was deliberate: rather than allow the slot to lapse, Lyre ensured continuity of the venue&rsquo;s first-Monday poetry programming under a new curator she trusted, while reserving the brand she built for potential future use. As of the most recent listings (December 2025), <em>Headless</em> continues to run monthly at Red Betty.</p>
+  </section>
+
+  <div class="links">
+    <a href="./healthbased_portfolio.pdf">download as PDF</a><span class="sep">·</span><a href="./cv.html">back to CV</a>
+  </div>
+
+</div>
+</body>
+</html>

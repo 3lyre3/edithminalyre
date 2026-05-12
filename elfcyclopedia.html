@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Elfcyclopedia — Edith Mina Lyre</title>
+<meta name="description" content="Two methodological companions to ElfSurgery: a Bayesian evidence review and a misinformation analysis.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:    #111;
+    --fg:    #d4d4d4;
+    --muted: #888;
+    --rule:  #2a2a2a;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'EB Garamond', Garamond, 'Times New Roman', serif;
+    font-size: 19px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container {
+    max-width: 38rem;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 5rem;
+  }
+
+  nav.topnav {
+    font-size: 1rem;
+    margin-bottom: 3rem;
+    color: var(--muted);
+  }
+  nav.topnav a {
+    color: var(--fg);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+  }
+  nav.topnav a:hover { border-bottom-color: var(--muted); }
+  nav.topnav .sep { color: var(--rule); margin: 0 0.4em; }
+  nav.topnav .here { color: var(--muted); }
+
+  h1 {
+    font-size: 2.4rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+    margin: 0 0 0.4rem;
+  }
+  .subtitle {
+    color: var(--muted);
+    font-style: italic;
+    font-size: 1.15rem;
+    margin: 0 0 2.5rem;
+  }
+
+  h2 {
+    font-size: 1.4rem;
+    font-weight: 500;
+    font-style: italic;
+    margin: 3rem 0 1rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+    letter-spacing: -0.005em;
+  }
+  h2 .label {
+    display: block;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-weight: 500;
+    color: var(--muted);
+    font-style: normal;
+    margin-bottom: 0.4rem;
+  }
+
+  p { margin: 0 0 1em; }
+  em, i { font-style: italic; }
+  a { color: var(--fg); text-decoration: none; border-bottom: 1px solid var(--rule); }
+  a:hover { border-bottom-color: var(--muted); }
+
+  /* V×D matrix — minimal table */
+  .matrix {
+    margin: 1.5rem auto 1.5rem;
+    border-collapse: collapse;
+    font-style: italic;
+    font-size: 1.1rem;
+  }
+  .matrix th, .matrix td {
+    padding: 0.9rem 1.4rem;
+    text-align: center;
+    border: 1px solid var(--rule);
+  }
+  .matrix th {
+    font-weight: 500;
+    color: var(--muted);
+    background: transparent;
+    font-style: italic;
+  }
+  .matrix .corner { border: none; }
+  .matrix td { color: var(--fg); }
+
+  .links {
+    margin-top: 2.5rem;
+    color: var(--muted);
+    font-size: 1rem;
+  }
+  .links a {
+    color: var(--fg);
+    border-bottom: 1px solid var(--rule);
+  }
+  .links a:hover { border-bottom-color: var(--muted); }
+  .links .sep { color: var(--rule); margin: 0 0.5em; }
+
+  .small {
+    color: var(--muted);
+    font-size: 0.95rem;
+    font-style: italic;
+    margin-top: 1.5rem;
+  }
+
+  @media (max-width: 600px) {
+    .container { padding: 2rem 1.25rem 3rem; }
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.25rem; }
+    .matrix { font-size: 1rem; }
+    .matrix th, .matrix td { padding: 0.7rem 0.9rem; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <nav class="topnav">
+    <a href="https://edithminalyre.com/">edith mina lyre</a><span class="sep">·</span><a href="https://edithminalyre.com/bio.html">bio</a><span class="sep">·</span><a href="./cv.html">cv</a><span class="sep">·</span><a href="./elfsurgery.html">elfsurgery</a><span class="sep">·</span><span class="here">elfcyclopedia</span><span class="sep">·</span><a href="./healthbased.html">healthbased</a>
+  </nav>
+
+  <h1>The Elfcyclopedia</h1>
+  <p class="subtitle">Two methodological companions to ElfSurgery.</p>
+
+  <p>The Elfcyclopedia triptych consists of three interlocking projects on trans-relevant evidence and infrastructure. <a href="./elfsurgery.html">ElfSurgery</a> is the public directory and rankings engine. The two pieces below extend the same methodological commitments to adjacent questions: what the evidence says about interventions, and what is being said about trans people that the evidence does not support.</p>
+
+  <h2><span class="label">Panel II</span><em>What Actually Works</em></h2>
+
+  <p>A systematic evidence review of interventions for passing. The field is awash in claims; rigorous evidence is rarer than its citation rate suggests. The review collects what literature exists, weights it by the strength of the underlying design, and carries the resulting uncertainty forward rather than collapsing it into a verdict.</p>
+
+  <p>Three methodological commitments hold the project together. First, Bayesian posteriors over point estimates: findings carry their priors and their updates with them, and the uncertainty is preserved through every step rather than rounded out at the end. Second, evidence tiers: studies are stratified by the strength of their underlying design, and the tier a finding sits in governs how much inferential work it is permitted to do. Third, a working principle for reading findings whose base rates are thin &mdash; the question of when absence of trial-grade evidence counts as an argument against an intervention, and when it does not.</p>
+
+  <p>A reader arriving with a specific intervention in mind should be able to find what the evidence says about it, see how strong that evidence is, and understand what the evidence is being asked to do.</p>
+
+  <h2><span class="label">Panel III</span><em>Elfvaluation</em></h2>
+
+  <p>A misinformation analysis of seventy-six claims drawn from six anti-trans sources. Each claim is scored on a dual-axis Boolean framework, V&times;D, which sorts a claim by two independent binary properties rather than collapsing them into a single true-or-false verdict. The product is a four-quadrant placement for every claim.</p>
+
+  <table class="matrix">
+    <thead>
+      <tr>
+        <th class="corner"></th>
+        <th>D</th>
+        <th>&not;D</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th>V</th>
+        <td>V &and; D</td>
+        <td>V &and; &not;D</td>
+      </tr>
+      <tr>
+        <th>&not;V</th>
+        <td>&not;V &and; D</td>
+        <td>&not;V &and; &not;D</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Three of the four quadrants are failure modes of different kinds, and they do not respond to the same correction. Each of the seventy-six claims occupies one quadrant; the composition of a source &mdash; the ratio of its placements across the four cells &mdash; is then a reading of that source&rsquo;s epistemic posture. Two sources can be wrong in entirely different shapes, and the matrix surfaces the shape.</p>
+
+  <p class="small">Formerly published as <em>Miserable Bastards</em>; renamed to keep the corpus inside the Elfcyclopedia naming family.</p>
+
+  <div class="links">
+    <a href="./elfsurgery.html">back to ElfSurgery (Panel I)</a><span class="sep">·</span><a href="https://elfsurgery.com">read the triptych live</a>
+  </div>
+
+</div>
+</body>
+</html>

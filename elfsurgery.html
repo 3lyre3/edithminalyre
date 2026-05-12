@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ElfSurgery.com — Edith Mina Lyre</title>
+<meta name="description" content="A global directory of gender-affirming surgeons. Free, independent, hand-maintained.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:    #111;
+    --fg:    #d4d4d4;
+    --muted: #888;
+    --rule:  #2a2a2a;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'EB Garamond', Garamond, 'Times New Roman', serif;
+    font-size: 19px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container {
+    max-width: 38rem;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 5rem;
+  }
+
+  nav.topnav {
+    font-size: 1rem;
+    margin-bottom: 3rem;
+    color: var(--muted);
+  }
+  nav.topnav a {
+    color: var(--fg);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+  }
+  nav.topnav a:hover { border-bottom-color: var(--muted); }
+  nav.topnav .sep { color: var(--rule); margin: 0 0.4em; }
+  nav.topnav .here { color: var(--muted); }
+
+  h1 {
+    font-size: 2.4rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+    margin: 0 0 0.4rem;
+  }
+  .subtitle {
+    color: var(--muted);
+    font-style: italic;
+    font-size: 1.15rem;
+    margin: 0 0 2.5rem;
+  }
+
+  h2 {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-weight: 500;
+    color: var(--muted);
+    margin: 2.5rem 0 1.2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  p { margin: 0 0 1em; }
+  em, i { font-style: italic; }
+  a { color: var(--fg); text-decoration: none; border-bottom: 1px solid var(--rule); }
+  a:hover { border-bottom-color: var(--muted); }
+
+  .links {
+    margin-top: 2rem;
+    color: var(--muted);
+    font-size: 1rem;
+  }
+  .links a {
+    color: var(--fg);
+    border-bottom: 1px solid var(--rule);
+  }
+  .links a:hover { border-bottom-color: var(--muted); }
+  .links .sep { color: var(--rule); margin: 0 0.5em; }
+
+  @media (max-width: 600px) {
+    .container { padding: 2rem 1.25rem 3rem; }
+    h1 { font-size: 2rem; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <nav class="topnav">
+    <a href="https://edithminalyre.com/">edith mina lyre</a><span class="sep">·</span><a href="https://edithminalyre.com/bio.html">bio</a><span class="sep">·</span><a href="./cv.html">cv</a><span class="sep">·</span><span class="here">elfsurgery</span><span class="sep">·</span><a href="./elfcyclopedia.html">elfcyclopedia</a><span class="sep">·</span><a href="./healthbased.html">healthbased</a>
+  </nav>
+
+  <h1>ElfSurgery.com</h1>
+  <p class="subtitle">A global directory of gender-affirming surgeons.</p>
+
+  <p>ElfSurgery.com is a free, independent, hand-maintained public directory of surgeons who perform gender-affirming procedures, organised by region and by procedure type. It carries no advertising, requires no account, and was built on a zero-dollar budget. It exists because people looking for surgical information should not have to sort through marketing copy, broken aggregator sites, and paid placements to find the practitioners working near them.</p>
+
+  <p>At present the directory lists 381 surgeons across 55 regions, with continuing additions as practitioners enter the field, clinics open and close, and jurisdictions change. Every entry has been reviewed by a human before going live.</p>
+
+  <h2>The rankings engine</h2>
+
+  <p>The directory is paired with a rankings engine, currently in its tenth iteration, that scores trans-supporting organisations on an effectiveness framework adapted from effective-altruism evaluation literature. Throughput, outcome quality, geographic accessibility, and cost combine into a single ROI signal that a person comparing two options can read in seconds. Surgeons are one population the engine ranks; the broader corpus extends across hundreds of organisations.</p>
+
+  <p>Earlier versions of the engine carried a quiet data-integrity flaw: a regex matching numeric strings was occasionally catching population counts where it should have been catching throughput. The result was inflated ROI scores for high-volume regions &mdash; wrong in a way that looked right. The fix closed the gap at the data-ingest layer, not the weighting layer. Bad input cannot be papered over by adjusting weights downstream. Precision is the kindness; the rankings are only useful if the numbers feeding them mean what the framework claims they mean.</p>
+
+  <h2>Build &amp; maintenance</h2>
+
+  <p>Designed and built solo, with Claude Code as collaborative tooling. The work of running the site is the day-to-day labour of a one-person publication: data ingestion and verification across regional sources, a public-facing interface kept clean of advertising and third-party tracking, and a release cadence governed by accuracy rather than novelty.</p>
+
+  <p>The site is the centre panel of a methodological triptych. The other two panels &mdash; <em>What Actually Works</em>, a Bayesian evidence review of passing interventions; and <em>Elfvaluation</em>, a misinformation analysis &mdash; carry the same commitments into adjacent questions.</p>
+
+  <div class="links">
+    <a href="https://elfsurgery.com">visit elfsurgery.com</a><span class="sep">·</span><a href="./elfcyclopedia.html">read the triptych companion</a>
+  </div>
+
+</div>
+</body>
+</html>
