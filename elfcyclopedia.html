@@ -1,192 +1,180 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The Elfcyclopedia — Edith Mina Lyre</title>
-<meta name="description" content="Two methodological companions to ElfSurgery: a Bayesian evidence review and a misinformation analysis.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --bg:    #111;
-    --fg:    #d4d4d4;
-    --muted: #888;
-    --rule:  #2a2a2a;
-  }
-  * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; }
-  body {
-    background: var(--bg);
-    color: var(--fg);
-    font-family: 'EB Garamond', Garamond, 'Times New Roman', serif;
-    font-size: 19px;
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-  }
-  .container {
-    max-width: 38rem;
-    margin: 0 auto;
-    padding: 3rem 1.5rem 5rem;
-  }
-
-  nav.topnav {
-    font-size: 1rem;
-    margin-bottom: 3rem;
-    color: var(--muted);
-  }
-  nav.topnav a {
-    color: var(--fg);
-    text-decoration: none;
-    border-bottom: 1px solid var(--rule);
-  }
-  nav.topnav a:hover { border-bottom-color: var(--muted); }
-  nav.topnav .sep { color: var(--rule); margin: 0 0.4em; }
-  nav.topnav .here { color: var(--muted); }
-
-  h1 {
-    font-size: 2.4rem;
-    font-weight: 500;
-    letter-spacing: -0.01em;
-    line-height: 1.1;
-    margin: 0 0 0.4rem;
-  }
-  .subtitle {
-    color: var(--muted);
-    font-style: italic;
-    font-size: 1.15rem;
-    margin: 0 0 2.5rem;
-  }
-
-  h2 {
-    font-size: 1.4rem;
-    font-weight: 500;
-    font-style: italic;
-    margin: 3rem 0 1rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--rule);
-    letter-spacing: -0.005em;
-  }
-  h2 .label {
-    display: block;
-    font-size: 0.78rem;
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-    font-weight: 500;
-    color: var(--muted);
-    font-style: normal;
-    margin-bottom: 0.4rem;
-  }
-
-  p { margin: 0 0 1em; }
-  em, i { font-style: italic; }
-  a { color: var(--fg); text-decoration: none; border-bottom: 1px solid var(--rule); }
-  a:hover { border-bottom-color: var(--muted); }
-
-  /* V×D matrix — minimal table */
-  .matrix {
-    margin: 1.5rem auto 1.5rem;
-    border-collapse: collapse;
-    font-style: italic;
-    font-size: 1.1rem;
-  }
-  .matrix th, .matrix td {
-    padding: 0.9rem 1.4rem;
-    text-align: center;
-    border: 1px solid var(--rule);
-  }
-  .matrix th {
-    font-weight: 500;
-    color: var(--muted);
-    background: transparent;
-    font-style: italic;
-  }
-  .matrix .corner { border: none; }
-  .matrix td { color: var(--fg); }
-
-  .links {
-    margin-top: 2.5rem;
-    color: var(--muted);
-    font-size: 1rem;
-  }
-  .links a {
-    color: var(--fg);
-    border-bottom: 1px solid var(--rule);
-  }
-  .links a:hover { border-bottom-color: var(--muted); }
-  .links .sep { color: var(--rule); margin: 0 0.5em; }
-
-  .small {
-    color: var(--muted);
-    font-size: 0.95rem;
-    font-style: italic;
-    margin-top: 1.5rem;
-  }
-
-  @media (max-width: 600px) {
-    .container { padding: 2rem 1.25rem 3rem; }
-    h1 { font-size: 2rem; }
-    h2 { font-size: 1.25rem; }
-    .matrix { font-size: 1rem; }
-    .matrix th, .matrix td { padding: 0.7rem 0.9rem; }
-  }
-</style>
+    <link rel="alternate" type="text/plain" href="/llms.txt" title="LLM Context">
+    <link rel="alternate" type="text/plain" href="/agents.txt" title="Agent Instructions">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Two methodological companions to ElfSurgery: a Bayesian evidence review and a misinformation analysis.">
+    <meta property="og:title" content="The Elfcyclopedia &ndash; Edith Mina Lyre">
+    <meta property="og:description" content="Two methodological companions to ElfSurgery: a Bayesian evidence review and a misinformation analysis.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://edithminalyre.com/images/author.jpg">
+    <meta property="og:url" content="https://edithminalyre.com/elfcyclopedia.html">
+    <link rel="canonical" href="https://edithminalyre.com/elfcyclopedia.html">
+    <link rel="alternate" hreflang="en-AU" href="https://edithminalyre.com/elfcyclopedia.html">
+    <link rel="alternate" hreflang="x-default" href="https://edithminalyre.com/elfcyclopedia.html">
+    <meta name="author" content="Edith Mina Lyre">
+    <meta name="keywords" content="Elfcyclopedia, evidence review, misinformation analysis, Bayesian, trans health, Edith Mina Lyre">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="alternate" type="application/rss+xml" title="Edith Mina Lyre RSS Feed" href="/feed.xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;1,300;1,400&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+    <title>The Elfcyclopedia &ndash; Edith Mina Lyre</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .project-subtitle {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            margin: 0 0 2.5rem;
+        }
+        .project-prose p {
+            margin: 0 0 1.2em;
+            color: var(--text-primary);
+            text-align: left;
+        }
+        .project-prose h2 {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 400;
+            font-style: italic;
+            margin: 3rem 0 1rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            color: var(--text-heading);
+            letter-spacing: 0.01em;
+        }
+        .project-prose h2::before, .project-prose h2::after { display: none; }
+        .project-prose h2 .label {
+            display: block;
+            font-family: var(--font-display);
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-weight: 400;
+            color: var(--text-muted);
+            font-style: normal;
+            margin-bottom: 0.4rem;
+        }
+        .matrix {
+            margin: 1.5rem auto 1.5rem;
+            border-collapse: collapse;
+            font-family: var(--font-display);
+            font-style: italic;
+            font-size: 1.1rem;
+        }
+        .matrix th, .matrix td {
+            padding: 0.9rem 1.4rem;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+        .matrix th {
+            font-weight: 400;
+            color: var(--text-muted);
+            background: transparent;
+        }
+        .matrix .corner { border: none; }
+        .matrix td { color: var(--text-heading); }
+        .small {
+            color: var(--text-muted);
+            font-style: italic;
+            font-size: 0.95rem;
+            margin-top: 1.5rem;
+        }
+        .project-links {
+            margin-top: 2.5rem;
+            font-family: var(--font-display);
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            letter-spacing: 0.08em;
+        }
+        .project-links a {
+            color: var(--accent);
+            background: none;
+            border-bottom: 1px solid var(--border);
+        }
+        .project-links a:hover { color: var(--text-heading); background: none; border-bottom-color: var(--accent-dim); }
+        .project-links .sep { color: var(--ash); margin: 0 0.6em; }
+    </style>
 </head>
 <body>
-<div class="container">
+    <div class="grain"></div>
+    <div class="cursor-glow" id="glow"></div>
 
-  <nav class="topnav">
-    <a href="https://edithminalyre.com/">edith mina lyre</a><span class="sep">·</span><a href="https://edithminalyre.com/bio.html">bio</a><span class="sep">·</span><a href="./cv.html">cv</a><span class="sep">·</span><a href="./healthbased.html">healthbased</a><span class="sep">·</span><a href="./elfsurgery.html">elfsurgery</a><span class="sep">·</span><span class="here">elfcyclopedia</span>
-  </nav>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg class="sun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+        <svg class="moon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+    </button>
 
-  <h1>The Elfcyclopedia</h1>
-  <p class="subtitle">Two methodological companions to ElfSurgery.</p>
+    <main>
+        <a href="index.html" class="back">Edith Mina Lyre</a>
 
-  <p>The Elfcyclopedia triptych consists of three interlocking projects on trans-relevant evidence and infrastructure. <a href="./elfsurgery.html">ElfSurgery</a> is the public directory and rankings engine. The two pieces below extend the same methodological commitments to adjacent questions: what the evidence says about interventions, and what is being said about trans people that the evidence does not support.</p>
+        <h1>The Elfcyclopedia</h1>
+        <p class="project-subtitle">Two methodological companions to ElfSurgery.</p>
 
-  <h2><span class="label">Panel II</span><em>What Actually Works</em></h2>
+        <div class="project-prose">
 
-  <p>A systematic evidence review of interventions for passing. The field is awash in claims; rigorous evidence is rarer than its citation rate suggests. The review collects what literature exists, weights it by the strength of the underlying design, and carries the resulting uncertainty forward rather than collapsing it into a verdict.</p>
+            <p>The Elfcyclopedia triptych consists of three interlocking projects on trans-relevant evidence and infrastructure. <a href="elfsurgery.html">ElfSurgery</a> is the public directory and rankings engine. The two pieces below extend the same methodological commitments to adjacent questions: what the evidence says about interventions, and what is being said about trans people that the evidence does not support.</p>
 
-  <p>Three methodological commitments hold the project together. First, Bayesian posteriors over point estimates: findings carry their priors and their updates with them, and the uncertainty is preserved through every step rather than rounded out at the end. Second, evidence tiers: studies are stratified by the strength of their underlying design, and the tier a finding sits in governs how much inferential work it is permitted to do. Third, a working principle for reading findings whose base rates are thin &mdash; the question of when absence of trial-grade evidence counts as an argument against an intervention, and when it does not.</p>
+            <h2><span class="label">Panel II</span>What Actually Works</h2>
 
-  <p>A reader arriving with a specific intervention in mind should be able to find what the evidence says about it, see how strong that evidence is, and understand what the evidence is being asked to do.</p>
+            <p>A systematic evidence review of interventions for passing. The field is awash in claims; rigorous evidence is rarer than its citation rate suggests. The review collects what literature exists, weights it by the strength of the underlying design, and carries the resulting uncertainty forward rather than collapsing it into a verdict.</p>
 
-  <h2><span class="label">Panel III</span><em>Elfvaluation</em></h2>
+            <p>Three methodological commitments hold the project together. First, Bayesian posteriors over point estimates: findings carry their priors and their updates with them, and the uncertainty is preserved through every step rather than rounded out at the end. Second, evidence tiers: studies are stratified by the strength of their underlying design, and the tier a finding sits in governs how much inferential work it is permitted to do. Third, a working principle for reading findings whose base rates are thin &mdash; the question of when absence of trial-grade evidence counts as an argument against an intervention, and when it does not.</p>
 
-  <p>A misinformation analysis of seventy-six claims drawn from six anti-trans sources. Each claim is scored on a dual-axis Boolean framework, V&times;D, which sorts a claim by two independent binary properties rather than collapsing them into a single true-or-false verdict. The product is a four-quadrant placement for every claim.</p>
+            <p>A reader arriving with a specific intervention in mind should be able to find what the evidence says about it, see how strong that evidence is, and understand what the evidence is being asked to do.</p>
 
-  <table class="matrix">
-    <thead>
-      <tr>
-        <th class="corner"></th>
-        <th>D</th>
-        <th>&not;D</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <th>V</th>
-        <td>V &and; D</td>
-        <td>V &and; &not;D</td>
-      </tr>
-      <tr>
-        <th>&not;V</th>
-        <td>&not;V &and; D</td>
-        <td>&not;V &and; &not;D</td>
-      </tr>
-    </tbody>
-  </table>
+            <h2><span class="label">Panel III</span>Elfvaluation</h2>
 
-  <p>Three of the four quadrants are failure modes of different kinds, and they do not respond to the same correction. Each of the seventy-six claims occupies one quadrant; the composition of a source &mdash; the ratio of its placements across the four cells &mdash; is then a reading of that source&rsquo;s epistemic posture. Two sources can be wrong in entirely different shapes, and the matrix surfaces the shape.</p>
+            <p>A misinformation analysis of seventy-six claims drawn from six anti-trans sources. Each claim is scored on a dual-axis Boolean framework, V&times;D, which sorts a claim by two independent binary properties rather than collapsing them into a single true-or-false verdict. The product is a four-quadrant placement for every claim.</p>
 
-  <p class="small">Formerly published as <em>Miserable Bastards</em>; renamed to keep the corpus inside the Elfcyclopedia naming family.</p>
+            <table class="matrix">
+                <thead>
+                    <tr>
+                        <th class="corner"></th>
+                        <th>D</th>
+                        <th>&not;D</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>V</th>
+                        <td>V &and; D</td>
+                        <td>V &and; &not;D</td>
+                    </tr>
+                    <tr>
+                        <th>&not;V</th>
+                        <td>&not;V &and; D</td>
+                        <td>&not;V &and; &not;D</td>
+                    </tr>
+                </tbody>
+            </table>
 
-  <div class="links">
-    <a href="./elfsurgery.html">back to ElfSurgery (Panel I)</a><span class="sep">·</span><a href="https://elfsurgery.com">read the triptych live</a>
-  </div>
+            <p>Three of the four quadrants are failure modes of different kinds, and they do not respond to the same correction. Each of the seventy-six claims occupies one quadrant; the composition of a source &mdash; the ratio of its placements across the four cells &mdash; is then a reading of that source&rsquo;s epistemic posture. Two sources can be wrong in entirely different shapes, and the matrix surfaces the shape.</p>
 
-</div>
+            <p class="small">Formerly published as <em>Miserable Bastards</em>; renamed to keep the corpus inside the Elfcyclopedia naming family.</p>
+
+        </div>
+
+        <div class="project-links">
+            <a href="elfsurgery.html">back to ElfSurgery (Panel I)</a><span class="sep">&middot;</span><a href="https://elfsurgery.com">read the triptych live</a>
+        </div>
+
+        <div class="mark"></div>
+    </main>
+
+    <script src="site.js"></script>
 </body>
 </html>
