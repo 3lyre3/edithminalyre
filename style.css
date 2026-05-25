@@ -109,8 +109,13 @@ html {
    than at it. Hover over any clickable element —
    including the day/night toggle — swaps to the same
    arrow with a soft warm-honey halo. Never the system
-   gloved-hand pointer; text inputs keep the I-beam. */
-*, *::before, *::after {
+   gloved-hand pointer; text inputs keep the I-beam.
+
+   Cursor set on html/body only (not on every element),
+   so SVG icons inside buttons properly inherit from
+   their parent's cursor instead of being forced to
+   the default by a universal selector. */
+html, body {
     cursor: url('cursor-32.png') 7 6, auto;
 }
 a, button, [role="button"], summary, label[for] {
@@ -144,7 +149,6 @@ body {
     border: 1px solid var(--border);
     border-radius: 50%;
     background: var(--bg-secondary);
-    cursor: pointer;
     z-index: 1000;
     display: flex;
     align-items: center;
