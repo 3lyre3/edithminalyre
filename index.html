@@ -322,9 +322,10 @@
     </template>
 
     <script>
-        // Faerieland ticker: shuffle the template pool, pick eleven on wide
-        // viewports (rendered twice for seamless scroll, hover-paused), or
-        // three on narrow viewports (static fallback).
+        // Faerieland ticker: shuffle the template pool, pick eleven, render
+        // them into a flex track doubled for seamless scroll, hover-paused.
+        // Touch devices get sticky-hover (tap pauses, tap elsewhere resumes);
+        // prefers-reduced-motion users get the same layout without the scroll.
         (function setupFaerielandTicker() {
             const facts = document.querySelector('.foyer .facts');
             const tpl = document.getElementById('faerieland-pool');
@@ -340,21 +341,13 @@
 
             while (facts.firstChild) facts.removeChild(facts.firstChild);
 
-            const wide = window.innerWidth > 700;
-            const visible = wide ? Math.min(11, items.length) : Math.min(3, items.length);
-            const chosen = items.slice(0, visible);
-
-            if (wide) {
-                facts.classList.add('carousel');
-                const track = document.createElement('div');
-                track.className = 'facts-track';
-                // Render the chosen items twice so the scroll loops seamlessly.
-                chosen.forEach(node => track.appendChild(node.cloneNode(true)));
-                chosen.forEach(node => track.appendChild(node.cloneNode(true)));
-                facts.appendChild(track);
-            } else {
-                chosen.forEach(node => facts.appendChild(node.cloneNode(true)));
-            }
+            const chosen = items.slice(0, Math.min(11, items.length));
+            facts.classList.add('carousel');
+            const track = document.createElement('div');
+            track.className = 'facts-track';
+            chosen.forEach(node => track.appendChild(node.cloneNode(true)));
+            chosen.forEach(node => track.appendChild(node.cloneNode(true)));
+            facts.appendChild(track);
         })();
     </script>
 

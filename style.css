@@ -1334,6 +1334,11 @@ body.foyer .facts.carousel:hover .facts-track {
 body.foyer .facts.carousel .fact {
     flex: 0 0 340px;
 }
+@media (max-width: 600px) {
+    body.foyer .facts.carousel .fact {
+        flex: 0 0 280px;
+    }
+}
 @keyframes faerieland-scroll {
     from { transform: translateX(0); }
     to   { transform: translateX(-50%); }
