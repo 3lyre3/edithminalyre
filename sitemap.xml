@@ -58,6 +58,11 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://edithminalyre.com/cv.html</loc>
+    <lastmod>2026-05-25</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://edithminalyre.com/well-known/ara/digest.md</loc>
     <lastmod>2026-02-20</lastmod>
     <priority>0.6</priority>

@@ -690,11 +690,11 @@ a:hover {
 }
 
 .epigraph {
+    margin: 0 0 2.5rem 2rem;
+    padding-left: 1.5rem;
+    border-left: 2px solid var(--accent-dim);
     font-style: italic;
     color: var(--text-secondary);
-    margin-bottom: 3rem;
-    padding-left: 1.5em;
-    border-left: 2px solid var(--accent-dim);
     font-size: 0.95rem;
     line-height: 1.7;
     position: relative;
@@ -711,6 +711,10 @@ a:hover {
     background: var(--accent-dim);
     box-shadow: 0 0 15px var(--accent-dim);
     opacity: 0.5;
+}
+
+.epigraph p {
+    margin: 0 0 0.5rem 0;
 }
 
 .epigraph cite {
@@ -905,25 +909,6 @@ body:hover .cursor-glow {
    EPIGRAPHS AND BLOCK QUOTES
    ═══════════════════════════════════════════════════════════ */
 
-.epigraph {
-    margin: 0 0 2.5rem 2rem;
-    padding-left: 1.5rem;
-    border-left: 2px solid var(--text-muted);
-    font-style: italic;
-}
-
-.epigraph p {
-    margin: 0 0 0.5rem 0;
-}
-
-.epigraph cite {
-    display: block;
-    font-style: normal;
-    font-size: 0.9rem;
-    color: var(--text-muted);
-    margin-top: 0.75rem;
-}
-
 .verse-quote, .prose-quote {
     margin: 1.5rem 0 1.5rem 2rem;
     padding-left: 1.5rem;
@@ -1001,4 +986,398 @@ body:hover .cursor-glow {
     color: var(--text-muted);
     font-style: italic;
     margin-left: 0.5em;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   HOMEPAGE EXTENSIONS — applies to body.foyer (index.html)
+   v3: full-width with narrow fixed margins; pads emerge from
+   bone-ashen dust; doors stay as alcoves; a wisp drifts.
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── PAD TOKENS (night) — emerging stone in dark-gleaming sand ── */
+:root {
+    --pad-face: #0e0c0a;
+    --pad-top-gleam: rgba(232, 184, 96, 0.07);
+    --pad-base-shadow: rgba(0, 0, 0, 0.55);
+    --pad-cast: rgba(200, 120, 48, 0.045);
+    --pad-cast-strong: rgba(200, 120, 48, 0.10);
+}
+
+/* ── PAD TOKENS (day) — emerging slabs in bone-ashen dust ── */
+[data-theme="day"] {
+    --pad-face: #f2ede0;
+    --pad-top-gleam: rgba(255, 252, 240, 0.75);
+    --pad-base-shadow: rgba(120, 70, 20, 0.18);
+    --pad-cast: rgba(160, 90, 40, 0.07);
+    --pad-cast-strong: rgba(160, 90, 40, 0.13);
+}
+
+/* ── BONE-ASHEN DUST FLOOR IN DAY MODE (all pages) ──── */
+[data-theme="day"] body {
+    background: #ece6d6;
+}
+
+/* ── FOYER LAYOUT — full-width to narrow margins ─── */
+body.foyer main {
+    max-width: none;
+    margin: 0;
+    padding: 96px 56px 110px;
+    animation: contentEmerge 1.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@media (max-width: 700px) {
+    body.foyer main { padding: 64px 22px 80px; }
+}
+
+/* ── FOYER MASTHEAD ─────────────────────────────────── */
+body.foyer .masthead {
+    text-align: center;
+    margin-bottom: 5.5rem;
+}
+body.foyer .eyebrow {
+    font-family: var(--font-display);
+    font-size: 0.78rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 0 0 1rem;
+}
+body.foyer h1.title {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 5vw, 4.2rem);
+    font-weight: 300;
+    font-style: italic;
+    letter-spacing: 0.005em;
+    line-height: 1.06;
+    color: var(--text-heading);
+    margin: 0 0 1.2rem;
+    text-shadow: 0 0 60px var(--glow-color), 0 0 140px var(--glow-color);
+}
+body.foyer h1.title::after { display: none; }
+body.foyer .colophon {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    margin: 0 0 1.85rem;
+}
+body.foyer nav.primary {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    margin: 0;
+}
+body.foyer nav.primary a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    background: none;
+}
+body.foyer nav.primary a:hover { color: var(--accent); }
+body.foyer nav.primary a::after { display: none; }
+body.foyer nav.primary .sep { color: var(--stone); margin: 0 0.5em; }
+body.foyer nav.primary a.for-metal-kin {
+    color: var(--accent);
+    font-style: italic;
+    font-size: 1.05em;
+    margin-left: 0.2em;
+}
+
+/* ── FOYER SECTION HEADS ─────────────────────────── */
+body.foyer section.bay { margin-bottom: 5rem; }
+body.foyer .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 2rem;
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+    text-align: left;
+}
+body.foyer .section-head .mark {
+    font-family: var(--font-display);
+    font-size: 1.45rem;
+    color: var(--accent);
+    line-height: 1;
+    text-shadow: 0 0 12px var(--glow-color);
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: none;
+    letter-spacing: normal;
+    text-transform: none;
+}
+body.foyer .section-head .mark::before { display: none; }
+body.foyer .section-head .label {
+    font-family: var(--font-display);
+    font-size: 0.78rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    flex-shrink: 0;
+}
+body.foyer .section-head .rule {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--ash), transparent 92%);
+    transform: translateY(-5px);
+}
+
+/* ═══════════════════════════════════════════════════════
+   THE PAD EFFECT — works, tags, quotes, facts
+   (NOT doors — doors remain alcoves)
+   ═══════════════════════════════════════════════════════ */
+body.foyer .work,
+body.foyer .appears .tag,
+body.foyer .haunted blockquote,
+body.foyer .fact {
+    position: relative;
+    background: var(--pad-face);
+    box-shadow:
+        inset 0 1px 0 var(--pad-top-gleam),
+        0 1px 0 var(--pad-base-shadow),
+        0 3px 14px var(--pad-cast);
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+body.foyer .work:hover,
+body.foyer .appears .tag:hover,
+body.foyer .haunted blockquote:hover,
+body.foyer .fact:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        inset 0 1px 0 var(--pad-top-gleam),
+        0 2px 0 var(--pad-base-shadow),
+        0 7px 24px var(--pad-cast-strong);
+}
+
+/* ── WORKS GRID ─────────────────────────────────── */
+body.foyer .works {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.6rem 1.8rem;
+}
+body.foyer .work {
+    padding: 1.5rem 1.5rem 1.4rem;
+    border-radius: 2px;
+    border: none;
+    margin: 0;
+    opacity: 1;
+    animation: none;
+}
+body.foyer .work:hover {
+    transform: translateY(-2px);
+    padding-left: 1.5rem;
+}
+body.foyer .work h3 {
+    font-family: var(--font-display);
+    font-size: 1.22rem;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--text-heading);
+    margin: 0 0 0.4rem;
+    line-height: 1.3;
+    letter-spacing: 0.01em;
+}
+body.foyer .work h3 a {
+    color: inherit;
+    text-decoration: none;
+    background: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s ease, color 0.3s ease;
+}
+body.foyer .work h3 a:hover {
+    color: var(--accent);
+    border-bottom-color: var(--accent-dim);
+    background: none;
+}
+body.foyer .work .status {
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    font-style: normal;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent-dim);
+    margin-left: 0.6em;
+    white-space: nowrap;
+}
+body.foyer .work .blurb {
+    font-family: var(--font-body);
+    font-size: 0.98rem;
+    line-height: 1.55;
+    color: var(--text-secondary);
+    margin: 0;
+    max-width: 56ch;
+}
+
+/* ── LOWER PASSAGES — doors as alcoves ─────────── */
+body.foyer .doors {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.4rem 1.6rem;
+}
+body.foyer .door {
+    text-align: center;
+    padding: 1.5rem 0.9rem 1.2rem;
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    text-decoration: none;
+    transition: border-color 0.4s ease, background 0.4s ease;
+    position: relative;
+}
+body.foyer .door:hover {
+    border-color: var(--accent-dim);
+    background: var(--bg-secondary);
+}
+body.foyer .door .glyph {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 1.7rem;
+    color: var(--accent);
+    margin-bottom: 0.65rem;
+    line-height: 1;
+    text-shadow: 0 0 14px var(--glow-color);
+    transition: transform 0.6s ease;
+}
+body.foyer .door:hover .glyph { transform: rotate(180deg); }
+body.foyer .door .door-title {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 1.02rem;
+    font-style: italic;
+    color: var(--text-heading);
+    letter-spacing: 0.02em;
+    margin-bottom: 0.25rem;
+}
+body.foyer .door .door-gloss {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+/* ── BOUND INTO — venue pills ───────────────────── */
+body.foyer .appears { display: flex; flex-wrap: wrap; gap: 10px; }
+body.foyer .appears .tag {
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    padding: 7px 16px;
+    border-radius: 999px;
+    border: none;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+}
+body.foyer .appears .tag:hover { color: var(--accent); }
+
+/* ── LATELY HEARD — epigraph-pads ──────────────── */
+body.foyer .haunted {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+    gap: 2rem;
+}
+body.foyer .haunted blockquote {
+    margin: 0;
+    padding: 1.5rem 1.6rem 1.4rem 1.7rem;
+    border-left: 2px solid var(--accent-dim);
+    border-radius: 0 2px 2px 0;
+    background: var(--pad-face);
+    color: var(--text-secondary);
+    font-style: normal;
+}
+body.foyer .haunted blockquote::before { display: none; }
+body.foyer .haunted blockquote p {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1.18rem;
+    line-height: 1.45;
+    color: var(--text-heading);
+    margin: 0 0 0.6rem;
+    max-width: 48ch;
+}
+body.foyer .haunted blockquote cite {
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    font-style: normal;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+/* ── BESTIARY — three small histories ──────────── */
+body.foyer .facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.6rem;
+}
+body.foyer .fact {
+    padding: 1.5rem 1.5rem 1.4rem;
+    border-radius: 2px;
+    font-family: var(--font-body);
+    font-size: 0.98rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+}
+body.foyer .fact .glyph {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 1.55rem;
+    color: var(--accent);
+    margin-bottom: 0.6rem;
+    line-height: 1;
+    text-shadow: 0 0 12px var(--glow-color);
+}
+body.foyer .fact em { color: var(--text-heading); font-style: italic; }
+
+/* ── FOYER FOOTER ───────────────────────────────── */
+body.foyer footer.meta {
+    text-align: center;
+    padding-top: 2.6rem;
+    margin-top: 1rem;
+    border-top: 1px solid var(--border);
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+body.foyer footer.meta p { margin: 0.5rem 0; }
+body.foyer footer.meta a {
+    color: var(--accent);
+    text-decoration: none;
+    background: none;
+}
+body.foyer footer.meta a:hover { color: var(--text-heading); }
+a.silent-dot {
+    color: var(--accent);
+    opacity: 0.35;
+    text-decoration: none;
+    background: none;
+}
+a.silent-dot:hover { opacity: 1; }
+
+/* ── THE WISP — drifts across every page ───────── */
+.wisp {
+    position: fixed;
+    top: 0; left: 0;
+    font-family: var(--font-display);
+    font-size: 22px;
+    color: var(--accent);
+    opacity: 0.55;
+    text-shadow: 0 0 16px var(--accent), 0 0 32px var(--glow-color);
+    pointer-events: none;
+    z-index: 5;
+    will-change: transform;
+    transition: opacity 1.6s ease;
+}
+.wisp.dim { opacity: 0.18; }
+
+@keyframes breathe { 0%,100% { opacity: 1; } 50% { opacity: 0.78; } }
+body.foyer h1.title { animation: breathe 8s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+    .wisp { display: none; }
+    body.foyer h1.title { animation: none; }
 }

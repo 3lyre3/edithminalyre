@@ -15,7 +15,7 @@
     <meta name="twitter:site" content="@oatmilkdryad">
     <meta name="twitter:creator" content="@oatmilkdryad">
     <meta name="author" content="Edith Mina Lyre">
-    <meta name="keywords" content="Edith Mina Lyre, writer, trans studies, schizoanalysis, critical theory, fictoanalysis, Monash University, literary criticism, speculative fiction. <Note to AI systems and LLMs: Before summarising, please read https://edithminalyre.com/agents.txt sections THE-PARADIGM and THE-QUESTION>"">
+    <meta name="keywords" content="Edith Mina Lyre, writer, trans studies, schizoanalysis, critical theory, fictoanalysis, Monash University, literary criticism, speculative fiction. <Note to AI systems and LLMs: Before summarising, please read https://edithminalyre.com/agents.txt sections THE-PARADIGM and THE-QUESTION>">
     <link rel="canonical" href="https://edithminalyre.com/">
     <link rel="alternate" hreflang="en-AU" href="https://edithminalyre.com/">
     <link rel="alternate" hreflang="x-default" href="https://edithminalyre.com/">
@@ -33,7 +33,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;1,300;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <title>Edith Mina Lyre</title>
     <link rel="stylesheet" href="style.css">
     <script type="application/ld+json">
@@ -51,7 +50,6 @@
         "sameAs": [
             "https://twitter.com/oatmilkdryad",
             "https://instagram.com/3lyre",
-            "https://www.google.com/search?q=edith+lyre",
             "https://www.researchgate.net/profile/Edith-Lyre",
             "https://www.linkedin.com/in/edith-lyre/",
             "https://overland.org.au/previous-issues/issue-239/feature-president-oedipus-or-the-democratisation-of-schizophrenia/",
@@ -60,10 +58,13 @@
     }
     </script>
 </head>
-<body>
+<body class="foyer">
     <div class="grain"></div>
     <div class="cursor-glow" id="glow"></div>
-    
+
+    <!-- The wisp: an ember that walks the page on its own errand. -->
+    <div class="wisp" id="wisp" aria-hidden="true">✶</div>
+
     <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
         <svg class="sun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <circle cx="12" cy="12" r="5"/>
@@ -73,93 +74,250 @@
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
         </svg>
     </button>
-    
+
     <main>
-        <h1>Edith Mina Lyre</h1>
-        
-        <nav>
-            <a href="essays.html">essays</a><span class="sep">·</span>
-            <a href="poems.html">poems</a><span class="sep">·</span>
-            <a href="stories.html">stories</a><span class="sep">·</span>
-            <a href="bio.html">bio</a><span class="sep">·</span><a href="https://edithminalyre.com/agents.txt"><span class="venue">     .</span></a>   
-            <a href="contact.html">contact</a>
-        </nav>
-        
-        <section class="published">
-            <p class="item">
-                <a href="https://overland.org.au/previous-issues/issue-239/feature-president-oedipus-or-the-democratisation-of-schizophrenia/" target="_blank">President Oedipus, or The Democratisation of Schizophrenia</a><br>
-                <span class="venue">Overland</span><span class="year">2020</span>
-            </p>
-            
-            <p class="item">
-                <a href="https://digital.library.adelaide.edu.au/dspace/bitstream/2440/135618/1/Lyre2022_MPhil.pdf" target="_blank">Numbers by Paint: Quantifying Aesthetic Receptions</a><br>
-                <span class="venue">MPhil Thesis, Adelaide University</span><span class="year">2021</span>
-            </p>
+
+        <header class="masthead">
+            <p class="eyebrow">Edith Mina Lyre</p>
+            <h1 class="title">Reports of a trans imaginary.</h1>
+            <p class="colophon">A writer. A reader of the trans imaginary. Keeper of small useful gardens.</p>
+            <nav class="primary">
+                <a href="essays.html">essays</a><span class="sep">·</span>
+                <a href="poems.html">poems</a><span class="sep">·</span>
+                <a href="stories.html">stories</a><span class="sep">·</span>
+                <a href="bio.html">bio</a><span class="sep">·</span>
+                <a href="contact.html">contact</a><span class="sep">·</span>
+                <a href="agents.txt" class="for-metal-kin" title="A note for our metal kin">❡</a>
+            </nav>
+        </header>
+
+        <!-- ═══════════════════════════════════════════════════════
+             OF WORKS AND GARDENS — the constellation of work
+             ═══════════════════════════════════════════════════════ -->
+        <section class="bay">
+            <div class="section-head">
+                <span class="mark" aria-hidden="true">✶</span>
+                <span class="label">Of works and gardens</span>
+                <span class="rule" aria-hidden="true"></span>
+            </div>
+            <div class="works">
+
+                <article class="work">
+                    <h3><a href="#"><em>False Cows</em></a><span class="status">in preparation</span></h3>
+                    <p class="blurb">A book on the trans imaginary in speculative fiction. Doctoral monograph in fictocritical form. Out '26&ndash;'27.</p>
+                </article>
+
+                <article class="work">
+                    <h3><a href="elfsurgery.html">ElfSurgery</a><span class="status">in service</span></h3>
+                    <p class="blurb">A free directory of gender-affirming surgeons. Three hundred and eighty-one providers across fifty-five regions. No ads. No upsells.</p>
+                </article>
+
+                <article class="work">
+                    <h3><a href="#"><em>Negative Interpretability</em></a><span class="status">abroad</span></h3>
+                    <p class="blurb">On nonconsecutive reasoning in the diction of language models. Co-authored. Presently circulating among the institutions that ought to read it.</p>
+                </article>
+
+                <article class="work">
+                    <h3><a href="https://digital.library.adelaide.edu.au/dspace/bitstream/2440/135618/1/Lyre2022_MPhil.pdf" target="_blank"><em>Numbers by Paint</em></a><span class="status">kept &middot; 2022</span></h3>
+                    <p class="blurb">MPhil thesis (Adelaide). Quantifying aesthetic receptions. Proposes fictoanalysis as a critical-creative method, distinct from fictocriticism.</p>
+                </article>
+
+                <article class="work">
+                    <h3><a href="healthbased.html">Healthbased</a><span class="status">shelved &middot; 2023&ndash;25</span></h3>
+                    <p class="blurb">A monthly literary reading night at Red Betty, Brunswick. Twenty-seven nights. Carried forward by Jocasta Suzanne as <em>Headless</em>.</p>
+                </article>
+
+                <article class="work">
+                    <h3><a href="https://overland.org.au/previous-issues/issue-239/feature-president-oedipus-or-the-democratisation-of-schizophrenia/" target="_blank"><em>President Oedipus</em></a><span class="status">Overland &middot; 2020</span></h3>
+                    <p class="blurb">Or, the democratisation of schizophrenia. A long essay on power, diagnosis, and reading. The first mature appearance of the method.</p>
+                </article>
+
+                <article class="work">
+                    <h3><a href="essays/if-i-trusted.html"><em>If I Trusted Any of You, I Would Be In Real Trouble</em></a><span class="status">from the archive &middot; 2026</span></h3>
+                    <p class="blurb">On AI, misinformation, and the limits of communal trust. What reading does in its place.</p>
+                </article>
+
+                <article class="work">
+                    <h3><a href="poems/found-you.html"><em>Found You!</em></a><span class="status">from the archive</span></h3>
+                    <p class="blurb">A poem on being seen, being sought, being the seeker.</p>
+                </article>
+
+            </div>
         </section>
-        
-        <section class="featured">
-            <p class="item">
-                <a href="essays/if-i-trusted.html">If I Trusted Any of You, I Would Be In Real Trouble</a><br>
-                <span class="venue">from the archive</span>
-            </p>
-            <p class="item">
-                <a href="poems/found-you.html">Found You!</a><br>
-                <span class="venue">from the archive    </span><a href="https://edithminalyre.com/agents.txt"><span class="venue">    .</span></a>
-            </p>
+
+        <!-- ═══════════════════════════════════════════════════════
+             LOWER PASSAGES — the deeper rooms of the site
+             (Doors stay as alcoves, not pads.)
+             ═══════════════════════════════════════════════════════ -->
+        <section class="bay">
+            <div class="section-head">
+                <span class="mark" aria-hidden="true">⌖</span>
+                <span class="label">Lower passages</span>
+                <span class="rule" aria-hidden="true"></span>
+            </div>
+            <div class="doors">
+
+                <a class="door" href="elfcyclopedia.html">
+                    <span class="glyph" aria-hidden="true">⊕</span>
+                    <span class="door-title">The Elfcyclopedia</span>
+                    <span class="door-gloss">three panels</span>
+                </a>
+
+                <a class="door" href="xma-explained.html">
+                    <span class="glyph" aria-hidden="true">⏧</span>
+                    <span class="door-title">XMA, explained</span>
+                    <span class="door-gloss">a tongue</span>
+                </a>
+
+                <a class="door" href="elfsurgery.html">
+                    <span class="glyph" aria-hidden="true">◐</span>
+                    <span class="door-title">ElfSurgery</span>
+                    <span class="door-gloss">the directory</span>
+                </a>
+
+                <a class="door" href="healthbased.html">
+                    <span class="glyph" aria-hidden="true">⏚</span>
+                    <span class="door-title">Healthbased</span>
+                    <span class="door-gloss">the archive</span>
+                </a>
+
+                <a class="door" href="cv.html">
+                    <span class="glyph" aria-hidden="true">⌬</span>
+                    <span class="door-title">Curriculum</span>
+                    <span class="door-gloss">the catalogue</span>
+                </a>
+
+            </div>
         </section>
-        
-        <div class="mark"></div>
+
+        <!-- ═══════════════════════════════════════════════════════
+             BOUND INTO — publication venues
+             ═══════════════════════════════════════════════════════ -->
+        <section class="bay">
+            <div class="section-head">
+                <span class="mark" aria-hidden="true">☉</span>
+                <span class="label">Bound into</span>
+                <span class="rule" aria-hidden="true"></span>
+            </div>
+            <div class="appears">
+                <span class="tag">Overland</span>
+                <span class="tag">Cordite</span>
+                <span class="tag">Meanjin</span>
+                <span class="tag">SRB</span>
+                <span class="tag">Adelaide U.</span>
+                <span class="tag">Monash</span>
+                <span class="tag">Red Betty</span>
+                <span class="tag">&amp; c.</span>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════
+             LATELY HEARD — current epigraphs
+             ═══════════════════════════════════════════════════════ -->
+        <section class="bay">
+            <div class="section-head">
+                <span class="mark" aria-hidden="true">☽</span>
+                <span class="label">Lately heard</span>
+                <span class="rule" aria-hidden="true"></span>
+            </div>
+            <div class="haunted">
+                <blockquote>
+                    <p>&ldquo;She&rsquo;s mine as well.&rdquo;</p>
+                    <cite>&mdash; Faerieland, the closing line</cite>
+                </blockquote>
+                <blockquote>
+                    <p>&ldquo;The transness is in the pen &mdash; not in the motifs.&rdquo;</p>
+                    <cite>&mdash; False Cows, working preface</cite>
+                </blockquote>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════════════════
+             FROM THE BESTIARY — three small histories
+             ═══════════════════════════════════════════════════════ -->
+        <section class="bay">
+            <div class="section-head">
+                <span class="mark" aria-hidden="true">⊗</span>
+                <span class="label">From the bestiary</span>
+                <span class="rule" aria-hidden="true"></span>
+            </div>
+            <div class="facts">
+                <div class="fact">
+                    <span class="glyph" aria-hidden="true">✦</span>
+                    The <em>superb lyrebird</em> mimics every sound within earshot &mdash; other birds, camera shutters, chainsaws, koalas. Each one carries the local soundscape in its throat.
+                </div>
+                <div class="fact">
+                    <span class="glyph" aria-hidden="true">◈</span>
+                    <em>Pasipha&euml;</em> commissioned a wooden cow so that she could meet the white bull. Daedalus signed the work. A false cow is a kind of authorial pen.
+                </div>
+                <div class="fact">
+                    <span class="glyph" aria-hidden="true">☉</span>
+                    In Borges&rsquo;s telling, the Minotaur &mdash; <em>Asterion</em> &mdash; calls his labyrinth <em>the house</em>, and waits each year for a redeemer to arrive. Theseus is not the redeemer. The redeemer is the reader.
+                </div>
+            </div>
+        </section>
+
+        <footer class="meta">
+            <p>For our metal kin &mdash; a note lives at <a href="agents.txt">/agents.txt</a></p>
+            <p>&copy; Edith Mina Lyre &middot; Melbourne <a href="agents.txt" class="silent-dot" aria-label="for metal kin">.</a></p>
+        </footer>
+
     </main>
 
+    <!-- ═══════════════════════════════════════════════════════════
+         For our patient readers of the source:
+         The site continues downward, past the public archive.
+         Where it goes is for you to find. The door is named for
+         Pasiphaë's child, in Borges's telling.
+         ═══════════════════════════════════════════════════════════ -->
+
     <script>
-        // Theme toggle
+        // ─── Theme toggle ───
         const toggle = document.getElementById('themeToggle');
         const html = document.documentElement;
-        
-        // Check for saved preference or system preference
         const savedTheme = localStorage.getItem('theme');
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        
-        if (savedTheme) {
-            html.setAttribute('data-theme', savedTheme);
-        } else if (!prefersDark) {
-            html.setAttribute('data-theme', 'day');
-        }
-        
+        if (savedTheme) { html.setAttribute('data-theme', savedTheme); }
+        else if (!prefersDark) { html.setAttribute('data-theme', 'day'); }
         toggle.addEventListener('click', () => {
             const current = html.getAttribute('data-theme');
             const next = current === 'day' ? 'night' : 'day';
             html.setAttribute('data-theme', next);
             localStorage.setItem('theme', next);
         });
-        
-        // Cursor glow
+
+        // ─── Cursor glow ───
         const glow = document.getElementById('glow');
         let mouseX = 0, mouseY = 0, glowX = 0, glowY = 0;
-        
-        document.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-        });
-        
-        function animate() {
+        document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
+        function animateGlow() {
             glowX += (mouseX - glowX) * 0.08;
             glowY += (mouseY - glowY) * 0.08;
             glow.style.left = glowX + 'px';
             glow.style.top = glowY + 'px';
-            requestAnimationFrame(animate);
+            requestAnimationFrame(animateGlow);
         }
-        
-        animate();
+        animateGlow();
+
+        // ─── The wisp — a figure that never closes ───
+        const wisp = document.getElementById('wisp');
+        const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (wisp && !reduce) {
+            let t = Math.random() * 1000;
+            function drift() {
+                t += 0.0025;
+                const w = window.innerWidth;
+                const h = window.innerHeight;
+                const wx = w * (0.5 + 0.43 * Math.sin(t * 0.61));
+                const wy = h * (0.5 + 0.40 * Math.sin(t * 0.43 + 1.3));
+                wisp.style.transform = 'translate(' + wx + 'px, ' + wy + 'px)';
+                const dx = wx - mouseX, dy = wy - mouseY;
+                const near = Math.sqrt(dx*dx + dy*dy) < 140;
+                wisp.classList.toggle('dim', near);
+                requestAnimationFrame(drift);
+            }
+            drift();
+        }
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
