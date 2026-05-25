@@ -102,6 +102,17 @@ html {
     background: var(--bg-primary);
 }
 
+/* ── SITE CURSOR ─────────────────────────────────────
+   A mint-iron arrow with a crossbar. Hotspot at the
+   tip in the lower-left. Falls back to system cursor
+   if the image fails. Text inputs keep the I-beam. */
+*, *::before, *::after {
+    cursor: url('cursor-64.png') 8 56, auto;
+}
+input, textarea, [contenteditable] {
+    cursor: text;
+}
+
 body {
     font-family: var(--font-body);
     font-size: 19px;
