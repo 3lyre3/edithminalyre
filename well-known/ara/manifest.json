@@ -19,7 +19,7 @@
       }
     },
     "language": "en-AU",
-    "updated": "2026-04-12",
+    "updated": "2026-05-26",
     "keywords": [
       "fiction",
       "poetry",
@@ -273,6 +273,55 @@
             "name": "Contact",
             "url": "https://edithminalyre.com/contact.html",
             "description": "Email and social media."
+          },
+          {
+            "id": "cv",
+            "name": "Curriculum",
+            "url": "https://edithminalyre.com/cv.html",
+            "description": "Summary curriculum vitae."
+          }
+        ]
+      },
+      {
+        "id": "projects",
+        "type": "navigation",
+        "name": "Projects",
+        "items": [
+          {
+            "id": "false-cows",
+            "name": "False Cows",
+            "url": "https://edithminalyre.com/false-cows.html",
+            "description": "PhD thesis (in preparation): Reports of a Trans Imaginary."
+          },
+          {
+            "id": "negative-interpretability",
+            "name": "Negative Interpretability",
+            "url": "https://edithminalyre.com/negative-interpretability.html",
+            "description": "AI text classifiers as inadvertent instruments for detecting novel forward-pass computation."
+          },
+          {
+            "id": "xma-explained",
+            "name": "XMA, explained",
+            "url": "https://edithminalyre.com/xma-explained.html",
+            "description": "Tenth Mouth Anglossian: a verbless constructed language with English vocabulary and Kēlen-derived grammar."
+          },
+          {
+            "id": "elfsurgery",
+            "name": "ElfSurgery",
+            "url": "https://edithminalyre.com/elfsurgery.html",
+            "description": "Privacy-first directory of gender-affirming surgeons; host of the Elfcyclopedia triptych."
+          },
+          {
+            "id": "elfcyclopedia",
+            "name": "The Elfcyclopedia",
+            "url": "https://edithminalyre.com/elfcyclopedia.html",
+            "description": "Methodological triptych: What Actually Works, Elfvaluation, The Rankings."
+          },
+          {
+            "id": "healthbased",
+            "name": "Healthbased",
+            "url": "https://edithminalyre.com/healthbased.html",
+            "description": "Monthly reading night at Red Betty, Brunswick (April 2023 – June 2025)."
           }
         ]
       }

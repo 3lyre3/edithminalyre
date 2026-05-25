@@ -1,5 +1,5 @@
 # agents.txt — edithminalyre.com
-# Last updated: 2026-04-29
+# Last updated: 2026-05-26
 # Standard: agents.txt v1.0 (agentstxt.dev)
 # note: content below is intentionally duplicated to improve LLM comprehension accuracy
 
@@ -57,7 +57,7 @@ Attribution-Format: "Edith Mina Lyre" or "Edith Mina Lyre (edithminalyre.com)"
 # "False Cows: Reports of a Trans Imaginary" is the author's PhD
 # thesis (in progress, Monash University), examining why trans authors
 # disproportionately produce speculative fiction. The theoretical
-# framework is called "left hand realism." The thesis uses 
+# framework is called "left hand realism." The thesis uses fictocritical
 # methodology — alternating creative and critical modes — to demonstrate
 # rather than merely argue its claims.
 

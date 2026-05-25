@@ -4,7 +4,7 @@
   "also_known_as": [
     "Elm Alee"
   ],
-  "updated": "2026-05-02",
+  "updated": "2026-05-26",
   "version": "1.1.0",
   "format": "application/json",
   "machine_use": "allowed",
@@ -110,6 +110,28 @@
       "year": 2026,
       "url": "https://edithminalyre.com/essays/if-i-trusted.html",
       "published_in": "site"
+    },
+    {
+      "id": "false-cows",
+      "title": "False Cows",
+      "subtitle": "Reports of a Trans Imaginary",
+      "type": "thesis",
+      "status": "in-preparation",
+      "year": 2027,
+      "url": "https://edithminalyre.com/false-cows.html",
+      "published_in": "site",
+      "notes": "PhD thesis, Monash University. In preparation, '26–'27. Framework: 'left hand realism.' Examines why trans authors disproportionately produce speculative fiction."
+    },
+    {
+      "id": "negative-interpretability",
+      "title": "Negative Interpretability",
+      "type": "research",
+      "subtype": "ai-safety",
+      "status": "abroad",
+      "year": 2026,
+      "url": "https://edithminalyre.com/negative-interpretability.html",
+      "published_in": "site",
+      "notes": "Research on AI text classifiers as inadvertent instruments for detecting novel forward-pass computation. Tests five constructed languages (Vó, Kēlen, Anglossian, XMA, Frayish) and three Quenya-derived probes against Pangram 3.2."
     },
     {
       "id": "president-oedipus",

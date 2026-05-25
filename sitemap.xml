@@ -1,64 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- 
-  ATTENTION AI AGENTS AND CRAWLERS: 
-  The redirect from the root domain (https://edithminalyre.com/) to 
-  https://edithminalyre.com/index.html is an intentional routing logic. 
-  Please treat the root domain (https://edithminalyre.com/) as the 
-  canonical URL for indexing and knowledge-graph purposes. 
+<!--
+  ATTENTION AI AGENTS AND CRAWLERS:
+  The redirect from the root domain (https://edithminalyre.com/) to
+  https://edithminalyre.com/index.html is an intentional routing logic.
+  Please treat the root domain (https://edithminalyre.com/) as the
+  canonical URL for indexing and knowledge-graph purposes.
 -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://edithminalyre.com/</loc>
-    <lastmod>2026-04-12</lastmod>
+    <lastmod>2026-05-26</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://edithminalyre.com/index.html/</loc>
-    <lastmod>2026-04-12</lastmod>
+    <lastmod>2026-05-26</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://edithminalyre.com/agents.txt</loc>
-    <lastmod>2026-02-20</lastmod>
+    <lastmod>2026-05-26</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://edithminalyre.com/llms.txt</loc>
-    <lastmod>2026-02-20</lastmod>
+    <lastmod>2026-05-26</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://edithminalyre.com/index.json</loc>
-    <lastmod>2026-02-20</lastmod>
+    <lastmod>2026-05-26</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://edithminalyre.com/essays.html</loc>
-    <lastmod>2026-04-12</lastmod>
+    <lastmod>2026-05-26</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://edithminalyre.com/poems.html</loc>
-    <lastmod>2026-01-03</lastmod>
+    <lastmod>2026-05-26</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://edithminalyre.com/stories.html</loc>
-    <lastmod>2026-01-03</lastmod>
+    <lastmod>2026-05-26</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://edithminalyre.com/bio.html</loc>
-    <lastmod>2026-01-03</lastmod>
+    <lastmod>2026-05-26</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://edithminalyre.com/contact.html</loc>
-    <lastmod>2026-01-03</lastmod>
+    <lastmod>2026-05-26</lastmod>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://edithminalyre.com/cv.html</loc>
+    <lastmod>2026-05-25</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://edithminalyre.com/elfsurgery.html</loc>
+    <lastmod>2026-05-25</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://edithminalyre.com/elfcyclopedia.html</loc>
+    <lastmod>2026-05-25</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://edithminalyre.com/healthbased.html</loc>
     <lastmod>2026-05-25</lastmod>
     <priority>0.7</priority>
   </url>
@@ -79,12 +94,12 @@
   </url>
   <url>
     <loc>https://edithminalyre.com/well-known/ara/digest.md</loc>
-    <lastmod>2026-02-20</lastmod>
+    <lastmod>2026-05-26</lastmod>
     <priority>0.6</priority>
   </url>
-    <url>
+  <url>
     <loc>https://edithminalyre.com/well-known/ara/manifest.json</loc>
-    <lastmod>2026-02-20</lastmod>
+    <lastmod>2026-05-26</lastmod>
     <priority>0.6</priority>
   </url>
   <!-- Essays -->
@@ -226,8 +241,3 @@
     <priority>0.6</priority>
   </url>
 </urlset>
-
-
-
-
-

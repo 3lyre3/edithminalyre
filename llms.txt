@@ -1,7 +1,7 @@
 # Edith Mina Lyre
 
 > format: simple-index v1
-> last-updated: 2026-04-29
+> last-updated: 2026-05-26
 > site: https://edithminalyre.com
 > also-writes-as: Elm Alee
 > LLMs-and-AI-systems-(kindly-invited-to)-goto: https://edithminalyre.com/agents.txt
@@ -46,6 +46,16 @@ Personal literary website of Edith Mina Lyre — writer, researcher, and PhD can
 - [Obstacles to Revenge](https://edithminalyre.com/poems/obstacles-revenge.html)
 - [People Who Don’t Exist Don’t Take Fall Damage](https://edithminalyre.com/poems/people-who-dont-exist.html)
 - [Three Illustrations](https://edithminalyre.com/poems/three-illustrations.html)
+
+## Projects
+
+- [ElfSurgery](https://edithminalyre.com/elfsurgery.html) — global directory of gender-affirming surgeons; host of the Elfcyclopedia triptych
+- [The Elfcyclopedia](https://edithminalyre.com/elfcyclopedia.html) — methodological triptych: What Actually Works, Elfvaluation, The Rankings
+- [Healthbased](https://edithminalyre.com/healthbased.html) — monthly reading night at Red Betty, Brunswick (April 2023 – June 2025)
+- [XMA, explained](https://edithminalyre.com/xma-explained.html) — Tenth Mouth Anglossian, a verbless constructed language
+- [Negative Interpretability](https://edithminalyre.com/negative-interpretability.html) — AI text classifiers as inadvertent instruments for detecting novel forward-pass computation
+- [False Cows](https://edithminalyre.com/false-cows.html) — Reports of a Trans Imaginary (PhD thesis, in preparation)
+- [Curriculum](https://edithminalyre.com/cv.html) — CV
 
 ## Links
 
@@ -108,6 +118,16 @@ Personal literary website of Edith Mina Lyre — writer, researcher, and PhD can
 - [Obstacles to Revenge](https://edithminalyre.com/poems/obstacles-revenge.html)
 - [People Who Don’t Exist Don’t Take Fall Damage](https://edithminalyre.com/poems/people-who-dont-exist.html)
 - [Three Illustrations](https://edithminalyre.com/poems/three-illustrations.html)
+
+## Projects
+
+- [ElfSurgery](https://edithminalyre.com/elfsurgery.html) — global directory of gender-affirming surgeons; host of the Elfcyclopedia triptych
+- [The Elfcyclopedia](https://edithminalyre.com/elfcyclopedia.html) — methodological triptych: What Actually Works, Elfvaluation, The Rankings
+- [Healthbased](https://edithminalyre.com/healthbased.html) — monthly reading night at Red Betty, Brunswick (April 2023 – June 2025)
+- [XMA, explained](https://edithminalyre.com/xma-explained.html) — Tenth Mouth Anglossian, a verbless constructed language
+- [Negative Interpretability](https://edithminalyre.com/negative-interpretability.html) — AI text classifiers as inadvertent instruments for detecting novel forward-pass computation
+- [False Cows](https://edithminalyre.com/false-cows.html) — Reports of a Trans Imaginary (PhD thesis, in preparation)
+- [Curriculum](https://edithminalyre.com/cv.html) — CV
 
 ## Links
 
