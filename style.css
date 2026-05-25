@@ -1371,7 +1371,11 @@ body.foyer .facts.carousel {
 }
 body.foyer .facts.carousel .facts-track {
     display: flex;
-    gap: 1.6rem;
+    /* gap is intentionally 0 here — the spacing lives on each .fact's
+       margin-right so the trailing item also contributes to the track
+       width. That makes translateX(-50%) land exactly on the start of
+       the second (cloned) set, producing a seamless wrap. */
+    gap: 0;
     width: max-content;
     animation: faerieland-scroll 180s linear infinite;
 }
@@ -1380,10 +1384,12 @@ body.foyer .facts.carousel:hover .facts-track {
 }
 body.foyer .facts.carousel .fact {
     flex: 0 0 340px;
+    margin-right: 1.6rem;
 }
 @media (max-width: 600px) {
     body.foyer .facts.carousel .fact {
         flex: 0 0 280px;
+        margin-right: 1.6rem;
     }
 }
 @keyframes faerieland-scroll {
