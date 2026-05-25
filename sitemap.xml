@@ -73,6 +73,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://edithminalyre.com/false-cows.html</loc>
+    <lastmod>2026-05-26</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://edithminalyre.com/well-known/ara/digest.md</loc>
     <lastmod>2026-02-20</lastmod>
     <priority>0.6</priority>

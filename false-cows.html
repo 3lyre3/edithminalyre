@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="alternate" type="text/plain" href="/llms.txt" title="LLM Context">
+    <link rel="alternate" type="text/plain" href="/agents.txt" title="Agent Instructions">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="False Cows — Reports of a Trans Imaginary.">
+    <meta property="og:title" content="False Cows &ndash; Edith Mina Lyre">
+    <meta property="og:description" content="False Cows — Reports of a Trans Imaginary.">
+    <meta property="og:type" content="book">
+    <meta property="og:image" content="https://edithminalyre.com/images/author.jpg">
+    <meta property="og:url" content="https://edithminalyre.com/false-cows.html">
+    <link rel="canonical" href="https://edithminalyre.com/false-cows.html">
+    <link rel="alternate" hreflang="en-AU" href="https://edithminalyre.com/false-cows.html">
+    <link rel="alternate" hreflang="x-default" href="https://edithminalyre.com/false-cows.html">
+    <meta name="author" content="Edith Mina Lyre">
+    <meta name="keywords" content="False Cows, Edith Mina Lyre, Reports of a Trans Imaginary, Minotaur, Pasiphaë, Dante">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="alternate" type="application/rss+xml" title="Edith Mina Lyre RSS Feed" href="/feed.xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;1,300;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+    <title>False Cows &ndash; Edith Mina Lyre</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* The page is sparser than the sub-page register: no work-header, no
+           nav, no body prose. Only the two Dante lines and the drawing. */
+        body.false-cows main {
+            max-width: 720px;
+            padding-top: 8vh;
+            padding-bottom: 8vh;
+        }
+        .fc-quote {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-size: clamp(1.1rem, 2.4vw, 1.55rem);
+            line-height: 1.45;
+            color: var(--text-heading);
+            text-align: center;
+            margin: 0;
+            letter-spacing: 0.005em;
+        }
+        .fc-quote.top    { margin-bottom: 3.2rem; }
+        .fc-quote.bottom { margin-top: 3.2rem; }
+        .fc-drawing {
+            width: 100%;
+            max-width: 480px;
+            aspect-ratio: 9 / 16;
+            margin: 0 auto;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+            background-image: url('false-cows-dark.png');
+        }
+        [data-theme="day"] .fc-drawing {
+            background-image: url('false-cows-light.png');
+        }
+        .fc-back {
+            position: fixed;
+            top: 24px;
+            left: 24px;
+            font-family: var(--font-display);
+            font-size: 0.78rem;
+            letter-spacing: 0.12em;
+            color: var(--text-muted);
+            opacity: 0.55;
+            text-decoration: none;
+            background: none;
+            transition: opacity 0.4s ease, color 0.3s ease;
+        }
+        .fc-back::before {
+            content: '\2190';
+            margin-right: 0.5em;
+            color: var(--accent-dim);
+        }
+        .fc-back:hover {
+            opacity: 1;
+            color: var(--text-primary);
+            background: none;
+        }
+    </style>
+</head>
+<body class="false-cows">
+    <div class="grain"></div>
+    <div class="cursor-glow" id="glow"></div>
+
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg class="sun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+        <svg class="moon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+    </button>
+
+    <a href="index.html" class="fc-back">Edith Mina Lyre</a>
+
+    <main>
+        <p class="fc-quote top">e quando vide noi, s&eacute; stesso morse</p>
+        <div class="fc-drawing" role="img" aria-label="A figure with long horns or ears, two eyes, and slim legs — the false cow."></div>
+        <p class="fc-quote bottom">s&igrave; come quei cui l&rsquo;ira dentro fiacca</p>
+    </main>
+
+    <script src="site.js"></script>
+</body>
+</html>
