@@ -1307,12 +1307,43 @@ body.foyer .haunted blockquote cite {
     color: var(--text-muted);
 }
 
-/* ── BESTIARY — three small histories ──────────── */
+/* ── FROM FAERIELAND — a ticker of procedurals ───────── */
+/* Default (mobile / no-JS): static grid layout */
 body.foyer .facts {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.6rem;
 }
+/* Carousel mode (JS adds .carousel on wide viewports) */
+body.foyer .facts.carousel {
+    display: block;
+    overflow: hidden;
+    position: relative;
+    mask-image: linear-gradient(90deg, transparent 0%, black 4%, black 96%, transparent 100%);
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 4%, black 96%, transparent 100%);
+}
+body.foyer .facts.carousel .facts-track {
+    display: flex;
+    gap: 1.6rem;
+    width: max-content;
+    animation: faerieland-scroll 180s linear infinite;
+}
+body.foyer .facts.carousel:hover .facts-track {
+    animation-play-state: paused;
+}
+body.foyer .facts.carousel .fact {
+    flex: 0 0 340px;
+}
+@keyframes faerieland-scroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+    body.foyer .facts.carousel .facts-track {
+        animation: none;
+    }
+}
+
 body.foyer .fact {
     padding: 1.5rem 1.5rem 1.4rem;
     border-radius: 2px;
