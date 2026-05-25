@@ -106,31 +106,6 @@
         <div class="mark"></div>
     </main>
 
-    <script>
-        const toggle = document.getElementById('themeToggle');
-        const html = document.documentElement;
-        const savedTheme = localStorage.getItem('theme');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        if (savedTheme) { html.setAttribute('data-theme', savedTheme); }
-        else if (!prefersDark) { html.setAttribute('data-theme', 'day'); }
-        toggle.addEventListener('click', () => {
-            const current = html.getAttribute('data-theme');
-            const next = current === 'day' ? 'night' : 'day';
-            html.setAttribute('data-theme', next);
-            localStorage.setItem('theme', next);
-        });
-        
-        const glow = document.getElementById('glow');
-        let mouseX = 0, mouseY = 0, glowX = 0, glowY = 0;
-        document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
-        function animate() {
-            glowX += (mouseX - glowX) * 0.08;
-            glowY += (mouseY - glowY) * 0.08;
-            glow.style.left = glowX + 'px';
-            glow.style.top = glowY + 'px';
-            requestAnimationFrame(animate);
-        }
-        animate();
-    </script>
+    <script src="../site.js"></script>
 </body>
 </html>
