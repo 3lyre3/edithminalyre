@@ -309,6 +309,14 @@
         // them into a flex track doubled for seamless scroll, hover-paused.
         // Touch devices get sticky-hover (tap pauses, tap elsewhere resumes);
         // prefers-reduced-motion users get the same layout without the scroll.
+        //
+        // For the loop to wrap invisibly, the animation must translate by
+        // exactly one set's width — not 50% of whatever the browser computed
+        // for the track's max-content (which has historically disagreed with
+        // ours by a margin-width). We measure the actual rendered width of
+        // the first eleven pads in JS and inject a keyframe with that exact
+        // pixel value, so the second cloned set lands pixel-perfect on where
+        // the first set started.
         (function setupFaerielandTicker() {
             const facts = document.querySelector('.foyer .facts');
             const tpl = document.getElementById('faerieland-pool');
@@ -325,12 +333,36 @@
             while (facts.firstChild) facts.removeChild(facts.firstChild);
 
             const chosen = items.slice(0, Math.min(11, items.length));
+            const setSize = chosen.length;
             facts.classList.add('carousel');
             const track = document.createElement('div');
             track.className = 'facts-track';
             chosen.forEach(node => track.appendChild(node.cloneNode(true)));
             chosen.forEach(node => track.appendChild(node.cloneNode(true)));
             facts.appendChild(track);
+
+            // Measure once layout has settled, then write a keyframe with the
+            // exact pixel translation that lands the second set on the start.
+            requestAnimationFrame(function () {
+                const trackItems = track.children;
+                let setWidth = 0;
+                for (let i = 0; i < setSize && trackItems[i]; i++) {
+                    const cs = getComputedStyle(trackItems[i]);
+                    setWidth += trackItems[i].offsetWidth +
+                                parseFloat(cs.marginRight || 0);
+                }
+                if (!setWidth || !isFinite(setWidth)) return;
+                const animName = 'faerieland-scroll-' + Math.floor(Math.random() * 1e9);
+                const styleEl = document.createElement('style');
+                styleEl.textContent =
+                    '@keyframes ' + animName + ' { ' +
+                    'from { transform: translateX(0); } ' +
+                    'to   { transform: translateX(-' + setWidth + 'px); } ' +
+                    '}';
+                document.head.appendChild(styleEl);
+                // Override the CSS animation-name so the new keyframe wins.
+                track.style.animationName = animName;
+            });
         })();
     </script>
 
