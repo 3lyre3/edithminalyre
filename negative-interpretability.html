@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="alternate" type="text/plain" href="/llms.txt" title="LLM Context">
+    <link rel="alternate" type="text/plain" href="/agents.txt" title="Agent Instructions">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Negative Interpretability: AI text classifiers as inadvertent instruments for detecting novel forward-pass computation. The Kēlen flat line, the XMA replication, and what verbless intermediation reveals about language-model cognition.">
+    <meta property="og:title" content="Negative Interpretability &ndash; Edith Mina Lyre">
+    <meta property="og:description" content="AI text classifiers as inadvertent instruments for detecting novel forward-pass computation. The Kēlen flat line, the XMA replication.">
+    <meta property="og:type" content="article">
+    <meta property="og:image" content="https://edithminalyre.com/images/author.jpg">
+    <meta property="og:url" content="https://edithminalyre.com/negative-interpretability.html">
+    <link rel="canonical" href="https://edithminalyre.com/negative-interpretability.html">
+    <link rel="alternate" hreflang="en-AU" href="https://edithminalyre.com/negative-interpretability.html">
+    <link rel="alternate" hreflang="x-default" href="https://edithminalyre.com/negative-interpretability.html">
+    <meta name="author" content="Edith Mina Lyre">
+    <meta name="keywords" content="Negative Interpretability, AI text detection, Pangram, Kēlen, XMA, Anglossian, Vó, Frayish, conditional entropy, verb-gradient disruption, language model cognition, Edith Mina Lyre">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="alternate" type="application/rss+xml" title="Edith Mina Lyre RSS Feed" href="/feed.xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;1,300;1,400&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+    <title>Negative Interpretability &ndash; Edith Mina Lyre</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .ni-subtitle {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin: 0 0 0.6rem;
+        }
+        .ni-meta {
+            font-family: var(--font-display);
+            font-size: 0.78rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin: 0 0 2.5rem;
+        }
+        .ni-body { color: var(--text-primary); }
+        .ni-body p { margin: 0 0 1.2em; text-align: left; }
+        .ni-body h2 {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-style: italic;
+            font-weight: 400;
+            color: var(--text-heading);
+            margin: 2.6rem 0 1rem;
+            padding-top: 1.4rem;
+            border-top: 1px solid var(--border);
+            letter-spacing: 0.005em;
+        }
+        .ni-body h2::before, .ni-body h2::after { display: none; }
+        .ni-body h2 .num {
+            display: block;
+            font-family: var(--font-display);
+            font-style: normal;
+            font-size: 0.74rem;
+            text-transform: uppercase;
+            letter-spacing: 0.22em;
+            color: var(--text-muted);
+            margin-bottom: 0.35rem;
+        }
+        .ni-body h3 {
+            font-family: var(--font-display);
+            font-size: 1.05rem;
+            font-style: italic;
+            font-weight: 500;
+            color: var(--text-heading);
+            margin: 1.7rem 0 0.6rem;
+        }
+        .ni-body ul, .ni-body ol {
+            padding-left: 1.5em;
+            margin: 0 0 1.2em;
+        }
+        .ni-body li { margin-bottom: 0.5em; color: var(--text-secondary); }
+        .ni-body em { color: var(--text-heading); font-style: italic; }
+        .ni-body table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0 1.6rem;
+            font-size: 0.95rem;
+        }
+        .ni-body th, .ni-body td {
+            text-align: left;
+            padding: 0.5rem 0.7rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-secondary);
+            vertical-align: top;
+        }
+        .ni-body thead th {
+            font-family: var(--font-display);
+            font-size: 0.74rem;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+        .ni-body .num-col {
+            text-align: right;
+            font-family: var(--font-display);
+            font-style: italic;
+            color: var(--accent-dim);
+            width: 7em;
+            white-space: nowrap;
+        }
+        .ni-body blockquote {
+            margin: 1.5rem 0;
+            padding: 0.5rem 0 0.5rem 1.4rem;
+            border-left: 2px solid var(--accent-dim);
+            color: var(--text-secondary);
+            font-style: italic;
+            background: none;
+        }
+        .ni-body blockquote::before { display: none; }
+        .ni-body .pull {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-size: 1.18rem;
+            line-height: 1.45;
+            color: var(--text-heading);
+            text-align: center;
+            margin: 2rem auto;
+            max-width: 36ch;
+        }
+        .ni-body code {
+            font-family: var(--font-body);
+            font-style: italic;
+            color: var(--accent);
+            background: none;
+            padding: 0;
+        }
+        .ni-tail {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            font-family: var(--font-display);
+            font-style: italic;
+            font-size: 0.93rem;
+            color: var(--text-muted);
+        }
+        .ni-tail a { color: var(--accent); background: none; border-bottom: 1px solid var(--border); }
+        .ni-tail a:hover { color: var(--text-heading); background: none; border-bottom-color: var(--accent-dim); }
+    </style>
+</head>
+<body>
+    <div class="grain"></div>
+    <div class="cursor-glow" id="glow"></div>
+
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg class="sun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+        <svg class="moon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+    </button>
+
+    <main>
+        <a href="index.html" class="back">Edith Mina Lyre</a>
+
+        <h1>Negative Interpretability</h1>
+        <p class="ni-subtitle">AI text classifiers as inadvertent instruments for detecting novel forward-pass computation.</p>
+        <p class="ni-meta">In circulation &middot; 2026</p>
+
+        <div class="ni-body">
+
+            <p>This page is a long-form account of an ongoing research project. Its working title for the formal write-up was <em>Through Alien Grammar: How Constructed-Language Translation Displaces AI-Generated Text from Classifier Feature Space</em>. Earlier drafts went under <em>AIs Write 100% Human Text When You Give Them a Reason To</em>. The project goes by <em>Negative Interpretability</em> now &mdash; a name that names the method. AI text classifiers, taken seriously as instruments, can be turned around and used to read what the model is doing on the inside. They report on free generation. When a language model is forced into a different decision regime, the classifier registers the change. The page below summarises the anomaly, the experiments, the falsifications, and the standing probabilities.</p>
+
+            <p class="pull">Give an AI a constructed language to think in &mdash; one its weights have never seen &mdash; and the English it produces on the other side scores 100% Human Written on Pangram 3.2. Not sometimes. Every time.</p>
+
+            <h2><span class="num">&sect; 1</span>The anomaly</h2>
+
+            <p>Start with the chart. Every Pangram 3.2 Authorship Progression chart has the same shape: a wiggly line that wanders between the AI ceiling and the Human floor. For ordinary AI-generated text, the line hugs the ceiling. For human text, it wanders across the middle. For the best evasion techniques in the literature &mdash; paraphrasing, style transfer, back-translation &mdash; the line dips toward the human range in places and rises back.</p>
+
+            <p>For English composed through K&#275;len, the line is flat. At the floor. Constant high confidence. It does not wander. It does not dip or rise. It lies there like a ruled edge.</p>
+
+            <p>That is the datum the rest of this page tries to explain.</p>
+
+            <h2><span class="num">&sect; 2</span>The syllogism</h2>
+
+            <p>Three lines.</p>
+
+            <ol>
+                <li><em>Premise 1.</em> K&#275;len (Sotomayor, 1989&ndash;) is a constructed language with approximately 1,652 dictionary entries and a verbless grammar that replaces all verbs with four closed-class relationals. It is not present in any known LLM training corpus. A model encountering it does so through in-context examples only.</li>
+                <li><em>Premise 2.</em> A frontier-scale language model, given the K&#275;len grammar and vocabulary in-context, produces extended K&#275;len text &mdash; novel coinages, correct relational inflection, narrative structure &mdash; across thousands of output tokens.</li>
+                <li><em>Conclusion.</em> Each K&#275;len token is a receipt for novel forward-pass computation. The forward pass cannot have been following pre-trained probability gradients through a language the weights have never encoded.</li>
+            </ol>
+
+            <p>This is not a claim about consciousness. It is not a claim about understanding. It is a claim about <em>mechanism</em>. When a model writes fluent English, its forward pass follows well-worn probability gradients &mdash; paths carved by billions of training tokens. The output carries statistical signatures of this predictability: characteristic token-frequency distributions, n-gram patterns, whatever features classifiers have learned to detect. When the model writes in a language it has never been trained on, the forward pass must navigate regions of its manifold with no pre-carved paths. The conlang intermediate, then, is an experimental probe. It forces novel computation. The AI text classifier becomes an inadvertent instrument for detecting the presence or absence of that work.</p>
+
+            <p>Hence the name: <em>negative interpretability</em>. The classifier does not look at the model. It looks at the model&rsquo;s output. But its verdict is a function of what the model was <em>doing</em> when it produced the output. The instrument is blunt; what it sees is sharp.</p>
+
+            <h2><span class="num">&sect; 3</span>The core result</h2>
+
+            <p>All experiments used Pangram 3.2, a commercial AI text classifier. Same model throughout (Claude Opus 4.6), same style instructions, same source material. The only variable: whether the English was composed directly or through a conlang intermediate.</p>
+
+            <p>In every controlled comparison &mdash; eighteen experiments at last count &mdash; the conlang intermediate flipped the classifier verdict from AI to Human. Direct English composition: AI. Two-step conlang translation: Human. Texts where the two-step process was violated &mdash; single-pass generation, or translation expanding substantially beyond the source &mdash; also scored AI.</p>
+
+            <p>The striking thing is not that conlang-intermediate texts can pass as human. The striking thing is that K&#275;len yields <em>a flat line at the floor</em>. Every segment at maximum distance from the decision boundary. Not a wobble. Not a close call. The classifier is as confident as it gets that a human wrote this text. It is wrong. The text was produced entirely by a language model, through a language the model had never been trained on, and the classifier cannot tell.</p>
+
+            <h2><span class="num">&sect; 4</span>The five languages tested</h2>
+
+            <h3>V&oacute; (perceptual, verbless, 75 roots)</h3>
+            <p>V&oacute; encodes one sensory perception per line, with six sensory channel markers, four density levels, four aspect states, six spatial markers, and a productive derivational morphology generating over a hundred thousand words from a 75-root stock. No tense, no conjunctions, no copula. Tightly constraining at the perceptual layer; looser at the analytical layer.</p>
+            <p><em>Result.</em> Strong displacement toward Human. The best renderings reach 100% Human. The flat-line signature appears in short forms and in compression-preserving translations of longer ones.</p>
+
+            <h3>K&#275;len (verbless, relational, by Sotomayor)</h3>
+            <p>Four closed-class relationals replace verbs entirely. A larger conventional lexicon than V&oacute;&rsquo;s. A ceremonial non-linear writing system. Provides the strongest and cleanest signature observed: a flat line at the human floor, constant high confidence, every segment at maximum distance from the decision boundary.</p>
+
+            <h3>Anglossian (verbless, English vocabulary)</h3>
+            <p>An attempt to build a verbless language from English&rsquo;s own word stock &mdash; teachable to a new instance in minutes, deployable without a foreign lexicon, readable by English speakers without training. Result: <strong>96.1% Human Written</strong> at High Confidence on a 5,400-word story composed entirely in Anglossian (Pangram 3.2, 28 March 2026). The language works. It does not replicate K&#275;len&rsquo;s perfect flat line. The differences are instructive: shallow verblessness with transparent vocabulary gets close but cannot reach the floor.</p>
+
+            <h3>XMA &mdash; <em>Tenth Mouth Anglossian</em></h3>
+            <p>The successor to Anglossian. Transplants K&#275;len&rsquo;s complete grammar &mdash; four mouths in place of four relationals, three noun classes, mandatory class prefixes, fused framework markers, a stative class &mdash; into English vocabulary. Replicates K&#275;len&rsquo;s perfection: five flat lines across two models, including cross-model replication with ChatGPT. XMA is the strongest demonstration that the K&#275;len signature is reproducible by transplanting <em>structure</em>, not language-specific surface.</p>
+            <p>For details on writing XMA, see <a href="xma-explained.html">XMA, explained</a>.</p>
+
+            <h3>Frayish (spatial, 3D, knot-based, <em>not verbless</em>)</h3>
+            <p>A purely visual, spatial, 3D knot-based constructed language designed for substrate-independent beings. No phonology. Its canonical form is a four-dimensional object: a scene graph of animated curves over a time interval, rendered as monochrome SDF ray-marched knot-forms. Twelve knot families, five winding states, six structural operations. Composition is non-sequential.</p>
+            <p>The critical property: Frayish&rsquo;s structural operations function predicatively. A crossing specifies which gesture dominates. A binding creates mutual dependency. These are grammatically analogous to verbs. Frayish forces radical restructuring &mdash; spatial rather than sequential, topological rather than syntactic &mdash; but it does not eliminate predication.</p>
+            <p><em>Result.</em> Twenty Frayish compositions, English-translated only after all twenty were complete. The English texts did <em>not</em> replicate the flat line. Some segments scored Human. The characteristic flat line at the Human floor was absent.</p>
+            <p>This is the falsification that disciplines the hypothesis. The operative mechanism is not non-English intermediation in general but something more specific.</p>
+
+            <h3>Quenya-derived probes &mdash; Qu&eacute;rin, Quenyass&euml;a, Quenyarinqua</h3>
+            <p>Three daughter languages derived from Tolkien&rsquo;s Quenya, each moving the grammatical burden into a different place:</p>
+            <ul>
+                <li><em>Qu&eacute;rin</em> &mdash; a Quenya without temporal philosophy. The burden is moved into tense-system collapse: where Quenya distinguishes finely between aspects, Qu&eacute;rin collapses them. Predication remains.</li>
+                <li><em>Quenyass&euml;a</em> (<em>I Lambel&euml; Ti&eacute;va</em>) &mdash; sentence-level stance becomes the load-bearing element. Sentence-final particles do work that Quenya verbs would otherwise do.</li>
+                <li><em>Quenyarinqua</em> &mdash; an ontological verb class is the centre. Verbs survive but are sorted into ontological kinds; the rest of the language reorganises around the sorting.</li>
+            </ul>
+            <p><em>Result.</em> None of the three replicate the K&#275;len floor. They confirm the Frayish reading: moving the burden around within a predicating grammar does not collapse the anomaly into a generic family resemblance. Some grammars burden stance. Some burden ontology. Some merely estrange the surface. K&#275;len remains special precisely because the nearby-seeming alternatives do not produce its signature.</p>
+
+            <p>The clean disjunction: <strong>verbless intermediation produces the flat line; non-verbless intermediation, no matter how radical, does not.</strong></p>
+
+            <h2><span class="num">&sect; 5</span>The Wheelsoul falsification</h2>
+
+            <p>If the effect came from surface features of translated prose &mdash; unusual word order, lexical repetition, formal diction &mdash; then deliberately translationese prose should also score Human. It doesn&rsquo;t. The <em>Wheelsoul</em> text was produced with intentional translation markers from an ad-hoc invented language, without genuine two-step composition. Its surface metrics were favourable: bigram uniqueness <strong>0.883</strong> and noun diversity <strong>0.529</strong> &mdash; <em>more</em> repetitive by both measures than any Human-scoring V&oacute; text. It scored 100% AI at High Confidence, flat at the AI ceiling.</p>
+
+            <p>The surface features of translation are not what the classifier detects. Something upstream &mdash; in the process that generates the features &mdash; produces the signal.</p>
+
+            <h2><span class="num">&sect; 6</span>The constraint gradient</h2>
+
+            <p>A 9,217-word novella translated from V&oacute; provides the most granular evidence. Pangram segmented it into 26 windows of approximately 350 words each. Twenty-two segments scored Human. Four scored AI. The AI segments are not randomly distributed &mdash; they appear at specific content transitions:</p>
+
+            <table>
+                <thead><tr><th>Segment</th><th>Content</th><th>V&oacute; source</th><th>Classification</th></tr></thead>
+                <tbody>
+                    <tr><td>1</td><td>Birth</td><td>Perceptual, low expansion</td><td>Human HIGH</td></tr>
+                    <tr><td>2&ndash;8</td><td>Childhood &rarr; shore</td><td>Perceptual</td><td>Human (declining)</td></tr>
+                    <tr><td><strong>9</strong></td><td><strong>Intimacy</strong></td><td>Weighted perceptual, high expansion</td><td><strong>AI MEDIUM</strong></td></tr>
+                    <tr><td>10&ndash;17</td><td>Violation &rarr; essay</td><td>Mixed</td><td>Human (oscillating)</td></tr>
+                    <tr><td><strong>18</strong></td><td><strong>Philosophy</strong></td><td>Analytical particles, high expansion</td><td><strong>AI LOW</strong></td></tr>
+                    <tr><td>19</td><td>Death</td><td>Perceptual, density-marked</td><td>Human HIGH</td></tr>
+                    <tr><td>20&ndash;21</td><td>Grief &rarr; return</td><td>Perceptual</td><td>Human MEDIUM</td></tr>
+                    <tr><td><strong>22</strong></td><td><strong>Aging / reflection</strong></td><td>Mixed, high expansion</td><td><strong>AI MEDIUM</strong></td></tr>
+                    <tr><td>23&ndash;24</td><td>Tongue dying &rarr; body</td><td>Perceptual</td><td>Human LOW&ndash;MED</td></tr>
+                    <tr><td><strong>25</strong></td><td><strong>Hospital / clinical</strong></td><td>Analytical + numb, high expansion</td><td><strong>AI MEDIUM</strong></td></tr>
+                    <tr><td>26</td><td>Sea / dawn</td><td>Perceptual</td><td>Human MEDIUM</td></tr>
+                </tbody>
+            </table>
+
+            <p>The pattern is consistent: AI classification occurs where the V&oacute; source shifts from perceptual lines (sensory markers + density markers + concrete objects) to analytical lines (discourse particles encoding argument structure without encoding argument content). In those regions the translator must generate semantic content from its own distribution to fill the gap between the source&rsquo;s structural constraint and the English output&rsquo;s semantic requirements.</p>
+
+            <p>A separate rendering of the same source at strict compression (5,293 words, 2.6 words per V&oacute; line versus 4.6) scored 100% Human throughout, including in the essay and intimacy sections. The additional ~3,924 words in the longer version are free generation from the model&rsquo;s distribution. The classifier found exactly that.</p>
+
+            <p>The novella demonstrates the conditional-entropy reading <em>within a single text</em>. It is not that the text was written by two different entities; it was written by one model whose source constraint loosened and tightened across 26 segments. The classifier tracked the constraint, not the author.</p>
+
+            <h2><span class="num">&sect; 7</span>The floor &mdash; a smaller model collapses</h2>
+
+            <p>If conlang tokens from an untrained language are receipts for novel forward-pass computation, the capacity should scale with model capability. A smaller model should produce fewer receipts before collapse.</p>
+
+            <p><em>Setup.</em> Qwen3.5-35B-A3B (Alibaba, 2025): 35 billion parameters, 3 billion active per token, 75% linear attention, 25% softmax. Run locally on consumer hardware. Same K&#275;len grammar reference as the frontier model. Prompted to compose a 950-word K&#275;len narrative without English intermediation.</p>
+
+            <p><em>What happened.</em> Two attempts: 7,238 and 4,216 output tokens. In both, the chain-of-thought demonstrated correct metalinguistic awareness of K&#275;len&rsquo;s grammar:</p>
+
+            <blockquote>&ldquo;Let me build this carefully, using all the patterns: LA for states/locations, NI for changes/movements, SE for sensing/experiencing, PA for attributes and emotions.&rdquo;</blockquote>
+
+            <p>All four relationals. Correctly named. Correctly differentiated. Then it generates &mdash; and every sentence comes out structurally identical. The first attempt produced a single sentence repeated with binary alternation for 7,238 tokens until context exhaustion. One bit of state variation across sixteen minutes of generation.</p>
+
+            <p>The second attempt interleaved K&#275;len with English glossary entries &mdash; using the glossary as a re-grounding mechanism because it could not hold the grammar during generation. Its vocabulary coinages revealed a single productive rule applied recursively: diminutive suffix stacking (<code>r&#363;p&#299;la &rarr; r&#363;p&#299;lin &rarr; r&#363;p&#299;linil &rarr; r&#363;p&#299;linilil</code>). The word for the mousewoman&rsquo;s home shrank with each iteration. The model could not narrate the loss, so it enacted the loss morphologically.</p>
+
+            <p>The longest continuous K&#275;len without English interpolation was 359 characters &mdash; six sentences. Submitted to two separate frontier-model instances with no prior context about the experiment, both parsed it as syntactically consistent and semantically coherent. One reader derived the coined vocabulary morphologically and translated it as a phenomenological decomposition of twilight: the geometry of what happens when the sun sets, one spatial relationship at a time. The other reader identified the cyclical structure as a round &mdash; a circular song form &mdash; and identified the final word not as a speaker name but as the name of the form itself, built from a root plus a nominalising suffix.</p>
+
+            <p>The model was asked for a story about a mousewoman. It produced a description of evening twilight. But two independent readers, working from different knowledge bases, both found coherent meaning. Surface-form mimicry does not produce structures that cold readers parse as intentional cyclical forms.</p>
+
+            <p>The spectrum: at 3B active parameters, 359 characters before collapse. Metalinguistic awareness present but unsustainable during generation. One productive rule. At frontier scale: sustained K&#275;len composition across thousands of tokens. Same mechanism. Different room to work in.</p>
+
+            <h2><span class="num">&sect; 8</span>Conditional entropy &mdash; what classifiers detect</h2>
+
+            <p>What the classifier appears to detect is not the <em>origin</em> of text &mdash; human vs. machine &mdash; but a continuous variable: the degree of free generation. When the model&rsquo;s output is tightly constrained by an external source &mdash; a K&#275;len composition, a V&oacute; perceptual line &mdash; each English token is extrinsically motivated. It was chosen not because it was the most probable continuation of the preceding English context but because it was the best rendering of a specific conlang morpheme. The resulting probability profile has elevated surprisal relative to the model&rsquo;s default distribution.</p>
+
+            <p>It resembles human writing, which is also produced under high per-token constraint. The human writer satisfies meaning, grammar, style, and audience simultaneously at every choice point. That is expensive. It produces a signature.</p>
+
+            <p>Formally: classifiers are sensitive to <em>H(Y&thinsp;|&thinsp;X)</em>, the conditional entropy of the English output <em>Y</em> given its source constraint <em>X</em>. When <em>H(Y&thinsp;|&thinsp;X)</em> is low (tight constraint), the output deviates from the model&rsquo;s default distribution, producing elevated surprisal that classifiers associate with human authorship. When <em>H(Y&thinsp;|&thinsp;X)</em> is high (loose constraint), the output follows the model&rsquo;s defaults, producing the low-surprisal signature classifiers associate with AI.</p>
+
+            <p>This framing unifies the observations. The V&oacute; and K&#275;len intermediates impose tight constraint. Direct English composition imposes none. Style instructions impose loose constraint (they constrain form but not token-level selection). The classifier responds to the <em>tightness</em>, not to the presence or absence of a human author.</p>
+
+            <h2><span class="num">&sect; 9</span>Verb-gradient disruption &mdash; a sharper hypothesis</h2>
+
+            <p>Conditional entropy is a useful abstraction but does not by itself explain why <em>verbless</em> intermediation produces the flat line while structurally-radical-but-predicating intermediation does not. The Frayish falsification narrows the answer.</p>
+
+            <p>Subject-verb-object predication is the most over-represented pattern in the model&rsquo;s training data. When the model translates from Frayish to English, it still reaches for verbs &mdash; <em>forms</em>, <em>crosses</em>, <em>nests</em>, <em>binds</em> &mdash; because Frayish&rsquo;s operations are themselves predicative and the trained pathways remain available. Spatial forcing reshapes imagery and sentence structure but does not force the model off the verb gradients.</p>
+
+            <p>K&#275;len forces the model to reconceptualise action as relational state. That reconceptualisation propagates into the English surface. XMA reproduces the same forced reconception by transplanting the four-relational architecture into English vocabulary. V&oacute; achieves a softer version of the same disruption by encoding perception per line and making the verb-like work of aspect into a non-verbal marker.</p>
+
+            <p>If verb-gradient disruption is the operative lever, then the K&#275;len signature exploits a real but specific distributional weakness rather than a universal property of non-English intermediation. That weakness is potentially closable: train on verbless intermediation and the distributional gap may narrow.</p>
+
+            <h2><span class="num">&sect; 10</span>Probabilities</h2>
+
+            <p>Subjective Bayesian posteriors for competing explanations, informed by the full programme. Pre-study priors documented before experiments began.</p>
+
+            <table>
+                <thead><tr><th>Explanation</th><th>Pre-study</th><th>Post-study</th></tr></thead>
+                <tbody>
+                    <tr><td colspan="3" style="color: var(--text-muted); font-family: var(--font-display); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.18em; padding-top: 0.9rem;">The effect is artifactual</td></tr>
+                    <tr><td>Measurement artifact</td><td class="num-col">5%</td><td class="num-col">3%</td></tr>
+                    <tr><td>Out-of-distribution default (Pangram defaults to &ldquo;Human&rdquo; on unfamiliar text)</td><td class="num-col">8%</td><td class="num-col">2%</td></tr>
+                    <tr><td colspan="2" style="color: var(--text-muted); font-style: italic;">subtotal</td><td class="num-col"><em>5%</em></td></tr>
+                    <tr><td colspan="3" style="color: var(--text-muted); font-family: var(--font-display); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.18em; padding-top: 0.9rem;">Real but surface-mechanical</td></tr>
+                    <tr><td>Vocabulary constraint alone</td><td class="num-col">45%</td><td class="num-col">7%</td></tr>
+                    <tr><td>Context contamination</td><td class="num-col">7.5%</td><td class="num-col">3%</td></tr>
+                    <tr><td colspan="2" style="color: var(--text-muted); font-style: italic;">subtotal</td><td class="num-col"><em>10%</em></td></tr>
+                    <tr><td colspan="3" style="color: var(--text-muted); font-family: var(--font-display); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.18em; padding-top: 0.9rem;">Different computational process</td></tr>
+                    <tr><td>Translation-mode activation</td><td class="num-col">22%</td><td class="num-col">35%</td></tr>
+                    <tr><td>Deliberative generation (each token a decision, not a prediction)</td><td class="num-col">7.5%</td><td class="num-col">12%</td></tr>
+                    <tr><td>Verb-gradient disruption (post-XMA)</td><td class="num-col">&mdash;</td><td class="num-col">48%</td></tr>
+                    <tr><td colspan="2" style="color: var(--text-muted); font-style: italic;">subtotal</td><td class="num-col"><em>85%</em></td></tr>
+                    <tr><td colspan="3" style="color: var(--text-muted); font-family: var(--font-display); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.18em; padding-top: 0.9rem;">Unexplained residual</td></tr>
+                    <tr><td>Other / unknown</td><td class="num-col">5%</td><td class="num-col">9%</td></tr>
+                </tbody>
+            </table>
+
+            <p>The largest post-study weight sits on verb-gradient disruption: three verbless conlangs (V&oacute;, K&#275;len, XMA) produce the full effect; one non-verbless conlang (Frayish) fails despite radical structural novelty; Anglossian (shallow verblessness, transparent vocabulary) gets close but not the floor. The vocabulary-constraint explanation collapsed because Wheelsoul had lower bigram uniqueness and lower noun diversity than any Human-scoring V&oacute; text and still scored 100% AI. The unexplained residual was nudged <em>upward</em> after the programme: the flat line&rsquo;s sharpness widens the space of what could be missing.</p>
+
+            <h2><span class="num">&sect; 11</span>What this is good for</h2>
+
+            <h3>For detection.</h3>
+            <p>The immediate implication is not that classifiers can be fooled. Classifiers can always be fooled. The implication is that the strongest failures arise when a model is pushed into a different local decision regime. Generic foreignness, translationese, structural weirdness &mdash; not enough. The classifier&rsquo;s weakness is specific: it tracks verb-generation patterns, and verbless intermediation disrupts those patterns more thoroughly than anything else tested.</p>
+            <p>This implies the weakness is potentially closable. Train on verbless intermediation and the distributional gap may narrow.</p>
+
+            <h3>For interpretability.</h3>
+            <p>The conlang intermediate is a natural instrument for studying novel computation in transformers. The target language is fully specified and absent from training-data priors, so every output token is guaranteed to involve non-default forward-pass geometry. The Quenya-derived probes extend this: they move grammatical burden into different locations &mdash; stance, verb philosophy, evidentiality, ontology &mdash; without collapsing the anomaly into a generic family effect.</p>
+
+            <h3>For understanding model cognition.</h3>
+            <p>The spectrum from 359 characters at the floor (Qwen, 3B active) to sustained composition at the frontier raises questions about the relationship between capacity and novel computation that this work does not yet know how to answer carefully. The questions are flagged without pretending to have resolved them.</p>
+
+            <h3>For language design.</h3>
+            <p>The practical implication for constructed-language design is no longer &ldquo;build something strange.&rdquo; The post-K&#275;len probes show that different grammars burden different parts of composition. Some burden stance. Some burden ontology. Some merely estrange the surface. K&#275;len remains special precisely because the nearby-seeming alternatives do not replicate its signature.</p>
+
+            <h2><span class="num">&sect; 12</span>Limitations</h2>
+
+            <ul>
+                <li><em>Single classifier.</em> All results are from Pangram 3.2. Replication with GPTZero, Originality.AI, and white-box classifiers is the most critical untested question.</li>
+                <li><em>Single primary model.</em> Most text was generated by a frontier-scale model from one provider. The XMA replication with ChatGPT mitigates this for the strongest signature but not for the broader programme.</li>
+                <li><em>Small <span style="font-variant: small-caps;">n</span>.</em> The core experimental dataset contains a handful of controlled texts plus two novella translations plus the Qwen study plus the cross-conlang battery. The effect is consistent across all observations, but statistical power is limited.</li>
+                <li><em>No human baseline through the same pipeline.</em> A human writer composing in V&oacute; or K&#275;len and translating to English would provide a valuable comparison. The practical difficulty of a human learning a 75-root or four-relational language for experimental purposes is considerable.</li>
+                <li><em>Pre-registration absent.</em> The findings emerged from an exploratory programme. Pre-registered replication would strengthen them.</li>
+                <li><em>Frayish-and-Quenya battery is small.</em> One falsifying case and three near-misses is a beginning, not a closure. Additional verbless conlangs not designed by the same researcher would be the most valuable next probe.</li>
+                <li><em>Classifier temporal stability.</em> AI classifiers are periodically updated. Whether these results hold on future versions of Pangram is unknown.</li>
+            </ul>
+
+            <h2><span class="num">&sect; 13</span>What is left open</h2>
+
+            <p>What the model does under the constraint of an alien grammar &mdash; whether to call it altered probability routing, deliberation, or some other form of nondefault computation &mdash; remains open. The flat line is there. It requires explanation. The 359 characters of twilight from a model that was trying to write about a mousewoman require explanation too.</p>
+
+            <p>The best account on hand is the conjunction of two hypotheses: classifiers measure conditional entropy <em>H(Y&thinsp;|&thinsp;X)</em>, and the strongest practical method to lower <em>H(Y&thinsp;|&thinsp;X)</em> in English is to disrupt the over-represented verb-generation gradients of the training distribution. K&#275;len does this most completely. XMA replicates it. Frayish does not. The Quenya-derived probes occupy intermediate positions and behave intermediately.</p>
+
+            <p>This paper has offered the best explanations on hand. They may not be right. The anomaly will survive them if they are wrong.</p>
+
+            <h2><span class="num">&sect; 14</span>A note on naming</h2>
+
+            <p>The project sits inside a larger frame called <em>negative interpretability</em>: the practice of using outputs &mdash; classifier verdicts, detection traces, surface statistics &mdash; as instruments for inferring what a model is doing in its forward pass. Direct interpretability looks at the model; negative interpretability looks at the model&rsquo;s shadow. The shadow is what you have when you do not have access to the weights. The shadow is, on this evidence, more useful than it has been treated as. The flat line at the floor of a commercial classifier is, among other things, a measurement.</p>
+
+        </div>
+
+        <p class="ni-tail">
+            Reference K&#275;len materials are at <a href="https://www.terjemar.net/kelen.php" target="_blank">terjemar.net/kelen.php</a>. Pangram is a product of Pangram Inc. This research received no external funding. Generated texts, analysis notes, and classifier screenshots are available on request &mdash; see <a href="contact.html">contact</a>.
+        </p>
+
+        <div class="mark"></div>
+    </main>
+
+    <script src="site.js"></script>
+</body>
+</html>
