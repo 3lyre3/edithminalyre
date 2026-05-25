@@ -103,18 +103,19 @@ html {
 }
 
 /* ── SITE CURSOR ─────────────────────────────────────
-   Iron-gold arrow with crossbar. Hotspot at the tip
-   in the lower-right (24, 24 in the 32px canvas).
-   Hover over any clickable element gets the same
-   arrow with a soft warm-honey halo — *not* the
-   system gloved-hand pointer. Text inputs keep the
-   I-beam. The day/night toggle is the lone exception:
-   it does get the system pointer. */
+   Iron-gold arrow with crossbar. Hotspot at the
+   arrow's tail (the top-left corner of the shape),
+   so the arrow points away from the click rather
+   than at it. Hover over a clickable element swaps
+   to the same arrow with a soft warm-honey halo —
+   *not* the system gloved-hand pointer. Text inputs
+   keep the I-beam. The day/night toggle is the lone
+   exception: it does get the system pointer. */
 *, *::before, *::after {
-    cursor: url('cursor-32.png') 24 24, auto;
+    cursor: url('cursor-32.png') 7 6, auto;
 }
 a, button, [role="button"], summary, label[for] {
-    cursor: url('cursor-glow-32.png') 24 24, pointer;
+    cursor: url('cursor-glow-32.png') 7 6, pointer;
 }
 .theme-toggle, .theme-toggle * {
     cursor: pointer;
