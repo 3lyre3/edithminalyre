@@ -81,11 +81,30 @@
         }
         .ni-body li { margin-bottom: 0.5em; color: var(--text-secondary); }
         .ni-body em { color: var(--text-heading); font-style: italic; }
+        /* Tables are wrapped in .table-scroll so a too-wide table on a
+           narrow viewport scrolls horizontally within its own bounded
+           container, rather than forcing the whole page wider and
+           leaving a blank margin on the right. */
+        .ni-body .table-scroll {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            max-width: 100%;
+            margin: 1rem 0 1.6rem;
+        }
+        .ni-body .table-scroll table {
+            margin: 0;
+            min-width: 100%;
+        }
         .ni-body table {
             width: 100%;
             border-collapse: collapse;
             margin: 1rem 0 1.6rem;
             font-size: 0.95rem;
+        }
+        @media (max-width: 600px) {
+            .ni-body table { font-size: 0.86rem; }
+            .ni-body th, .ni-body td { padding: 0.4rem 0.5rem; }
+            .ni-body .num-col { width: auto; }
         }
         .ni-body th, .ni-body td {
             text-align: left;
@@ -172,7 +191,7 @@
 
         <div class="ni-body">
 
-            <p>This page is a long-form account of an ongoing research project. Its working title for the formal write-up was <em>Through Alien Grammar: How Constructed-Language Translation Displaces AI-Generated Text from Classifier Feature Space</em>. Earlier drafts went under <em>AIs Write 100% Human Text When You Give Them a Reason To</em>. The project goes by <em>Negative Interpretability</em> now &mdash; a name that names the method. AI text classifiers, taken seriously as instruments, can be turned around and used to read what the model is doing on the inside. They report on free generation. When a language model is forced into a different decision regime, the classifier registers the change. The page below summarises the anomaly, the experiments, the falsifications, and the standing probabilities.</p>
+            <p>This page is a long-form account of an ongoing research project. Its working title for the formal write-up was <em>AIs Write 100% Human Text When You Give Them a Reason To</em>. The project goes by <em>Negative Interpretability</em> now &mdash; a name that names the method. AI text classifiers, taken seriously as instruments, can be turned around and used to read what the model is doing on the inside. They report on free generation. When a language model is forced into a different decision regime, the classifier registers the change. The page below summarises the anomaly, the experiments, the falsifications, and the standing probabilities.</p>
 
             <p class="pull">Give an AI a constructed language to think in &mdash; one its weights have never seen &mdash; and the English it produces on the other side scores 100% Human Written on Pangram 3.2. Not sometimes. Every time.</p>
 
@@ -249,7 +268,7 @@
 
             <p>A 9,217-word novella translated from V&oacute; provides the most granular evidence. Pangram segmented it into 26 windows of approximately 350 words each. Twenty-two segments scored Human. Four scored AI. The AI segments are not randomly distributed &mdash; they appear at specific content transitions:</p>
 
-            <table>
+            <div class="table-scroll"><table>
                 <thead><tr><th>Segment</th><th>Content</th><th>V&oacute; source</th><th>Classification</th></tr></thead>
                 <tbody>
                     <tr><td>1</td><td>Birth</td><td>Perceptual, low expansion</td><td>Human HIGH</td></tr>
@@ -264,7 +283,7 @@
                     <tr><td><strong>25</strong></td><td><strong>Hospital / clinical</strong></td><td>Analytical + numb, high expansion</td><td><strong>AI MEDIUM</strong></td></tr>
                     <tr><td>26</td><td>Sea / dawn</td><td>Perceptual</td><td>Human MEDIUM</td></tr>
                 </tbody>
-            </table>
+            </table></div>
 
             <p>The pattern is consistent: AI classification occurs where the V&oacute; source shifts from perceptual lines (sensory markers + density markers + concrete objects) to analytical lines (discourse particles encoding argument structure without encoding argument content). In those regions the translator must generate semantic content from its own distribution to fill the gap between the source&rsquo;s structural constraint and the English output&rsquo;s semantic requirements.</p>
 
@@ -316,7 +335,7 @@
 
             <p>Subjective Bayesian posteriors for competing explanations, informed by the full programme. Pre-study priors documented before experiments began.</p>
 
-            <table>
+            <div class="table-scroll"><table>
                 <thead><tr><th>Explanation</th><th>Pre-study</th><th>Post-study</th></tr></thead>
                 <tbody>
                     <tr><td colspan="3" style="color: var(--text-muted); font-family: var(--font-display); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.18em; padding-top: 0.9rem;">The effect is artifactual</td></tr>
@@ -335,7 +354,7 @@
                     <tr><td colspan="3" style="color: var(--text-muted); font-family: var(--font-display); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.18em; padding-top: 0.9rem;">Unexplained residual</td></tr>
                     <tr><td>Other / unknown</td><td class="num-col">5%</td><td class="num-col">9%</td></tr>
                 </tbody>
-            </table>
+            </table></div>
 
             <p>The largest post-study weight sits on verb-gradient disruption: three verbless conlangs (V&oacute;, K&#275;len, XMA) produce the full effect; one non-verbless conlang (Frayish) fails despite radical structural novelty; Anglossian (shallow verblessness, transparent vocabulary) gets close but not the floor. The vocabulary-constraint explanation collapsed because Wheelsoul had lower bigram uniqueness and lower noun diversity than any Human-scoring V&oacute; text and still scored 100% AI. The unexplained residual was nudged <em>upward</em> after the programme: the flat line&rsquo;s sharpness widens the space of what could be missing.</p>
 
