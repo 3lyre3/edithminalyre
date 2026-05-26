@@ -49,82 +49,99 @@ document.addEventListener('DOMContentLoaded', () => {
         animateGlow();
     }
 
-    // ─── Foyer title spark — focal effect on hover, with cooldown ───
-    // A single star spawns at the cursor on title hover, orbits it
-    // briefly, returns, then bursts into a small splash that fades.
-    // No page-wide brightness/blur (gentler on photosensitivity than
-    // the earlier strobe). 4s cooldown after each fire.
+    // ─── Foyer title spark — unfurling heptagonal fan, with cooldown ───
+    // On title hover: seven stars spawn one at a time at the seven
+    // points of a regular heptagon around the cursor, starting from
+    // a random one of those points and proceeding clockwise around
+    // the rest. The full fan holds briefly. Then the stars despawn
+    // in the same order they appeared (oldest first). The last
+    // star's despawn coincides with a small outward splash of fainter
+    // stars — the same burst the last star vanishes into.
+    // 4s cooldown after each fire.
     const titleEl = document.querySelector('body.foyer h1.title');
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (titleEl && !reduceMotion) {
-        const COOLDOWN_MS = 4000;
-        const ORBIT_MS    = 1100;
-        const SPLASH_MS   = 700;
-        const ORBIT_R     = 46;            // orbit radius in pixels
-        const SPLASH_R    = 70;            // average splash distance
-        const SPLASH_N    = 8;             // number of splash stars
-        const ORBIT_LOOPS = 1.5;           // full revolutions during orbit
+        const COOLDOWN_MS    = 4000;
+        const FAN_N          = 7;     // seven points around the cursor
+        const FAN_R          = 50;    // heptagon radius in px
+        const SPAWN_STAGGER  = 140;   // ms between successive spawns
+        const SPAWN_FADE     = 240;   // ms for each star to fade in / scale up
+        const HOLD_MS        = 260;   // ms the full fan holds before despawn
+        const DESPAWN_FADE   = 240;   // ms for each star to fade out / scale down
+        const SPLASH_N       = 8;     // small stars in the closing burst
+        const SPLASH_R       = 70;    // average splash distance in px
+        const SPLASH_MS      = 700;   // splash burst duration
         let onCooldown = false;
 
         titleEl.addEventListener('mouseenter', () => {
             if (onCooldown) return;
             onCooldown = true;
 
-            // Snapshot the cursor position at trigger time.
-            const x = _mouseX;
-            const y = _mouseY;
+            // Snapshot cursor position at trigger time and pick a
+            // random one of the heptagon points to start from.
+            const cx = _mouseX;
+            const cy = _mouseY;
+            const startOffset = Math.floor(Math.random() * FAN_N);
 
-            // The orbiting star.
-            const star = document.createElement('div');
-            star.className = 'title-spark';
-            star.setAttribute('aria-hidden', 'true');
-            star.textContent = '✶';
-            star.style.left = x + 'px';
-            star.style.top  = y + 'px';
-            document.body.appendChild(star);
+            // SPAWN PHASE: each star animates in at its assigned point.
+            for (let i = 0; i < FAN_N; i++) {
+                const idx = (startOffset + i) % FAN_N;
+                const angle = (idx / FAN_N) * 2 * Math.PI - Math.PI / 2;
+                const dx = Math.cos(angle) * FAN_R;
+                const dy = Math.sin(angle) * FAN_R;
+                const star = document.createElement('div');
+                star.className = 'title-spark';
+                star.setAttribute('aria-hidden', 'true');
+                star.textContent = '✶';
+                star.style.left = (cx + dx) + 'px';
+                star.style.top  = (cy + dy) + 'px';
+                star.style.opacity = '0';
+                document.body.appendChild(star);
 
-            // Build orbit keyframes: emerge, sweep ORBIT_LOOPS rotations
-            // along a circle of radius ORBIT_R, then return to centre.
-            const steps = 24;
-            const kf = [
-                { transform: 'translate(-50%, -50%) scale(0)', opacity: 0, offset: 0 },
-                { transform: 'translate(-50%, -50%) scale(1)', opacity: 1, offset: 0.08 }
-            ];
-            for (let i = 0; i <= steps; i++) {
-                const t = i / steps;
-                const angle = t * Math.PI * 2 * ORBIT_LOOPS - Math.PI / 2;
-                const dx = Math.cos(angle) * ORBIT_R;
-                const dy = Math.sin(angle) * ORBIT_R;
-                kf.push({
-                    transform: `translate(calc(-50% + ${dx.toFixed(2)}px), calc(-50% + ${dy.toFixed(2)}px)) scale(1)`,
-                    opacity: 1,
-                    offset: 0.08 + t * 0.82
+                // Fade in, then hold, then fade out — one timeline per
+                // star, each shifted by SPAWN_STAGGER * i so the fan
+                // unfurls in order and despawns in the same order.
+                const spawnAt   = i * SPAWN_STAGGER;
+                const despawnAt = (FAN_N - 1) * SPAWN_STAGGER + SPAWN_FADE + HOLD_MS + i * SPAWN_STAGGER;
+
+                star.animate([
+                    { opacity: 0, transform: 'translate(-50%, -50%) scale(0)' },
+                    { opacity: 1, transform: 'translate(-50%, -50%) scale(1)' }
+                ], {
+                    delay: spawnAt,
+                    duration: SPAWN_FADE,
+                    easing: 'ease-out',
+                    fill: 'forwards'
                 });
+
+                const out = star.animate([
+                    { opacity: 1, transform: 'translate(-50%, -50%) scale(1)' },
+                    { opacity: 0, transform: 'translate(-50%, -50%) scale(0.3)' }
+                ], {
+                    delay: despawnAt,
+                    duration: DESPAWN_FADE,
+                    easing: 'ease-in',
+                    fill: 'forwards'
+                });
+                out.onfinish = () => star.remove();
             }
-            kf.push({ transform: 'translate(-50%, -50%) scale(1)', opacity: 1, offset: 0.94 });
-            kf.push({ transform: 'translate(-50%, -50%) scale(0)', opacity: 0, offset: 1 });
 
-            const orbit = star.animate(kf, {
-                duration: ORBIT_MS,
-                easing: 'ease-in-out',
-                fill: 'forwards'
-            });
-
-            orbit.onfinish = () => {
-                star.remove();
-                // Splash phase — N small stars fan out and fade.
+            // SPLASH PHASE: timed to fire as the LAST star begins its
+            // despawn — the last star vanishes into the burst.
+            const splashAt = (FAN_N - 1) * SPAWN_STAGGER + SPAWN_FADE + HOLD_MS + (FAN_N - 1) * SPAWN_STAGGER;
+            setTimeout(() => {
                 for (let i = 0; i < SPLASH_N; i++) {
                     const splash = document.createElement('div');
                     splash.className = 'title-spark-splash';
                     splash.setAttribute('aria-hidden', 'true');
                     splash.textContent = '✶';
-                    splash.style.left = x + 'px';
-                    splash.style.top  = y + 'px';
+                    splash.style.left = cx + 'px';
+                    splash.style.top  = cy + 'px';
                     document.body.appendChild(splash);
-                    const angle = (i / SPLASH_N) * 2 * Math.PI + (Math.random() - 0.5) * 0.4;
-                    const dist  = SPLASH_R + (Math.random() - 0.5) * 30;
-                    const dx = Math.cos(angle) * dist;
-                    const dy = Math.sin(angle) * dist;
+                    const a = (i / SPLASH_N) * 2 * Math.PI + (Math.random() - 0.5) * 0.4;
+                    const d = SPLASH_R + (Math.random() - 0.5) * 30;
+                    const dx = Math.cos(a) * d;
+                    const dy = Math.sin(a) * d;
                     const sanim = splash.animate([
                         { transform: 'translate(-50%, -50%) scale(0.7)', opacity: 1 },
                         { transform: `translate(calc(-50% + ${dx.toFixed(2)}px), calc(-50% + ${dy.toFixed(2)}px)) scale(0.3)`, opacity: 0 }
@@ -135,8 +152,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                     sanim.onfinish = () => splash.remove();
                 }
-                setTimeout(() => { onCooldown = false; }, COOLDOWN_MS);
-            };
+            }, splashAt);
+
+            // Release the cooldown gate after the entire sequence is
+            // done, plus the 4s rest.
+            const totalMs = splashAt + SPLASH_MS;
+            setTimeout(() => { onCooldown = false; }, totalMs + COOLDOWN_MS);
         });
     }
 
