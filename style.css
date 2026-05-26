@@ -1114,36 +1114,47 @@ body.foyer h1.title:hover .title-hover { opacity: 1; }
     60%      { transform: translate(-0.3px, 0.5px); }
     80%      { transform: translate(0.5px, -0.3px); }
 }
-/* Pin <main> into its own compositor layer permanently AND apply
-   identity transform/filter at all times, so the cascade carries
-   the properties even when no animation is running. Without the
-   permanent identity values, the animation cleanup left transform
-   and filter as 'absent' rather than 'identity' — and the moment
-   either property goes from animated value to absent-from-cascade,
-   the browser does a full re-rasterisation of every glyph and
-   rule inside main, visible as a snap at the tail of the ripple.
-   Now the properties never leave the cascade: they hold identity
-   at rest, then the animation modulates them and hands back to
-   identity at the end, all inside one continuous layer. */
-body.foyer main {
-    will-change: transform, filter;
-    transform: translateZ(0);
-    filter: brightness(1) contrast(1);
+/* Ripple via an overlay on top of the page, not via transform/filter
+   on the content. The previous approach kept causing a single-frame
+   re-rasterisation snap of every glyph in main when the animation
+   handed back to the cascade, regardless of how I pinned layers or
+   stabilised properties. Trade-off accepted: the dedicated overlay
+   does the entire effect with backdrop-filter (which acts on what's
+   behind it without rasterising its own contents), so the content
+   layer never moves. The overlay is positioned above the grain and
+   the page body but below the wisp / cursor-glow / theme-toggle, so
+   those three are unaffected. */
+.foyer-ripple-overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    backdrop-filter: brightness(1) blur(0);
+    -webkit-backdrop-filter: brightness(1) blur(0);
 }
-
-/* Four-shot ripple, gated by JS. site.js adds .foyer-rippling on
-   mouseenter of the title and removes it on the second animation's
-   animationend event. A 4s cooldown after that blocks re-triggering.
-   Both animations have the same duration (0.55s × 4 = 2.2s) so they
-   end on the same frame; with mismatched durations the shorter one
-   reverted to baseline 0.2s before the longer one, which left main
-   in a half-animated state that snapped on cleanup. */
-body.foyer.foyer-rippling main {
-    animation: foyer-shudder 0.55s ease-in-out 4,
-               foyer-shimmer 0.55s ease-in-out 4;
+body.foyer.foyer-rippling .foyer-ripple-overlay {
+    animation: foyer-ripple 0.55s ease-in-out 4;
+}
+@keyframes foyer-ripple {
+    0%, 100% {
+        backdrop-filter: brightness(1) blur(0);
+        -webkit-backdrop-filter: brightness(1) blur(0);
+    }
+    25% {
+        backdrop-filter: brightness(1.07) blur(0.35px);
+        -webkit-backdrop-filter: brightness(1.07) blur(0.35px);
+    }
+    50% {
+        backdrop-filter: brightness(1.03) blur(0.15px);
+        -webkit-backdrop-filter: brightness(1.03) blur(0.15px);
+    }
+    75% {
+        backdrop-filter: brightness(1.09) blur(0.3px);
+        -webkit-backdrop-filter: brightness(1.09) blur(0.3px);
+    }
 }
 @media (prefers-reduced-motion: reduce) {
-    body.foyer.foyer-rippling main { animation: none; }
+    body.foyer.foyer-rippling .foyer-ripple-overlay { animation: none; }
 }
 body.foyer .colophon {
     font-family: var(--font-body);

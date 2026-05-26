@@ -49,33 +49,34 @@ document.addEventListener('DOMContentLoaded', () => {
         animateGlow();
     }
 
-    // ─── Foyer title ripple — shudder/shimmer on hover, with cooldown ───
-    // CSS animates body.foyer-rippling > main. This script adds the
-    // class on mouseenter, removes it on the animationend of the
-    // second of the two parallel animations (using animationend
-    // instead of setTimeout avoids the timing slop that can otherwise
-    // strip the class mid-iteration and snap the page), then waits
-    // out a 4s cooldown before allowing another trigger.
+    // ─── Foyer title ripple — overlay-driven on hover, with cooldown ───
+    // The ripple is applied to a dedicated fixed overlay above the
+    // page, so the content layer never receives transform or filter.
+    // This script creates the overlay on first run, triggers it on
+    // mouseenter of the title, removes the class on animationend,
+    // then waits out a 4s cooldown before allowing another trigger.
     const titleEl = document.querySelector('body.foyer h1.title');
-    const mainEl  = document.querySelector('body.foyer main');
-    if (titleEl && mainEl) {
+    if (titleEl) {
+        let overlay = document.querySelector('.foyer-ripple-overlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.className = 'foyer-ripple-overlay';
+            overlay.setAttribute('aria-hidden', 'true');
+            document.body.appendChild(overlay);
+        }
         const COOLDOWN_MS = 4000;
         let onCooldown = false;
         titleEl.addEventListener('mouseenter', () => {
             if (onCooldown) return;
             onCooldown = true;
             document.body.classList.add('foyer-rippling');
-            let endsSeen = 0;
             const handler = (e) => {
-                if (e.target !== mainEl) return;
-                endsSeen += 1;
-                if (endsSeen >= 2) {
-                    mainEl.removeEventListener('animationend', handler);
-                    document.body.classList.remove('foyer-rippling');
-                    setTimeout(() => { onCooldown = false; }, COOLDOWN_MS);
-                }
+                if (e.target !== overlay) return;
+                overlay.removeEventListener('animationend', handler);
+                document.body.classList.remove('foyer-rippling');
+                setTimeout(() => { onCooldown = false; }, COOLDOWN_MS);
             };
-            mainEl.addEventListener('animationend', handler);
+            overlay.addEventListener('animationend', handler);
         });
     }
 
