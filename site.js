@@ -49,34 +49,94 @@ document.addEventListener('DOMContentLoaded', () => {
         animateGlow();
     }
 
-    // ─── Foyer title ripple — overlay-driven on hover, with cooldown ───
-    // The ripple is applied to a dedicated fixed overlay above the
-    // page, so the content layer never receives transform or filter.
-    // This script creates the overlay on first run, triggers it on
-    // mouseenter of the title, removes the class on animationend,
-    // then waits out a 4s cooldown before allowing another trigger.
+    // ─── Foyer title spark — focal effect on hover, with cooldown ───
+    // A single star spawns at the cursor on title hover, orbits it
+    // briefly, returns, then bursts into a small splash that fades.
+    // No page-wide brightness/blur (gentler on photosensitivity than
+    // the earlier strobe). 4s cooldown after each fire.
     const titleEl = document.querySelector('body.foyer h1.title');
-    if (titleEl) {
-        let overlay = document.querySelector('.foyer-ripple-overlay');
-        if (!overlay) {
-            overlay = document.createElement('div');
-            overlay.className = 'foyer-ripple-overlay';
-            overlay.setAttribute('aria-hidden', 'true');
-            document.body.appendChild(overlay);
-        }
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (titleEl && !reduceMotion) {
         const COOLDOWN_MS = 4000;
+        const ORBIT_MS    = 1100;
+        const SPLASH_MS   = 700;
+        const ORBIT_R     = 46;            // orbit radius in pixels
+        const SPLASH_R    = 70;            // average splash distance
+        const SPLASH_N    = 8;             // number of splash stars
+        const ORBIT_LOOPS = 1.5;           // full revolutions during orbit
         let onCooldown = false;
+
         titleEl.addEventListener('mouseenter', () => {
             if (onCooldown) return;
             onCooldown = true;
-            document.body.classList.add('foyer-rippling');
-            const handler = (e) => {
-                if (e.target !== overlay) return;
-                overlay.removeEventListener('animationend', handler);
-                document.body.classList.remove('foyer-rippling');
+
+            // Snapshot the cursor position at trigger time.
+            const x = _mouseX;
+            const y = _mouseY;
+
+            // The orbiting star.
+            const star = document.createElement('div');
+            star.className = 'title-spark';
+            star.setAttribute('aria-hidden', 'true');
+            star.textContent = '✶';
+            star.style.left = x + 'px';
+            star.style.top  = y + 'px';
+            document.body.appendChild(star);
+
+            // Build orbit keyframes: emerge, sweep ORBIT_LOOPS rotations
+            // along a circle of radius ORBIT_R, then return to centre.
+            const steps = 24;
+            const kf = [
+                { transform: 'translate(-50%, -50%) scale(0)', opacity: 0, offset: 0 },
+                { transform: 'translate(-50%, -50%) scale(1)', opacity: 1, offset: 0.08 }
+            ];
+            for (let i = 0; i <= steps; i++) {
+                const t = i / steps;
+                const angle = t * Math.PI * 2 * ORBIT_LOOPS - Math.PI / 2;
+                const dx = Math.cos(angle) * ORBIT_R;
+                const dy = Math.sin(angle) * ORBIT_R;
+                kf.push({
+                    transform: `translate(calc(-50% + ${dx.toFixed(2)}px), calc(-50% + ${dy.toFixed(2)}px)) scale(1)`,
+                    opacity: 1,
+                    offset: 0.08 + t * 0.82
+                });
+            }
+            kf.push({ transform: 'translate(-50%, -50%) scale(1)', opacity: 1, offset: 0.94 });
+            kf.push({ transform: 'translate(-50%, -50%) scale(0)', opacity: 0, offset: 1 });
+
+            const orbit = star.animate(kf, {
+                duration: ORBIT_MS,
+                easing: 'ease-in-out',
+                fill: 'forwards'
+            });
+
+            orbit.onfinish = () => {
+                star.remove();
+                // Splash phase — N small stars fan out and fade.
+                for (let i = 0; i < SPLASH_N; i++) {
+                    const splash = document.createElement('div');
+                    splash.className = 'title-spark-splash';
+                    splash.setAttribute('aria-hidden', 'true');
+                    splash.textContent = '✶';
+                    splash.style.left = x + 'px';
+                    splash.style.top  = y + 'px';
+                    document.body.appendChild(splash);
+                    const angle = (i / SPLASH_N) * 2 * Math.PI + (Math.random() - 0.5) * 0.4;
+                    const dist  = SPLASH_R + (Math.random() - 0.5) * 30;
+                    const dx = Math.cos(angle) * dist;
+                    const dy = Math.sin(angle) * dist;
+                    const sanim = splash.animate([
+                        { transform: 'translate(-50%, -50%) scale(0.7)', opacity: 1 },
+                        { transform: `translate(calc(-50% + ${dx.toFixed(2)}px), calc(-50% + ${dy.toFixed(2)}px)) scale(0.3)`, opacity: 0 }
+                    ], {
+                        duration: SPLASH_MS,
+                        easing: 'ease-out',
+                        fill: 'forwards'
+                    });
+                    sanim.onfinish = () => splash.remove();
+                }
                 setTimeout(() => { onCooldown = false; }, COOLDOWN_MS);
             };
-            overlay.addEventListener('animationend', handler);
         });
     }
 

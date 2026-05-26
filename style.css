@@ -1097,64 +1097,29 @@ body.foyer h1.title .title-hover { opacity: 0; }
 body.foyer h1.title:hover .title-default { opacity: 0; }
 body.foyer h1.title:hover .title-hover { opacity: 1; }
 
-/* When the title is hovered, the page itself responds — a faint
-   shimmer in brightness/contrast on the body, a sub-pixel shudder
-   on main. The two combine into a werelight passing through the
-   room. Respects prefers-reduced-motion. */
-@keyframes foyer-shimmer {
-    0%, 100% { filter: brightness(1) contrast(1); }
-    25%      { filter: brightness(1.07) contrast(1.02); }
-    50%      { filter: brightness(1.02) contrast(1.05); }
-    75%      { filter: brightness(1.09) contrast(1.01); }
-}
-@keyframes foyer-shudder {
-    0%, 100% { transform: translate(0, 0); }
-    20%      { transform: translate(-0.5px, 0.6px); }
-    40%      { transform: translate(0.4px, -0.4px); }
-    60%      { transform: translate(-0.3px, 0.5px); }
-    80%      { transform: translate(0.5px, -0.3px); }
-}
-/* Ripple via an overlay on top of the page, not via transform/filter
-   on the content. The previous approach kept causing a single-frame
-   re-rasterisation snap of every glyph in main when the animation
-   handed back to the cascade, regardless of how I pinned layers or
-   stabilised properties. Trade-off accepted: the dedicated overlay
-   does the entire effect with backdrop-filter (which acts on what's
-   behind it without rasterising its own contents), so the content
-   layer never moves. The overlay is positioned above the grain and
-   the page body but below the wisp / cursor-glow / theme-toggle, so
-   those three are unaffected. */
-.foyer-ripple-overlay {
+/* Title-spark effect — replaces the earlier whole-page strobe to be
+   gentler on photosensitivity. On hovering the title, a single star
+   emerges at the cursor, orbits it briefly, returns, and bursts into
+   a small splash of fainter stars that fade outward. All elements
+   are position: fixed and short-lived; site.js creates them on
+   demand and removes them at animation-end. */
+.title-spark,
+.title-spark-splash {
     position: fixed;
-    inset: 0;
     pointer-events: none;
-    z-index: 1;
-    backdrop-filter: brightness(1) blur(0);
-    -webkit-backdrop-filter: brightness(1) blur(0);
+    z-index: 9999;
+    font-family: var(--font-display);
+    color: var(--accent);
+    text-shadow: 0 0 8px var(--accent), 0 0 16px var(--glow-color);
+    transform: translate(-50%, -50%);
+    will-change: transform, opacity;
+    line-height: 1;
+    user-select: none;
 }
-body.foyer.foyer-rippling .foyer-ripple-overlay {
-    animation: foyer-ripple 0.55s ease-in-out 4;
-}
-@keyframes foyer-ripple {
-    0%, 100% {
-        backdrop-filter: brightness(1) blur(0);
-        -webkit-backdrop-filter: brightness(1) blur(0);
-    }
-    25% {
-        backdrop-filter: brightness(1.07) blur(0.35px);
-        -webkit-backdrop-filter: brightness(1.07) blur(0.35px);
-    }
-    50% {
-        backdrop-filter: brightness(1.03) blur(0.15px);
-        -webkit-backdrop-filter: brightness(1.03) blur(0.15px);
-    }
-    75% {
-        backdrop-filter: brightness(1.09) blur(0.3px);
-        -webkit-backdrop-filter: brightness(1.09) blur(0.3px);
-    }
-}
+.title-spark        { font-size: 1.4rem; }
+.title-spark-splash { font-size: 0.85rem; }
 @media (prefers-reduced-motion: reduce) {
-    body.foyer.foyer-rippling .foyer-ripple-overlay { animation: none; }
+    .title-spark, .title-spark-splash { display: none !important; }
 }
 body.foyer .colophon {
     font-family: var(--font-body);
