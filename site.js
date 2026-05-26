@@ -49,6 +49,28 @@ document.addEventListener('DOMContentLoaded', () => {
         animateGlow();
     }
 
+    // ─── Foyer title ripple — shudder/shimmer on hover, with cooldown ───
+    // CSS animates body.foyer-rippling (and its <main>). This script
+    // adds that class on mouseenter and gates re-entry behind a
+    // cooldown so the ripple doesn't fire on every cursor pass.
+    const titleEl = document.querySelector('body.foyer h1.title');
+    if (titleEl) {
+        const ANIMATION_MS = 2200;   // ~4 iterations of 0.55s
+        const COOLDOWN_MS  = 4000;   // 4s after the ripple before next trigger
+        let onCooldown = false;
+        titleEl.addEventListener('mouseenter', () => {
+            if (onCooldown) return;
+            onCooldown = true;
+            document.body.classList.add('foyer-rippling');
+            setTimeout(() => {
+                document.body.classList.remove('foyer-rippling');
+            }, ANIMATION_MS);
+            setTimeout(() => {
+                onCooldown = false;
+            }, ANIMATION_MS + COOLDOWN_MS);
+        });
+    }
+
     // ─── The wisp — a figure that never closes ───
     // She belongs to the site, not the page. Injected on every page that loads site.js.
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
