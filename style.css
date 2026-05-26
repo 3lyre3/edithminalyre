@@ -1114,15 +1114,21 @@ body.foyer h1.title:hover .title-hover { opacity: 1; }
     60%      { transform: translate(-0.3px, 0.5px); }
     80%      { transform: translate(0.5px, -0.3px); }
 }
-/* Pin <main> into its own compositor layer permanently. Without
-   this, the layer is created when the animation adds a filter/
-   transform and destroyed when it ends — that creation/destruction
-   triggers a full re-rasterisation of every text glyph and rule
-   inside main, visible as a snap at the tail of the ripple. With
-   will-change set, the layer is already there; the animation just
-   modulates values inside it. No layer thrash, no re-rasterisation. */
+/* Pin <main> into its own compositor layer permanently AND apply
+   identity transform/filter at all times, so the cascade carries
+   the properties even when no animation is running. Without the
+   permanent identity values, the animation cleanup left transform
+   and filter as 'absent' rather than 'identity' — and the moment
+   either property goes from animated value to absent-from-cascade,
+   the browser does a full re-rasterisation of every glyph and
+   rule inside main, visible as a snap at the tail of the ripple.
+   Now the properties never leave the cascade: they hold identity
+   at rest, then the animation modulates them and hands back to
+   identity at the end, all inside one continuous layer. */
 body.foyer main {
     will-change: transform, filter;
+    transform: translateZ(0);
+    filter: brightness(1) contrast(1);
 }
 
 /* Four-shot ripple, gated by JS. site.js adds .foyer-rippling on
