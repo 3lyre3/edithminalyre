@@ -64,8 +64,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const COOLDOWN_MS    = 4000;
         const FAN_N          = 7;                       // seven stars per fan
         const FAN_ARC        = (2 * Math.PI) / 3;       // arc span = 1/3 of a full circle (120°)
-        const FAN_R_INNER    = 28;                      // first star's distance from cursor
-        const FAN_R_OUTER    = 74;                      // last star's distance — they spiral outward
+        const FAN_DIR        = -1;                      // -1 = counter-clockwise (in screen coords), +1 = clockwise
+        const FAN_R_INNER    = 32;                      // first star's distance from cursor
+        const FAN_R_OUTER    = 96;                      // last star's distance — they spiral outward
         const FAN_START_DIRS = 7;                       // seven possible orientations for the arc's start
         const SPAWN_STAGGER  = 140;   // ms between successive spawns
         const SPAWN_FADE     = 240;   // ms for each star to fade in / scale up
@@ -89,10 +90,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // SPAWN PHASE: each star sits at a point along a 120°
             // arc, with radius increasing from FAN_R_INNER to
-            // FAN_R_OUTER as the spiral proceeds.
+            // FAN_R_OUTER as the spiral proceeds. FAN_DIR = -1
+            // unfurls counter-clockwise in screen coordinates.
             for (let i = 0; i < FAN_N; i++) {
                 const t = i / (FAN_N - 1);                  // 0 → 1 across the fan
-                const angle = startAngle + t * FAN_ARC;
+                const angle = startAngle + FAN_DIR * t * FAN_ARC;
                 const radius = FAN_R_INNER + t * (FAN_R_OUTER - FAN_R_INNER);
                 const dx = Math.cos(angle) * radius;
                 const dy = Math.sin(angle) * radius;
