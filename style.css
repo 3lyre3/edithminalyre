@@ -1178,12 +1178,6 @@ body.foyer nav.primary a {
 body.foyer nav.primary a:hover { color: var(--accent); }
 body.foyer nav.primary a::after { display: none; }
 body.foyer nav.primary .sep { color: var(--stone); margin: 0 0.5em; }
-body.foyer nav.primary a.for-metal-kin {
-    color: var(--accent);
-    font-style: italic;
-    font-size: 1.05em;
-    margin-left: 0.2em;
-}
 
 /* ── FOYER SECTION HEADS ─────────────────────────── */
 body.foyer section.bay { margin-bottom: 5rem; }
