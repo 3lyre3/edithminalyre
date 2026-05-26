@@ -1075,6 +1075,13 @@ body.foyer h1.title {
     margin: 0 0 1.85rem;
     text-shadow: 0 0 60px var(--glow-color), 0 0 140px var(--glow-color);
     display: grid;
+    /* Shrink-wrap so the hover hit-area matches the visible text,
+       not the full width of <main>. Otherwise moving the cursor up
+       toward the theme toggle or nav crosses an invisible band of
+       hover region and triggers the shudder. max-width keeps it
+       safe on narrow viewports. */
+    width: fit-content;
+    max-width: 100%;
 }
 body.foyer h1.title::after { display: none; }
 /* The two halves of the title stack in the same grid cell, sized
