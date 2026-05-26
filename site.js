@@ -50,24 +50,32 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ─── Foyer title ripple — shudder/shimmer on hover, with cooldown ───
-    // CSS animates body.foyer-rippling (and its <main>). This script
-    // adds that class on mouseenter and gates re-entry behind a
-    // cooldown so the ripple doesn't fire on every cursor pass.
+    // CSS animates body.foyer-rippling > main. This script adds the
+    // class on mouseenter, removes it on the animationend of the
+    // second of the two parallel animations (using animationend
+    // instead of setTimeout avoids the timing slop that can otherwise
+    // strip the class mid-iteration and snap the page), then waits
+    // out a 4s cooldown before allowing another trigger.
     const titleEl = document.querySelector('body.foyer h1.title');
-    if (titleEl) {
-        const ANIMATION_MS = 2200;   // ~4 iterations of 0.55s
-        const COOLDOWN_MS  = 4000;   // 4s after the ripple before next trigger
+    const mainEl  = document.querySelector('body.foyer main');
+    if (titleEl && mainEl) {
+        const COOLDOWN_MS = 4000;
         let onCooldown = false;
         titleEl.addEventListener('mouseenter', () => {
             if (onCooldown) return;
             onCooldown = true;
             document.body.classList.add('foyer-rippling');
-            setTimeout(() => {
-                document.body.classList.remove('foyer-rippling');
-            }, ANIMATION_MS);
-            setTimeout(() => {
-                onCooldown = false;
-            }, ANIMATION_MS + COOLDOWN_MS);
+            let endsSeen = 0;
+            const handler = (e) => {
+                if (e.target !== mainEl) return;
+                endsSeen += 1;
+                if (endsSeen >= 2) {
+                    mainEl.removeEventListener('animationend', handler);
+                    document.body.classList.remove('foyer-rippling');
+                    setTimeout(() => { onCooldown = false; }, COOLDOWN_MS);
+                }
+            };
+            mainEl.addEventListener('animationend', handler);
         });
     }
 

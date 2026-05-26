@@ -1114,21 +1114,26 @@ body.foyer h1.title:hover .title-hover { opacity: 1; }
     60%      { transform: translate(-0.3px, 0.5px); }
     80%      { transform: translate(0.5px, -0.3px); }
 }
-/* Four-shot ripple, gated by JS. site.js adds .foyer-rippling on
-   mouseenter of the title, leaves it for ~2.2s, then removes it.
-   A 4s cooldown after removal blocks re-triggering. Keyframes return
-   to baseline at 100% so each iteration settles cleanly.
+/* Pin <main> into its own compositor layer permanently. Without
+   this, the layer is created when the animation adds a filter/
+   transform and destroyed when it ends — that creation/destruction
+   triggers a full re-rasterisation of every text glyph and rule
+   inside main, visible as a snap at the tail of the ripple. With
+   will-change set, the layer is already there; the animation just
+   modulates values inside it. No layer thrash, no re-rasterisation. */
+body.foyer main {
+    will-change: transform, filter;
+}
 
-   Both animations live on <main>, not body. CSS `filter` (used by
-   foyer-shimmer) creates a containing block for position: fixed
-   descendants — putting it on body would re-anchor the cursor-glow,
-   wisp, and theme-toggle for the duration of the animation, then
-   snap them back to viewport positioning when the filter goes away.
-   That was the jarring reset visible at the tail of the ripple.
-   <main> has no fixed descendants, so the same effect on main causes
-   no rebasing. */
+/* Four-shot ripple, gated by JS. site.js adds .foyer-rippling on
+   mouseenter of the title and removes it on the second animation's
+   animationend event. A 4s cooldown after that blocks re-triggering.
+   Both animations have the same duration (0.55s × 4 = 2.2s) so they
+   end on the same frame; with mismatched durations the shorter one
+   reverted to baseline 0.2s before the longer one, which left main
+   in a half-animated state that snapped on cleanup. */
 body.foyer.foyer-rippling main {
-    animation: foyer-shudder 0.5s ease-in-out 4,
+    animation: foyer-shudder 0.55s ease-in-out 4,
                foyer-shimmer 0.55s ease-in-out 4;
 }
 @media (prefers-reduced-motion: reduce) {
