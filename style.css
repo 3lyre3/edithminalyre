@@ -1114,11 +1114,14 @@ body.foyer h1.title:hover .title-hover { opacity: 1; }
     60%      { transform: translate(-0.3px, 0.5px); }
     80%      { transform: translate(0.5px, -0.3px); }
 }
+/* One-shot on hover-in: the keyframes return to baseline at 100%,
+   so the page settles back to rest while the cursor is still held
+   over the title. Re-entering the hover region replays the ripple. */
 body.foyer:has(h1.title:hover) {
-    animation: foyer-shimmer 0.55s ease-in-out infinite;
+    animation: foyer-shimmer 0.55s ease-in-out 1;
 }
 body.foyer:has(h1.title:hover) main {
-    animation: foyer-shudder 0.5s ease-in-out infinite;
+    animation: foyer-shudder 0.5s ease-in-out 1;
 }
 @media (prefers-reduced-motion: reduce) {
     body.foyer:has(h1.title:hover),
