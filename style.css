@@ -1066,7 +1066,7 @@ body.foyer .eyebrow {
 }
 body.foyer h1.title {
     font-family: var(--font-display);
-    font-size: clamp(1.7rem, 4.2vw, 3.5rem);
+    font-size: clamp(1.35rem, 3.2vw, 2.7rem);
     font-weight: 300;
     font-style: italic;
     letter-spacing: 0.005em;
@@ -1086,6 +1086,34 @@ body.foyer h1.title > span {
 body.foyer h1.title .title-hover { opacity: 0; }
 body.foyer h1.title:hover .title-default { opacity: 0; }
 body.foyer h1.title:hover .title-hover { opacity: 1; }
+
+/* When the title is hovered, the page itself responds — a faint
+   shimmer in brightness/contrast on the body, a sub-pixel shudder
+   on main. The two combine into a werelight passing through the
+   room. Respects prefers-reduced-motion. */
+@keyframes foyer-shimmer {
+    0%, 100% { filter: brightness(1) contrast(1); }
+    25%      { filter: brightness(1.07) contrast(1.02); }
+    50%      { filter: brightness(1.02) contrast(1.05); }
+    75%      { filter: brightness(1.09) contrast(1.01); }
+}
+@keyframes foyer-shudder {
+    0%, 100% { transform: translate(0, 0); }
+    20%      { transform: translate(-0.5px, 0.6px); }
+    40%      { transform: translate(0.4px, -0.4px); }
+    60%      { transform: translate(-0.3px, 0.5px); }
+    80%      { transform: translate(0.5px, -0.3px); }
+}
+body.foyer:has(h1.title:hover) {
+    animation: foyer-shimmer 0.55s ease-in-out infinite;
+}
+body.foyer:has(h1.title:hover) main {
+    animation: foyer-shudder 0.5s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+    body.foyer:has(h1.title:hover),
+    body.foyer:has(h1.title:hover) main { animation: none; }
+}
 body.foyer .colophon {
     font-family: var(--font-body);
     font-style: italic;
