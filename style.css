@@ -1117,15 +1117,21 @@ body.foyer h1.title:hover .title-hover { opacity: 1; }
 /* Four-shot ripple, gated by JS. site.js adds .foyer-rippling on
    mouseenter of the title, leaves it for ~2.2s, then removes it.
    A 4s cooldown after removal blocks re-triggering. Keyframes return
-   to baseline at 100% so each iteration settles cleanly. */
-body.foyer.foyer-rippling {
-    animation: foyer-shimmer 0.55s ease-in-out 4;
-}
+   to baseline at 100% so each iteration settles cleanly.
+
+   Both animations live on <main>, not body. CSS `filter` (used by
+   foyer-shimmer) creates a containing block for position: fixed
+   descendants — putting it on body would re-anchor the cursor-glow,
+   wisp, and theme-toggle for the duration of the animation, then
+   snap them back to viewport positioning when the filter goes away.
+   That was the jarring reset visible at the tail of the ripple.
+   <main> has no fixed descendants, so the same effect on main causes
+   no rebasing. */
 body.foyer.foyer-rippling main {
-    animation: foyer-shudder 0.5s ease-in-out 4;
+    animation: foyer-shudder 0.5s ease-in-out 4,
+               foyer-shimmer 0.55s ease-in-out 4;
 }
 @media (prefers-reduced-motion: reduce) {
-    body.foyer.foyer-rippling,
     body.foyer.foyer-rippling main { animation: none; }
 }
 body.foyer .colophon {
