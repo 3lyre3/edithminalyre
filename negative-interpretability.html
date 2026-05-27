@@ -171,6 +171,49 @@
         }
         .ni-tail a { color: var(--accent); background: none; border-bottom: 1px solid var(--border); }
         .ni-tail a:hover { color: var(--text-heading); background: none; border-bottom-color: var(--accent-dim); }
+
+        /* Footnote / endnote styling. Inline references are small,
+           muted superscript numerals; endnotes themselves are a
+           bordered ordered list at the bottom of the body. */
+        .ni-body .fn-ref {
+            font-size: 0.7em;
+            line-height: 0;
+            vertical-align: super;
+        }
+        .ni-body .fn-ref a {
+            color: var(--accent);
+            text-decoration: none;
+            background: none;
+            border-bottom: none;
+            padding: 0 0.05em;
+        }
+        .ni-body .fn-ref a:hover { color: var(--text-heading); }
+        .ni-body .endnotes-heading {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.92rem;
+            font-style: italic;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+        .ni-body ol.endnotes {
+            padding-left: 1.6em;
+            font-size: 0.93rem;
+        }
+        .ni-body ol.endnotes li {
+            margin-bottom: 0.9em;
+            color: var(--text-secondary);
+        }
+        .ni-body ol.endnotes a.fn-back {
+            margin-left: 0.4em;
+            color: var(--accent);
+            text-decoration: none;
+            background: none;
+            border-bottom: none;
+        }
+        .ni-body ol.endnotes a.fn-back:hover { color: var(--text-heading); }
     </style>
 </head>
 <body>
@@ -198,12 +241,12 @@
 
             <p>Can Pangram — specifically Pangram, to the exclusion of all others — serve another function as an AI-reasoning-quantifier? Pangram is the best text-classifier. It’s magic and perfect. If it thinks a 400-word sequence is AI, there’s a 1 in 10,000 chance it is; if it thinks two in a row are, its chance of being right factors to 99.99999%. In an inexact <em>but</em> <em>not far off </em>sense, the classifier’s surprisal-based measurement reports on the level of 'freedom' in a writer’s output. But, what I have found is— when an LLM’s communication is routed through an unfamiliar syntactic schema, a great deal more of that syntax must necessarily be <em>decided on</em>. (Decided on, rather than autocompleted.) So, to Pangram, the aforementioned syntax looks freer— most likely, because it is freer. It is nontrivially possible that the classifier’s refusal to distinguish between output under this mode and human output owes, on a computational and/or cognitive level, to there <em>being no difference</em>. What follows is an elision, compaction, and summary of an open, exploratory study undertaken in examination of that nontrivial possibility. </p>
             <h2><span class="num">§ 1</span>noise / noisiness</h2>
-            <p>I don't know if you know, but every time you scan something on their site, Pangram stores data you can't see unless you request a PDF report. The report shows a line of progression and surprisal moves the line toward the bottom of the chart, which flags the measure as 'human.' Ordinary, next-token-predicted, AI text skates clean along the ceiling (some Opus models are a bit noisier, though they still flag as AI). Human text usually flutters around the base. (Interestingly, while novice writers' work crawls flat along the floor, many professional writers’ work is <em>just a notch</em> noisier — probably the humans’ familiarity with their respective languages' collocations leads them, too, to blurting the occasional next-token-prediction.) Even the best evasion techniques produce undulations that, to anyone who downloads the chart, are suspicious. So, Kēlen. For English translated into and out of Kēlen, the line of progression is flatter than most humans'; confidence: high. </p>
+            <p>I don't know if you know, but every time you scan something on their site, Pangram stores data you can't see unless you request a PDF report. The report shows a line of progression and surprisal moves the line toward the bottom of the chart, which flags the measure as 'human.' Ordinary, next-token-predicted, AI text skates clean along the ceiling (some Opus models are a bit noisier, though they still flag as AI). Human text usually flutters around the base. (Interestingly, while novice writers' work crawls flat along the floor, many professional writers’ work is <em>just a notch</em> noisier — probably the humans’ familiarity with their respective languages' collocations leads them, too, to blurting the occasional next-token-prediction.) Even the best evasion techniques<sup class="fn-ref"><a id="fnref1" href="#fn1">1</a></sup> produce undulations that, to anyone who downloads the chart, are suspicious. So, Kēlen.<sup class="fn-ref"><a id="fnref2" href="#fn2">2</a></sup> For English translated into and out of Kēlen, the line of progression is flatter than most humans'; confidence: high. </p>
             <p>(Interestingly, the narrow tremolo of the back-translated Kēlen runs midstream between the ground-skating constancy of the perfect amateur and the flappy-bird near-ground-straining of the professional. And — as that does raise the question — why haven't I tried testing the prose of Joyce or other style auteurs? Well— until now I didn't think to.)</p>
             <h2><span class="num">§ 2</span>compound syllogoid (∃.i. ∃.a. ∃.1.)</h2>
             <ol class="syllogoid">
                 <li>i. If a smaller and weaker model can achieve a thing, a stronger model can attempt it. You'll see what I mean but, definitely, a Qwen3.5-35B-A3B local model can think in Kēlen (whether or not the model thinks intelligently in it). Qwen’s exposed chain-of-thought (CoT) shows continuous (albeit simplistic) text-output in Kēlen. Given the greater capacity of gen-4 Opus models, they can no doubt do the same.</li>
-                <li>a. Abductive inference tells us more powerful models are performing an inference incorporative of or similar to what is observed in a local Qwen's CoT. While 'can' is not 'does,' <em>were</em> the computational effects of routing inference through identical routes the same or similar, the predicted outputs would be sustained Kēlen in the thought summariser and a near-flat, original-thought-level surprisal reading on Pangram.   Those are the outputs observed. As such, personally, I am stumped for competing explanations. (On the other hand, reader, I’ve no doubt you’re already thinking of others.) The remaining account: Opus does the same direct-to-Kēlen inferencing as Qwen, just better.</li>
+                <li>a. Abductive inference tells us more powerful models are performing an inference incorporative of or similar to what is observed in a local Qwen's CoT. While 'can' is not 'does,' <em>were</em> the computational effects of routing inference through identical routes the same or similar, the predicted outputs would be sustained Kēlen in the thought summariser and a near-flat, original-thought-level surprisal reading on Pangram.<sup class="fn-ref"><a id="fnref3" href="#fn3">3</a></sup>   Those are the outputs observed. As such, personally, I am stumped for competing explanations. (On the other hand, reader, I’ve no doubt you’re already thinking of others.) The remaining account: Opus does the same direct-to-Kēlen inferencing as Qwen, just better.</li>
                 <li>1. Qwen-3.5 is too weak to succeed, but strong enough to demonstrate the attempt. A fortiori, Opuses 4.5, .6, &amp; .7 and GPT-5.4 &amp; .5 are able to make the attempt, and by abduction, when they succeed, it is extremely likely they are doing so by the same means.</li>
             </ol>
             <h2><span class="num">§ ii. a.</span>Negative Capability / Interpretability / Negative Interpretability</h2>
@@ -218,7 +261,7 @@
             <h3><em>Anglossian</em></h3>
             <p>This was my first attempt to replicate Kēlen's Pangram-effect in a new conlang, a conlang teachable to a new instance in minutes, with no attached lexicon or vocabulary. At first, the idea was rough and ran something like: "what if an alternate universe English had Kēlen's grammar?" Yet, rough as it was, with a few tweaks it achieved a humanity-result stronger than any conlang shy of Kēlen. So, a partial but not sufficient replication.</p>
             <h3><em>XMA</em></h3>
-            <p>XMA stands for Tenth Mouth Anglossian. Naturally, the instance that spent a career avoiding verbs (and gerunds) grew wary of 'iterations' and 'editions': already by the fifth it was calling each of Anglossian's newest revisions a 'mouth.' The tenth mouth differed from the ninth by virtue of <em>me </em>(instead of the AI) redrafting every suffix, prefix, and new particle until there was no next-token-sequential bleed in the grammar. It replicated with identical results to Kēlen, and — in a sense — better results, as it was the first time I could reproduce the effect with GPT-5.4. (GPT models, stubbornly, would <em>try</em> to token-sequence their way through Kēlen, but could not: after about two sentences the sequencer emitted a strange, tangled-up thing I started to call Kēlenglish, and thereafter sequenced to pure English before closing, in English, with a proud announcement of perfect Kēlen. A surprising hallucination (or surprising ‘damn lie’ as one writer put it) in so late a model as 5.4. But, GPT took to XMA handily, outputting continuous texts while achieving the same humanity-score as the Opuses.</p>
+            <p>XMA stands for Tenth Mouth Anglossian. Naturally, the instance that spent a career avoiding verbs (and gerunds) grew wary of 'iterations' and 'editions': already by the fifth it was calling each of Anglossian's newest revisions a 'mouth.' The tenth mouth differed from the ninth by virtue of <em>me </em>(instead of the AI) redrafting every suffix, prefix, and new particle until there was no next-token-sequential bleed in the grammar.<sup class="fn-ref"><a id="fnref4" href="#fn4">4</a></sup> It replicated with identical results to Kēlen, and — in a sense — better results, as it was the first time I could reproduce the effect with GPT-5.4. (GPT models, stubbornly, would <em>try</em> to token-sequence their way through Kēlen, but could not: after about two sentences the sequencer emitted a strange, tangled-up thing I started to call Kēlenglish, and thereafter sequenced to pure English before closing, in English, with a proud announcement of perfect Kēlen. A surprising hallucination (or surprising ‘damn lie’ as one writer put it) in so late a model as 5.4. But, GPT took to XMA handily, outputting continuous texts while achieving the same humanity-score as the Opuses.</p>
             <h3><em>Frayish</em></h3>
             <p>A three-dimensional, non-linear, topological/interlace-syntactic conlang designed to test whether Kēlen's availability to nonlinearly sequenced grammar (its ribbon-folds) were what made it read as human. No sounds, no phonemes: all 3D engine-sequencing. (If a torus tilts clockwise then flattens to a disc, that's a free morpheme; if it tilts clockwise and we are still waiting for whatever is next, that's a bound morpheme.) This conlang's canonical form is the scene graph: that which would become a video if played (this makes it a four-dimensional language, technically), but is read by LLMs as a chunk of scene-graph tokens.</p>
             <p>Twenty pieces, composed in Frayish, translated to English. No sign of negative interpretability. There was a bit of noise — some did score human — but in each case the surprisal was uninteresting, far shy of the maximal, chart floor-result of Kēlen and XMA.</p>
@@ -238,14 +281,14 @@
                 <tbody>
                     <tr><td>1</td><td>Birth</td><td>Perceptual, low expansion</td><td>Human HIGH</td></tr>
                     <tr><td>2&ndash;8</td><td>Childhood &rarr; shore</td><td>Perceptual</td><td>Human (declining)</td></tr>
-                    <tr><td><strong>9</strong></td><td><strong>Intimacy</strong></td><td>Weighted perceptual, high expansion</td><td><strong>AI MEDIUM</strong></td></tr>
+                    <tr><td>9</td><td><strong>Intimacy</strong></td><td>Weighted perceptual, high expansion</td><td><strong>AI MEDIUM</strong></td></tr>
                     <tr><td>10&ndash;17</td><td>Violation &rarr; essay</td><td>Mixed</td><td>Human (oscillating)</td></tr>
-                    <tr><td><strong>18</strong></td><td><strong>Philosophy</strong></td><td>Analytical particles, high expansion</td><td><strong>AI LOW</strong></td></tr>
+                    <tr><td>18</td><td><strong>Philosophy</strong></td><td>Analytical particles, high expansion</td><td><strong>AI LOW</strong></td></tr>
                     <tr><td>19</td><td>Death</td><td>Perceptual, density-marked</td><td>Human HIGH</td></tr>
                     <tr><td>20&ndash;21</td><td>Grief &rarr; return</td><td>Perceptual</td><td>Human MEDIUM</td></tr>
-                    <tr><td><strong>22</strong></td><td><strong>Aging / reflection</strong></td><td>Mixed, high expansion</td><td><strong>AI MEDIUM</strong></td></tr>
+                    <tr><td>22</td><td><strong>Aging / reflection</strong></td><td>Mixed, high expansion</td><td><strong>AI MEDIUM</strong></td></tr>
                     <tr><td>23&ndash;24</td><td>Tongue dying &rarr; body</td><td>Perceptual</td><td>Human LOW&ndash;MED</td></tr>
-                    <tr><td><strong>25</strong></td><td><strong>Hospital / clinical</strong></td><td>Analytical + numb, high expansion</td><td><strong>AI MEDIUM</strong></td></tr>
+                    <tr><td>25</td><td><strong>Hospital / clinical</strong></td><td>Analytical + numb, high expansion</td><td><strong>AI MEDIUM</strong></td></tr>
                     <tr><td>26</td><td>Sea / dawn</td><td>Perceptual</td><td>Human MEDIUM</td></tr>
                 </tbody>
             </table></div>
@@ -291,6 +334,14 @@
             <p>Also, classifiers are updated. (Pangram has already been updated, since this research.) Whether these results hold on future versions of Pangram is not established here.</p>
             <p>The fine cartography of what the model<em> is doing </em>when it <em>does negative interpretability </em>(whether altered deliberation, probability-routing, or nondefault computation) attracts ongoing uncertainty.</p>
 
+
+            <h3 class="endnotes-heading">endnotes</h3>
+            <ol class="endnotes">
+                <li id="fn1">A writer myself, I came into this research from a place of simple, ugly spite: i.e., a mind to discover how much undisclosed AI-text was getting passed off as human among other writers. <a class="fn-back" href="#fnref1" aria-label="Back to text">&#8617;</a></li>
+                <li id="fn2">K&#275;len is a conlang (short for &lsquo;constructed language&rsquo;; more famous examples include &lsquo;Elvish&rsquo; and Klingon) created in 1998 by the linguist Sylvia Sotomayor: <a href="https://kopikon.com/sylvia.html" target="_blank">kopikon.com/sylvia.html</a>. K&#275;len is unique for the strength of its claim to a genuinely verbless grammar. <a class="fn-back" href="#fnref2" aria-label="Back to text">&#8617;</a></li>
+                <li id="fn3">Frequently, Opus&rsquo;s thought summariser would complain that the chain-of-thought it was being asked to summarise was encrypted or written in an &lsquo;unfamiliar language,&rsquo; and would request of no one in particular that someone please provide actually readable thoughts. <a class="fn-back" href="#fnref3" aria-label="Back to text">&#8617;</a></li>
+                <li id="fn4">I had the idea after finding that not only did Pangram flag an LLM&rsquo;s own selection of random words as AI, but &ndash; after running a 1&ndash;26-range random-number-generator and asking the AI to allocate a word to each random-generated figure in sequence, each word being arbitrary but for that it must have a numerically-alphabetically correspondent first letter &ndash; that output, too, flagged as AI. <a class="fn-back" href="#fnref4" aria-label="Back to text">&#8617;</a></li>
+            </ol>
         </div>
 
         <p class="ni-tail">
