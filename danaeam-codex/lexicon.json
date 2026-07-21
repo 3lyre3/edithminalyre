@@ -928,4 +928,728 @@
   "status": "canon"
  },
  {
-  "form": "M
+  "form": "Meos",
+  "type": "pronoun",
+  "gloss": "ours",
+  "notes": "predicate possessive",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Mis",
+  "type": "possessive",
+  "gloss": "our",
+  "notes": "article in existentials; never tmeses there",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Mhís",
+  "type": "quantifier",
+  "gloss": "lots / much",
+  "notes": "the h is native — †Mís unexisted by decree (cf. †them’s ghost †thrum); distinct from mis “our”",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Myth",
+  "type": "noun",
+  "gloss": "nose",
+  "notes": "",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "o",
+  "type": "conj.",
+  "gloss": "and",
+  "notes": "before the last and/or between every pair (1.3.1.2)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Oob",
+  "type": "preposition",
+  "gloss": "under",
+  "notes": "tmesis host: oo…b",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Or…il",
+  "type": "circumfix",
+  "gloss": "not X enough",
+  "notes": "insufficiency degree; attaches by tmesis-seams and charges the standard toll — soft l rides free (Or’lain’il), hard c pays (or’raif’il) (order-canon turn)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Ro…il",
+  "type": "circumfix",
+  "gloss": "too X",
+  "notes": "excess degree",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "rubh",
+  "type": "verb",
+  "gloss": "touch",
+  "notes": "",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "S’aige’in",
+  "type": "frame",
+  "gloss": "“as-said”",
+  "notes": "reportative shield; Sin + saige with seam-merge — literally “as-has-been-said”",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "saí",
+  "type": "verb",
+  "gloss": "speak",
+  "notes": "plain / present member of the pair; perfect: saige",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Scál",
+  "type": "noun",
+  "gloss": "cat",
+  "notes": "Catscale “geas-car” (lore)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Seoir",
+  "type": "noun",
+  "gloss": "key",
+  "notes": "",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Sídia",
+  "type": "noun",
+  "gloss": "sibling",
+  "notes": "glossed by the maker 2026-07-14 (sídia-teos “sibling-mine”); context renders sister or brother — the agender culture’s word",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Son",
+  "type": "verb",
+  "gloss": "bleed",
+  "notes": "soniú; gerund Son-Son",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "sót",
+  "type": "verb",
+  "gloss": "go on",
+  "notes": "usót “to go” — the u-infinitive’s first witness, sót serving plain-go (2.1.1.3.2)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Stát",
+  "type": "noun",
+  "gloss": "idiot",
+  "notes": "Stát mæ •",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Státach",
+  "type": "adjective",
+  "gloss": "stupid, idiotic",
+  "notes": "tmesis: Stá’fæ’tach",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Tes",
+  "type": "possessive",
+  "gloss": "my",
+  "notes": "",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Teos",
+  "type": "pronoun",
+  "gloss": "mine",
+  "notes": "tmeses in predication: Te’sídia’os",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Wíc",
+  "type": "noun",
+  "gloss": "water",
+  "notes": "w is hard: pays the toll (’íc)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Mêdhe",
+  "type": "noun",
+  "gloss": "metre",
+  "notes": "measure-adverbial mêdhië “by-a-metre” (-ië suffixed; lowercase as adverb)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Urgea",
+  "type": "noun",
+  "gloss": "fence",
+  "notes": "Ythús Urgea mêdhië… “past the fence by a metre…”",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "yth",
+  "type": "prep.",
+  "gloss": "past / over / beyond",
+  "notes": "welds with lus where the resonance serves: ythús",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "ythús",
+  "type": "prep.+art.",
+  "gloss": "past-the",
+  "notes": "weld of yth + lus — l paid at the gate, written solid (Syá-class); not kin to yüs “when”",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "nirïë",
+  "type": "adv.",
+  "gloss": "just, merely (“just-by”)",
+  "notes": "niri + -ië (“that’s all” — the maker); the i-i seam writes ï, cf. niïl ‹ ni + il; opens the clefted-P frame; capitalised in corpus only sentence-initially",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "niyail",
+  "type": "quant.",
+  "gloss": "single, singular",
+  "notes": "ni “fewer-than” + yail “many”",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Ornbeíl",
+  "type": "noun",
+  "gloss": "moment",
+  "notes": "Nirïë yinÿ … iostá Ornbeíl “just at that moment” — its iostá now doctrined: the manual de-clefter, closing the cleft explicitly (1.11.2.2.2.2)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "sin",
+  "type": "part.",
+  "gloss": "as, so",
+  "notes": "aich sin “also as”; the clefted so of the yinÿ…iostá frame",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "iostá",
+  "type": "cleft-closer",
+  "gloss": "UNCLEFTING-that",
+  "notes": "etymologically ios + atá — but only etymologically (the maker): grammaticalised as the declefter, for occasions that can’t otherwise be cleanly declefted; gloss “the de-clefting that”; closes what y-…nÿ opened; doctrined the manual de-clefter — deployed against ambiguity (1.11.2.2.2.2)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "yüs",
+  "type": "subord. th-word",
+  "gloss": "when (secondary clauses)",
+  "notes": "reformed from †ythüs by decree (collision with ythús avoided); primary yüsnÿ as may arise; bare interrog. thüs untouched",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "niri",
+  "type": "adv. (stem)",
+  "gloss": "just, merely",
+  "notes": "bare stem of nirïë (niri + -ië)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "yés",
+  "type": "subord. th-word",
+  "gloss": "which (secondary clauses)",
+  "notes": "reformed from †ythés, as yüs ‹ †ythüs; primary yésnÿ as may arise; mischief-note: answering a which-question, a síog may say Yés flag-free — for the chaos",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "drú",
+  "type": "P-modifier",
+  "gloss": "direct",
+  "notes": "sealed at workbook 1.2.4.3; order per 1.2.4.3.5",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "łix",
+  "type": "P-modifier",
+  "gloss": "exact",
+  "notes": "sealed at workbook 1.2.4.3; rides the cleft before iostá",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "aomeal",
+  "type": "P-modifier",
+  "gloss": "straight",
+  "notes": "sealed at workbook 1.2.4.3; kin in shape to the aoa-family — unruled",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "iy",
+  "type": "part.",
+  "gloss": "than",
+  "notes": "corrected by decree from earlier il (which remains “multiple”); stands free in predication (Holdhmÿa iy tens), hangs by the tmeter inside tmesis (hín-iy)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "holdh",
+  "type": "adjective",
+  "gloss": "tall",
+  "notes": "holdhmÿa “taller” — the tetrad as degree, “positively contrary” (sealed 1.2.2.3.3)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "hín",
+  "type": "noun",
+  "gloss": "man",
+  "notes": "the head Noun, guesting inside the standard-pronoun: Fæ’hín-iy’ær “a man … than fær”",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "mÿa",
+  "type": "clitic",
+  "gloss": "comparative — “positively contrary”",
+  "notes": "weld of ’ma + ’ya by decree (replaces the sequence mÿa); holdhmÿa “taller”",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "fær",
+  "type": "pronoun",
+  "gloss": "fær (object form of fæ, as attested after iy)",
+  "notes": "hosts the comparative complex: Fæ’hín-iy’ær; bare — the capital belongs to the Noun-complex’s left edge",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "ghiæan",
+  "type": "verb",
+  "gloss": "get, become",
+  "notes": "corrected from *ghæian (slip); the become-copula (Duílúch Fæ’du’ærs fæ ghiæan); by ghiæan “get over”; the frame of the becoming-gift (2.1.1.2.11) and of the passive-with-agent (2.1.1.2.13); pron. “sthɦih-ee-ah-neh-eh” (ghiæanea, the maker’s key — gh sounding [sθɦ]-wards)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Theváre",
+  "type": "verb",
+  "gloss": "devour",
+  "notes": "Theváre fæ — freely objectless (1.2.1.2.2)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "duîm",
+  "type": "prep.",
+  "gloss": "to-with (recipient / instrument)",
+  "notes": "tmetic; Duîm-fær niïl Rîbha fæ gæn “to-with-fær a book fæ gave”",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Rîbha",
+  "type": "noun",
+  "gloss": "book",
+  "notes": "Rîbha-e John “book-o’-John” — e hyphen-hung on the possessum before a named possessor (keeper’s naming-split reading, §12; 1.11.2.2.2.3)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Chair",
+  "type": "noun",
+  "gloss": "rain",
+  "notes": "Chair í gæn “it rains” — dummy-donor frame (1.2.1.2.1)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Pulsc",
+  "type": "noun",
+  "gloss": "dust",
+  "notes": "Pulsc yiæn “dust lies” (1.2.4.2.2)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Phailé",
+  "type": "noun",
+  "gloss": "bed",
+  "notes": "Oob lus Phailé “under the bed”",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "côs",
+  "type": "verb",
+  "gloss": "sleep",
+  "notes": "Or’threïg’il côs by “not-tired-enough to sleep”",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "silgá",
+  "type": "verb",
+  "gloss": "think",
+  "notes": "iy mæ silgá “than you think”",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "yiæn",
+  "type": "verb",
+  "gloss": "lie (rest, of dust etc.)",
+  "notes": "",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "dræao",
+  "type": "prep.",
+  "gloss": "from",
+  "notes": "fæ dræao nhœme “fæ from comes”; second office: the agent — Dræao lus Ufín “from the enemy”, the will’s dress against by’s channel (the von/durch split, 2.1.1.2.13); pron. “Dree-ow”",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Sáinsu",
+  "type": "noun",
+  "gloss": "task-set, “hands”; hands (the body’s task-set — attested 1.10.2)",
+  "notes": "one’s tasks / handiwork (1.2.2.2.3)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "gáns",
+  "type": "adjective",
+  "gloss": "useless",
+  "notes": "",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "eës",
+  "type": "part.",
+  "gloss": "of-the",
+  "notes": "lus Sáinsu eës Hrádai “the task-set of-the crown”",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Hrádai",
+  "type": "noun",
+  "gloss": "crown",
+  "notes": "",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "fiïl",
+  "type": "adjective",
+  "gloss": "loyal",
+  "notes": "",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "sin’t",
+  "type": "part.",
+  "gloss": "not so",
+  "notes": "sin + ’t; aoa sin’t “seems, so-abouts” — the double-negative disembodiment (1.2.2.1)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Frœ’thte",
+  "type": "adv.",
+  "gloss": "nearabouts",
+  "notes": "bare Frœ: unruled",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "niri’thte",
+  "type": "adv.",
+  "gloss": "“justn’t”, just about",
+  "notes": "aoa niri’thte “just about” (1.2.3.2)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "by",
+  "type": "part.",
+  "gloss": "via, as-a-process; [to] of purpose",
+  "notes": "the maker’s $-note: côs by “[to] sleep”, gáns by “useless via”",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "arch",
+  "type": "adjective",
+  "gloss": "far",
+  "notes": "ro’arch’il “too-far”",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "threïg",
+  "type": "adjective",
+  "gloss": "tired",
+  "notes": "Or’threïg’il “not-tired-enough”",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "tháxya",
+  "type": "interrog.",
+  "gloss": "whom (fronting)",
+  "notes": "coined 1.2.4.1; stands beside thénu — offices presumably distinct, held loosely",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Lethr",
+  "type": "noun",
+  "gloss": "hobbit, halfling",
+  "notes": "(1.2.2.3)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "sinya",
+  "type": "adv.",
+  "gloss": "muchly",
+  "notes": "sinya holdh “muchly tall”",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Pún",
+  "type": "noun",
+  "gloss": "tower",
+  "notes": "guest inside S’i’pún’il’n (1.2.2.3)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "ax",
+  "type": "conj.",
+  "gloss": "but",
+  "notes": "one word, contrast and correction alike (1.3.1.1.2); the tetrad’s ’ma stays a clitic — but is its own creature; between every pair (1.3.1.2)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "æxó",
+  "type": "conj.",
+  "gloss": "and/or",
+  "notes": "before the last and/or between every pair (1.3.1.2)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "aoæx",
+  "type": "conj.",
+  "gloss": "either-or-neither",
+  "notes": "“one or the other or neither” — the disjunction with a refusal built in; patterns as æxó (1.3.1.2)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "O",
+  "type": "part.",
+  "gloss": "the “all” modifier (list-opener)",
+  "notes": "opens a coordination as a menu: O Cafi œr Sî “Coffee or Tea” — options offered, both exist, soft both-at-once; only with o / œr / ax (O cruel ax fair, the maker’s demonstration in English material), never æxó/aoæx; distinct from the optative O, which wears the • (1.3.1.2.1)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "uain",
+  "type": "prop-word",
+  "gloss": "“one” (stand-in body)",
+  "notes": "the Danæam ceann: fills an elided head where the resonance calls for a body rather than a gap (1.3.3); lowercase as coined — pronoun-class, not a Noun",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "aoœr",
+  "type": "conj.",
+  "gloss": "neither-nor",
+  "notes": "completes the æxó / aoæx set (1.4.4); patterning with its set — flexible (keeper’s reading, one word corrects). Not from attraction: Œr ’thte was a clipped fragment, “Or not.”",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "sê",
+  "type": "pronoun",
+  "gloss": "self (reflexive)",
+  "notes": "coined to match Latin sē (1.5.1.4): logophoric — in reports, self bends back to the sayer; not caged to S’aige’in. Nearest kin Sî “tea”, thrice-distinguished. Paradigm (1.5.2.1): naked sê = 1st person (“myself” — the speaker owns the unmarked); sê-fær = 3rd (“færself”, hyphen-compound — turned 2026-07-14, the maker: “fær last — it’s an adjective so it takes the in-lieu-of-tmesis position”; formerly inked fær-sê); clause-mates otherwise disjoint; 2nd person unruled; naked sê never third — re-ratified. Placement free (1.6.4); serves as emphatic too (1.6.9.1). The family (1.6.5, 1.6.9.3): sê · í-sê · sê-fær · miths-sê · cías-sê — every antecedent pairs with its own compound, no exotic binding conditions. (Whether the family turns with fær’s compound — sê-miths, sê-cías, sê-í — stands forked, 2026-07-14.) (2026-07-15: cías also now compounds outside the sê-family, in iocías/sícías ‘those/these’, 2.1.1.4.19 — not a resolution, but its compounding behavior generally is a little better attested.) Dual duty by number: alone in the singular, each-other in the plural, the resonance reading; the alone-construction rides mé “with” (wil cías-sê mé), and a ’ya on wil reassures",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "iosiyao",
+  "type": "text-deictic",
+  "gloss": "farther back (the earlier-said; “the former”)",
+  "notes": "the six-cell text-deixis paradigm (1.5.1.6): sís/ios × back (-iyao) / along (-aoya) / plain (-iya); “along” is cataphoric — the about-to-be-said. Chunk-order in the direction pair mirrored (observed, not decomposed)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "iosaoya",
+  "type": "text-deictic",
+  "gloss": "farther along (the yet-to-be-said)",
+  "notes": "cataphoric far (1.5.1.6)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "sísiyao",
+  "type": "text-deictic",
+  "gloss": "nearer back (“the latter”)",
+  "notes": "(1.5.1.6)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "sísaoya",
+  "type": "text-deictic",
+  "gloss": "nearer along",
+  "notes": "cataphoric near (1.5.1.6)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "sísiya",
+  "type": "text-deictic",
+  "gloss": "nearer (direction-unspecified)",
+  "notes": "(1.5.1.6)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "iosiya",
+  "type": "text-deictic",
+  "gloss": "farther (direction-unspecified)",
+  "notes": "(1.5.1.6)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "ærmuch",
+  "type": "adjective",
+  "gloss": "tired",
+  "notes": "long-attested without a row (Más-ten ærmuch “I’m tired”); stands beside threïg “tired” — nuance unruled",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "í-sê",
+  "type": "pronoun (reflexive)",
+  "gloss": "itself",
+  "notes": "the sê-tetrad (1.6.5)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "sê-fær",
+  "type": "pronoun (reflexive)",
+  "gloss": "færself (3rd)",
+  "notes": "the sê-tetrad (1.5.2.1, 1.6.5); hyphen-compound; turned from fær-sê 2026-07-14 — “fær last: an adjective, the in-lieu-of-tmesis position” (the maker)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "miths-sê",
+  "type": "pronoun (reflexive/reciprocal)",
+  "gloss": "ourselves (us-self)",
+  "notes": "the sê-family (1.6.5); base miths “us” — “faer, us, and them” (the maker)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "shrai",
+  "type": "verb",
+  "gloss": "praise",
+  "notes": "(1.6.6)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "shrai-shrai",
+  "type": "gerund (Noun)",
+  "gloss": "the praising",
+  "notes": "gerund by reduplication — the Chís-Chís pattern’s second witness (1.6.6)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "wil",
+  "type": "quantifier",
+  "gloss": "all",
+  "notes": "wil’ya — the ’ya-stamped “all” that reassures: not feeling alone (1.6.9.3)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "cías-sê",
+  "type": "pronoun (reflexive/reciprocal)",
+  "gloss": "each-other; (with mé) all-alone, plural",
+  "notes": "the sê-family’s fifth member (1.6.9.3); the bases are the object series — “faer, us, and them” (the maker’s word): sê-fær “faer-self”, miths-sê “us-self”, cías-sê “them-self”",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "miths",
+  "type": "pronoun",
+  "gloss": "us",
+  "notes": "1pl object; the sê-base of miths-sê — glossed by the maker (“faer, us, and them”)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Sídia",
+  "type": "Noun",
+  "gloss": "—",
+  "notes": "sibling — glossed by the maker (2026-07-14): sídia-teos “sibling-mine”, the familiar possessive; the standard-NP of the 1.8.4 frame (iy lus Sídia ___); renders sister or brother by context — the watch closes",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "sy",
+  "type": "particle",
+  "gloss": "so-then",
+  "notes": "the correlative hinge’s second half: sin … sy … = the-X-er, the-Y-er (1.8.6); nearest kin Syá, distinguished",
+  "source": "re
