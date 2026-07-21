@@ -1,0 +1,931 @@
+[
+ {
+  "form": "Isc",
+  "type": "noun",
+  "gloss": "fish",
+  "notes": "corrected from *Isch",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Nímhog",
+  "type": "noun",
+  "gloss": "dog",
+  "notes": "lenited after niïl → *niïl Nímhog*",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Fía",
+  "type": "noun",
+  "gloss": "food",
+  "notes": "",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Cafi",
+  "type": "noun",
+  "gloss": "coffee",
+  "notes": "loanword",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Sî",
+  "type": "noun",
+  "gloss": "tea",
+  "notes": "",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Scale",
+  "type": "noun",
+  "gloss": "car, automobile",
+  "notes": "grubby loan-loop: Danæam Glaoscál → clipped → reborrowed as pseudo-English “Scale”; the commonest word for a car",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Glaoscál",
+  "type": "noun",
+  "gloss": "automobile",
+  "notes": "native word; the source of the loan “Scale”",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Bailch",
+  "type": "noun",
+  "gloss": "milk",
+  "notes": "base Bailc; lenited after e “of”",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Chain",
+  "type": "noun",
+  "gloss": "kind, sort",
+  "notes": "base Cain; lenited",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Langaír",
+  "type": "noun",
+  "gloss": "language(s)",
+  "notes": "capitalised as a Noun",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Ghusci",
+  "type": "noun",
+  "gloss": "ghost",
+  "notes": "base Gusci; lenited after niïl",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Chís-Chís",
+  "type": "noun (gerund)",
+  "gloss": "chatting, the chatting",
+  "notes": "gerund by rendering-past reduplication of the verb chís",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Eileth",
+  "type": "noun",
+  "gloss": "rest, remainder",
+  "notes": "lus Eileth e mao Fía “the rest of your food”",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Thrugh",
+  "type": "noun",
+  "gloss": "train",
+  "notes": "grubby loan — the train that goes thrugh",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Craimh",
+  "type": "noun",
+  "gloss": "hunger",
+  "notes": "gæn mé X Craimh “X is hungry” (es-gibt × tá-ocras-orm)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Sclaoímhú",
+  "type": "noun",
+  "gloss": "corkscrew",
+  "notes": "",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "tachér",
+  "type": "noun",
+  "gloss": "drawer",
+  "notes": "sheds its t when nested: C’achér’ed",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "As",
+  "type": "numeral (Noun)",
+  "gloss": "eight",
+  "notes": "In As “at Eight”",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "ten",
+  "type": "pronoun",
+  "gloss": "I",
+  "notes": "1st person; Más-ten ærmuch “I’m tired”",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "mæ",
+  "type": "pronoun",
+  "gloss": "you",
+  "notes": "",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "fæ",
+  "type": "pronoun",
+  "gloss": "fæ (3rd person: she / he / they)",
+  "notes": "the fæ 3rd person; resumes persons in the dislocation tier — the fæ-frame, twin to resumptive í (1.11.2.2.3.2; exemplar awaited §12)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "mith",
+  "type": "pronoun",
+  "gloss": "we (revealed 1.10.2: the existential’s default donor)",
+  "notes": "also substituted for I / you in neutral questions",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "í",
+  "type": "pronoun",
+  "gloss": "it",
+  "notes": "heads the resumptive-í emphasis frame (1.11.2.2.2.3) — ledger question in §12",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "cía",
+  "type": "pronoun",
+  "gloss": "they",
+  "notes": "",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "fær",
+  "type": "possessive",
+  "gloss": "her / his",
+  "notes": "possessive of fæ",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "cías",
+  "type": "possessive",
+  "gloss": "their; them (as sê-base — the maker)",
+  "notes": "possessive of cía",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "mao",
+  "type": "possessive",
+  "gloss": "your",
+  "notes": "2nd-person possessive (cf. fær, cías)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "thénu mé",
+  "type": "phrase",
+  "gloss": "whose",
+  "notes": "lit. “whom-with” — oblique thénu + mé “with”",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "más",
+  "type": "verb (be)",
+  "gloss": "am (1sg present)",
+  "notes": "Más-ten ærmuch · Más nhœme ten",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "bhies",
+  "type": "verb (be)",
+  "gloss": "are / be (present, general)",
+  "notes": "",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "atá",
+  "type": "verb (be)",
+  "gloss": "is / are — the form that accompanies ios",
+  "notes": "ios ærmuch atá fæ",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "eibh",
+  "type": "verb (be)",
+  "gloss": "were (past, general)",
+  "notes": "chís eibh eibh; NOT used with ios (there atáea is used)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "atáea",
+  "type": "verb (be)",
+  "gloss": "was / were — the past form with ios",
+  "notes": "thé-atáea ios atáea",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "saige",
+  "type": "verb",
+  "gloss": "have spoken",
+  "notes": "perfect of saí; quotative: Saige fæ “fæ said”",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "fith",
+  "type": "verb",
+  "gloss": "eat, eating",
+  "notes": "",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "ooilich",
+  "type": "verb",
+  "gloss": "want",
+  "notes": "past ooilæch",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "ooilæch",
+  "type": "verb",
+  "gloss": "wanted",
+  "notes": "past of ooilich",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "sáille",
+  "type": "verb",
+  "gloss": "speak",
+  "notes": "",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "stírth",
+  "type": "verb",
+  "gloss": "drive",
+  "notes": "",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "chís",
+  "type": "verb",
+  "gloss": "chat",
+  "notes": "→ gerund Chís-Chís",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "auytha",
+  "type": "verb",
+  "gloss": "overheard",
+  "notes": "",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "chímæ",
+  "type": "verb",
+  "gloss": "bought (≈ spent)",
+  "notes": "← chæn “spend”",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "mælcen",
+  "type": "verb",
+  "gloss": "bought (≈ traded)",
+  "notes": "← maræien “trade”",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "chæn",
+  "type": "verb",
+  "gloss": "spend",
+  "notes": "",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "maræien",
+  "type": "verb",
+  "gloss": "trade",
+  "notes": "",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "laí",
+  "type": "verb",
+  "gloss": "see, saw",
+  "notes": "",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "nhœme",
+  "type": "verb",
+  "gloss": "come, coming",
+  "notes": "",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "fœdh",
+  "type": "verb",
+  "gloss": "steal, stole",
+  "notes": "",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "gæea",
+  "type": "verb",
+  "gloss": "gave",
+  "notes": "base gæe “give”",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "gæn",
+  "type": "verb",
+  "gloss": "gives",
+  "notes": "the existential “there is” (German es gibt style)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "linchs",
+  "type": "verb",
+  "gloss": "drinks",
+  "notes": "",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "lith",
+  "type": "verb",
+  "gloss": "run",
+  "notes": "Ai’lith!",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "film",
+  "type": "verb",
+  "gloss": "turn",
+  "notes": "grubby loan — a reel turns",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "át",
+  "type": "verb (pro-verb)",
+  "gloss": "did",
+  "notes": "answers for any verb; wears the negator’s face — etymology withheld (§9) [renamed from †aoát 2026-07-14, the maker: “Replace aoát with just át” — the negator’s-face note retires with the old skin]",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "yail",
+  "type": "quantifier",
+  "gloss": "many",
+  "notes": "discontinuous with them “how” → “how many”",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "ced",
+  "type": "ordinal adjective",
+  "gloss": "second",
+  "notes": "nests its noun: C’achér’ed",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "stil",
+  "type": "adverb",
+  "gloss": "still (phase)",
+  "notes": "pair of thúil",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "thúil",
+  "type": "adverb",
+  "gloss": "no longer",
+  "notes": "the negative of stil; citation form (not lenited *túil)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "niïl",
+  "type": "article",
+  "gloss": "a, an (indefinite)",
+  "notes": "compound: ni “fewer-than” + il “multiple”",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "lus",
+  "type": "article",
+  "gloss": "the (definite)",
+  "notes": "",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "scér",
+  "type": "interrog. particle",
+  "gloss": "question particle — PAST (leniting)",
+  "notes": "← Irish ar",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "scén",
+  "type": "interrog. particle",
+  "gloss": "question particle — NON-PAST (eclipsing)",
+  "notes": "← Irish an",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Air",
+  "type": "imperative particle",
+  "gloss": "notice!",
+  "notes": "opens the compliance-announcement; a confluence: Achtung · aire · audio alert · auytha — “it seemed the proper way”",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Ai’",
+  "type": "reduced allomorph of Air",
+  "gloss": "notice! (fragments)",
+  "notes": "Ai’lith!; the r survives as liaison only before i-initial nested pronouns",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "thas",
+  "type": "interrog. (th-word)",
+  "gloss": "what",
+  "notes": "",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "thurn",
+  "type": "interrog. (th-word)",
+  "gloss": "where",
+  "notes": "INHERENTLY interrogative — has no non-question form",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "thé",
+  "type": "interrog. (th-word)",
+  "gloss": "who",
+  "notes": "",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "thénu",
+  "type": "interrog. (th-word)",
+  "gloss": "whom (oblique)",
+  "notes": "used after prepositions; “whose” = thénu mé",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "thüs",
+  "type": "interrog. (th-word)",
+  "gloss": "when",
+  "notes": "",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "thœ",
+  "type": "interrog. (th-word)",
+  "gloss": "why",
+  "notes": "",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "them",
+  "type": "interrog. (th-word)",
+  "gloss": "how",
+  "notes": "frame them…yail “how many”; replaces †thrum (unexisted)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "thés",
+  "type": "interrog. (th-word)",
+  "gloss": "which",
+  "notes": "",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "sís",
+  "type": "demonstrative",
+  "gloss": "this",
+  "notes": "sís thurn “here” (this-where). Compounds with cías as sícías ‘these’ (2.1.1.4.19).",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "ios",
+  "type": "demonstrative / complementiser",
+  "gloss": "that; the frozen cleft “[it is] that”",
+  "notes": "demonstrative, relative complementiser, AND the question-cleft — mysteriously bound to thas, elsewhere by resonance (§9); ios thurn “there”. Dropped in echoes — even thas loses it there. Compounds with cías as iocías ‘those’ (2.1.1.4.19).",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "ao / aoa",
+  "type": "negator",
+  "gloss": "not",
+  "notes": "Aoa thurn’t “whereabouts” (double neg.)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "bha",
+  "type": "verb (be)",
+  "gloss": "is",
+  "notes": "found inside aobha / bháya",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "aobha",
+  "type": "answer word",
+  "gloss": "no",
+  "notes": "ao “not” + bha “is” = “not-is”",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "bháya",
+  "type": "answer word",
+  "gloss": "yes",
+  "notes": "bha “is” + ’ya = “is-positively”",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Syá",
+  "type": "answer word",
+  "gloss": "maybe",
+  "notes": "’thte + ’ya fused — say ’thte’ya ten times fast",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "’ya",
+  "type": "clitic",
+  "gloss": "positive answer / tag",
+  "notes": "INVARIANT; Fith’ya, scé’ya",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "’t",
+  "type": "clitic",
+  "gloss": "negative",
+  "notes": "post-CONSONANT; Fith’t, thurn’t",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "’thte",
+  "type": "clitic",
+  "gloss": "negative",
+  "notes": "post-VOWEL; Nhœme’thte, scé’thte",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "’ma",
+  "type": "clitic",
+  "gloss": "au contraire (the Danæam doch)",
+  "notes": "INVARIANT; Gæn’ma, Sin’ma",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "e",
+  "type": "particle",
+  "gloss": "of (genitive / connective)",
+  "notes": "Chain e Bailch “kind of milk”",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "œr",
+  "type": "conjunction",
+  "gloss": "or",
+  "notes": "Cafi œr Sî — between every pair (1.3.1.2)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Sin",
+  "type": "particle",
+  "gloss": "so / “as was”",
+  "notes": "behaves adjectivally in the imperative frame; hosts ’ma; tmesis host for verbs: S’aige’in “as-said” (seam-merge)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "duîm",
+  "type": "preposition",
+  "gloss": "to, with",
+  "notes": "duîm thénu mæ",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "du",
+  "type": "root",
+  "gloss": "to / toward / -ward",
+  "notes": "in dúirá “leftward”",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "dús",
+  "type": "preposition",
+  "gloss": "to-the (toward + definite)",
+  "notes": "the article lives inside (cf. German zum); prospective: dús Fith-Fith e bhie “to-the Eating of is” = “going to eat”",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "in",
+  "type": "preposition",
+  "gloss": "at (temporal)",
+  "notes": "In As “at Eight”",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "by",
+  "type": "preposition",
+  "gloss": "through / using / across",
+  "notes": "grubby loan",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "irá",
+  "type": "noun (direction)",
+  "gloss": "left",
+  "notes": "partner attested: íxeis “right(-side)”, duíxeis “rightward”",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "dúirá",
+  "type": "adverb",
+  "gloss": "leftward",
+  "notes": "du + irá",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "mé",
+  "type": "preposition",
+  "gloss": "with",
+  "notes": "thénu mé “whose”; too small to host tmesis — guests hyphen-dangle: mé-saige",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "gla-",
+  "type": "prefix",
+  "gloss": "questioning-echo marker",
+  "notes": "Glascér = gla + scér",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "glés-",
+  "type": "prefix",
+  "gloss": "the one-word herald",
+  "notes": "a special glás: warns that the single word about to be spoken is all that’s getting said; never outside one-word echoes (ruled)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "-as",
+  "type": "suffix",
+  "gloss": "echo suffix (vowel-harmonising)",
+  "notes": "laí→laías, gæe→gæeäs, Ghusci→Ghuscias",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "y-…nÿ",
+  "type": "circumfix",
+  "gloss": "marks the th-element in the FIRST subordinate clause that contains a th-element",
+  "notes": "y-iosnÿ, yésnÿ",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "y-…",
+  "type": "prefix",
+  "gloss": "marks th-elements in all SECONDARY subordinate clauses",
+  "notes": "yüs (‹ †ythüs, reformed), yés (‹ †ythés, likewise)",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "aich",
+  "type": "conj.",
+  "gloss": "also",
+  "notes": "aich sin “also as” — gloss sealed at 1.13.1: “also”, the chain-word",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Ælth",
+  "type": "noun",
+  "gloss": "elder",
+  "notes": "Crao’ælth’if",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "ann",
+  "type": "conj.",
+  "gloss": "if",
+  "notes": "questioned: scé’ann",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Annadh",
+  "type": "conj.",
+  "gloss": "either",
+  "notes": "built on ann",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Craoif",
+  "type": "adjective",
+  "gloss": "wise",
+  "notes": "tmesis host: Crao’ælth’if",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Cúat / Chúat",
+  "type": "—",
+  "gloss": "(leniting pair)",
+  "notes": "conditioning withheld — §9",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "dúïl",
+  "type": "directional",
+  "gloss": "toward-a(n)",
+  "notes": "du + niïl; indefinite partner of dús",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "duíxeis",
+  "type": "directional",
+  "gloss": "rightward",
+  "notes": "pairs dúirá “leftward”",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Eg",
+  "type": "noun",
+  "gloss": "way",
+  "notes": "sís Eg / ios Eg; Eg’ya / Eg’t — capital ruled",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "fal",
+  "type": "adjective",
+  "gloss": "beautiful",
+  "notes": "tmesis: the’fal’m; near-synonym Lain",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Iarnbha",
+  "type": "noun",
+  "gloss": "blacksmith",
+  "notes": "iron-smith",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "ië",
+  "type": "suffix",
+  "gloss": "future morph",
+  "notes": "detachable; prefixes in tmetic relatives (’Ië’…) and on the copula (iëao); suffixes to Nouns as measure-adverbial “by-X”: mêdhië, nirïë — the Noun decapitalises on departure",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "íxeis",
+  "type": "noun",
+  "gloss": "right(-side)",
+  "notes": "closes irá’s missing partner",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Lain",
+  "type": "adjective",
+  "gloss": "beautiful",
+  "notes": "Or’lain’il / Ro’lain’il; near-synonym fal",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Malach",
+  "type": "adjective",
+  "gloss": "late",
+  "notes": "",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Math",
+  "type": "noun",
+  "gloss": "mat",
+  "notes": "",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "Mee",
+  "type": "geas-marker",
+  "gloss": "woe-tide",
+  "notes": "tiers Me’æ’e (2sg), Me’en’e (1sg); converts O •-optative to imperative — §4½",
+  "source": "reference §2",
+  "status": "canon"
+ },
+ {
+  "form": "M
