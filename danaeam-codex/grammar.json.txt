@@ -1,0 +1,926 @@
+[
+ {
+  "section": "About & conventions",
+  "anchor": "s1",
+  "title": "Overview",
+  "body": "A working reference for Danæam — the language of the Síonæyais , the people of Síonæya — as built by Elm and verified in session. Everything below is what has actually been set so far.",
+  "table": []
+ },
+ {
+  "section": "About & conventions",
+  "anchor": "s1",
+  "title": "Orthography",
+  "body": "• The digraph æ is standard; ae is (almost always) a slip that should be æ .",
+  "table": []
+ },
+ {
+  "section": "About & conventions",
+  "anchor": "s1",
+  "title": "Capitalisation is German-style",
+  "body": "Capitalisation is German-style: Nouns are capitalised, pronouns and everything else are bare ( Isc , Nímhog , Cafi vs mæ , fæ , ten ). Nouns that become not-nouns lose their capitalisation ( Mêdhe → mêdhië ) — maker-confirmed.",
+  "table": []
+ },
+ {
+  "section": "About & conventions",
+  "anchor": "s1",
+  "title": "Orthography",
+  "body": "• Special letters in use: á â ä ë ê é ï î í ü ú û ł æ œ ô ö ó ý ŷ ÿ — and the rare, spicy þ .",
+  "table": []
+ },
+ {
+  "section": "About & conventions",
+  "anchor": "s1",
+  "title": "Quotation marks",
+  "body": "Quotation marks (for the page only): >– –< the top layer, »– –« the lower layers [mended 2026-07-16, the maker: the elder ink had the layering inverted; “the chevrons were causing panic”] .",
+  "table": []
+ },
+ {
+  "section": "About & conventions",
+  "anchor": "s1",
+  "title": "Orthography",
+  "body": "• Likewise oe is a slip for œ , and any grave — ù ì è ò à — is always a slip for its acute ú í é ó á ( át , Syá ).",
+  "table": []
+ },
+ {
+  "section": "About & conventions",
+  "anchor": "s1",
+  "title": "The seam writes ï",
+  "body": "The seam writes ï: where i meets i across a morph boundary, the meeting wears the diaeresis — niïl ‹ ni + il; nirïë ‹ niri + -ië.",
+  "table": []
+ },
+ {
+  "section": "About & conventions",
+  "anchor": "s1",
+  "title": "Imperative punctuation",
+  "body": "Imperative punctuation: • (either-side-spaced) is a combined exclamation-mark and colon. Vocative trill-marks (LDS 2.1.1.4.28) : ∆ = the up-pitching trill (up-energy vocative), V = the down-energy trill — V a letter the alphabet otherwise lacks, conscripted as a mark. The fæ majority of the Síonæyais express these vocally; humans are a minority among the Síonæyais . Obligatoriness unruled; the two energies’ pragmatics given, not yet glossed. Letterform fork — resolved by decree (1.6.7): fæ everywhere; every fae an error, every ’ae an ’æ . The record normalized; †fae joins the errors, not the graveyard (it never lived). Graveyarded (2026-07-14): †aoát — renamed át at the maker’s decree (2.1.1.4.1). Amended (1.8.6): ae is a slip for æ except where deliberately coined — aern “hot” the first witness. Print-debt ledger (for the great regeneration): pre-session mends ×8+; the annex structure; the fæ-decree’s five baked fields; f_1_2_2_3_3 (mÿa-weld); the copular-block seeds’ iëao mends; assorted seed mends (softness, diary-drop, En-comparanda). Fork F1 — resolved (1.8.3): shed the rival, shed the frame: Holdhmÿa. stands as an allowed solitary fragment, nongrammatical and owned; Holdhmÿa iy. is absurd — iy never stands over a ghost. Comparative must-omit (1.8.4): the repeated adjective must vanish, its copula may stay — iy lus Sídia ___ (atá), the degree speaking once. Bare-phrase doctrine (1.8.5.1): iy + NP is a bare phrase, full stop — no silent structure, no unwitnessed material; clausehood exists exactly where the y-seal witnesses it.; English-style “ ” quotation marks are correct only inside the imperative’s self-quote ( “S’aige’in” ).",
+  "table": []
+ },
+ {
+  "section": "About & conventions",
+  "anchor": "s1",
+  "title": "Mutations",
+  "body": "Lenition follows scér , e “of”, niïl and more ( Cain→Chain , Bailc→Bailch , Gusci→Ghusci ); eclipsis follows scén . Same leniting/eclipsing split as the two question particles. Pronouns and possessives are mutation-immune (generally): e mao Fía , never * e mhao . And beware look-alikes: thúil “no longer” is a citation form, not a lenition of *túil.",
+  "table": []
+ },
+ {
+  "section": "About & conventions",
+  "anchor": "s1",
+  "title": "Mutations",
+  "body": "CALLOUT: How to read the tables: the first column is always the Danæam form. Bracketed etymologies (e.g. ni + il ) are Elm’s. Anything marked “emerging” in §12 is not yet fixed; anything in §9 is locked on purpose .",
+  "table": []
+ },
+ {
+  "section": "Articles & pronouns",
+  "anchor": "s3",
+  "title": "Articles",
+  "body": "niïl = a / an — a compound of ni “fewer-than” + il “multiple”. lus = the .",
+  "table": []
+ },
+ {
+  "section": "Articles & pronouns",
+  "anchor": "s3",
+  "title": "Pronouns & possessives (bare — never capitalised)",
+  "body": "CALLOUT: One door, one key (LDS 1.2.5.4). The article slot is unique: lus / niïl / possessives compete for it — sís lus barred; mhís e Wíc , never * lus mhís e Wíc . And in the existential the possessive bleaches to article : Mis Scale mith gæn “There is a car” (lit. our car we give ) — mis certifies nothing here, so the ours-deferral is not in play (keeper’s reading) . Upheld by the maker.",
+  "table": []
+ },
+ {
+  "section": "The verb “to be”",
+  "anchor": "s4",
+  "title": "Overview",
+  "body": "One verb, several coats — and now a full grid. Two splits govern it: whether it stands with the cleft ios , and number , marked by -s .",
+  "table": []
+ },
+ {
+  "section": "The verb “to be”",
+  "anchor": "s4",
+  "title": "Overview",
+  "body": "CALLOUT: With ios , the be-form is obligatorily atá / atáea (pl. atás / atáes ) — and the same coat surfaces inside y-marked subordinates : Í niïl Seoir yiosnÿ oob lus Math atá gæn. Elsewhere: bhie(s) present, eibh(s) past, más(as) 1st person, iëao(s) future.",
+  "table": []
+ },
+ {
+  "section": "The verb “to be”",
+  "anchor": "s4",
+  "title": "Overview",
+  "body": "CALLOUT: bhies has a triple life : plural; polite plural; and a niche courtesy-singular (English “they are a friend”) — mysterious for now (§9).",
+  "table": []
+ },
+ {
+  "section": "The verb “to be”",
+  "anchor": "s4",
+  "title": "Overview",
+  "body": "Order. First person: Subject + Complement + be. All other persons: Complement + Subject + be — Oob lus Math lus Seoir bhie “under the mat the key is.” The overt copula is obligatory by convention but routinely dropped in tmetic fragment-sentences: Stá’fæ’tach “stupid-fæ → the fæ is stupid.”",
+  "table": []
+ },
+ {
+  "section": "The verb “to be”",
+  "anchor": "s4",
+  "title": "Overview",
+  "body": "CALLOUT: The order canon (the maker, July 2026). Base order OSV ; the first person changes it to SOV ; and colloquial first-person statements make the suis-je — the be fronts and fuses, Más-ten (vS-O-V), adjectives hanging free. Ten ærmuch más. “I am tired” · Más-ten ærmuch. “I’m tired” · Más-ten niïl Ffearhsy or’raif’il—’t dúe fith. “I’m hungry enough to eat a horse” · Ten niïl Ffearhsy or’raif’il—’t dué fith más. (formal twin — not inadequately hungry : the degree circumfix’s litotes). The formal progressive: Ten dús Fith-Fith más “I toward-the eating am”; the semicolloquial Fith-fith: ten fith — first person only : in other persons it ambiguates (“she eating eats” / “she eats eating”) and is weirdly unpleasant.",
+  "table": []
+ },
+ {
+  "section": "The verb “to be”",
+  "anchor": "s4",
+  "title": "Overview",
+  "body": "Degree-complements. Any adjective converts to a degree-word — which forces complement-hood — via the circumfixes Or…il “not X enough” and Ro…il “too X”: Or’lain’il / Ro’lain’il .",
+  "table": []
+ },
+ {
+  "section": "The verb “to be”",
+  "anchor": "s4",
+  "title": "Overview",
+  "body": "Adverbial complements. Statives take bare fronted PPs ( Oob lus Math… ). Only action sentences mark direction, with the toward-compounds dús (toward-the) and dúïl (toward-a): dús Fith-Fith e… “toward the Eating of…”.",
+  "table": []
+ },
+ {
+  "section": "The existential engine",
+  "anchor": "s4b",
+  "title": "Overview",
+  "body": "Nothing merely is . Existence in Danæam is a continuous donation — es gibt taken literally: whatever exists is being given , and the grammar appoints the donor.",
+  "table": []
+ },
+ {
+  "section": "The existential engine",
+  "anchor": "s4b",
+  "title": "The frame",
+  "body": "The frame: í [NP] gæn — “it gives NP” = there is NP . The dummy donor í serves when none volunteers: Í niïl Seoir yiosnÿ oob lus Math atá gæn — “it a key that under the mat is gives.”",
+  "table": []
+ },
+ {
+  "section": "The existential engine",
+  "anchor": "s4b",
+  "title": "Possessive existentials",
+  "body": "Possessive existentials: mis “our” (and mao “your”) serve as possessives-as-articles in place of lus/niïl , with giver mith : Mis Seoir oob mis Math mith gæn — “our key under our mat we give.”",
+  "table": []
+ },
+ {
+  "section": "The existential engine",
+  "anchor": "s4b",
+  "title": "The ours-deferral",
+  "body": "The ours-deferral: when the possessum is genuinely ours in a we-give sentence, one first-person mark defers to second person — the giver flips to mæ ( Mis Crao’ælth’if mæ gæn ), or the article to mao . What is truly ours must be handed to us by you : the community cannot self-certify possession.",
+  "table": []
+ },
+ {
+  "section": "The existential engine",
+  "anchor": "s4b",
+  "title": "Predication by existence",
+  "body": "Predication by existence: chained gæn-clauses assert identity — Mis Crao’ælth’if mæ gæn aich sin mis Nímhog mith gæn — “our wise-elder you give also as our dog we give” = our wise elder is also a dog .",
+  "table": []
+ },
+ {
+  "section": "The existential engine",
+  "anchor": "s4b",
+  "title": "Tmetic relatives",
+  "body": "Tmetic relatives: a whole relative clause folds into one word, sealed by the vestigial cleft ’nÿ — the tail of y-…nÿ demoted to a scar: In As lus ’Ië’mal’rugh’ach’nÿ nhœme — “at Eight the will-be-late-train comes.”",
+  "table": []
+ },
+ {
+  "section": "The existential engine",
+  "anchor": "s4b",
+  "title": "Possessive-tmesis law",
+  "body": "Possessive-tmesis law: possessive adjectives do not tmese while serving as existentials ( mis stays whole); the predicate possessive does, in plain predication: Te’sídia’os ← Teos .",
+  "table": []
+ },
+ {
+  "section": "The existential engine",
+  "anchor": "s4b",
+  "title": "The optative bridge",
+  "body": "The optative bridge: O • frames the optative (superseding Ai ); Mee converts optative → imperative by carrying the implicit existential [í] [subject] Mee [gæn] — curses are gifts : O • Mee aoa mhís e Wíc linchs — “may [it] give your woe: not lots of water [you] drink.”",
+  "table": []
+ },
+ {
+  "section": "The existential engine",
+  "anchor": "s4b",
+  "title": "Overview",
+  "body": "CALLOUT: The gift test (NP definition — LDS 1.2.5.1). An NP is what gæn can give . Chosen by the maker “in order to preserve tmesis words as Nouns”: if the engine can donate it, it travels as one phrase — Duílúch Fæ’du’ærs and its tmesis-bellied kin included. The engine of existence doubles as the language’s constituency-detector .",
+  "table": []
+ },
+ {
+  "section": "The existential engine",
+  "anchor": "s4b",
+  "title": "Overview",
+  "body": "CALLOUT: Reach-back coordination (LDS 1.3.1.5.5). No verb-category is barred from coordinating: the only restriction is the limits of the preceding phrase . Each o-conjunct bonds back to whatever layer of the opener coheres — and, unlike English, may return to an earlier layer after a deeper one (schema, the maker’s: xyz-xy-xy-x-P:x-o-P:y-o-P:z-o-P:x ). The gæn and be spines are the prime hosts of such adaptive openers; hearers attach clauses back as their judgment serves . (Demonstrations in English material: “She is there to dance and sings.”)",
+  "table": []
+ },
+ {
+  "section": "The existential engine",
+  "anchor": "s4b",
+  "title": "Overview",
+  "body": "CALLOUT: Phrase-level ellipsis (LDS 1.3.3). Inside NP / AdjP / AdvP alike: gap or uain, as the resonance serves — the bare gap rides the hearer’s reach; uain is the stand-in body. Resonance’s third jurisdiction , after welds and ios . (The maker’s witnesses that even English gaps by resonance: The Good, the Bad, and the Ugly; Two Girls, Fat and Thin .)",
+  "table": []
+ },
+ {
+  "section": "Negation & polarity",
+  "anchor": "s5",
+  "title": "Answer words",
+  "body": "aobha = no ( ao “not” + bha “is” = “not-is”); bháya = yes ( bha “is” + ’ya = “is-positively”). These exist for every answer, but the verb-echo + clitic answer is used more often.",
+  "table": []
+ },
+ {
+  "section": "Negation & polarity",
+  "anchor": "s5",
+  "title": "Polarity clitics",
+  "body": "Leading tags reduce the particle and add a clitic: scé’ya (expecting yes), scé’thte (expecting no). The negator ao- also drives echo-negation: Aoa thurn’t “whereabouts” (a double negative on inherently-interrogative thurn ).",
+  "table": []
+ },
+ {
+  "section": "Negation & polarity",
+  "anchor": "s5",
+  "title": "Polarity clitics",
+  "body": "The tetrad’s fourth member — ’ma , the au-contraire clitic — is the Danæam doch : Scén thúil gæn mé mæ Craimh gæn’t— scé’thte? “You’re not hungry anymore, are you?” → Gæn’ma. / Sin’ma. “Oh but I am .” It exists because aobha / bháya behave like English no/yes, so the contradiction slot needed filling. Maybe is Syá — the two opposed clitics ’thte + ’ya ground together by fast speech into a hedge. And the pro-verb át “did” answers for any verb: Ten ios át / Ios mæ át — the first-person order flip holding even in three words.",
+  "table": []
+ },
+ {
+  "section": "Negation & polarity",
+  "anchor": "s5",
+  "title": "Polarity clitics",
+  "body": "CALLOUT: New rulings. aoa lenites the word it negates : aoa mhís (← Mís ). Double negative = attenuation , not cancellation: aoa duíxeis film’t ≈ “semi-rightward-turn-ness.” ’ya adds a little extra affirmative (“turn positively right”), and the polarity clitics have generalised beyond echo-answers — they dock on the focused constituent of any class: duíra’ya , Eg’ya / Eg’t . Bare aoa and clitic ’t divide labour — constituent-negation vs polar stamp; film’t alone is grammatical but “disagreeably subtle.”",
+  "table": []
+ },
+ {
+  "section": "Negation & polarity",
+  "anchor": "s5",
+  "title": "Polarity clitics",
+  "body": "CALLOUT: The tetrad as degree (“positively contrary”). Comparison is built from the polarity clitics: slee’ya “faster”, slee’ya’ma “even-faster”, holdhmÿa “taller”; the standard takes iy “than” — Holdhmÿa iy tens “taller than me” (1.2.2.3.3). The weld mÿa ‹ ’ma + ’ya replaced the sequence by decree. Attributively, the head Noun tmesizes into its standard — the pronoun fær hosting hín : Niïl holdhmÿa Fæ’hín-iy’ær “a man taller than fær” (1.2.5.2.9); the Noun-complex capitalises at its left edge. Superlative: pending; the equative sealed (2.1.1.2.7) — the sin…sy correlative: sin mordach sy fær , in practice sy fær sin mordach fæ bhie . And the -er comparative generalises to adverbs by the same coin — the suffix -mÿa (2.1.7.1.2, the maker); contrariety wears -ma , the contradiction suffix. The elder slee’ya “faster” gloss reads henceforth as the ’ya-degree (gentle mend-fork, §12).",
+  "table": []
+ },
+ {
+  "section": "The interrogative system",
+  "anchor": "s6",
+  "title": "Overview",
+  "body": "Danæam’s crown. A clefting, particle-driven, prosody-blind, movement-only system — every device chosen where English/German lean on intonation or in-situ position.",
+  "table": []
+ },
+ {
+  "section": "The interrogative system",
+  "anchor": "s6",
+  "title": "All questions are obligatorily tagged",
+  "body": "All questions are obligatorily tagged — Faerielanders have no tonal questionhood, so nothing is a question by intonation alone.",
+  "table": []
+ },
+ {
+  "section": "The interrogative system",
+  "anchor": "s6",
+  "title": "Interrogative particle",
+  "body": "Interrogative particle: scér (past, leniting ← Irish ar ) / scén (non-past, eclipsing ← Irish an ), placed at a notably irregular point.",
+  "table": []
+ },
+ {
+  "section": "The interrogative system",
+  "anchor": "s6",
+  "title": "The retro-repeater (r.r.)",
+  "body": "The retro-repeater (r.r.): the sentence’s last verb is repeated in advance , at a notably nonregular point — the copy arrives before its original. R.r.s are specifically the audible signifier of questionhood outside the initial question flag — and always have been (the maker). The ios-cleft is a different creature: resonance-governed, never question-bound, and not obligatory in questions — Scén Sî linchs mæ linchs? is a very normal question. Emphasis / urgency ∝ irregularity of placement. (Gloss convention: the anticipatory copy is tagged r.r. Across a dialogue turn, the answer’s Fith’ya is a true after-the-fact echo; within the sentence, the copy is prophecy.)",
+  "table": []
+ },
+ {
+  "section": "The interrogative system",
+  "anchor": "s6",
+  "title": "The frozen cleft ios",
+  "body": "The frozen cleft ios — mysteriously bound to thas (obligatory wherever thas stands, for reasons no one knows); elsewhere it arrives as the energetic resonance of the sentence demands (§9). Dropped in echoes — where even thas surrenders it ( Thas mælcen ten mælcen… ): the missing cleft is the tell.",
+  "table": []
+ },
+ {
+  "section": "The interrogative system",
+  "anchor": "s6",
+  "title": "Multiple-wh fronting",
+  "body": "Multiple-wh fronting: because nothing may sit in situ, every questioned element moves to the front, stacked.",
+  "table": []
+ },
+ {
+  "section": "The interrogative system",
+  "anchor": "s6",
+  "title": "The marking gradient (canonical passage)",
+  "body": "Marked by the repetition of the final subject-auxiliary verb , at a notably nonregular point in the sentence. Also marked by the interrogative particle ( scér for leniting/past; scén for eclipsing/non-past) that may occur at an irregular point in the sentence. Emphasis on urgency of need to have one’s question answered can be achieved by moving the repeated verb and the particle to extremely irregular positions. Compare statement, benign question, and emphatic question:",
+  "table": []
+ },
+ {
+  "section": "The interrogative system",
+  "anchor": "s6",
+  "title": "The marking gradient (canonical passage)",
+  "body": "• You the rest of your food toward the eating of are. — “You are going to eat the rest of your food.”",
+  "table": []
+ },
+ {
+  "section": "The interrogative system",
+  "anchor": "s6",
+  "title": "The marking gradient (canonical passage)",
+  "body": "• Scén you the rest of your food are toward the eating of are? — “Are you going to eat the rest of your food?”",
+  "table": []
+ },
+ {
+  "section": "The interrogative system",
+  "anchor": "s6",
+  "title": "The marking gradient (canonical passage)",
+  "body": "• Scén you are the rest of your food toward the eating of are? — more emphatic.",
+  "table": []
+ },
+ {
+  "section": "The interrogative system",
+  "anchor": "s6",
+  "title": "The marking gradient (canonical passage)",
+  "body": "• Scén you the rest of your food to- are -ward the eating of are!? — extreme emphasis: the echoed verb burrows inside a word.",
+  "table": []
+ },
+ {
+  "section": "The interrogative system",
+  "anchor": "s6",
+  "title": "The marking gradient (canonical passage)",
+  "body": "• Benign Danæam question: Scén mæ lus Eileth e mao Fía bhie dús Fith-Fith e bhie?",
+  "table": []
+ },
+ {
+  "section": "The interrogative system",
+  "anchor": "s6",
+  "title": "Word order",
+  "body": "The th-word’s home is clause-initial (after the particle); a subject sitting ahead of the wh is an error — except with a first-person subject , which flips the order (see Thas mælcen ten mælcen… in §7).",
+  "table": []
+ },
+ {
+  "section": "The interrogative system",
+  "anchor": "s6",
+  "title": "Th-words (front; bare)",
+  "body": "* thurn is inherently interrogative — it has no non-question form. “Here” = sís thurn (this-where), “there” = ios thurn (that-where). Existence is stated with gæn “gives”: Í ios thurn niïl Nímhog gæn “there is a dog there”.",
+  "table": []
+ },
+ {
+  "section": "The interrogative system",
+  "anchor": "s6",
+  "title": "Echo-questions",
+  "body": "The load-bearing wall — solved in the morphology , since both usual echo devices (in-situ, intonation) are banned:",
+  "table": []
+ },
+ {
+  "section": "The interrogative system",
+  "anchor": "s6",
+  "title": "Echo prefix",
+  "body": "Echo prefix gla- (reduced glés- for one-word echoes) + echo suffix -as (vowel-harmonising): Glascér … laías? / Glésthas? “WHAT?”",
+  "table": []
+ },
+ {
+  "section": "The interrogative system",
+  "anchor": "s6",
+  "title": "Informal echo",
+  "body": "Informal echo: the verb reduplicates and burrows inside the wh-word — extreme irregularity as the echo signal: Sclaí-laí-laí-laí-tha-laí-s mæ? “you saw WHAT?!”",
+  "table": []
+ },
+ {
+  "section": "The interrogative system",
+  "anchor": "s6",
+  "title": "Statement-echo",
+  "body": "Statement-echo uses the gla-…-as morphology; question-echo re-poses the clause + a tag ( …scén scé’ya ) with deixis shifted ( mæ→ten ). Two speech-acts, two structures.",
+  "table": []
+ },
+ {
+  "section": "The interrogative system",
+  "anchor": "s6",
+  "title": "No ios in echoes",
+  "body": "No ios in echoes — the echo absorbs it ; the missing cleft is itself the tell: cleft = ordinary question, no cleft = echo.",
+  "table": []
+ },
+ {
+  "section": "The interrogative system",
+  "anchor": "s6",
+  "title": "Answers",
+  "body": "Yes–no: the echoed verb + polarity clitic — Fith’ya (positive), Fith’t / Nhœme’thte (negative), Gæn’ma (au contraire) — or dedicated bháya / aobha / Syá . The pro-verb át stands in for any verb, with the person-conditioned order intact: Ten ios át “I did” · Ios mæ át “you did”.",
+  "table": []
+ },
+ {
+  "section": "The interrogative system",
+  "anchor": "s6",
+  "title": "Answers",
+  "body": "Wh-answers are the question’s negative space. The focus fronts to exactly the slot the th-word held ( In As í nhœme “at Eight it comes”); the cleft goes implicit ; there is no particle and no r.r. — every question-organ removed, only the fronting scar remains. In subclauses the y-grade demotes: the implicit cleft holds the ghost y-…nÿ , so every overt th-containing clause takes bare y- : In As lus Thrugh yios by sís thurn nhœme nhœme. Fragments may fuse into a single word by the tmesis engine (§8): C’achér’ed “second drawer”.",
+  "table": []
+ },
+ {
+  "section": "The interrogative system",
+  "anchor": "s6",
+  "title": "Answers",
+  "body": "Answers to echoes drift toward ’ya : Niïl Ghusci’ya · Ghusci — bháya · emphatic Bháya. Ghusci’ya. — the Danæam “you heard me.” And under ellipsis a clitic can outlive its host: Scén stil fith’ya? Œr ’thte? — the tag’s scé elides and ’thte hangs in the air.",
+  "table": []
+ },
+ {
+  "section": "The interrogative system",
+  "anchor": "s6",
+  "title": "Questioning into subordinate clauses",
+  "body": "Long-distance questions mark the path — but only where it matters:",
+  "table": []
+ },
+ {
+  "section": "The interrogative system",
+  "anchor": "s6",
+  "title": "first",
+  "body": "y-…nÿ marks the th-element in the first subordinate clause that itself contains a th-element ( y-iosnÿ , yésnÿ ).",
+  "table": []
+ },
+ {
+  "section": "The interrogative system",
+  "anchor": "s6",
+  "title": "all secondary",
+  "body": "y-… (bare) marks th-elements in all secondary clauses ( yüs ‹ †ythüs, yés ‹ †ythés).",
+  "table": []
+ },
+ {
+  "section": "The interrogative system",
+  "anchor": "s6",
+  "title": "Binary",
+  "body": "Binary — first vs. all-others; no third grade. Agreement tracks th-content, not the abstract path (a deliberate divergence from Irish, which marks every intervening clause). A relative clause with no internal th-element stays plain ios .",
+  "table": []
+ },
+ {
+  "section": "The interrogative system",
+  "anchor": "s6",
+  "title": "“Th-element” means membership in the interrogative paradigm",
+  "body": "“Th-element” means membership in the interrogative paradigm ( thas … thés ). Surface th- alone does not qualify: thúil “no longer” is not one. Note that sís thurn “here” does put a th-element inside its clause.",
+  "table": []
+ },
+ {
+  "section": "The interrogative system",
+  "anchor": "s6",
+  "title": "Questioning into subordinate clauses",
+  "body": "CALLOUT: Rootness & subordination. • patterns with scér/scén as a root-clause-maker ; y-…nÿ / y- fire in true subordinates only . Root proof: Scén bhie thé ios bhie? “What is that?” — demonstrative ios rides with plain bhie (no atá ), and no y-marking appears: demonstrative-ios ≠ cleft-ios , attested. Suspended protases ask honestly: scér tmeses into ann to license the question-mark — O scé’ann mao Myth dús bhie Son-Son e bhie? “and if your nose is a-bleeding?”",
+  "table": []
+ },
+ {
+  "section": "The imperative",
+  "anchor": "s7",
+  "title": "Overview",
+  "body": "Danæam does not command. It announces compliance — “you are doing what I say; notice that ” — and directs the listener’s attention to their own obedience, already underway.",
+  "table": []
+ },
+ {
+  "section": "The imperative",
+  "anchor": "s7",
+  "title": "The frame",
+  "body": "Air • “S’aige’in” dúirá film. — [Notice • “so-said” leftward turn] = “Turn left.” The particle Air “notice!” opens; • presents; “S’aige’in” — sin “so” wrapped around the s-shorn saige “said” — is the self-quotation : the command cites itself as already spoken. English-style quotes appear here and only here. No particle, no r.r., no ios : the imperative is its own sentence-type.",
+  "table": []
+ },
+ {
+  "section": "The imperative",
+  "anchor": "s7",
+  "title": "Fragments & persons",
+  "body": "Fragment imperatives drop the so-said nest and reduce the particle ( Air → Ai’ , exactly as gla- → glés- ). Persons are nested into the command , shedding their onset consonant on the way in; the r of Air survives as a liaison only before i-initial pronouns .",
+  "table": []
+ },
+ {
+  "section": "The imperative",
+  "anchor": "s7",
+  "title": "Degrees — two axes",
+  "body": "Urgency scales by compression : the bare fragment Ai’lith! is maximal. Gravity / anger scales by ceremonious expansion — syntactically proper embeddings of air plus expecting-yes questionoids, scaled exactly like ordinary questions: Sís mæ-film air, scén scé’ya? • “S’aige’in” dúirá film. The more formally complete the command, the more trouble you are in.",
+  "table": []
+ },
+ {
+  "section": "The imperative",
+  "anchor": "s7",
+  "title": "Emphasis & prohibition",
+  "body": "The polarity clitics attach for force: ’ya for do-emphasis, ’t / ’thte for prohibition — Ai’lith’t! “don’t run” (form composed by rule): the compliance-announcement simply announces non -compliance and bids you notice it.",
+  "table": []
+ },
+ {
+  "section": "The imperative",
+  "anchor": "s7",
+  "title": "Emphasis & prohibition",
+  "body": "CALLOUT: Copular-block additions. 1pl prohibitive: Air + mith = Air’ith’ (the pronoun pays its toll; the r stands before i): Air’ith’rubh’t — “we touchn’t.” Audibility variant, dash-set for the ear: Air’ith’rubh —’thte—! Periphrastic: Sís mith air —’thte— • “S’aige’in” í aoa rubh. Bare Ai’[verb] is implicitly 2pl unless context narrows it. Air’s r stands before i and e ( Air’í…, air’e… ). O • opens the optative , typically superseding Ai ; Mee then converts wish to command (§4½). Positive 1pl hortative confirmed: Ai’ith’[verb]’ya — Ai’ith’rubh’ya “let’s touch!” ( ’t forbids, ’ya invites: the polarity clitics run both poles of the imperative). And the prohibitive does not invert the eccentricity scaling — “straightforward matter-of-factness does not look like hard law to the Aos sí.”",
+  "table": []
+ },
+ {
+  "section": "The tmesis engine",
+  "anchor": "s8",
+  "title": "Overview",
+  "body": "One mechanism, five coats. Things that go inside other things in Danæam pay a toll and leave a seam.",
+  "table": []
+ },
+ {
+  "section": "The tmesis engine",
+  "anchor": "s8",
+  "title": "The r.r. burrows into wh-words",
+  "body": "The r.r. burrows into wh-words (the informal echo): Sclaí-laí-laí-laí-tha-laí-s mæ?",
+  "table": []
+ },
+ {
+  "section": "The tmesis engine",
+  "anchor": "s8",
+  "title": "…and into ordinary words",
+  "body": "…and into ordinary words (extreme emphasis): to- are -ward — the copy erupts mid-word.",
+  "table": []
+ },
+ {
+  "section": "The tmesis engine",
+  "anchor": "s8",
+  "title": "Nouns nest inside adjectives",
+  "body": "Nouns nest inside adjectives (fused fragments): C’achér’ed = ced “second” split around (t)achér “drawer”. Endless adjective-nesting is allowed; adverbs never nest.",
+  "table": []
+ },
+ {
+  "section": "The tmesis engine",
+  "anchor": "s8",
+  "title": "Verbs nest inside Sin",
+  "body": "Verbs nest inside Sin (the imperative’s self-quote): “S’aige’in” = sin around (s)aige .",
+  "table": []
+ },
+ {
+  "section": "The tmesis engine",
+  "anchor": "s8",
+  "title": "Pronouns nest inside the imperative",
+  "body": "Pronouns nest inside the imperative : Ai’æ’lith = (m)æ swallowed whole. To command someone, Danæam ingests them.",
+  "table": []
+ },
+ {
+  "section": "The tmesis engine",
+  "anchor": "s8",
+  "title": "Overview",
+  "body": "CALLOUT: The two laws: the apostrophe marks every seam , and the nested word sheds its onset consonant — the toll for entry.",
+  "table": []
+ },
+ {
+  "section": "The tmesis engine",
+  "anchor": "s8",
+  "title": "Overview",
+  "body": "CALLOUT: The toll has a phonology. Hard onsets pay (drop): b c d g j k p q t w x . Soft onsets ride free : all others. In clusters, hard members drop and soft survive: Thrugh → ’rugh (th pays, r rides); Wíc → ’íc (w is hard); Malach keeps its soft m: ’Ië’mal’rugh’ach’nÿ . The pronoun exception: pronouns pay regardless of softness ( mæ → ’æ , mith → ’ith ) — habitual travellers; the gate takes their coin on sight. Seam-merge: identical sibilants across a seam merge — S’aige’in ( Sin + saige ): S’ + s → S’. And since Sin = “so / as” , S’aige’in is literally “as-said” — the verbs-into-Sin domain is the as-X-ed adverbial factory . Nested capitals drop word-internally: Air’æ’m’íc’ís linchs . Host-minimality & hyphen-dangling: a would-be guest that cannot tmese — because the host is too small to open ( mé “with”) — hyphen-dangles instead: mé-saige , a tmesis waiting on the doorstep; its saige is a plain retro-repeater. (Why monosyllabic Sin hosts while mé cannot: §12.) Hyphen vs apostrophe: hyphen = compound junction, toll-free; apostrophe = tmesis seam, toll due: Ro’math-oo’seoir’b’il .",
+  "table": []
+ },
+ {
+  "section": "The tmesis engine",
+  "anchor": "s8",
+  "title": "Overview",
+  "body": "CALLOUT: Welds (fusion proper). True fusion writes solid — Syá , ythús , iostá — no seam-mark, though the toll is still paid ( ythús ‹ yth + (l)us). Law, in the maker’s words: “They fuse where the energetic resonance serves (it’s vibe based)” — optional always, obligatory never; attested Oob lus stands unfused beside welded ythús .",
+  "table": []
+ },
+ {
+  "section": "The tmesis engine",
+  "anchor": "s8",
+  "title": "Overview",
+  "body": "CALLOUT: The tmeter. The dangling hyphen has a name (the maker’s): guests too small to enter the tmesis hang by the tmeter — mé-saige on the doorstep; -iy “than” inside Fæ’hín-iy’ær , a guest’s own dangling guest.",
+  "table": []
+ },
+ {
+  "section": "The tmesis engine",
+  "anchor": "s8",
+  "title": "Overview",
+  "body": "CALLOUT: Stacking & order (LDS 1.2.5.3). Proximity is decided by relevance first , English-style rank as tie-breaker: a red big old car (old and big equally important). Tmesized, the stack goes concentric — leftmost = outermost shell : re’bi’o’car’ld’g’d (the maker’s demonstration in English material). And, in the maker’s word: tmeting is optional — always.",
+  "table": []
+ },
+ {
+  "section": "The mysteries",
+  "anchor": "s9",
+  "title": "Overview",
+  "body": "Not gaps — sealed rooms . Things the Síonæyais themselves do not know, or will not say. “The fæ path is not to be stalked unpacked.”",
+  "table": []
+ },
+ {
+  "section": "The mysteries",
+  "anchor": "s9",
+  "title": "ios is mysteriously bound to thas",
+  "body": "ios is mysteriously bound to thas — obligatory wherever thas stands, for reasons no one knows. The maker’s own phrasing (1.11.2.1.5): “ios is the eternal companion of thas, not thas of ios” — thas never walks alone; ios roams free. Elsewhere ios arrives as the energetic resonance of the sentence demands . (Echoes strip it even from thas .)",
+  "table": []
+ },
+ {
+  "section": "The mysteries",
+  "anchor": "s9",
+  "title": "át “did” wears the negator’s face",
+  "body": "át “did” wears the negator’s face ( ao- ). Deliberate mischief or coincidental mischief? Withheld. [2026-07-14: renamed to át — the ao-face and its mischief retire; †aoát graveyarded.]",
+  "table": []
+ },
+ {
+  "section": "The mysteries",
+  "anchor": "s9",
+  "title": "Why fæ cannot nest in imperatives",
+  "body": "Why fæ cannot nest in imperatives — the ’æ’-collision with mæ is Scéalín’s theory. Official answer: Syá.",
+  "table": []
+ },
+ {
+  "section": "The mysteries",
+  "anchor": "s9",
+  "title": "Cúat / Chúat",
+  "body": "Cúat / Chúat — a leniting pair whose conditioning is withheld. Official answer: “Don’t worry about it.”",
+  "table": []
+ },
+ {
+  "section": "The mysteries",
+  "anchor": "s9",
+  "title": "bhies as courtesy-singular",
+  "body": "bhies as courtesy-singular (“they are a friend”) — niche, real, unexplained for now.",
+  "table": []
+ },
+ {
+  "section": "The mysteries",
+  "anchor": "s9",
+  "title": "The future copula’s stem (reformed)",
+  "body": "The future copula’s stem (reformed): iëao = ië- + ao — the morph now rides prefixal on the copula, matching its tmetic face ( ’Ië’… ). The elder form †iëao decomposed as aoá- + -ië, and aoá- sits one door from aoa (and once from †aoát, before the 2026-07-14 rename to át ) — adjacency confirmed by the maker, and the reform’s bare ao stands nearer that door still.",
+  "table": []
+ },
+ {
+  "section": "Questionnaire progress",
+  "anchor": "s11",
+  "title": "Overview",
+  "body": "Danæam answers are set for LDS items 1.1.1.1 → 1.2.1.1.3.3 (items 1–66): the interrogative-and-answer block, the imperative core, other sentence-types, indirect speech acts — and now the complete copular block .",
+  "table": []
+ },
+ {
+  "section": "Questionnaire progress",
+  "anchor": "s11",
+  "title": "Overview",
+  "body": "The Master Workbook now carries the volume onward: sealed through 1.2.5.4 — §1.2 is complete : one article slot, and possessives bleach to articles in the existential ( Mis Scale mith gæn “there is a car”); coordination is underway: five coordinators patterned (o, œr, ax, æxó, aoæx “either-or-neither”), children .2/.3 distributed; coordination is category-blind and function-parallel — “form be damned” (1.3.1.5, children distributed; participles flagged as a dependency); omission under identity: the second conjunct may drop a repeated be ; retro-repeaters confirmed questions-only (1.3.2.1); phrase-level ellipsis: gap or uain, as the resonance serves (1.3.3, children distributed) — §1.3 omission complete; aoœr “neither-nor” completes the coordinator set, Œr ’thte re-glossed a fragment (1.4.4); neg-raising is the default condition — low docking disambiguates, aoa-fronting wilfully re-ambiguates; double negatives ruled disembodiers (1.4.5); zero subjects licensed where be agrees — a licence, never a law (1.5.1.1); the copula may drop — the void reads first person (1.5.1.2); sê the reflexive coined, sē-matched and logophoric (1.5.1.4); no special anaphor — the pronoun-gender design guards a sneaky hand (1.5.1.5); the six-cell text-deixis compass sealed — near/far × back/along/plain, the along-column cataphoric (1.5.1.6); anaphora is direction-free — one liberty against many laws (1.5.2); clause-mates disjoint, sê to save us — naked sê “myself”, sê-fær “færself” (1.5.2.1); the liberty distributes across o untouched (1.5.2.2); the 1.5.2 family complete — anaphora free in every direction, domain, and distance, and no positional sanctuaries at the seams (1.5.3). Then the grand harvest : 48 items already answered in advance by standing canon were batch-sealed with citations at the maker’s command and moved to the workbook’s pre-answered annex — the reflexive family claimed by sê, the no-case entailments, the pronoun-licence map, the comparative’s section-2 echoes, the ordinal machinery, the fused prepositions. Deliberately untouched: the noun-class/gender rooms ( the sneaky hand’s territory ), the passive’s cradle (2.1.3.1), the undesigned throat (§3), the lexical fields (§5), and the two table-items. The five near-misses then sealed by the maker in one breath — reflexive placement free, sê emphatic, Más-ten a tonally casual 1sg-only “I’m”, toll-paid faces ratified as reduced pronouns, and the vocative trills ∆ / V born (with the census-note: humans a minority among the Síonæyais). The pairings table collapsed into the sê-tetrad — sê, í-sê, sê-fær, miths-sê (1.6.5) — and the hoard reaches 200 words . Reflexives survive nominalisation by the eës-split gerund — Eë’shrai-shrai’s sê-fær — with reduplication confirmed as the gerund-maker; the English possessive-subject scaffold dismissed (1.6.6). Picture-Nouns dissolved — nothing to leak, no cage ever built ; the e-construction available, unrequired (1.6.7). The fæ-decree executed: fae normalized to fæ record-wide, ’ae to ’æ, Faerie shielded. The sê-family gains cías-sê and its dual duty — alone (sg) / each-other (pl), solitude riding mé, reassurance riding ’ya (1.6.9.3); reciprocity is thereby born pronoun-side. Comparative clauses shed everything but the standard-NP (1.8.2); the sê-bases ruled the object series — faer, us, them — and miths-sê lands as “ourselves”. iy never omits — coherence keeps its anchor (1.8.3; fork F1 on the NP’s contextual drop rides in Still-emerging). the repeated adjective must vanish , its copula keeping vigil — iy lus Sídia ___ (atá) (1.8.4). iy + NP ruled a bare phrase, full stop — no unwitnessed material (1.8.5.1). §1.8 comparison closes : the correlative sin…sy sealed (sin aernmÿa sy sainmÿa), aern bearing the first deliberate ae, sain “good” seated (1.8.6). The section-close re-read audit stands due. Audit executed at §1.8’s close : counts verified exact; stale ink mended — yüs/yés ×5, iëao ×12, the old mÿa-sequence ×1 — and the mÿa-weld decree swept 28 occurrences solid (three apparent fæ-stragglers proved mentions in the decree’s own narration, and stand protected). Possession then opened: the donor encodes belonging — mith gæn inalienable, í gæn alienated (1.10.2); mith revealed as “we”, teo “me” completing the object series, Glaoh-Glaoh the third reduplication. Then the reconciliation and second harvest : in-volume arithmetic exact (160 answered + 407 open = 567 ✓, annex holding 58); the reciprocal estate (nine items) claimed by the plural sê-forms and nominalisation’s structure by the reduplication–eës machinery. The statbar’s leading 66 names legacy canon outside this volume; the transcripts recall 62 further legacy sub-items — the convention awaits the maker’s word (keep 66 + N, or re-base to 128 + N). Then the Master Volume’s own architecture surfaced : Book 2 — The Answered 363 — had lived inside the workbook all along (item 67 onward, prose-set), unseen by the keeper’s article-nets; the annex was a shed built beside an existing hall. Restructured at the maker’s word: the 160 newly answered moved into Book 2, now The Answered 523 ; Book 1 retitled The Outstanding 407 ; arithmetic verified (407 + 523 = 930 ✓); the statbar re-based to the volume’s own truth; the baked title-page and TOC join the print-debt. One tension preserved for the maker: Book 2’s h1 said 363 where its intro said 362. F1 resolved — shed the rival, shed the frame: Holdhmÿa. an owned fragment, Holdhmÿa iy. absurd. Tenure then sealed atop the donor: plain gæn undefined and common ; gænyin temporally bound, gilæn eternally regiving (1.10.3) — the seal-choreography now ticks both books (524 / 406). the naming-split sealed — the unnamed possessed from the front, the named tagged from behind (Kettlina-mine), ours and theirs by the same pattern (1.10.4); counts tick to 525 / 405. gæn wears tense — the six-form chant sealed, -ea and ië- productive across the family, and gilæn’s etymology gifted: wil “all” inside gæn, its toll-ghost exposed (1.10.5); §1.10 possession closes at 526 / 404. emphasis country opens with the deafness law — Faerie shouts freely and means nothing by it (1.11.2.1.1); counts 527 / 403. no emphasis by movement — order-freedom is answerhood’s alone, emphasis riding repetitions and clitics; Ghusci “ghost” seated with the answer-paradigm (1.11.2.1.3 + children); counts 532 / 398. the ancient docket item seals at last — declarative emphasis-clefting granted with a shrug, sentence-opening clefters standing bare (1.11.2.1.4); counts 533 / 397. pseudo-clefting sealed in two grades — Sin uain ythénÿ… and the bare-opening Thé…; bare = un-sealed (no y…nÿ) , the thas-guess retired, and the companionship’s true direction spoken: ios attends thas, never the reverse (1.11.2.1.5); counts 534 / 396. dislocation refused whole — no hanging themes left or right, emphasis-country fully drawn (1.11.2.1.6 + children); counts 538 / 392. the emphasis-kit sealed asymmetric — yes doubles (bháya’ya, fith’ya bha), no chains its lone morpheme (fith’t o ’t o ’t) (1.11.2.1.7); counts 539 / 391. combinations granted — cleft carries its kit, the chain grades open-endedly, whimsy-scaling over scarcity (1.11.2.1.8); counts 540 / 390. the triarchy crowned — cleft for constituents, kit for polarity, and the maker’s fresh invention for verbs: the plain repetition, the r.r.’s declarative mirror (Fær mæ łathn! Łathn!); łathn “kill” seated (1.11.2.2.2.1); counts 541 / 389. the decleft doctrine revealed — atá-family as the sentence’s cleft-memory, iostá the manual de-clefter, emphasis docking free within frames, and whole clefts emphasised by death-and-resummoning as deep tmesis (1.11.2.2.2.2); counts 542 / 388. 1.11.2.2.2.3 was presented with comparanda and a seed-mend, unruled at that session’s close (July 2026); on waking — the three stones verified, the reference reread in full — the maker answered directly: the NP-internal country lit — resumptive í (NP first, í reflecting, the general be closing; no ios → never atá , the Faerielander atá-slip proscribed; the whole NP pied-pipes , the part never travelling alone); craig / craigea seated, the -ea past’s fifth witness; frame anatomy, í’s ledger, and the hyphen-hung Rîbha-e ride in §12 as watches; counts 543 / 387. (Keeper’s arithmetic, verified: Book 1’s articles = items + nine structural souls — four General-notes, three Coinage ledgers, two free-notes.) conjunct-glow sealed — X’ya o Y , “X indeed, and Y”: conjunct-emphasis a polarity act by §5’s docking law, no new organ (“easy one”); the parity seed retires, one conjunct may glow alone; tetrad-wide docking and the lone-conjunct question ride in §12; counts 544 / 386. The maker eased the comparanda rite: Glaoa examples henceforth optional — workbook ink and supervision suffice. many-glows sealed — two ’ya stamps, “another easy one” ; negative glows dressed as ’tya / ’thteya with careful avoidance of added negators (the split-pole watch part-answered: X’ya o Y’tya ); the harmony-bar retires; ’tya, ’thteya seated; counts 545 / 385. the residue block sealed en bloc with its four children and 1.11.3 — the two-tier system : movement proper strands nothing; dislocation resumes with í (things) / fæ (persons); No Copy Left Behind (the semicolloquial Fith-fith: ten fith excepted, first person only); no particles; 1.11.3 needed no new machinery (the yes-no focusing clitics stood ready). The anatomy and ledger watches resolve ; 1.11.2.1.6’s “no resumptives” retires with a candle. The maker established the order canon — base OSV, first person SOV, the suis-je Más-ten (adjectives hanging free); craif, Ffearhsy, dúe seated (dúe/dué accent fork §12); the toll witnessed on a circumfix ( or’raif’il ); counts 551 / 379. §1.11 — emphasis-country — closes ; the audit offered at the section-close per the rite. Topic-country opened at the maker’s word — three devices ( S’air’n · O • o e X • · Efui • ) plus the quidem-replica (s’efui-e’in) ; “otherwise very similarly to English,” tentatively, details to the children; Efui, S’air’n, s’efui-e’in seated; the hyphen-hung -e’s second witness logged; the banked section-audit stands. Counts 552 / 378. 1.12.1.1 sealed — the marker-family confirmed, both flanks; Sin X, ratified as the plainest road; boundary-marks conditioned per device (colon · closing • · bare · comma); and the shifter’s logic unveiled: an elliptical optative , “May what follows concern X” — the keeper’s comma-reading superseded, its candle lit. Counts 553 / 377. 1.12.1.2 sealed — no topic by bare movement, never without a marker ; the first-person smoosh unveiled: O X ∆ , the trill-mark ∆ standing for the closing • ( O Scóhn ∆ ten mac — the 100th worked example ); ∆, mac seated; Scóhn joins the exemplar-named; the first person’s third colloquial license tallied. Counts 554 / 376. 1.12.1.2.1 sealed — position is whatever : marked topics ride parenthetically anywhere an auxiliary fits; the doorstep-reading retired with its candle; six coinages seated ( Fhós, Rhié, duín, Łif, elf, elfæn — the -æn verbalizer’s first explicit pair); the te…’os kin-frame’s second witness; the hyphen-hung -e’s third configuration; Sin’s split-shapes now three. Counts 555 / 375. 1.12.1.2.2 sealed — the final seat stays closed : never topical, the be owning the door; afterthoughts only as new pointing clauses on the Œr ’thte model; heavy-shift pre-protected. Counts 556 / 374. 1.12.1.2.3 sealed — the seam-law : other positions live in the seams between clauses, never phrase-internally; the maker’s ✅/❌ map folded whole; s’X-e’in proven productive; six seated ( ssai, Grainê, aoíth, dulagá, sulæn, Ulfœrth ); the Sin-split watch enriched ( s’aige’n ). Counts 557 / 373. 1.12.1.3 sealed — the marker split : bare for glow, marked for topic; the thinnest marker suffices and the resumptive elides beneath it; the kin-frame’s first compound guest logged with its mystery ’s ; laíea the -ea past’s sixth witness; the two-office watch resolved, candle lit. Counts 558 / 372. 1.12.1.3.1 sealed — initial = the first seam after the particles ; contrastive topics routed to the tmesis-fold road (swallow, then stamp the tail) — no new mechanism; the stamped-topic seed retires. Counts 559 / 371. 1.12.1.3.2 sealed — the seat stays closed; the tail is a topic-reminder riding the post-clausal seam ; fragments unrestricted, orphaned clitics permitted ; the fragment-shape watch resolved, candle lit; sain seated. Counts 560 / 370. 1.12.1.3.3 signed — at any seam, never inside a phrase; the r.r. the one lawless wanderer. Counts 561 / 369. The second grand harvest called by the maker : scan ahead, sign the entailed, send them to Book 2’s harvests. Executed after full reacquisition (the maker’s counsel of method — combinations judge, so the whole canon first returned to hand): fourteen signed — 1.12.1.4 (no topic-agreement); 1.12.2.1.1, 1.12.2.2.1 (NP and main-clause topics, as attested); 1.12.2.3 + four children (movement never involved; the tier’s resumptive elides; no copies, no particles, surface-nothing by elision); 2.1.1.2.9.4 (ghiæan’s du-marked goal-state); 2.1.1.2.14 (the family as the morphology); 2.1.1.4.19.2 (bare numeral, no mutation); 2.1.2.1.1.3.2, 2.1.2.1.1.4 (pronoun emphasis segmental both directions), 2.1.2.1.13.2 (mith the nonspecific). Three would-be seals stepped down honestly to the borderline roster (1.12.1.5, 1.12.3, the .15 emphatic-paradigm cells) — foreclosures, not entailments. Counts 575 / 355. The roster ratified same day: twenty-seven sealed — twenty-four whole (1.12.1.5 family-closed; 1.12.3 optional everywhere; whole-NP pied-piping inherited; the emphatic-pronoun cells as standing machinery; the possession trio to the engine; no classes or genders ; the deafness-shadow four; names doorless; -æn ratified; the self-vow as intention; purpose by dúe and by; the trill-vocables) and three in the maker’s own ink: -mÿa the -er comparative for adverbs (contrariety -ma ; the slee’ya fork surfaced, §12 xix); the nonspecific office — mith, í, and the conditioned mæ-substitute (2.1.2.1.13.2 amended in place, same day); dræao “from” as source’s core. Watch xvii resolved — ∆ one vocable, two offices. Counts 602 / 328 — the six-hundredth soul crossed. 1.12.1.6 sealed — combinations live, unranked : markers stack, and a marker takes the quidem-replica as reprise; no gravity ladder. And the plain road’s comma unexisted — never the maker’s, only the seed’s, ratified too whole at 1.12.1.1 and propagated by the keeper; swept record-wide (callout, example row, and the sealed fill amended in place, dated). Counts 603 / 327. 1.12.2 sealed in the maker’s formula — what í may say : resumability as the topic-licence, the gift test’s second jurisdiction; the cascade harvested three children (adjectives and adverbials not as themselves, verbs by the gerund door). Counts 607 / 323. 1.12.2.2.2 sealed — the topic-path law : free at any depth; first subordinate plain, second-and-deeper bare y-, the nÿ never worn — one clause of grace, then paperwork; the y-system’s second office named. Counts 608 / 322. 1.12.2.2.4 sealed — the coordinate island holds : no travel, no in-situ dress, every marker moonlighting; one wall anaphora may not pierce. And the maker’s decree: the resumptive í , né Reflexive í — swept record-wide. Counts 609 / 321. 1.12.2.2.5 sealed — the topic stack : free multiplicity, every secondary an object, predicates pairing first-to-first by verb-last discipline — the OSV canon’s quiet payoff; a referent may return; the one-topic law refused. Counts 610 / 320. 1.13.1 sealed — no shift, ever : chains instead of cranes (the Aich—sentence) or weight packed into the ythénÿ-relative, verb-last absorbing it; aich glossed at last (“also”), a pending confirmation resolved; éx, Nímhogê seated; the mé-e road opened; eibh field-witnessed. Counts 611 / 319. The heavy-shift moot: 10 children of §1.13 emptied by the parent’s no-shift law and harvested under the standing command — §1.13 closes whole , the third country of the day; the aich lexicon row mended in place with its sealed gloss. Counts 621 / 309 . 1.16.6 sealed — the numeral/quantifier fence : the counted-ê exclusive to numerals, partitive e to quantifiers but not limited to them (e’s of-office general); -ê's exclusivity mended 2026-07-15, see §6 and 2.1.1.4.10 ; five seated ( chair, Emma, Tïc, Bis, Ruimais ) and Garner’s court-room novel rendered. Counts 622 / 308. 1.16.7 sealed — what du can swallow : the article fence alone promoted; three fences offered and not taken. Counts 623 / 307 — and with it Part 1 of the questionnaire closes whole , syntax’s every cell answered. 2.1.1.2.5 sealed — duîm-fær re-shelved, and the fold unveiled : fæ’uîm’ær , roles inverted, the flag toll-paid; host-minimality harmonious. Counts 624 / 306. 2.1.1.2.7 sealed — the equative: sin…sy , legs reordering in practice under OSV; the German split free; the pending candle out, superlative alone remaining; mordach, sy seated. Counts 625 / 305. 2.1.1.2.8 sealed as answering amply — the ledger listing, the maker’s new ink illustrating into the ceremonial deeps: the Verbless Eternal Past and Future (world / worldn’t), Hthom swallowing propositions whole, the =-chain, af-/fel-, -os revealed, the force-pronouns Ton and þin, and V’s first syntactic witness beside ∆. Fourteen seated; counts 626 / 304. 2.1.1.2.10 sealed — the bare subject-complement ; the passive shape witnessed early (farmea eibh), become’s -r state-noun beside the du-dress; Væx, farm, -r seated. Counts 627 / 303. The frontier stands at 2.1.1.2.11 — and here this sitting closes: the rebrief readied at the maker’s word. The farewell attestation sealed (fal · Côs · Côs-Côs); handoff brief v2 and project instructions v2 issued alongside.. The first grand harvest is folded (+26 words); refills 1.8.1.1, 1.8.1.2, 1.8.5 sealed by entailment, maker-approved; 1.11.2.1.4 stands in the ordinary docket — the keeper’s “question-bound cleft” was a phantom, mended by the maker: r.r.s signal questionhood; the ios-cleft is resonance-governed and free .",
+  "table": []
+ },
+ {
+  "section": "Questionnaire progress",
+  "anchor": "s11",
+  "title": "Overview",
+  "body": "The third grand harvest (2026-07-14, the scan of the outstanding host): at the maker’s word — the audit’s commencement cosigned — the keeper reacquired the whole canon (brief, record, and all 303 outstanding bodies read entire) and scanned the host for standing answers. Forty signed by entailment and moved to Book 2’s harvests: the tone-country whole — 3.3.3 with its nineteen children and 3.5.2 with its six, foreclosed by the deafness law (1.11.2.1.1) and the prosody-blind crown: no meaning rides melody, so no tone exists (the ideophone-garden’s possible song, 4.1, watched as the one contingency); 3.3.4.5 — intonation subtypes imply nothing, ever; and twelve echoes of sealed machinery : 2.1.4.4.1 (equality = the sin…sy equative), 2.1.1.4.19.3 (partitive quantifier = the fence’s Q-e frame), 2.1.1.6.10 (before = aoíth), 2.1.2.1.13 + .13.3 (the nonspecific office pronominal and complete), 2.1.3.6.9 (reciprocity argument-side, never verb-forms), 2.1.3.3.2.1.4 (continuous = the sealed dús-progressive), 2.1.4.5.3 (small measure = the attenuator, keeper-application labelled), 2.2.1.5 (Nouns from clauses by the fold-road and gift test), 2.2.3.3 (Adj→Adj by the degree circumfixes and -mÿa), 2.2.6.1.1 (P+P compounds: duín ‹ du + In), and 2.1.3.1.2.2 (object-drop free by 1.2.1.2.2 — cradle-flagged: one word returns it to voice-country). A borderline roster of ten stepped down honestly for the maker’s own eye (§12, xxxiv). Stale ink mended in place: this reference’s §2 and §10 count-leads (221→271; 43→121), the Next-up frontier, and three workbook seed-lines staled by dræao and aoíth. Counts 667 / 263 . The frontier stands unchanged at 2.1.1.2.11.",
+  "table": []
+ },
+ {
+  "section": "Questionnaire progress",
+  "anchor": "s11",
+  "title": "Overview",
+  "body": "2.1.1.2.11 sealed (2026-07-14): the king is crowned by two roads. The plain make with the bare complement — Mith fær Væx farmea — under the first-person seat rule (“SO not OS”, the maker’s reminder; OSV for non-first), one dress in both voices; and the becoming-gift — Mith fær-dúe Væxr ghiæanea — the person in a postposed hyphen-joined dúe-flag, Væxr as object, ghiæan causative by frame. A division glimpsed for the goal-dresses: Væxr travels with ghiæan, farm takes bare Væx (watch xxxiii annotated); the stale dús-seed mended in place, dated. No new lexemes (all pieces seated); two examples join §10. Counts 668 / 262 . The frontier moves to 2.1.1.2.12 — adjective-governed objects, the roster’s own B-item.",
+  "table": []
+ },
+ {
+  "section": "Questionnaire progress",
+  "anchor": "s11",
+  "title": "Overview",
+  "body": "2.1.1.2.12 sealed (2026-07-14): the machinery ratified, likeness minted, and the throat begins to sound. The 1.2.2.2 estate ratified whole; férás-ufsae fully glossed — Férás “boy” (casual: tops and/or dominants; the agender-culture note recorded), ufsae “insane” with its deliberate ae (≠ æ, /aɪ/). aoyth “like” minted — …aoyth rhié-færs “like his father” — recorded a preposition, the vacancy-blocker. Riding jewels: the familiar possessive [kin]-[absolute] ( rhié-færs, sídia-teos ), kin-noun small — the maker’s class-quiz posed, the keeper’s everted-frame answer awaiting its grade; sídia’s long watch closes — “sibling”, the agender culture’s word (both lexicon rows mended, dated); first pronunciation keys recorded (Rhié, Férás, ufsae, færs, aoyth). Four words seated (275). The different-word waits. Counts 669 / 261 . The frontier moves to 2.1.1.2.13 — the agent of the passive, the cradle’s shadow.",
+  "table": []
+ },
+ {
+  "section": "Questionnaire progress",
+  "anchor": "s11",
+  "title": "Overview",
+  "body": "2.1.1.2.13 sealed (2026-07-14): the agent is where the deed comes from. Dræao lus Ufín Ooraithr fæ ghiæanea — “(From the enemy Killed-being fæ got.)” — the agent a dræao-source (the from-word’s second office), the passive-with-agent in the ghiæan-frame : killed-being received as a dark gift , existence-as-donation speaking even in death. The von/durch fork resolves to the split : dræao the will, by the channel. The seat rule shows both faces across the two crownings ( Mith fronted, 1st; Ooraithr fæ , O before S, non-1st). Two words seated ( Ufín, Ooraithr — 277); the -r former’s second witness; new keys sung (æ “the ee in eel”, u/oo “the ool in eel”, gh sounding [sθɦ]-wards). Voice-country’s agent-cells stand furnished; the cradle keeps its day. Counts 670 / 260 . The frontier moves to 2.1.1.3.1 — the absolute construction.",
+  "table": []
+ },
+ {
+  "section": "Questionnaire progress",
+  "anchor": "s11",
+  "title": "Overview",
+  "body": "2.1.1.3.1 sealed (2026-07-14): the absolute is a topic wearing an epithet. “Usually a topic clause” — the stage-set rides O X ∆ / O X V , and the familiar possessive turns mock-honorific : O státachaí-færs V sê fæ ooraith “His Idiocy, himself he killed”; O státachaí-færs ∆ dúe sê fæ niïl Pat sulænea “His Idiocy, for himself he a hole dug” (Amused.). Five words seated ( ooraith, Státachaí, Státr, Pat, sulæn — 282); xxxvii’s base-question closes (ooraith the kill-verb); the -ea past’s ninth witness; the -r former’s third; -aí revealed as the abstract former. Two forks stand (F1 order, F2 naked sê — §12 xxxviii), recorded verbatim, laws pending. Counts 671 / 259 . The frontier moves to 2.1.1.3.2 — the infinitive construction.",
+  "table": []
+ },
+ {
+  "section": "Questionnaire progress",
+  "anchor": "s11",
+  "title": "Overview",
+  "body": "2.1.1.3.2 sealed (2026-07-14): Danæam owns an infinitive — the toward-prefix on the verb. u- (= du-) binds to make usót “to go”; subjects ride dúe; goals prefix likewise ( ułiuafth , Łiuafth “heaven” seated small inside). Preferred reading, the maker’s: the topic clause — S’łiuafth-e’in — dúe sê S’eg’in usót... — the as-frame fronting, S’eg’in resuming. The du→u reform declared (“horrible confusion” promised, verbatim — watch xxxix). Same turn: sê-fær corrections close fork F2 (paradigm stands; compound-order forked gently), and the Verbless Eternal mends — Gil, not Gil’t, with the maker’s semantics recorded. Three words seated ( Łiuafth, u-, eg — 285). Counts 672 / 258 . The frontier moves to 2.1.1.4 — the nonlocal functions’ block-notes.",
+  "table": []
+ },
+ {
+  "section": "Questionnaire progress",
+  "anchor": "s11",
+  "title": "Overview",
+  "body": "2.1.1.4 sealed (2026-07-14): the kit ratified and the without-word breathes. æœá — the object-no (kein; elder witness Æœá Cuthrá ) — earns its stay with of-no : æœá-e “without”, attested twice ( Ten æœá-e Fía más · Æœá-e Fía fæ is — the latter seating is as a be-face beside bhies, forked gently). The from/without twins complete: dræao and æœá-e. The same turn: the tetrad turns — sê-fær, “fær last (an adjective, the in-lieu-of-tmesis position)”, swept record-wide with the family’s turn forked; F1 closed by the maker’s own woops ( sê-fær niïl Pat fæ sulænea — the seat rule universal); naked sê re-ratified never-third; and the ratification sweep — “all else mentioned: count it ratified” — closes every riding flag (aoyth’s P-class, V/∆ affect, the everted-frame account graded true, A=∆, niïl, þis-e). Two words seated (287). Counts 673 / 257 . The frontier moves to 2.1.1.4.1 — the benefactive.",
+  "table": []
+ },
+ {
+  "section": "Questionnaire progress",
+  "anchor": "s11",
+  "title": "Overview",
+  "body": "2.1.1.4.1 sealed (2026-07-14): doing-for wears dúe; giving-to keeps duîm. “dúe (to-of/for) already distinguishes this fine” — Ten dúe Piell í átea beside the maker’s contrast-pair Ten duîm Piell í gæn : the cosmology keeps clean books, benefaction never swallowed by gift. Decree: aoát renamed át — swept both books (13 sites), †aoát graveyarded, the old negator’s-face mischief retired with the skin; átea the -ea past’s tenth witness. Piell seated (288); dúe granted its own row, three offices strong. Counts 674 / 256 . The frontier moves to 2.1.1.4.5 — circumstance and its negative, the roster’s own B1 — where æœá-e arrives already dressed for the without-half.",
+  "table": []
+ },
+ {
+  "section": "Questionnaire progress",
+  "anchor": "s11",
+  "title": "Overview",
+  "body": "2.1.1.4.5 sealed (2026-07-14): both halves, and a metaphysics with them. Positive: Niïl Hín ythénÿ reinach Sáinsu mé-e atá... — the relative packing, mé-e trailing, atá because the hands stand as temporary second subject. Negative, three roads: aoa atá , atá’thte , or restructured with thé and æœá-e and plain bhie — the maker’s words sealed verbatim: the absent hands are denied subjecthood, and the be-choice tracks existence . Roster B1 closes (nine remain). Two words seated ( reinach, thé — 290); the Adj–N seat fork and the thé/ythénÿ division ride at §12 (xl). Counts 675 / 255 . The frontier moves to 2.1.1.4.8 — quality, the roster’s B2. A handoff brief (v4) issued this turn for the smaller keeper.",
+  "table": []
+ },
+ {
+  "section": "Questionnaire progress",
+  "anchor": "s11",
+  "title": "Overview",
+  "body": "2.1.1.4.8 sealed (2026-07-15): three roads, none a rival. The maker ratified all three seeds at once: e serves both bearings — Hín e Gree ('a man of humour') fronting the quality, lus Gree e lus Hín ('the humour of the man') reversing it, order alone disambiguating; -ach also derives the quality directly (the Stát→Státach precedent) — Grëach Hín , a parallel road beside the first, not chosen over it; and the negative inherits 2.1.1.4.5’s apparatus whole — aoa atá , atá’thte , or thé + æœá-e + bhie — the quality denied subjecthood exactly as the hands were. Mended in place, same sitting: the maker gave the word before the ink dried — Gree 'humour', Grëach 'humorous', Grëachaí 'humorousness' (the -aí abstract former's second witness) — all three templates now close in full; watch xli resolved below. Roster B2 closes (eight remain). Counts 676 / 254 . The frontier moves to 2.1.1.4.9 — quantity, ‘a boat of a thousand tons’ and reference-quantity ‘a pound of sugar’.",
+  "table": []
+ },
+ {
+  "section": "Questionnaire progress",
+  "anchor": "s11",
+  "title": "Overview",
+  "body": "2.1.1.4.9 sealed (2026-07-15): one frame, not a split. The maker’s own reasoning: “the thousandness is of the tons and the tons are of the boat, but numbers hide the of” — seen that way, quantity turns out basically identical to English . The already-law Q e N frame (seed 1) simply extends; bare apposition and the two-shape split (seeds 2–3) aren’t needed. Verbatim: Niïl Scál e thíthíl Tonnaê… ‘a boat of a thousand tons’ — the numeral+counted-ê phrase filling e’s complement, one layer of of absorbed by the numeral; and Niïl Lund e Shar. ‘a pound of sugar’, the plain case, same frame. Five words seated ( Scál, thíthíl, Tonna, Lund, Shar — 298, alongside Gree’s family from the mend above). Counts 677 / 253 . The frontier moves to 2.1.1.4.10 — material, the roster’s own next.",
+  "table": []
+ },
+ {
+  "section": "Questionnaire progress",
+  "anchor": "s11",
+  "title": "Overview",
+  "body": "2.1.1.4.10 sealed (2026-07-15): material breaks the pattern — by, not e. Tïc by Úrsapê ‘a house of bricks’ / ‘built of bricks’: means and matter merge, material sitting nearer instrument than the descriptive-genitive that carried quality and quantity — the roster’s own guess (e) does not hold here . Two contrasts offered alongside, marked Compare , near-misses not to confuse with material: Tïc e Úrsapfarmaí ‘a house of Brickmakery’ (e for abstract/industry association); Tïc dúe Úrsap-Farm-farm ‘a house for brickmaking’ (the purposive dúe, a house for the trade, not made from the substance). Two forks opened — F1: Úrsapê ’s bare counted-ê with no numeral, against 1.16.6’s ‘exclusive to numerals’; F2: Úrsapfarmaí skipping any visible -ach stage on its way from the compound to the abstract — both recorded verbatim, watched at §12 (xlii). Both resolved same sitting, below. Three words seated ( Úrsap, Úrsapfarmaí, Farm-farm — 301); roster item closes with a correction rather than a confirmation (seven remain). Counts 678 / 252 . The frontier moves to 2.1.1.4.11 — manner, ‘kissed her with verve’.",
+  "table": []
+ },
+ {
+  "section": "Questionnaire progress",
+  "anchor": "s11",
+  "title": "Overview",
+  "body": "Mended, 2026-07-15, same sitting: both of 2.1.1.4.10’s forks close. F1 — “-ê is simply the pluraliser” (the maker: “brickê”), never numeral-exclusive; 1.16.6 revised (§6, §12 xii, xlii). F2 — -ach is skipped when it would be absurd: Úrsapfarmea ‘brick-made’ is sayable, Úrsapfarmach ‘brick-makey’ is not, so Úrsapfarmaí reaches straight past the impossible stage. And sentence 3’s Ursap confirmed a slip — Úrsap throughout. One word seated ( Úrsapfarmea — 303; a one-row drift surfaced against the physical table here, predating this sitting — corrected to the verified count rather than chased further back).",
+  "table": []
+ },
+ {
+  "section": "Questionnaire progress",
+  "anchor": "s11",
+  "title": "Overview",
+  "body": "2.1.1.4.11 sealed (2026-07-15): three co-valid roads for manner, offered together. by Elin ghuethnea… ‘through/using/with verve served’ — the by-instrumental, now unified across material (2.1.1.4.10) and manner alike. El’huethnea’in ‘ve’served’rve’ — tmesis: Elin (‘verve’) splits at el’|’in, hosting toll-paid ghuethnea (→huethnea, gh a hard-consonant payer) in the seam, the verb itself embedded inside the manner-word — seed 1’s Sin-factory instinct realized with Elin as its own host; whether Elin’s -in tail kins Sin’s family is raised, not asserted. elinië ghuethnea ‘vervely served’ — Elin + -ië, a fresh witness for the roster’s own 2.2.4.4, noun-to-adverb rather than adverb-to-adverb. The negative was not reached this sitting — recorded honestly open rather than assumed. Three words seated ( Elin, ghuethn, elinië — 306) plus one fused form; three examples join §10. Counts 679 / 251 . The frontier moves to 2.1.1.4.12 — cause, ‘exhausted by his wounds’.",
+  "table": []
+ },
+ {
+  "section": "Questionnaire progress",
+  "anchor": "s11",
+  "title": "Overview",
+  "body": "Mended, 2026-07-15, same sitting: Elin capitalises (Noun), elinië stays lowercase (adverb) — her correction, swept through §2 and §10; the diaeresis also moves, -ïe was the keeper’s guess, -ië (matching the roster’s own nirïë) is hers. The fused El’huethnea’in capitalises at the Noun-complex’s left edge, its swallowed guest staying low, per the tmesis engine’s standing law.",
+  "table": []
+ },
+ {
+  "section": "Questionnaire progress",
+  "anchor": "s11",
+  "title": "Overview",
+  "body": "2.2.4.4 sealed (2026-07-15), out of sequence — the roster’s own call: adverbs DO modify adverbs , seed 3 confirmed and seed 2’s “barren sink” refuted — through the degree/attenuator system (syntax), not a dedicated derivational suffix. Verbatim, an ‘extremely quickly’-type stack: Ten í or’mordachië’il—’t craithië fithea. ‘I it not-insufficiently-enormously hungrily ate’ — the established or…il attenuator wraps the degree-word by tmesis toward ‘insufficiently’, and a dash-hung ’t negates the whole wrapped proposition, not-insufficiently reading as extremely by litotes (keeper’s-eye note on the effect). Alternate offered: or’mordachaí-by’il—’t ‘with-not-insufficient-enormity’, the -aí noun wearing -by instead. craithië further attests fith ‘eat’; the standing watch stands regardless. Three words seated ( mordachië, mordachaí, craithië — 309; mordach itself was already established at 2.1.1.2.7, caught and mended 2026-07-15, see 2.1.1.4.14); one example joins §10. Roster item closes (six remain). Counts 66 + 680 ; Book 1 outstanding 250 .",
+  "table": []
+ },
+ {
+  "section": "Questionnaire progress",
+  "anchor": "s11",
+  "title": "Overview",
+  "body": "2.1.1.4.12 sealed (2026-07-15): cause is a small family, not one road. Ærmuchaí e Síulnê ‘exhaustion of wounds’ (seed 3, NP-internal, e reaching further). The gift-frame twice over (seed 1): fær Síulnê fær Ærmuchaí gænea ‘his wounds gave him exhaustion’ (wounds as subject, plain gæn), and fæ Ærmuchaí fær Síulnê dræao ghiæanea ‘he got exhaustion from his wounds’ (the person as subject/recipient, dræao marking source, the fuller dark-gift ghiæan-frame). Then, because exhausted is a verb and the above are all noun-shaped, two more: Yth ír Ralxú lus Both rüstea eibh. ‘the city was ruined by its government’ — yth (already ‘past/over/beyond’) fronting the cause over a plain passive, brushing the reserved voice-country (2.1.3.1), recorded as given and not pressed; and, compared beside it, Yth fær Síulnê fæ duín Ærmuchaí tugea eibh. ‘he was brought to exhaustion by his wounds’ — cause as motion, duín marking the state arrived at. Four metaphors now stand for cause — origin (e), gift-given (gæn), gift-received (dræao+ghiæan), destination (duín+tug) — and by never entered the family at all , its three-item run from material and manner stopping short here. A light fork, not pressed: ír ‘its’ beside fær ‘his/her’ — an animate/inanimate possessive split, unwitnessed before now (§12). Nine words seated ( Ærmuch, Ærmuchaí, Síuln, Síulnê, Ralxú, Both, rüst, tug, ír — 319); five examples join §10. Counts 681 / 249 . The frontier moves to 2.1.1.4.14 — function, ‘I used the stick as a club’.",
+  "table": []
+ },
+ {
+  "section": "Questionnaire progress",
+  "anchor": "s11",
+  "title": "Overview",
+  "body": "2.1.1.4.14 sealed (2026-07-15): standing canon, not a fresh ruling. Ten sy Cthug sin lus Acusthia lynœa. ‘I as Club so the stick used’ — none of the three offered seeds were quite it; the real answer was already sitting in the established sin…sy equative (2.1.1.2.7), stretched here from adjective-degree comparison to noun-function comparison. It fits beautifully once two standing rules meet: Ten fronts first as any 1st person must (the seat rule), and the sy-phrase fronts to the object slot — which, right after a fronted 1st-person subject, is exactly where sy Cthug lands. Not a new pattern; two old rules, meeting for the first time. Touches watch xxvi (§12) as adjacent evidence, without closing its adverb-specific question. Also mended, same audit: mordach was wrongly logged as new at 2.2.4.4 — it was already sealed at 2.1.1.2.7 (‘big’); caught and corrected, a duplicate row removed, the running count adjusted down by one. Three words seated ( Cthug, Acusthia, lyn — 321); one example joins §10. Counts 682 / 248 . The frontier moves to 2.1.1.4.15 — reference, ‘I told him about the incident’.",
+  "table": []
+ },
+ {
+  "section": "Questionnaire progress",
+  "anchor": "s11",
+  "title": "Overview",
+  "body": "2.1.1.4.15 sealed (2026-07-15): e wins outright, no fork. Ten fær e Atruens’ya saíea. ‘I him of/about the Incident-the told’ — her word: “of is more than good enough here.” By-promotion and the saige-satellite were both offered, both quietly declined. e’s of-office now spans quality, quantity, and reference , with material and cause the two provinces it doesn’t reach. Mended 2026-07-15, at 2.1.1.4.19: lus → -’ya, per the maker’s own revision. Two words seated ( Atruens, saí — 323); one example joins §10. Counts 683 / 247 . The frontier moves to 2.1.1.4.16 — essive, ‘I was in Berlin as a soldier’.",
+  "table": []
+ },
+ {
+  "section": "Questionnaire progress",
+  "anchor": "s11",
+  "title": "Overview",
+  "body": "2.1.1.4.16 sealed (2026-07-15): a fourth road — the possessed mé. Ten duín Berolth tes-mé Maghr eibh. ‘I in Berlin my-with soldier-being was.’ Two established pieces newly joined: tes (‘my’, already sealed) hyphens onto mé (‘with’) as tes-mé — accompaniment made possessive, a state carried rather than merely predicated; and Maghr is Magh (soldier) plus the -r state-former , the same suffix Væxr wears, its fourth witness now. Realizes seed 2’s spirit — states as possessed things — through mé rather than a bare possessive on the role-noun (seed 2’s own draft had used mis where the paradigm wants tes for ‘my’; a small seed-ink slip, mended in passing). Neither Sin (seed 1) nor bare apposition (seed 3) was needed — the one-mechanism-for-4.14/4.16/4.17 hope isn’t bearing out, each item finding its own room so far. Three words seated ( Berolth, Magh, Maghr — 326); one example joins §10. Counts 684 / 246 . The frontier moves to 2.1.1.4.17 — translative, ‘we appointed him as general’.",
+  "table": []
+ },
+ {
+  "section": "Questionnaire progress",
+  "anchor": "s11",
+  "title": "Overview",
+  "body": "2.1.1.4.17 sealed (2026-07-15): already closed, same structure as ‘made king’. Mith fær-dúe Cáithoorhr oothíthea. ‘We for-him General-being appointed.’ A second witness of 2.1.1.2.11’s become-pattern — the postposed hyphen-joined fær-dúe flag, an -r state-noun object rather than the bare noun, the causative verb closing it. Where ghiæan served becoming-king, oothíth serves appointing — the frame generalizing past one lexeme, watch xxxiii firming from a lone example toward a real construction. Seed 1 (ghiæan) was right in spirit, wrong in the specific verb; seed 3’s as-vs-into split wasn’t needed — translative and become share one structure here. Three words seated ( Cáithoor, Cáithoorhr, oothíth — 329); one example joins §10. Counts 685 / 245 . The frontier moves to 2.1.1.4.19 — partitive, the family (block).",
+  "table": []
+ },
+ {
+  "section": "Questionnaire progress",
+  "anchor": "s11",
+  "title": "Overview",
+  "body": "2.1.1.4.19 sealed (2026-07-15): e presides; lus is scrapped from this scenario. Seed 1 confirmed outright. Seed 2 revised richly: the whole’s definiteness inside an e-partitive no longer takes lus — it takes a five-way system instead, her word: “iocías, sícías, or -’ya: that-them, this-them, or the equivalent of ‘the’.” Neither iocías nor sícías is new vocabulary — both compositional, ios ‘that’ / sís ‘this’ plus cías ‘their/them’ (already sealed, 1.10.2) — and -’ya is a fresh job for an already-versatile clitic, not a new form. Full paradigm, replacing 2.1.1.4.15’s own example as the base case: Atruens’ya ‘the incident’ (singular, enclitic) · ios Atruens ‘that incident’ · sís Atruens ‘this incident’ · sícías Atruensê ‘these incidents’ · iocías Atruensê ‘those incidents’ · Atruensê’ya ‘the incidents’ (plural, enclitic). The shape : demonstratives front the noun and pluralize with cías; the neutral definite rides after the noun instead, with plurality marked on the noun itself. Seed 3 (by-partitive) wasn’t reached. Two words seated ( iocías, sícías — 331, compositional, keeper-labelled); five examples join §10; 2.1.1.4.15 mended to match. Counts 686 / 244 . The frontier moves to 2.1.1.4.19.1 — partitive numeral, ‘two of the boys’.",
+  "table": []
+ },
+ {
+  "section": "Questionnaire progress",
+  "anchor": "s11",
+  "title": "Overview",
+  "body": "2.1.1.4.19.1 sealed (2026-07-15): the enclitic confirmed as default. ssai e Frælithi’ya. ‘two of the children’ — “yes, by default.” Frælithi is an irregular plural of Fræli (child), her own words: “different to the more common plural form of ê” — pluralization isn’t uniformly -ê after all. Two words seated ( Fræli, Frælithi — 332); one example joins §10. Counts 687 / 243 .",
+  "table": []
+ },
+ {
+  "section": "Questionnaire progress",
+  "anchor": "s11",
+  "title": "Overview",
+  "body": "A closing blessing, 2026-07-15, recorded rather than graded. O • o mao-mé Gheor mæ drúsót. ‘May you go forth with your god-being’ — the elliptical optative frame, and the possessed-mé construction’s second witness (2nd person now: mao-mé , beside 2.1.1.4.16’s tes-mé), Gheor an -r state-noun on the new Gheo (‘god’). And O mao-mé mæ ∆ Gheo aobh. ‘God be with you’ — mæ here most likely the plain already-sealed 2nd-person pronoun; aobh plausibly an optative be-form; ∆ plausibly its vocative office (watch xvii) here rather than the affect-marker. These last two readings are keeper’s guesses, held loosely, not asserted as settled — flagged rather than pressed into false confidence. Word seated: Gheo (334, with Gheor as its state-form). The frontier stands at 2.1.1.4.19.5 — partitive negative quantifier, ‘none of the boys’ — unpresented this sitting; a redigestion follows instead.",
+  "table": []
+ },
+ {
+  "section": "Questionnaire progress",
+  "anchor": "s11",
+  "title": "Overview",
+  "body": "The endgame scan (2026-07-16). The maker verified the redigestion-memo’s ask and set the true task: amass all, scan all, seal, and distil. 2.1.1.4.19.5 sealed — the five-dress negative-quantity scale ( niuain · aoa uain · æouain · ssíns on partitive e + ’ya, and the negative existential æœá Frælithi’ya í gænyin — nonexistence denied subjecthood, the dummy í giving); 2.1.1.4.19.6 sealed by the same sentence (kein-æœá direct on the NP). The fourth grand harvest signed six: 2.1.1.8 (the pluraliser revolution’s home cell), 2.2.1.3 + 2.2.1.3.1 (the -aí former), 2.2.4.3 (mordachië), and both adverb-degree cells by 2.2.4.4’s own sentence. Three words seated (337); five sentences join §10 (169). The stale roster line for 2.1.1.2.12 struck (sealed 07-14). Triage of the remaining 235: a yes-no doc issued to the maker — 8 sealed this turn · 209 items across 73 grouped questions · 26 stragglers sketched. Counts 695 / 235 . The frontier rests until the doc returns.",
+  "table": []
+ },
+ {
+  "section": "Questionnaire progress",
+  "anchor": "s11",
+  "title": "Overview",
+  "body": "The doc begins to come home (2026-07-16), and the interim splashes with it. Fourteen items sealed from the maker’s first answers: price rides dúe ; value the e-frame with the Lyr/Lund currency-weight split and the worth-relative; distance and duration bare measure-NPs; extent the N-e-measure frame; wythil “despite”, metałie “inclusive-of”, exclusion the negated y-clause, addition the aich-chain; the posterior country whole to drúræao , within to duilín . Crowning it, THE Y-LAW , the maker’s own words: “the y in yScéan summons the atá family” — watch xl’s division explained at a stroke. Riders amended into three elder seals (functive duín tes-mé Matthsyr; vocative intimacy Scéan-teos and the communal existential; the quotation nesting law righted : top >– –<, lower »– –«). Interim coinings seated: Ixixaíyon “nightmare” and its unicorn-singularity family. Eighteen words (355); five sentences (174). Counts 709 / 221 . The doc’s remainder rests in the maker’s hands.",
+  "table": []
+ },
+ {
+  "section": "Questionnaire progress",
+  "anchor": "s11",
+  "title": "Overview",
+  "body": "The fifth sweep: answers-batch 1 + the commanded Book-2 study (2026-07-16). Sixty-two items sealed: obviation none (’ya stress / ’thte de-emphasis never changing the core pronoun); referentiality and genericness unmarked; definiteness OBLIGATORY — proper noun, lus, or ’ya ( lus lives ); indefiniteness optional with the plural family larger than -ê (watched) and the -r unit-road for masses (uain Wícr); one plural with phrasal distributivity; no fixed word-accent (choice a) crowned by the trill-rider : ∆/V run parallel to the sentence’s end or the next • — “their own statements”, the rare exception to tonal unmatching, and “a societal problem” since humans cannot join; no canonical peak; segments sovereign; af-/fel- the trills’ dictionary prefixes; no length; suffix-harmony “yes, essentially”; vowels free under the seam-law; þ and V loan-flavoured; incorporation — subjects never, IOs may; mith ssai; honorific style ( Alcuilaí, dúiri ); someone = uain’t-aoa ; selective emphasis = ax — which the study confirmed long-established, answering the maker’s own aside. Flags raised for the maker: Nif beside Myth (two noses); Wiunail beside Wilhíæ (two everyones). Seven words (362); four witnesses (178). Counts 771 / 159 . Book-2’s fills now stand extracted as the study’s permanent instrument.",
+  "table": []
+ },
+ {
+  "section": "Questionnaire progress",
+  "anchor": "s11",
+  "title": "Overview",
+  "body": "2.1.1.6.6–7 sealed (2026-07-16): “until is also dúiri.” The unto-word takes the temporal office, and the duration-country closes symmetric on a du-family trio: dúiri until · drúræao since/after · duilín within. Counts 773 / 157 .",
+  "table": []
+ },
+ {
+  "section": "Questionnaire progress",
+  "anchor": "s11",
+  "title": "Overview",
+  "body": "The determination (2026-07-16): ninety-one seals under the trust-command. duáo ‘ago’ by the maker’s word; then, re-judged against the whole of Book 2, ninety trust-seals: the time-country whole (In category-blind, names watched); labels the fragment-licence’s own case; the phonotactic nones (no consonant harmony, no restrictions beyond seam-and-toll); sixteen cradle cells (the participle-passive with patient-subject, dræao-agent ratified in, tense-transparency, dynamic/static as ghiæan vs eibh, anticausative silence, the fær-dúe causative with its witnessed shapes); thirty aspect-and-mood cells (bare perfective, dús imperfective, gnomic habitual, ghiæan ingressive, tenure iterative, the one-form perfect’s readings, Syá potential and contingent, the assembled certainty-ladder, Mee monitory, aich sin consecutive — assembled pieces tagged for one-word correction); attributive numerals, the compound-quantifier road, the derivation nones, and the weld named as the complex-P formation (wythil · duilín · drúræao · dúiri its four witnesses). One word seated ( duáo , 363). Counts 864 / 66 — the outstanding now numbering the statbar’s own left hand. What remains is hers alone: the superlative, the tenure-predication, sin…sy’s adverb-reach, the debitive, the unattested cradle cells, the coining-tables, and the twenty-six design-days.",
+  "table": []
+ },
+ {
+  "section": "Questionnaire progress",
+  "anchor": "s11",
+  "title": "Overview",
+  "body": "The gate-answers and the final boss (2026-07-16–17) — the compilation-fold. The maker walked the gate-chart alone: the local table filled ( duáf, ufel, dúy, uÿth joining duín, dús/u-, dræao, yth, Oob, In); we-firemen by mé-apposition ; nonrestrictives ride clefts (the ythé/ythénÿ // ythés/ythésnÿ paradigm); other-constituent passives yes, IO no; impersonals from three verb-types; the -self family turns whole (sê-cías beside sê-fær — the old fork closed); ditransitive causatives yes, causee omissible; stíl- the perfect in all three tenses; thuíl the terminative in four free orders; tenure-predication ratified (the roster’s last grammar-item); the skipped LDS number houses the Verbless Eternal Past and Future ; superlatives mÿel/niyel ; sin…sy reaches adverbs ( watch xxvi closes ); no debitive — the imperative serves ; inclusory yes; pronoun-clefts free. Flags resolved: Myth = snout, Nif = nose; Wiunail everyone, Wilhíæ everybody . Chains A, E, F parked at her word. And at noon the next day, the final boss fell : §5 answered whole (danaeam_lexicon_responses_complete — the 207 and the fields), standing as the annexed ore for the Grammar Book’s lexicon chapter. The row-by-row seating of both harvests into the pair is commissioned to Crith-lur-ril with the deep purse (the great-work zip); this passage is the record’s hand-receipt that every ruling above is canon now, sources verbatim in the annexes.",
+  "table": []
+ },
+ {
+  "section": "Questionnaire progress",
+  "anchor": "s11",
+  "title": "Overview",
+  "body": "The great compilation-seal (2026-07-17): the pair is current. Forty-two items sealed into the workbook from the gate-answers and the complete lexicon-responses — the cradle’s last answerable cells, the perfect’s three tenses, thuíl’s four orders, the no-debitive, the superlative country (mÿel/niyel, the Verbless Eternal housed in the skipped number), the cleft-relatives, and the whole of §5.1 with the maker’s kinship, colour, body, and field terms verbatim. The final-boss haul (209 entries) stands appended as its own section below, her glosses untouched. Counts 906 / 24 — everything remaining is parked at her word: the phonology wing (22 cells) and the numeral tables (2). The some-watch’s candle is lit: uaothë.",
+  "table": []
+ },
+ {
+  "section": "Still emerging",
+  "anchor": "s12",
+  "title": "Overview",
+  "body": "Honest gaps — set here so they don’t fossilise wrong.",
+  "table": []
+ },
+ {
+  "section": "Still emerging",
+  "anchor": "s12",
+  "title": "aoa-lenition, struck",
+  "body": "aoa-lenition, struck: the rule “aoa lenites what it negates” lost its only witness when †Mís was unexisted (the lemma is mhís everywhere). If the mutation is real, it needs a new witness; a candle is kept lit.",
+  "table": []
+ },
+ {
+  "section": "Still emerging",
+  "anchor": "s12",
+  "title": "Host-minimality threshold",
+  "body": "Host-minimality threshold: mé is too small to host tmesis (guests hyphen-dangle), yet monosyllabic Sin hosts ( S’aige’in ). Working hypothesis: the host must leave a viable shell on both sides of the seam — mé’s right shell would be a bare é , a doorway with no frame.",
+  "table": []
+ },
+ {
+  "section": "Still emerging",
+  "anchor": "s12",
+  "title": "Nímhog vs Nimhog",
+  "body": "Nímhog vs Nimhog: the standing lexicon says Nímhog ; the copular batch wrote Nimhog . The í is kept as canon pending one word.",
+  "table": []
+ },
+ {
+  "section": "Still emerging",
+  "anchor": "s12",
+  "title": "Overview",
+  "body": "CALLOUT: Harvest remainder (open watches). Me’hair’os — parse & gloss; bare Frœ ; férás-ufsae atomic or split; the roïl/oril/or…il/ro…il attenuator family’s headcount ( or…il now witnessed wrapping a degree-adverb toward ‘insufficiently’, 2.2.4.4 ); plain-letter suspects Wíc, yound, Math, Claim, Gloiyornugh, fith, sót, slee . And 1.11.2.1.4 (declarative clefting) waits in the ordinary docket — no §9 door; the cleft was never question-bound (maker’s correction, 2026-07). And the pronoun-gender design hides something sneaky (the maker’s word, 1.5.1.5) — undisclosed by design; the anaphor-ban protects it.",
+  "table": []
+ },
+ {
+  "section": "Still emerging",
+  "anchor": "s12",
+  "title": "Overview",
+  "body": "CALLOUT: resumptive-í watches (1.11.2.2.2.3). (i) Frame anatomy : resolved (1.11.2.2.3.2): fronting-with-a-double — the dislocation tier of the two-tier system. (ii) í’s ledger : resolved — resumption is a lawful office (í things, fæ persons); the “two jobs” sentence stands as history, its candle lit. (iii) Rîbha-e conditioning : e hyphen-hung before named possessors (naming-split shadow, keeper’s inference) — or free variation. Second witness (1.12.1): s’efui-e’in — hyphen-hung inside a Sin-compound, complement preceding. Third witness (1.12.1.2.1): te’rhié’os-e — hung on its own object inside si’—’n . Refined keeper-inference, labelled: the of-word hangs by hyphen wherever it cannot stand free — before the doorless (names) and inside compounds. (iv) The frame’s past/future be-faces ( eibh / iëao ) unattested — presumed by the grid. (v) Names after e stand unlenited ( John ) — mutation-immunity like pronouns, or J outside the alphabet.",
+  "table": []
+ },
+ {
+  "section": "Still emerging",
+  "anchor": "s12",
+  "title": "Overview",
+  "body": "CALLOUT: Conjunct-glow watches (1.11.2.2.2.4). (i) Tetrad-wide conjunct docking: the negative glow answered at 1.11.2.2.2.5 — split-pole X’ya o Y’tya (never bare ’t , which stays plain negation); the doch-pole ( ’maya ?) still unruled. (ii) May a lone conjunct enter the resumptive-í frame, or only whole coordinations? Unruled.",
+  "table": []
+ },
+ {
+  "section": "Still emerging",
+  "anchor": "s12",
+  "title": "Overview",
+  "body": "CALLOUT: Many-glows watches (1.11.2.2.2.5). (i) Ranking among stamps (the earlier outranking the later?) unruled. (ii) Multiplicities beyond two presumed by the same coin — one word. (iii) The negator-avoidance rationale (keeper’s attenuation reading) — one word confirms. (iv) A doch-stamp ’maya unattested.",
+  "table": []
+ },
+ {
+  "section": "Still emerging",
+  "anchor": "s12",
+  "title": "Overview",
+  "body": "CALLOUT: Residue & order watches (1.11.2.2.3 · the order canon). (i) dúe vs dué — the accent wanders between the maker’s own twin sentences; lemma unfixed (gentle fork). (ii) The dash-hung clitic or’raif’il—’t — an em-dash where the apostrophe usually docks; conditioning unruled. (iii) The fæ-frame (person-tier dislocation) stands by word; a full exemplar awaited. (iv) Fith-fith (colloquial, lowered second capital) beside Fith-Fith (formal gerund) — the orthographic split presumed deliberate; one word. (v) Kit-docking inside the scér-frame for 1.11.3 focus — presumed by §5; exemplar awaited.",
+  "table": []
+ },
+ {
+  "section": "Still emerging",
+  "anchor": "s12",
+  "title": "Overview",
+  "body": "CALLOUT: Topic watches (1.12.1). (i) The ’in → ’n seam-elision — S’aige’in beside S’air’n ; presumed euphonic after r , one word. (ii) Noun-capitalisation suspended inside tmesis-compounds ( efui lowercase within s’efui-e’in ) — presumed. (iii) The í/fæ frames as topic devices — resolved at 1.12.1.3 : marker splitting (bare for glow, marked for topic); candle lit. (iv) Scean stands with John among the exemplar-named, unseated by design — joined by Scóhn , John nativized (1.12.1.2); whether John-spellings elsewhere stand or convert, one word. (v) The elliptical optative unveiled inside O • o e X • (“may [what follows be] of X”) — its reach beyond this frame unruled. (vi) ∆’s reach — only in the smooshed shifter, or a general boundary-vocable? And the segmental-vocable reading of the deafness law — one word confirms. (vii) The e ’s fate in the smoosh — presumed elided with the rest. (viii) Sin’s split-shapes : S’—’in (saige) · S’—’n (air) · si’—’n (te’rhié’os-e) — and now s’aige’n beside S’aige’in : the same guest wearing both tails — the elision freer than suspected , perhaps free variation; one word. (ix) The pointing fragment’s shape — resolved at 1.12.1.3.2 : no restrictions, only permissions; the trailing-Sin shape licit among all others; candle lit. (x) mith in the grave-sentence glossed “we will-dig” — comitative subject or homonym, one word. (xi) The quote-marks on “s’aige’n” — presumed orthographic quotative dress. (xii) Grainê ’s number after ssai — now twice witnessed with Nímhogê after éx (1.13.1): the -ê as the counted form , keeper’s inference strengthened; lemmata still unresolved, gently. 2026-07-15: -ê confirmed simply the pluraliser (§6, §12 xlii) — the numeral was never the trigger. (xiii) The ’s in Te’fhó’rhié’s’os — compound-linker, or Fhós’s coda migrated tail-ward through the seams; simplex te’rhié’os shows none. (xiv) The elided resumptive under topic-markers — may an overt í/fæ also stand? One word. (xv) A folded contrastive topic in the wild — tmesis-word swallowing a clause, ’ya on its tail — exemplar awaited. (xvi) Orphaned clitics’ reach — may a fragment be a bare clitic alone ( — ’ya. )? One word or one wild witness. (xvii) ∆’s two offices — the smoosh’s trill (1.12.1.2) and the vocative up-trill (2.1.1.4.28, the five near-misses) wear one mark — confirmed one vocable, two offices (the maker, 2026-07-14); the segmental reading stands; candle lit. (xviii) niïl-topics — do indefinites make poor topics (new things cannot be old)? Unruled (1.12.2.1.1). (xix) The slee’ya fork — glossed “faster” at 1.2.2.3.3, but the -er suffix is now the maker’s -mÿa ; presumably slee’ya is the ’ya-degree and sleemÿa the true comparative — one word mends the elder gloss or keeps it as a doublet. (xx) The stacked shapes — Efui • Sin X and the reprise — keeper’s sketches on the maker’s yes; wild exemplars welcome. (xxi) fæ inside the formula — “what í may say” names í alone; fæ’s range read as riding within by the twin-law (keeper’s reading; the person-topic attests it) — one word confirms. (xxii) The two y-offices in one sentence — a question-path and a topic-path crossing: precedence, stacking, or fusion unruled; and the riding topic’s pathlessness presumed. (xxiii) The stack in Danæam ink — the multi-topic exemplar awaited; and the return-marker (“again”) unattested in the tongue itself. (xxiv) gæn vs mé-e — the donation-engine and the accompaniment-existential: division of labor presumed (ownership vs having-with), unruled. 2026-07-15: tes-mé ‘my-with’ (2.1.1.4.16) adds a data point on mé’s side, possession expressed through accompaniment rather than gæn’s donation — still unruled, but the accompaniment side gets richer. (xxv) The seam-doubled æ in fæ’uîm’ær — the host-split fæ…ær writing one æ twice (keeper’s anatomy-reading); and the fold presumably open only to splittable pronouns — duîm-mæ could only dangle. One word. (xxvi) The equative’s reach — does sin…sy serve adverbs too (“as quickly as”)? Unruled, gently. 2026-07-15: now witnessed reaching noun-function (“as a club”, 2.1.1.4.14) — adjacent evidence, not a closure; the adverb case specifically stays open. (xxvii) Ydúynÿ — the y-sealed in-word: anatomy (duín beneath? the í~y shift) and trigger (why the fronted PP wears the seal) — one word; its co-occurrence with atá obeys the sealed law meanwhile. (xxviii) þin~þis / Ton~Tonu — the ceremonial declension-pair; conditioning unruled. (xxix) The =-linker — its name and reach beyond the eternal frames. (xxx) -os and the kin-frame — te’rhié’os re-read as te-(person) + ’os(possessive-former); one word confirms. (2026-07-14: the familiar possessive arrives as the frame’s everted child — sídia-teos, rhié-færs ; the re-reading breathes easier, still unconfirmed.) (xxxi) Seam-dress scales with guest-size — apostrophes for words, dashes for propositions; presumed law. (xxxii) The participle’s seat — before be in 1st person, after be in non-1st (2.1.1.2.10): person-conditioned or free — one word. (xxxiii) Become’s two goal-dresses — the -r state-noun (Væxr) and the du-formation (Duílúch): division or free variation. (2026-07-14: a division glimpsed — Væxr travels with ghiæan, Mith fær-dúe Væxr ghiæanea ; farm takes bare Væx; the du-dress still holds Duílúch.) (2026-07-15: a second witness — Mith fær-dúe Cáithoorhr oothíthea ‘we appointed him as general’, 2.1.1.4.17 — the fær-dúe + -r-state-noun frame generalizes past ghiæan to a second causative verb, oothíth. Looking less like one lone example now, more like a real construction.) (xxxiv) Third-harvest watches (2026-07-14) — (a) the garden’s song : if 4.1 ever grants ideophones melody, the tone-cells (3.3.3, 3.5.2) gain dated garden-notes; (b) the some-word — the ni/yail axis’s missing middle for ‘some of the boys’; (c) the stative ban — may the dús-progressive wrap ‘knowing’?; (d) the resister-list — which verbs refuse the free object-drop; (e) aoíth with bare time-Nouns , presumed by its gloss; (f) further Adj→Adj formers and the P-sequence half of 2.2.6.1.1; (g) the cradle-flag — 2.1.3.1.2.2 signed across voice-country’s reserved threshold; one word returns it. (xxxv) The borderline roster of ten , stepped down, awaiting the maker’s yes or no, item by item or in one breath: 2.1.1.4.5 (sealed by the maker 2026-07-14), 2.1.1.4.8 (sealed by the maker 2026-07-15 — all three roads at once), 2.1.1.4.10 (sealed by the maker 2026-07-15 — the roster’s own guess corrected, not confirmed: material takes by, not e), 2.2.4.4 (sealed by the maker 2026-07-15, out of sequence — seed 3 confirmed, the barren-sink seed refuted; the roster stands at six), 2.1.1.2.12 (sealed by the maker 2026-07-14 — the aoyth-seal; struck late, 2026-07-16), 2.1.4.2 (absolute vs contingent state — the tenure engine gænyin/gilæn one composition away), 3.2.6.4 (vowel harmony — the -as suffix a living witness against the seeds’ ‘none living’), 2.1.7.2.1 (very = the duíra’ya boost?), 2.1.3.1.2.3 (reciprocal intransitive — the labile question is voice design), 3.3.4.6 (intonation × stress — the tone-half moots; the stress-half hangs on 3.3.2). (xxxvi) Aoyth’s seat and the sounding throat (2026-07-14) — aoyth recorded a preposition (the vacancy-blocker; 1.2.2.2.2 unbruised): one word reclasses. aoíth “before” / aoyth “like” — sisters by a letter (í/y), a near-pair for the throat’s day. The lowercase quiz : kin-nouns stand small in the familiar possessive — the keeper’s answer (the everted frame keeps its swallowed lowercase; the toll unrefunded) awaits the maker’s grade . The different-word unminted (the ledger, or iy’s departure). And the throat begins to sound — first keys recorded: Rhié “Hrjaiy” (German j), Férás “Fay-raiss”, ufsae “Oofschye” ( ae ≠ æ , deliberate, /aɪ/ as in rye), færs like “fierce”, aoyth “ow-eeɦ”; and, the same day, the agent-seal’s keys: dræao “Dree-ow”, lus “loose”, Ufín “Oofeenn”, Ooraithr “Oo*raiɦ-rr”, fæ “fee”, ghiæanea “sthɦih-ee-ah-neh-eh” — æ “the ee in eel: a lossy ee-eh diphthong” ; u/oo “the ool in eel” (the maker’s key, mischief intact :^✓); th ≈ [ɦ] again; gh sounding [sθɦ]-wards — the throat’s deepest surprise yet. (xxxvii) The agent-seal’s riders (2026-07-14) — the farmea-eibh shape’s agent presumed dræao by kinship, unattested; Ooraith “killed” — base class unconfirmed (participle of an unminted kill-verb, or plain adjective); the fronted dræao-phrase’s seat — clause-initial in the attestation, free or canonical, one word. (xxxviii) The topic-absolute’s riders (2026-07-14) — the absolute construction ruled usually a topic clause (O X ∆ / O X V); the familiar possessive reaches epithets (státachaí-færs “His Idiocy”, noun small as ever) with its pragmatics named: the construction presupposes the known bond . Two forks await the maker: F1 — closed (2026-07-14): the order was the maker’s own woops — corrected to sê-fær niïl Pat fæ sulænea “færself a hole fæ dug” (dúe struck): the seat rule holds universally . F2 — closed (2026-07-14): the maker corrects to sê-fær ; the 1.5.2.1 paradigm stands (naked sê never 3rd — and bare sê in the infinitive-seal reads “the-self”, the unmarked generic). Fork closed (2026-07-14): the compound is sê-fær — “fær last (it’s an adjective so it takes the in-lieu-of-tmesis position)” — swept record-wide; the family’s turn (sê-miths, sê-cías, sê-í?) forked anew. Also riding: dúe’s two seats (preposed dúe sê; postposed fær-dúe — conditioning unruled); the V/∆ affect-split apparent (V in the unkind saying, ∆ glossed “Amused.”) — one word confirms; -aí the abstract former, 2.2.1.3’s day now one word away . (xxxix) The u-reform and the infinitive-seal’s riders (2026-07-14) — du→u declared , the maker verbatim: “which I will and won’t replace remains to be seen; yes this will cause horrible confusion” — every u-/du- sighting hereafter checked against this watch. eg ’s class and independence await. Two typing-readings ratified (2026-07-14, “all else mentioned: count it ratified”) : A read as ∆’s typed twin; niil read as niïl. The same sweep ratifies: aoyth’s P-class, the V/∆ affect-split, the everted-frame lowercase account (the quiz graded true), the -aí former, the familiar possessive’s reach and presupposition-pragmatics, the u-reform recording. And one gentle fork: the corrected Eternal coda typed bis-e — ratified as the keyboard’s toll (2026-07-14) : þis-e stands . (xl) Circumstance-seal riders (2026-07-14) — thé / ythénÿ division apparent : the no-cleft relative beside the temporary-second-subject relative, the be-choice (bhie / atá) tracking the maker’s semantics — existence earns subjecthood; nonexistence is denied it ; one word confirms the division as law. (2026-07-16 — the word came as a law: “the y in yScéan summons the atá family” (the maker) — thé, y-less, takes bhie; ythénÿ, yiosnÿ, yScéan take atá. The subjecthood-semantics stand behind it as the why.) The Adj–N seat fork : reinach Sáinsu (adjective leading) beside “fær last — the in-lieu-of-tmesis position” (sê-fær): pronoun-compounds particular, or one law to reconcile? (2026-07-16: two more Adj-leads witnesses — Iarnach Ixixaí, Chardea Ixixaí — each beside a tmesis twin: the two attributive strategies now stand displayed side by side.) rein the unminted base. And a presumed blood-law: æœá-e leads its NP (determiner-blood); mé-e trails (preposition-blood) . (xli) 2.1.1.4.8’s missing noun (2026-07-15) — all three quality-machineries stand ratified (e both ways, -ach derivation, the negative’s three roads) but Humour itself is unminted; the moment it is given, Hín e Humour , lus Humour e lus Hín , Humourach Hín , and æœá-e Humour all close at once — one word. Resolved, same sitting: Gree ‘humour’, Grëach ‘humorous’, Grëachaí ‘humorousness’ — all four templates closed; §2 and §10 updated; the family stands beside Stát/Státach/Státachaí as the -aí abstract-former’s second full run. (xlii) 2.1.1.4.10’s two forks (2026-07-15) — F1 : Úrsapê carries the counted-ê with no numeral in sight, against 1.16.6’s ruling that the counted-ê is exclusive to numerals : does a bare plural now share the badge, or is this a different rider on the same letter? F1 — resolved, same sitting: “-ê is simply the pluraliser” (the maker: “brickê”) — not numeral-exclusive at all; 1.16.6 mended (§6). F2 : Úrsapfarmaí goes straight from the Úrsap+farm compound to -aí, no visible -ach stage between, unlike Stát→Státach→Státachaí’s three full steps: does -aí now attach straight to noun-verb compounds, or is a stage eliding unwritten? F2 — resolved, same sitting: -ach is skipped when it would be absurd — Úrsapfarmea ‘brick-made’ is sayable, Úrsapfarmach ‘brick-makey’ is not, so the derivation reaches past the impossible stage straight to -aí. Riding gently alongside: Úrsap (sentences 1–2) against Ursap (sentence 3) — resolved: Úrsap throughout, sentence 3 a slip. (xliii) ír vs fær (2026-07-15) — ír ‘its’ appears beside the established fær ‘his/her’ in Yth ír Ralxú… ‘over its government’: an animate/inanimate possessive split, unwitnessed before now — one word confirms or folds it back into fær’s range. Riding alongside, lightly: yth (already ‘past/over/beyond’) fronting a cause-phrase over a plain passive in the same sentence brushes the reserved voice-country (2.1.3.1) — recorded as given, not pressed; whether yth is a genuine passive-agent device or simply an adverbial fronting that reads that way in translation is open.",
+  "table": []
+ },
+ {
+  "section": "Numerals & dating",
+  "anchor": "num",
+  "title": "The year-name system — base 2+30",
+  "body": "Base 60: a year-name has two places, A-B = A×60 + B, hyphen-joined; the first element capitalises, the second goes bare. Each place (1–60) is one of 30 pair-stems × 2 forms: the ODD value wears the bare stem, the EVEN value its lenited twin — the mutation system doing numerical duty (compare English, were it base 2+30: two = 'onety', four = 'twoty'; 45 = flunp, 46 = flunpty). Attested stems: Slár 9 / Ghslár 10 · Ül 17 / Ghül 18 · Sfeith 21 / Ghsfeith 20 · Îæth 27 / Ghîæth 28 · Ínhe 43 / Ghínhe 44 · Raíwil 49 / Ghraíwil 50 · Heatth 57 / Gheatth 58. Canon checks: 44.27 Ghínhe-îæth = 2667 I.T. (1695 AD, Changing outlawed) · 49.21 Raíwíl-sfeith = 2961 I.T. (the Oath's end) · 49.57 Raíwíl-heatth = 2997 I.T. (the present) · 10.18 Ghslár-ghül = 618 (the Olympiad). Derived: 2983 I.T. (the Bródlainn riots) = 49.43 Raíwíl-ínhe. One Sgiesaetthum = 120 years = 2.0. OPEN WATCH: the Sfeith pair runs {20, 21} against the other pairs' {odd, odd+1} — direction unruled; stems for unseen values await the maker. The notes' analytic counting forms (raí-ghíl-ssaighisseith etc.) were ruled an error by the maker, 2026-07-21 — do not use.",
+  "table": []
+ },
+ {
+  "section": "Texts",
+  "anchor": "texts",
+  "title": "The Oath of Forswearal (Aufgaolaí, unto 2961 I.T.)",
+  "body": "DANÆAM (session 2026-07-21, working): Air · Sís-thüs o drúræao — ai'en o air'ya · Ł'oob-e'ix Eumruiýa o Laiy'alcuilýa-e'in o yGhiéil e Æœstúpenear ythénunÿ-mé Ornlawy ythé duín Sálthê ten aich ł'oob-e'ix atá o Fær Alcuilaí Sê-dúi'gheo-e'ri —s'exempli-gratia'in -Artea- — o Gheoýa \"s'aige'in\" ten-aoya ythé e lus Oothraíthê ghrœlisea atá s'iyail'in o sin æœá-e Scræsachaí Tïcainê e aufFrœsíýa Gaolaí æœá-mé drusót · O sísiyao e Thaln'ghrœliseæ-cías'afrê · O aich sísiyao e cías Tïaolc y'wil'th. Air · Ten \"s'aige'in\" -aoa o thas't'ya- Fís e Emma æxó Thiutel æxó Eigain tes Wighæln o Gaolê yiosnÿ Sí-dræao sór atá — sin lus yGhainn-e sê-færs æxó sê-cíaos æxó duý-e o sy sê-ír Ao'efui'a gæn — æœá-mé drusót · O mis Wightil dué sárghu æxó sclaí æxó dræao lus Sclúneäi sís-thurn-e sainfasæn duéo mith ïegæn't. — ENGLISH (canon, from the draft): Hereby, before the Darkness and the Watching Light, before the Un-Raped Mother and Faer Avatar in the Wealds, Faer Imperial Radiance [Artea e.g.], and before God, do I, [Legal Name], Grand-descendent of the Changed, singly and without trickery, forswear kinship with the changelings' hosts; their descendants in the Uplands; their families entire. I forswear what-and-ever debt of blood, title, and property is owed my clan and kin by Sí-e, no matter sê-faer clade, and all right to either seek, to either ask after, to nor either benefit by the closure thereof. NOTE: the date-clause's numeral rendering is under revision (maker, 2026-07-21).",
+  "table": []
+ }
+]
