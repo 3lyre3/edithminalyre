@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Danæam — Lookup Index</title>
+<style>
+:root{
+ --bg0:#16121F; --bg1:#1B1626; --panel:#241D36; --panel2:#2A2340; --line:#3A3054;
+ --ink:#EEE8DC; --dim:#A79DB6; --faint:#7A6F8C; --gold:#E8C664; --gold2:#EBCF78;
+ --lav:#B6A6E0; --good:#9AD1A0; --warn:#E0A56B; --seal:#C77BB0;
+}
+body.light{
+ --bg0:#FCF9F1; --bg1:#F5F0E6; --panel:#FFFFFF; --panel2:#EDE5D4; --line:#E0D7C5;
+ --ink:#251F2E; --dim:#6B5F80; --faint:#8A7F9C; --gold:#8A6D1A; --gold2:#7A5F14;
+ --lav:#5A4D8A; --good:#2E7D46; --warn:#9C5A1E; --seal:#8E4A7E;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg0);color:var(--ink);
+ font:16px/1.55 "Iowan Old Style",Georgia,"Times New Roman",serif;
+ -webkit-font-smoothing:antialiased}
+.sans{font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg0) 92%,transparent);
+ backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:.7rem 1rem .6rem}
+.hrow{display:flex;gap:.7rem;align-items:center;flex-wrap:wrap;max-width:1100px;margin:0 auto}
+h1{font-size:1.12rem;margin:0;letter-spacing:.02em}
+h1 .æ{color:var(--gold)}
+.sub{color:var(--faint);font-size:.78rem;max-width:1100px;margin:.15rem auto 0}
+.searchbox{flex:1;min-width:230px;display:flex;align-items:center;background:var(--panel);
+ border:1px solid var(--line);border-radius:10px;padding:.45rem .7rem;gap:.5rem}
+.searchbox:focus-within{border-color:var(--gold);box-shadow:0 0 0 2px color-mix(in srgb,var(--gold) 30%,transparent)}
+.searchbox input{flex:1;background:none;border:0;outline:0;color:var(--ink);font:inherit;font-size:1.02rem}
+.searchbox input::placeholder{color:var(--faint)}
+.kbd{color:var(--faint);border:1px solid var(--line);border-radius:5px;padding:0 .35rem;font-size:.72rem}
+button{cursor:pointer;font:inherit}
+.iconbtn{background:var(--panel);border:1px solid var(--line);color:var(--dim);border-radius:9px;
+ padding:.42rem .6rem;font-size:.85rem}
+.iconbtn:hover{border-color:var(--gold);color:var(--gold)}
+main{max-width:1100px;margin:0 auto;padding:1rem}
+.count{color:var(--faint);font-size:.8rem;min-width:5.5ch;text-align:right}
+.tier{margin:1.4rem 0 .6rem;display:flex;align-items:baseline;gap:.6rem;border-bottom:1px solid var(--line);padding-bottom:.3rem}
+.tier h2{font-size:.95rem;margin:0;color:var(--gold);letter-spacing:.04em;text-transform:uppercase}
+.tier .n{color:var(--faint);font-size:.78rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:.7rem}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:.75rem .9rem .8rem;
+ position:relative;transition:border-color .15s}
+.card:hover{border-color:color-mix(in srgb,var(--gold) 55%,var(--line))}
+.form{font-size:1.35rem;font-weight:700;letter-spacing:.01em;cursor:copy;display:inline-block}
+.form:hover{color:var(--gold2)}
+.form .copied{position:absolute;font-size:.68rem;color:var(--good);margin-left:.5rem;top:.4rem}
+.gloss{color:var(--gold);font-size:1.02rem;margin-top:.1rem}
+.meta{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.45rem}
+.badge{font-size:.68rem;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--line);
+ border-radius:99px;padding:.1rem .5rem;color:var(--dim);background:var(--panel2)}
+.badge.canon{border-color:color-mix(in srgb,var(--good) 45%,var(--line));color:var(--good)}
+.badge.working{border-color:color-mix(in srgb,var(--warn) 50%,var(--line));color:var(--warn)}
+.badge.sealed{border-color:color-mix(in srgb,var(--seal) 50%,var(--line));color:var(--seal)}
+.notes{color:var(--dim);font-size:.86rem;margin-top:.45rem}
+.notes.clamp{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.more{background:none;border:0;color:var(--lav);font-size:.76rem;padding:.1rem 0;text-align:left}
+.src{color:var(--faint);font-size:.7rem;margin-top:.5rem}
+.famrow{margin-top:.5rem;display:flex;flex-wrap:wrap;gap:.3rem;align-items:center}
+.famlabel{font-size:.7rem;color:var(--faint)}
+.chip{background:var(--panel2);border:1px solid var(--line);color:var(--lav);border-radius:99px;
+ padding:.12rem .55rem;font-size:.78rem}
+.chip:hover{border-color:var(--gold);color:var(--gold)}
+.letteridx{position:sticky;top:64px;z-index:40;background:color-mix(in srgb,var(--bg0) 92%,transparent);
+ backdrop-filter:blur(8px);padding:.35rem 0;display:flex;flex-wrap:wrap;gap:.15rem .3rem}
+.letteridx a{color:var(--dim);text-decoration:none;font-size:.78rem;padding:.1rem .3rem;border-radius:6px}
+.letteridx a:hover{color:var(--gold);background:var(--panel)}
+.letterhdr{margin:1.2rem 0 .5rem;color:var(--gold);font-size:1.05rem;border-bottom:1px solid var(--line);
+ padding-bottom:.2rem;scroll-margin-top:120px}
+.empty{color:var(--faint);text-align:center;padding:3rem 1rem;font-style:italic}
+.tabs{display:flex;gap:.4rem;margin:.8rem 0 0}
+.tab{background:var(--panel);border:1px solid var(--line);color:var(--dim);border-radius:9px 9px 0 0;
+ padding:.4rem .9rem;font-size:.85rem}
+.tab[aria-selected="true"]{color:var(--gold);border-bottom-color:var(--bg0);background:var(--bg1)}
+.secfilt{display:flex;flex-wrap:wrap;gap:.3rem;margin:.7rem 0}
+table.mini{border-collapse:collapse;margin:.5rem 0;font-size:.85rem}
+table.mini th,table.mini td{border:1px solid var(--line);padding:.25rem .55rem;text-align:left}
+table.mini th{background:var(--panel2);color:var(--gold);font-weight:600}
+.converter{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:1rem;margin:1rem 0}
+.converter h3{margin:.1rem 0 .6rem;color:var(--gold);font-size:1rem}
+.converter input{background:var(--bg1);border:1px solid var(--line);border-radius:8px;color:var(--ink);
+ padding:.45rem .7rem;font:inherit;width:12rem}
+.converter .out{margin-top:.6rem;font-size:1.15rem;min-height:1.6rem}
+.converter .calc{color:var(--faint);font-size:.8rem;margin-top:.2rem}
+.quick{margin-top:.6rem;display:flex;flex-wrap:wrap;gap:.3rem;align-items:center}
+footer{max-width:1100px;margin:2rem auto;padding:1rem;color:var(--faint);font-size:.75rem;
+ border-top:1px solid var(--line)}
+@media (max-width:640px){ .form{font-size:1.2rem} h1{font-size:1rem} .letteridx{top:110px} }
+</style>
+</head><body>
+<header><div class="hrow"><h1>Dan<span class="æ">æ</span>am <span class="sub" style="display:inline">· lookups</span></h1>
+<button class="iconbtn sans" onclick="setTheme(document.body.classList.contains('light')?'dark':'light')">◐</button></div></header>
+<main>
+ <div class="grid" style="margin-top:1rem">
+  <div class="card">
+   <div class="form" style="cursor:default">Lexicon lookup</div>
+   <div class="notes">864 entries — every coinage, compound, morpheme and year-stem. Whole-word English search: type <i>is</i>, get the be-family, and nothing that merely contains “is”. Click any form to copy it.</div>
+   <div class="meta"><button class="chip" onclick="location.href='Danæam Lexicon Lookup.html'">open →</button></div>
+  </div>
+  <div class="card">
+   <div class="form" style="cursor:default">Grammar lookup</div>
+   <div class="notes">132 rules & conventions + 175 worked examples + the year-name converter (base 2+30). Sealed rooms and emerging gaps are badged as such.</div>
+   <div class="meta"><button class="chip" onclick="location.href='Danæam Grammar Lookup.html'">open →</button></div>
+  </div>
+  <div class="card">
+   <div class="form" style="cursor:default">Expanding the corpus</div>
+   <div class="notes">Add entries to <span class="badge">lexicon.json</span> or <span class="badge">grammar.json</span> (same shape as the existing ones), then run <span class="badge">python3 build_lookups.py</span>. Both pages regenerate whole. Nothing is canon until sealed: Elm rules; the keeper keeps.</div>
+  </div>
+ </div>
+</main>
+<footer class="sans">generated 2026-07-21 · sources: reference-116, All-Coinages concordance, LDS record, session 2026-07-21</footer>
+<script>
+const FOLD_EXTRA = {'æ':'ae','Æ':'ae','œ':'oe','Œ':'oe','ł':'l','Ł':'l','þ':'th','Þ':'th','ð':'dh','Ð':'dh'};
+function fold(s){
+  if(!s) return '';
+  let out='';
+  for(const ch of s){ out += FOLD_EXTRA[ch] || ch; }
+  return out.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().trim();
+}
+function toks(s){ const m = fold(s).match(/[a-z0-9']+/g); return m||[]; }
+// light stem variants: raped->{rape,rap}, years->year, building->build;
+// never strips "is"/"was"/"has"; "being" keeps its -ing.
+function stems(t){
+  const out = [t];
+  if(t.length>5 && t.endsWith('ing')) out.push(t.slice(0,-3));
+  if(t.length>4 && t.endsWith('ed')) out.push(t.slice(0,-1), t.slice(0,-2));
+  if(t.length>3 && t.endsWith('s') && !/(ss|is|us)$/.test(t)) out.push(t.slice(0,-1));
+  return out;
+}
+function stoks(s){ return [...new Set(toks(s).flatMap(stems))]; }
+const NUMW = {1:'one',2:'two',3:'three',4:'four',5:'five',6:'six',7:'seven',8:'eight',9:'nine',10:'ten',11:'eleven',12:'twelve',13:'thirteen',14:'fourteen',15:'fifteen',16:'sixteen',17:'seventeen',18:'eighteen',19:'nineteen',20:'twenty',21:'twenty-one',27:'twenty-seven',28:'twenty-eight',30:'thirty',40:'forty',43:'forty-three',44:'forty-four',49:'forty-nine',50:'fifty',57:'fifty-seven',58:'fifty-eight',60:'sixty',120:'hundred-twenty'};
+const WORD2NUM = {}; for(const [n,w] of Object.entries(NUMW)) WORD2NUM[w]=+n;
+const RINGS = [];
+function ringExpand(qt){
+  const set = new Set(qt);
+  for(const t of qt){
+    if(WORD2NUM[t]!=null){ set.add(String(WORD2NUM[t])); set.add(NUMW[WORD2NUM[t]]); }
+    if(NUMW[+t]){ set.add(NUMW[+t]); }
+  }
+  for(const ring of RINGS){
+    const hit = qt.some(t=>ring.includes(t));
+    if(hit) ring.forEach(t=>set.add(t));
+  }
+  return [...set];
+}
+const TENS = {twenty:20,thirty:30,forty:40,fifty:50,sixty:60,seventy:70,eighty:80,ninety:90};
+const UNITS = {one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9};
+function collapseNums(v){
+  return v.replace(/\b(twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)[-\s]+(one|two|three|four|five|six|seven|eight|nine)\b/gi,
+    (m,a,b)=>String(TENS[a.toLowerCase()]+UNITS[b.toLowerCase()]));
+}
+function qWordsOf(v){
+  return toks(collapseNums(v)).map(t=>{
+    const vs = new Set(stems(t));
+    ringExpand([t]).forEach(r=>stems(r).forEach(s=>vs.add(s)));
+    return [...vs];
+  });
+}
+function copyText(t, el){
+  navigator.clipboard.writeText(t).then(()=>{
+    const s=document.createElement('span'); s.className='copied sans'; s.textContent='copied';
+    el.appendChild(s); setTimeout(()=>s.remove(), 900);
+  });
+}
+document.addEventListener('click', e=>{
+  const f = e.target.closest('.form');
+  if(f) copyText(f.dataset.copy || f.textContent.trim(), f.parentElement);
+  const m = e.target.closest('.more');
+  if(m){ const n = m.previousElementSibling; n.classList.toggle('clamp');
+         m.textContent = n.classList.contains('clamp') ? 'more…' : 'less'; }
+});
+function setTheme(mode){
+  document.body.classList.toggle('light', mode==='light');
+  try{ localStorage.setItem('dan-theme', mode); }catch(e){}
+}
+(function(){
+  let t='dark'; try{ t = localStorage.getItem('dan-theme')||'dark'; }catch(e){}
+  setTheme(t);
+})();
+function esc(s){ const d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
+</script>
+</body></html>
