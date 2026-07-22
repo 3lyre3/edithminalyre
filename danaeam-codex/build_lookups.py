@@ -12,7 +12,7 @@ No dependencies beyond the Python standard library.
 import json, html, datetime, pathlib
 
 HERE = pathlib.Path(__file__).parent
-TODAY = "2026-07-21"
+TODAY = datetime.date.today().isoformat()
 
 lexicon = json.load(open(HERE / "lexicon.json", encoding="utf-8"))
 grammar = json.load(open(HERE / "grammar.json", encoding="utf-8"))
