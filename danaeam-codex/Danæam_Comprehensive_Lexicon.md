@@ -1,0 +1,8461 @@
+# Danæam — Comprehensive Lexicon
+
+Every entry from `Danæam Lexicon — Every Entry` (1,085 entries, dumped 2026-07-27 from `lexicon.json`) integrated with every coinage from the `Uncoined-Word Worksheet` (837 words, ledger pass completed 2026-07-27).
+
+**Totals** · 1085 lexicon entries · 837 worksheet coinages · 1919 unified headwords · 18 worksheet forms that already existed in the lexicon (folded into those entries rather than duplicated).
+
+**Statuses:** `canon` · `active` · `working` carried over from the lexicon; `coined` marks an entry entering from the worksheet pass and not previously in `lexicon.json`.
+
+**Ledger lines** give the twelve-language comparative row the coinage was made against: ME Middle English · IS Icelandic · GA Irish · EU Basque · DE German · LA Latin · CY Welsh · DZ Dzongkha · GRC Classical Greek (romanised) · SA Sanskrit (IAST) · Q Quenya/Neo-Quenya · ON Old Norse. “—” means no equivalent confidently attestable.
+
+---
+
+## Contents
+
+- **Part I** — Danæam → English, unified A–Z
+- **Part II** — English → Danæam index
+- **Part III** — Structure notes from the ledger pass
+
+---
+
+# Part I — Danæam → English
+
+
+## #
+
+- **=** *(mark)* — the chain-linker
+  - verbless predication: X=Y=Z, terms set equal down the line (2.1.1.2.8)
+  - *source: reference §2*
+- **∆** *(mark (vocable))* — up-trill — “ooh”
+  - stands where the closing grammatical • would, in the smooshed first-person shifter O X ∆; read as a segmental vocable, not sentence-tune (deafness law unbreached — presumed, §12) (1.12.1.2)
+  - *source: reference §2*
+
+## A
+
+- **aartanfu** — suspend  `[coined]`
+  - pron. “Uh'ar-duhn-vuh”
+  - ledger: ME suspenden; IS hengja upp; GA croch; EU eseki; DE aufhängen; LA suspendere; CY crogi; DZ —; GRC artan; SA √lamb (caus.); Q linga-; ON hengja upp
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Acusthia** *(Noun)* — stick
+  - (2.1.1.4.14)
+  - *source: reference §2*
+- **-æao** *(preposition)* — 'rom (from)  `[working]`
+  - 'o -æao Lutýrêýa' — and from the muckinesses. Cf. dræao 'from'.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Ædth** *(noun)* — smile
+  - 'lus Ædthýa gilæn dápathsea' — the smile that eternally-regave failed.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Ælth** *(noun)* — elder
+  - Crao’ælth’if
+  - *source: reference §2*
+- **Æltunaí** — funeral  `[coined]`
+  - pron. “Ee'eld-ahn-ah'ee”
+  - ledger: ME funeral; IS jarðarför; GA sochraid; EU hileta; DE Beerdigung; LA funus; CY angladd; DZ —; GRC taphē; SA antyeṣṭi; Q —; ON útfǫr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **æmiwnách** — immune  `[coined]`
+  - pron. “ee'eh-miuw-nayk”
+  - ledger: ME —; IS ónæmur; GA imdhíonach; EU immune; DE immun; LA immunis; CY imiwn; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **-æn** *(verb)* — hope  `[active]`  ↳ of elfæn
+  - elf + -æn - the verbalizer’s first explicit pair (shape-kin to gæn / gilæn noted, not claimed) (1.12.1.2.1)
+  - *source: All-Coinages concordance #003 (HTML reference)*
+- **æœá** *(determiner (the object-no))* — no, none (kein)
+  - elder witness Æœá Cuthrá “no blame”; invited “to earn its stay with of-no”: æœá-e “of-no, without” — Ten æœá-e Fía más; the without-twin breathes at last (2.1.1.4)
+  - *source: reference §2*
+- **Æœá Cuthrá** *(determiner (the object-no))* — no, none (kein)  `[active]`  ↳ of æœá
+  - elder witness Æœá Cuthrá “no blame”; invited “to earn its stay with of-no”: æœá-e “of-no, without” - Ten æœá-e Fía más ; the without-twin breathes at last (2.1.1.4)
+  - *source: All-Coinages concordance #005 (HTML reference)*
+- **Æœá-e Fía fæ is** *(verb (be))* — is (3sg present, attested)  `[active]`  ↳ of is
+  - Æœá-e Fía fæ is (2.1.1.4); beside bhies (present, general) - division or free variation, one word
+  - *source: All-Coinages concordance #006 (HTML reference + LDS PDF)*
+- **æœá-e Gree** *(noun)* — humour  `[active]`  ↳ of Gree
+  - completes 2.1.1.4.8’s three roads: Hín e Gree , lus Gree e lus Hín , æœá-e Gree (2.1.1.4.8)
+  - *source: All-Coinages concordance #007 (HTML reference + LDS PDF)*
+- **æœłíc** — nobody  `[coined]`
+  - pron. “ee'euhl-lyeehk”
+  - ledger: ME no wight; IS enginn; GA duine ar bith; EU inor ez; DE niemand; LA nemo; CY neb; DZ —; GRC oudeis; SA na kaścit; Q úquen; ON engi
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Æœstúpenear** — un-raped-being  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **æouain** *(quantifier (compositional))* — none
+  - the object-no welded to the prop-one; æouain e Frælithi’ya “none of the children” (2.1.1.4.19.5)
+  - *source: reference §2*
+- **æouain e Frælithi’ya** *(quantifier (compositional))* — none  `[active]`  ↳ of æouain
+  - the object-no welded to the prop-one; æouain e Frælithi’ya “none of the children” (2.1.1.4.19.5)
+  - *source: All-Coinages concordance #009 (HTML reference + LDS PDF)*
+- **Ærmuch** *(adjective)* — exhausted
+  - keeper’s inference as the bare adjective — only Ærmuchaí is directly attested (2.1.1.4.12)
+  - *source: reference §2*
+- **ærmuch** *(adjective)* — tired
+  - long-attested without a row (Más-ten ærmuch “I’m tired”); stands beside threïg “tired” — nuance unruled
+  - *source: reference §2*
+- **Ærmuchaí** *(Noun (abstract))* — exhaustion
+  - the -aí abstract former’s fifth witness; Ærmuchaí e Síulnê ‘exhaustion of wounds’ (2.1.1.4.12)
+  - *source: reference §2*
+- **Ærmuchaí e Síulnê** *(Noun (abstract))* — exhaustion  `[active]`  ↳ of Ærmuchaí
+  - the -aí abstract former ’s fifth witness; Ærmuchaí e Síulnê ’exhaustion of wounds’ (2.1.1.4.12)
+  - *source: All-Coinages concordance #013 (HTML reference + LDS PDF)*
+- **aern** *(adjective)* — hot
+  - the first deliberate non-æ ae in the language (the maker, 1.8.6) — the orthographic law amended
+  - *source: reference §2*
+- **æxó** *(conj.)* — and/or
+  - before the last and/or between every pair (1.3.1.2)
+  - *source: reference §2*
+- **af-** *(prefix)* — up 🔥
+  - orientational-affect prefix; the Noun’s capital survives mid-word: afŁamis (2.1.1.2.8)
+  - *source: reference §2*
+- **afa** — help  `[coined]`
+  - pron. “uh-vuh”
+  - ledger: ME helpen; IS hjálpa; GA cabhraigh; EU lagundu; DE helfen; LA iuvare; CY helpu; DZ —; GRC arēgein; SA √av; Q —; ON hjálpa
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **afArch** *(adverb)* — way up
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **afCneilæn** *(Verb)* — grind up
+  - af- hosted.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **afdaír** — provide  `[coined]`
+  - pron. “uhv-thuh'eehr”
+  - ledger: ME providen; IS útvega; GA soláthair; EU hornitu; DE bereitstellen; LA praebere; CY darparu; DZ —; GRC parechein; SA sam-√pad (caus.); Q —; ON afla
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **afDibb** — split
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **affón** — send  `[coined]`
+  - pron. “uh-phone”
+  - ledger: ME senden; IS senda; GA seol; EU bidali; DE senden; LA mittere; CY anfon; DZ tang-ni; GRC pempein; SA pra-√iṣ; Q menta-; ON senda
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **affughá** — invest  `[coined]`
+  - pron. “uhf-ah-sthay”
+  - ledger: ME —; IS fjárfesta; GA infheistigh; EU inbertitu; DE investieren; LA —; CY buddsoddi; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **affughúæn** — invent  `[coined]`
+  - pron. “uhff-ah-sthooh'ee'en”
+  - ledger: ME —; IS finna upp; GA cum; EU asmatu; DE erfinden; LA invenire; CY dyfeisio; DZ —; GRC exheuriskein; SA nir-√mā; Q —; ON finna upp
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Afghalhê** *(Noun (plural))* — mountains
+  - 'Sin Afghalhê thuíłf' — as mountains die.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **afŁamis** *(prefix)* — up    `[active]`  ↳ of af-
+  - orientational-affect prefix; the Noun’s capital survives mid-word: afŁamis (2.1.1.2.8)
+  - *source: All-Coinages concordance #018 (HTML reference + LDS PDF)*
+- **afLímésách** — aloft  `[coined]`
+  - pron. “uhv-Lee-mess-ayk”
+  - ledger: ME on lofte; IS á lofti; GA in airde; EU goian; DE empor; LA sublime; CY fry; DZ —; GRC anō; SA ūrdhvam; Q amba; ON á lopti
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **afOobaoách** — alternate  `[coined]`
+  - pron. “uhf-oob-ow-ayk”; alt. pron. “up-Otherly; otherly but not in a worrisome way”
+  - ledger: ME —; IS skiptast á; GA malartach; EU txandakatu; DE abwechseln; LA alternare; CY —; DZ —; GRC ameibein; SA paryāyeṇa; Q —; ON skiptask
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **afSaín** *(author form)* — waking  `[active]`
+  - *source: All-Coinages concordance #019 (LDS PDF)*
+- **afSaín (gerund: afSaín-Saín)** — waking
+  - *source: Final-Boss Haul · Semantic fields (2026-07-17)*
+- **afSaínách** — awake  `[coined]`
+  - pron. “av-Suh-een-ayk”
+  - ledger: ME awake; IS vakandi; GA múscailte; EU esna; DE wach; LA vigil; CY effro; DZ —; GRC egrēgorōs; SA jāgrat; Q coiva; ON vakandi
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **afSaín-Saín** *(author form)* — waking (gerund)  `[active]`
+  - *source: All-Coinages concordance #020 (LDS PDF)*
+- **afSehá** — stand
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **afStrœch** *(participle)* — dried-up
+  - base of afStrœ'charmænsy'œch.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **afStrœ'charmænsy'œch** *(Noun (tmesis compound))* — dried-up skin
+  - afStrœ'…'œch hosting charmænsy. The ∆/V passage.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Aftap** — forehead  `[coined]`
+  - pron. “Uhv-duhp”
+  - ledger: ME forheed; IS enni; GA clár éadain; EU bekoki; DE Stirn; LA frons; CY talcen; DZ —; GRC metōpon; SA lalāṭa; Q —; ON enni
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **After** *(noun)* — Upland
+  - English-shaped coinage (deliberate loan; quoted-speech register). 'Dúe After sain í bhie' — for Upland great it is.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Afthá** — sky
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Afthátap-scálr-e** — figurehead  `[coined]`
+  - pron. “Uhv-tay-tuhp_shale-rr_eh”
+  - ledger: ME —; IS —; GA —; EU —; DE Galionsfigur; LA —; CY —; DZ —; GRC parasēmon; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **afTol** *(Verb)* — fill
+  - '-'ya maios'ya Craghêýa afTol' — the cracks fill.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **afTolach** — full
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **afTolea** *(verb (past))* — filled  `[working]`
+  - afTol 'fill' (stack-2) + -ea.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Afyáëg** — sunrise  `[coined]`
+  - pron. “Uhv-yay-eh'eg”
+  - ledger: ME —; IS sólarupprás; GA éirí gréine; EU egunsenti; DE Sonnenaufgang; LA ortus solis; CY gwawr; DZ nyim shar; GRC anatolē; SA sūryodaya; Q anarórë; ON sólarupprás
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **afYthrrync** *(author form)* — neck (formal)  `[active]`
+  - *source: All-Coinages concordance #024 (LDS PDF)*
+- **afYthrrync / Frÿn (formal/informal)** — neck
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **aggïe** — very  `[coined]`
+  - pron. “uh-key'eh”
+  - ledger: ME verray; IS mjög; GA an-; EU oso; DE sehr; LA valde; CY iawn; DZ shintu; GRC panu; SA atīva; Q an- (intens.); ON mjǫk
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **aghegót** — navigate  `[coined]`
+  - pron. “uh-sthehg-oat”
+  - ledger: ME —; IS rata; GA stiúir; EU nabigatu; DE navigieren; LA navigare; CY llywio; DZ —; GRC kybernan; SA √tṝ; Q —; ON rata
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Áhoría** *(noun)* — audience
+  - Inside Dé'ahor'cruí'sáillaí'ch'ía'er.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Ai’** *(reduced allomorph of Air)* — notice! (fragments)
+  - Ai’lith!; the r survives as liaison only before i-initial nested pronouns
+  - *source: reference §2*
+- **Ai'ai!** — kin for the delight-word
+  - *source: Final-Boss Haul · Semantic fields (2026-07-17)*
+- **Ai’ai!** *(author form)* — delight-word  `[active]`
+  - *source: All-Coinages concordance #026 (LDS PDF)*
+- **aich** *(conj.)* — also
+  - aich sin “also as” — gloss sealed at 1.13.1: “also”, the chain-word
+  - *source: reference §2*
+- **aich** *(particle)* — likewise(?)
+  - from the tense-chant’s structure, o aich joining the families (1.10.5) — keeper’s reading, one word corrects
+  - *source: reference §2*
+- **aich sin** *(part.)* — as, so  `[active]`  ↳ of sin
+  - aich sin “also as”; the clefted so of the yinÿ…iostá frame
+  - *source: All-Coinages concordance #029 (HTML reference + LDS PDF)*
+- **Ai'en'bitiths** — sorry  `[coined]`
+  - pron. “Eye-ehn-bih-ditts”; alt. pron. “bih-ditts”; also Bitiths
+  - ledger: ME sory; IS leiður; GA brón; EU sentitu; DE leid; LA paenitere; CY mae'n ddrwg gen i; DZ gongda; GRC syngnōmē; SA kṣamasva; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Ai’lith!** *(verb | reduced allomorph of Air)* — run · notice! (fragments)  `[active]`  ↳ of Ai’, lith, lith | Ai’
+  - Ai’lith! | Ai’lith! ; the r survives as liaison only before i-initial nested pronouns
+  - *source: All-Coinages concordance #027 (HTML reference + LDS PDF)*
+- **áille** *(Verb)* — speak  `[working]`
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **áimghúæn** — find  `[coined]`
+  - pron. “eyem-sthoo-ee'en”
+  - ledger: ME finden; IS finna; GA aimsigh; EU aurkitu; DE finden; LA reperire; CY canfod; DZ —; GRC heuriskein; SA √vid; Q tuv-; ON finna
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **aint** *(numeral)* — one
+  - SEALED 2026-07-23 (Elm ruling): aint = numeric 1. Pairs with Ghaint 'two' and ainteith 'first'. Small cardinal, not a year-stem — the converter's stem table is unaffected. Attested live: 'mis ainteith Arbhenu' (our first event).
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **ainteith** *(ordinal)* — first
+  - -eith ordinal formation on aint 'one'. SEALED 2026-07-23 (Elm ruling): first.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **aintghaintïe** — twice  `[coined]`
+  - pron. “uh'ihnd-sthuh'ihn-dee'eh”
+  - ledger: ME twies; IS tvisvar; GA faoi dhó; EU birritan; DE zweimal; LA bis; CY dwywaith; DZ tshar nyi; GRC dis; SA dviḥ; Q —; ON tvisvar
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **aintüsách** — once  `[coined]`
+  - pron. “uh'ihnd-oo'uhss-ayk”
+  - ledger: ME ones; IS einu sinni; GA uair amháin; EU behin; DE einmal; LA semel; CY unwaith; DZ tshar chi; GRC hapax; SA sakṛt; Q —; ON einu sinni
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Air** *(imperative particle)* — notice!
+  - opens the compliance-announcement; a confluence: Achtung · aire · audio alert · auytha — “it seemed the proper way”
+  - *source: reference §2*
+- **aistær** — shift  `[coined]`
+  - pron. “ey-steer”
+  - ledger: ME shiften; IS færa; GA aistrigh; EU lekualdatu; DE verschieben; LA movere; CY symud; DZ po-ni; GRC metatithenai; SA √cal (caus.); Q rúma-; ON fœra
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **a'ithæ'nn** — please (variant)  `[coined]`
+  - variant of **mithæn**; see that entry
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Âlathy** — surface  `[coined]`
+  - pron. “Aa-lah-tee”
+  - ledger: ME —; IS yfirborð; GA dromchla; EU azal; DE Oberfläche; LA superficies; CY arwyneb; DZ —; GRC epiphaneia; SA tala; Q palúrë; ON yfirborð
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Alcuilaí** *(Noun (-aí))* — radiance
+  - honorific style: Fær Alcuilaí “Fær Radiance” (2.1.2.1.12.1)
+  - *source: reference §2*
+- **Alcuilýa** — the Light  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **Aloisi** — medicine  `[coined]`
+  - pron. “Uh-loy-ssih”
+  - ledger: ME medicine; IS lyf; GA leigheas; EU sendagai; DE Arznei; LA medicamentum; CY meddyginiaeth; DZ men; GRC pharmakon; SA auṣadha; Q asëa; ON lyf
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Áłus** — speed  `[coined]`
+  - pron. “Ay-lyahss”
+  - ledger: ME spede; IS hraði; GA luas; EU abiadura; DE Geschwindigkeit; LA velocitas; CY cyflymder; DZ shuk; GRC tachos; SA vega; Q lintië; ON flýtir
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Amár** — ocean
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **amár** *(Noun)* — ocean
+  - attested as tmesis-guest, cap-suspended (2.1.1.2.8)
+  - *source: reference §2*
+- **amntiqruæn** — convert  `[coined]`
+  - pron. “uhm-uhn-dihk-roo'ee'e”
+  - ledger: ME converten; IS umbreyta; GA tiontaigh; EU bihurtu; DE umwandeln; LA convertere; CY trosi; DZ —; GRC metastrephein; SA pari-√ṇam; Q —; ON snúa
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Anbwen** — tram  `[coined]`
+  - pron. “Uhn-bwehn”
+  - ledger: ME —; IS sporvagn; GA tram; EU tranbia; DE Straßenbahn; LA —; CY tram; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Ânger** — eel  `[coined]`
+  - pron. “Anger”
+  - ledger: ME el; IS áll; GA eascann; EU aingira; DE Aal; LA anguilla; CY llysywen; DZ —; GRC enchelys; SA —; Q —; ON áll
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Angúl** — ring  `[coined]`
+  - pron. “Uhn-ghoul”
+  - ledger: ME ring; IS hringur; GA fáinne; EU eraztun; DE Ring; LA anulus; CY modrwy; DZ —; GRC daktylios; SA aṅgulīyaka; Q corma; ON hringr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **ann** *(conj.)* — if
+  - questioned: scé’ann
+  - *source: reference §2*
+- **Annadh** *(conj.)* — either · whether
+  - built on ann Stack-2: 'whether' — 'annadh fœrmain œr –'ma' (whether formal or otherwise); 'annadh múlch œr scicach' (whether good or shit). either/whether. Cf. thyann 'whether' (list).
+  - *source: reference §2*
+- **ao** *(negator | answer word)* — not | cited under aobha: no  `[active]`  ↳ of aobha
+  - Aoa thurn’t “whereabouts” (double neg.) | ao “not” + bha “is” = “not-is”
+  - *source: All-Coinages concordance #036 (HTML reference + LDS PDF)*
+- **ao / aoa** *(negator)* — not
+  - Aoa thurn’t “whereabouts” (double neg.)
+  - *source: reference §2*
+- **aoa** *(negator)* — not  `[active]`
+  - Aoa thurn’t “whereabouts” (double neg.)
+  - *source: All-Coinages concordance #037 (HTML reference + LDS PDF)*
+- **aoa niri’thte** *(adv.)* — “justn’t”, just about  `[active]`  ↳ of niri’thte
+  - aoa niri’thte “just about” (1.2.3.2)
+  - *source: All-Coinages concordance #038 (HTML reference + LDS PDF)*
+- **aoa sin't** *(compound preposition)* — about
+  - Belongs to the aoa-thas't / aoa-thiosas't 're:what-ever' family.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **aoa sin’t** *(part.)* — not so  `[active]`  ↳ of sin’t
+  - sin + ’t ; aoa sin’t “seems, so-abouts” - the double-negative disembodiment (1.2.2.1)
+  - *source: All-Coinages concordance #039 (HTML reference + LDS PDF)*
+- **aoa 'thte** — around  `[coined]`
+  - pron. “around a location”; alt. pron. “ow-uh dteh”; “dteh ow-uh”; “around the world”; “bow-eett-ayk”; also 'thte-aoa / baüythách
+  - ledger: ME arounde; IS í kring; GA timpeall; EU inguruan; DE herum; LA circum; CY o gwmpas; DZ —; GRC peri; SA paritas; Q os-; ON umhverfis
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Aoa thurn’t** *(negator)* — not  `[active]`  ↳ of ao / aoa
+  - Aoa thurn’t “whereabouts” (double neg.)
+  - *source: All-Coinages concordance #040 (HTML reference + LDS PDF)*
+- **aoæx** *(conj.)* — either-or-neither
+  - “one or the other or neither” — the disjunction with a refusal built in; patterns as æxó (1.3.1.2)
+  - *source: reference §2*
+- **aoannadh** — neither  `[coined]`
+  - pron. “ow-uhn-uhth”; alt. pron. “if referencing e.g. like *no, it's neither of those*”; “aow-euhr”; “for neither x nor y, as both neither and nor: aoœr x aoœr y”; also aoœr
+  - ledger: ME neither; IS hvorugur; GA ceachtar; EU ez bata ez bestea; DE weder; LA neuter; CY na'r naill na'r llall; DZ —; GRC oudeteros; SA —; Q —; ON hvárgi
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Aoa-thas't** *(pronoun)* — whatever
+  - 'Aoa-thas't Uœrd' — whatever word. The aoa-refusal + thas't.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Aoaya** — along  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **aobha** *(answer word)* — no
+  - ao “not” + bha “is” = “not-is”
+  - *source: reference §2*
+- **aobíeg** — else  `[coined]`
+  - pron. “ow-bee'ehg”
+  - ledger: ME elles; IS annars; GA eile; EU bestela; DE sonst; LA alioqui; CY amgen; DZ —; GRC allōs; SA anyathā; Q —; ON ella
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Aobísy** — other
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **aobisyach** *(adjective)* — other  `[working]`
+  - 'sin-sísaoya aobisyach-e' — as other-of.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **aodruýscain** — another (variant)  `[coined]`
+  - variant of **níbísy**; see that entry
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **aodruýscain: another** — another (variant)  `[coined]`
+  - variant of **níbísy**; see that entry
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Aoffau** — leg
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Aohúrn** — native  `[coined]`
+  - pron. “Ow7-oohrn”
+  - ledger: ME natif; IS innfæddur; GA dúchasach; EU jatorrizko; DE einheimisch; LA indigena; CY brodorol; DZ —; GRC autochthōn; SA deśaja; Q —; ON innborinn
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **aoíth** *(preposition)* — before (temporal)
+  - aoíth dulagá “before embarking” (1.12.1.2.3)
+  - *source: reference §2*
+- **aoíth dulagá** *(preposition)* — before (temporal)  `[active]`  ↳ of aoíth
+  - aoíth dulagá “before embarking” (1.12.1.2.3)
+  - *source: All-Coinages concordance #046 (HTML reference + LDS PDF)*
+- **Aoiyid** *(Noun)* — abdomen
+  - 'lus Aoiyid e Ruth-e Útcáry'ya' — the abdomen of Red's accuser.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Aól** *(Noun)* — Object-of-Giving’s-Force — “entry”
+  - the eternal past’s frame-noun (2.1.1.2.8)
+  - *source: reference §2*
+- **Aolt** *(Noun)* — article (written)
+  - yAolt Ruth-e — the article of Red. Stack-r2 also attests 'Aolt' (article (written)).
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Aólúæn** — enter  `[coined]`
+  - coined against the twelve-language ledger
+  - ledger: ME entren; IS ganga inn; GA téigh isteach; EU sartu; DE eintreten; LA intrare; CY mynd i mewn; DZ —; GRC eisienai; SA pra-√viś; Q mitta-; ON ganga inn
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **aomeal** *(P-modifier)* — straight
+  - sealed at workbook 1.2.4.3; kin in shape to the aoa-family — unruled
+  - *source: reference §2*
+- **aoœr** *(conj.)* — neither-nor
+  - completes the æxó / aoæx set (1.4.4); patterning with its set — flexible (keeper’s reading, one word corrects). Not from attraction: Œr ’thte was a clipped fragment, “Or not.”
+  - *source: reference §2*
+  - **worksheet gloss:** nor — pron. “aow-euhr”
+  - ledger: ME ne; IS né; GA ná; EU ezta; DE noch; LA nec; CY na; DZ —; GRC oude; SA na ca; Q —; ON né
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Aoyáchaí** — rear  `[coined]`
+  - pron. “Ow-yay-kuh'ih”
+  - ledger: ME rere; IS afturhluti; GA cúl; EU atzealde; DE Rückseite; LA tergum; CY cefn; DZ jabkha; GRC nōton; SA pṛṣṭha; Q —; ON aptrhlutr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **aoyræcäch** — prior  `[coined]`
+  - pron. “ow-yree'eh-kayk”
+  - ledger: ME —; IS fyrri; GA réamh-; EU aurreko; DE vorherig; LA prior; CY blaenorol; DZ —; GRC proteros; SA pūrva; Q —; ON fyrri
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **aoyth** *(preposition (recorded; one word reclasses))* — like
+  - pron. “ow-eeɦ”; …aoyth rhié-færs “like his father” — the vacancy-blocker: no like-adjective need exist; aoíth “before” its near-sister by a letter (2.1.1.2.12)
+  - *source: reference §2*
+- **…aoyth rhié-færs** *(preposition (recorded; one word reclasses))* — like  `[active]`  ↳ of aoyth
+  - pron. “ow-eeɦ”; …aoyth rhié-færs “like his father” - the vacancy-blocker: no like-adjective need exist; aoíth “before” its near-sister by a letter (2.1.1.2.12)
+  - *source: All-Coinages concordance #051 (HTML reference)*
+- **Appaul** — pause  `[coined]`
+  - pron. “Uhp-puh'ahl”
+  - ledger: ME pause; IS hlé; GA sos; EU etenaldi; DE Pause; LA intervallum; CY saib; DZ —; GRC anapaula; SA virāma; Q pusta; ON hlé
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Árbeíl** — massacre  `[coined]`
+  - pron. “Ay'er-beh'ihl”
+  - ledger: ME —; IS fjöldamorð; GA ár; EU sarraski; DE Massaker; LA caedes; CY cyflafan; DZ —; GRC sphagē; SA saṃhāra; Q —; ON manndráp
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Arbhehe** — effect  `[coined]`
+  - pron. “Uh'r-veh-7-eh”
+  - ledger: ME effect; IS áhrif; GA éifeacht; EU eragin; DE Wirkung; LA effectus; CY effaith; DZ —; GRC —; SA kārya; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Arbhenu** *(noun)* — event
+  - 'mis ainteith Arbhenu' — our first event.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **arch** *(adjective)* — far
+  - ro’arch’il “too-far”
+  - *source: reference §2*
+- **Archwái** — arcade  `[coined]`
+  - pron. “Ark-way-ih”
+  - ledger: ME —; IS spilasalur; GA stuara; EU arkupe; DE Arkade; LA porticus; CY arcêd; DZ —; GRC stoa; SA vīthikā; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **ar'eg'ch** — far away  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **aregch** — faraway  `[coined]`
+  - pron. “uh-reksh”
+  - ledger: ME fer awey; IS fjarlægur; GA i gcéin; EU urrutiko; DE fern; LA remotus; CY pellennig; DZ tharingsa; GRC tēlouros; SA dūrastha; Q haira; ON fjarlægr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **arfech** — fling  `[coined]`
+  - pron. “uh'r-vehk”
+  - ledger: ME flingen; IS fleygja; GA teilg; EU jaurti; DE schleudern; LA conicere; CY hyrddio; DZ —; GRC rhiptein; SA √kṣip; Q hat-; ON fleygja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Aríc** *(author form)* — sand  `[active]`
+  - *source: All-Coinages concordance #053 (LDS PDF)*
+- **Aríc (verb: dúaríc)** — sand
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **arrnclaín** — observe  `[coined]`
+  - pron. “Uh'rnk-luh'een”
+  - ledger: ME observen; IS fylgjast með; GA breathnaigh; EU behatu; DE beobachten; LA observare; CY arsylwi; DZ —; GRC paratērein; SA ava-√lok; Q tir-; ON hyggja at
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Ârtís** — style  `[coined]`
+  - pron. “Ar-deess”
+  - ledger: ME stile; IS stíll; GA stíl; EU estilo; DE Stil; LA stilus; CY arddull; DZ —; GRC lexis; SA rīti; Q —; ON stíll
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **-as** *(suffix)* — echo suffix (vowel-harmonising)
+  - laí→laías, gæe→gæeäs, Ghusci→Ghuscias
+  - *source: reference §2*
+- **As** *(numeral (Noun))* — eight
+  - In As “at Eight”
+  - *source: reference §2*
+- **Áscíáchaí** — policy  `[coined]`
+  - pron. “Ay-shee'ay-kai”
+  - ledger: ME policie; IS stefna; GA beartas; EU politika; DE Richtlinie; LA —; CY polisi; DZ —; GRC proairesis; SA nīti; Q —; ON stefna
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Ascíam** — public  `[coined]`
+  - pron. “Uh-shee-uhm”
+  - ledger: ME publik; IS opinber; GA poiblí; EU publiko; DE öffentlich; LA publicus; CY cyhoeddus; DZ mimang; GRC dēmosios; SA sārvajanika; Q —; ON opinberr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Áscíê** — people  `[coined]`
+  - pron. “Ay-shih-eh”
+  - ledger: ME peple; IS fólk; GA daoine; EU jende; DE Leute; LA populus; CY pobl; DZ mitshu; GRC dēmos; SA jana; Q lië; ON fólk
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Âslutíê** — staff  `[coined]`
+  - pron. “A-slah-tee'eh”
+  - ledger: ME staf; IS starfsfólk; GA foireann; EU langileak; DE Personal; LA —; CY staff; DZ —; GRC hypēretai; SA parijana; Q —; ON hjú
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **át** *(verb (pro-verb))* — did
+  - answers for any verb; wears the negator’s face — etymology withheld (§9) [renamed from †aoát 2026-07-14, the maker: “Replace aoát with just át” — the negator’s-face note retires with the old skin]
+  - *source: reference §2*
+- **atá** *(verb (be))* — is / are — the form that accompanies ios
+  - ios ærmuch atá fæ
+  - *source: reference §2*
+- **atáea** *(verb (be))* — was / were — the past form with ios
+  - thé-atáea ios atáea
+  - *source: reference §2*
+- **atáea'thte** *(verb (past fused negative))* — wasn't  `[working]`
+  - atáea + -'thte — past-tense negation fusion now attested.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **athnën** — inhale  `[coined]`
+  - pron. “at-neh'en”
+  - ledger: ME —; IS anda að sér; GA ionanálaigh; EU arnastu; DE einatmen; LA —; CY mewnanadlu; DZ —; GRC eispnein; SA √śvas; Q súya-; ON anda at sér
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Atruens** *(Noun)* — incident
+  - Ten fær e Atruens’ya saíea ‘I told him about the incident’ (2.1.1.4.15, mended 2026-07-15: lus → -’ya); plural Atruensê (2.1.1.4.19)
+  - *source: reference §2*
+- **Atruensê** *(Noun)* — incident  `[active]`  ↳ of Atruens
+  - Ten fær e Atruens’ya saíea ’I told him about the incident’ (2.1.1.4.15, mended 2026-07-15: lus   -’ya); plural Atruensê (2.1.1.4.19)
+  - *source: All-Coinages concordance #060 (HTML reference + LDS PDF)*
+- **átsethá** — join  `[coined]`
+  - pron. “ayd-sehtt-ay”
+  - ledger: ME joinen; IS tengja; GA nasc; EU elkartu; DE verbinden; LA iungere; CY uno; DZ —; GRC synaptein; SA √yuj; Q —; ON tengja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Atum** — diamond  `[coined]`
+  - pron. “Uh-dahm”
+  - ledger: ME diamaunt; IS demantur; GA diamant; EU diamante; DE Diamant; LA adamas; CY diemwnt; DZ dorji; GRC adamas; SA vajra; Q —; ON demantr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Au** — ear
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Auaí** — audio  `[coined]`
+  - pron. “aah-eye-ih”
+  - ledger: ME —; IS hljóð; GA fuaim; EU audio; DE Ton; LA —; CY sain; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **auff** — hear
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **aufFrœsíýa** — changelings  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **aufGao'samsca'laíê** *(tmesis compound)* — aufGaolaí communities  `[working]`  ↳ of Samsca
+  - aufGao'…'laíê wrapped around samsca 'community'.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Aúh** — day
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Aúmedhæ** — midday  `[coined]`
+  - pron. “uh-ahm-eh-thee”
+  - ledger: ME midday; IS hádegi; GA meán lae; EU eguerdi; DE Mittag; LA meridies; CY hanner dydd; DZ —; GRC mesēmbria; SA madhyāhna; Q —; ON hádegi
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **auytha** *(verb)* — overheard
+  - *source: reference §2*
+- **ax** *(conj.)* — but
+  - one word, contrast and correction alike (1.3.1.1.2); the tetrad’s ’ma stays a clitic — but is its own creature; between every pair (1.3.1.2)
+  - *source: reference §2*
+- **ax** *(coordinator)* — but; but-especially
+  - long-established (n−1 pattern; “O cruel ax fair”) — the maker asked, the study answered: yes, well-seated; today extended to the selective-emphatic office, Mith ax ten’ya (2.1.2.1.15.3) Stack-r2: 'mis neria o múlchtma ax niecscách Yáe' — our new and worse but necessary sun.
+  - *source: reference §2*
+- **Âxal** — shoulder  `[coined]`
+  - pron. “Ak-suh'l”
+  - ledger: ME shulder; IS öxl; GA gualainn; EU sorbalda; DE Schulter; LA umerus; CY ysgwydd; DZ pungpa; GRC ōmos; SA aṃsa; Q —; ON ǫxl
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Axscœth** — accent  `[coined]`
+  - pron. “Uhks-shkuehtt”
+  - ledger: ME accent; IS hreimur; GA blas; EU azentu; DE Akzent; LA accentus; CY acen; DZ —; GRC prosōidia; SA svara; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Axuain** *(conjunction)* — but-for; except-for; all but
+  - 'Iosiya axuain lus Dic o Penuê o lesenach Rhëw o Piell lus Ghitasiu byclæírea Líciya Yon-e' — that but-for the dick and breasts and pubic triangle and face, the quote enclothed Night's body.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Axuainaí** — exception  `[coined]`
+  - pron. “Uhks-uh-ah'ihn-eye'ih”
+  - ledger: ME excepcioun; IS undantekning; GA eisceacht; EU salbuespen; DE Ausnahme; LA exceptio; CY eithriad; DZ —; GRC —; SA apavāda; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+
+## B
+
+- **Bac** — clack  `[coined]`
+  - pron. “back”
+  - ledger: ME clakken; IS smella; GA cnag; EU klask; DE klappern; LA crepitare; CY clecian; DZ —; GRC krotalizein; SA —; Q —; ON smella
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Bailc** *(noun)* — milk  `[active]`  ↳ of Bailch
+  - base Bailc ; lenited after e “of”
+  - *source: All-Coinages concordance #066 (HTML reference + LDS PDF)*
+- **Bailch** *(noun)* — milk
+  - base Bailc; lenited after e “of”
+  - *source: reference §2*
+- **bainch** — bad
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Ban** — stain  `[coined]`
+  - pron. “buhn”
+  - ledger: ME steinen; IS blettur; GA smál; EU orban; DE Fleck; LA macula; CY staen; DZ —; GRC kēlis; SA kalaṅka; Q mordo; ON blettr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **baouea** *(participle (-ea))* — bowed
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **baowł** — jolt  `[coined]`
+  - pron. “bow'iwl-ly”
+  - ledger: ME —; IS hnykkur; GA turraing; EU astinaldi; DE Ruck; LA —; CY ysgytwad; DZ —; GRC —; SA āghāta; Q —; ON hnykkr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Barc** *(Verb/Noun)* — scream
+  - ∆barc — up-trilled scream.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Bathab** — insect  `[coined]`
+  - pron. “buh-tuhb”
+  - ledger: ME —; IS skordýr; GA feithid; EU intsektu; DE Insekt; LA insectum; CY trychfilyn; DZ bub; GRC entomon; SA kīṭa; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **bauch** — round
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Baufilmarm** — contour  `[coined]`
+  - pron. “Buh'ah-fihlm-ahrm”
+  - ledger: ME —; IS útlína; GA imlíne; EU ingerada; DE Umriss; LA —; CY amlinell; DZ —; GRC perigraphē; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Bausy** — cloud
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **baüythách** — around (variant)  `[coined]`
+  - variant of **aoa 'thte**; see that entry
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Beíl** — blink  `[coined]`
+  - pron. “beh-iel”
+  - ledger: ME blenken; IS blikka; GA caoch; EU kliskatu; DE blinzeln; LA nictare; CY —; DZ —; GRC skardamyttein; SA ni-√miṣ; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Belfís** — basin  `[coined]`
+  - pron. “bell-veece”
+  - ledger: ME bacin; IS skál; GA báisín; EU konketa; DE Becken; LA pelvis; CY basn; DZ —; GRC lekanē; SA kuṇḍa; Q —; ON skál
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Bengsy** — belly
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **berff** — toss  `[coined]`
+  - pron. “berf”
+  - ledger: ME tossen; IS henda; GA caith; EU bota; DE werfen; LA iactare; CY taflu; DZ —; GRC ballein; SA ud-√kṣip; Q hat-; ON kasta
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Berolth** *(Noun (proper))* — Berlin
+  - Ten duín Berolth tes-mé Maghr eibh ‘I was in Berlin as a soldier’ (2.1.1.4.16)
+  - *source: reference §2*
+- **Beth** — bit  `[coined]`
+  - coined against the twelve-language ledger
+  - ledger: ME bite; IS biti; GA giota; EU pixka; DE Stückchen; LA frustum; CY tamaid; DZ atsi; GRC psōmos; SA leśa; Q —; ON biti
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **bha** *(verb (be))* — is
+  - found inside aobha / bháya
+  - *source: reference §2*
+  - **worksheet gloss:** yeah — pron. “Vvuh”
+  - ledger: ME ye; IS já; GA sea; EU bai; DE ja; LA ita; CY ie; DZ ing; GRC nai; SA ām; Q ná; ON já
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **bha** *(particle)* — yes (clipped bháya)
+  - the trailing affirmer in doubled emphasis: fith’ya bha (1.11.2.1.7)
+  - *source: reference §2*
+  - **worksheet gloss:** yeah — pron. “Vvuh”
+  - ledger: ME ye; IS já; GA sea; EU bai; DE ja; LA ita; CY ie; DZ ing; GRC nai; SA ām; Q ná; ON já
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **bháya** *(answer word)* — yes
+  - bha “is” + ’ya = “is-positively”
+  - *source: reference §2*
+- **bhie** *(Verb (be))* — are  `[working]`
+  - flow-form of bhies: 'mæ bhie' — you are.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **bhies** *(verb (be))* — are / be (present, general)
+  - *source: reference §2*
+- **Bicá** — knee
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **bilach** *(adjective)* — bare
+  - 'Úsét bilach Charmænsy Yon-e' — on bare skin of-Night.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **bildhuæn** *(Verb)* — gather
+  - 'Oob Onê síthüsië bildhuæn' — under feet nowily gather.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Bis** *(Noun)* — Grief
+  - sís Tïc e Bis “This House of Grief” (1.16.6)
+  - *source: reference §2*
+- **Bitiths** — sorry (variant)  `[coined]`
+  - variant of **Ai'en'bitiths**; see that entry
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Blaotzúl-blaotzúl** — applause  `[coined]`
+  - pron. “compare: Blaotzúlæn (to applaud”; alt. pron. “Blaowd-zoo'ehl-blaowd-zoo'ehl”
+  - ledger: ME —; IS lófatak; GA bualadh bos; EU txalo; DE Beifall; LA plausus; CY cymeradwyaeth; DZ —; GRC krotos; SA sādhuvāda; Q —; ON lófatak
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **bloi** *(author form)* — flower (verb)  `[active]`
+  - *source: All-Coinages concordance #078 (LDS PDF)*
+- **Bloiy** *(author form)* — flower  `[active]`
+  - *source: All-Coinages concordance #079 (LDS PDF)*
+- **Bloiy (verb: bloi)** — flower
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **blós** — grow  `[coined]`
+  - pron. “blow'ss”
+  - ledger: ME growen; IS vaxa; GA fás; EU hazi; DE wachsen; LA crescere; CY tyfu; DZ kye-ni; GRC auxanesthai; SA √vṛdh; Q ala-; ON vaxa
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Blurme** — blast  `[coined]`
+  - pron. “Blahm-eh”
+  - ledger: ME blast; IS sprenging; GA pléasc; EU eztanda; DE Explosion; LA —; CY ffrwydrad; DZ —; GRC —; SA sphoṭa; Q —; ON brestr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **blys** — black
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Blys yon** — night-black
+  - *source: Final-Boss Haul · Semantic fields (2026-07-17)*
+- **Bóc** — mouth
+  - Stack-2: 'mao Boc mæ gæn' (your mouth you give); Bocraíp 'lips' compounds on it.
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Bocraíp** *(Noun (plural))* — lips
+  - compounds on Boc 'mouth'.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Bœgh** — road
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **bœn** — plead  `[coined]`
+  - pron. “beuhn”
+  - ledger: ME pleden; IS sárbæna; GA agair; EU erregutu; DE anflehen; LA supplicare; CY ymbil; DZ —; GRC antibolein; SA pra-√arth; Q —; ON biðja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **bœnaí** — plea  `[coined]`
+  - pron. “beuh-nuh'eeh”
+  - ledger: ME plee; IS ákall; GA achainí; EU erregu; DE Bitte; LA preces; CY ple; DZ —; GRC hiketeia; SA prārthanā; Q —; ON bœn
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **boolooyl** — lose  `[coined]`
+  - pron. “booh-looh-ihl”
+  - ledger: ME lesen; IS missa; GA caill; EU galdu; DE verlieren; LA amittere; CY colli; DZ —; GRC apollynai; SA √hā; Q vanwa; ON týna
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Borhu** *(Noun)* — table
+  - the worth-relative (2.1.1.4.21)
+  - *source: reference §2*
+- **Bortó** — gate  `[coined]`
+  - pron. “Bord-eaux”
+  - ledger: ME gate; IS hlið; GA geata; EU langa; DE Tor; LA porta; CY porth; DZ gochen; GRC pylē; SA gopura; Q ando; ON hlið
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Both** *(Noun)* — city
+  - (2.1.1.4.12)
+  - *source: reference §2*
+- **Bothaíách** — citizen  `[coined]`
+  - pron. “Bohth-eye-ayk”
+  - ledger: ME citezein; IS borgari; GA saoránach; EU herritar; DE Bürger; LA civis; CY dinesydd; DZ miser; GRC politēs; SA paura; Q —; ON borgari
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **breách** — wide
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **brecágge** — interrupt  `[coined]`
+  - pron. “breh-kayk-eh”
+  - ledger: ME —; IS grípa fram í; GA bris isteach ar; EU eten; DE unterbrechen; LA interrumpere; CY torri ar draws; DZ —; GRC hypolambanein; SA vi-√chid; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Brëch** *(noun)* — bridge
+  - 'yálénëách Brëch' — a solar bridge.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **brís** *(Verb)* — break
+  - Brísea 'broken'; Brís-brís 'the breaking'; stílbrís 'still-breaking'.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Brís-brís** *(verbal noun (reduplicated))* — the breaking  ↳ of brís
+  - Reduplicated verbal noun. 'Sê-maos Brís-brísýa bhie' — yourself the-breaking is.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Brísea** *(participle (-ea))* — broken
+  - 'Brísea mæ bhie • Brísea • Brísea o stílbrís.'
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **brízłœách (breehz-lyeuh'ayk** — jealous  `[coined]`
+  - coined against the twelve-language ledger
+  - ledger: ME jelous; IS afbrýðisamur; GA éadmhar; EU jeloskor; DE eifersüchtig; LA zelotypus; CY cenfigennus; DZ thradok; GRC zēlotypos; SA īrṣyālu; Q —; ON afbrýði (n.)
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Brooth** — rim  `[coined]`
+  - pron. “broott”
+  - ledger: ME rim; IS brún; GA imeall; EU ertz; DE Rand; LA margo; CY ymyl; DZ —; GRC cheilos; SA prānta; Q réna; ON brún
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Bruscách** — sudden  `[coined]`
+  - pron. “Brah-shake”
+  - ledger: ME sodein; IS skyndilegur; GA tobann; EU bat-bateko; DE plötzlich; LA subitus; CY sydyn; DZ —; GRC aiphnidios; SA ākasmika; Q —; ON bráðr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Brútalách** — broad  `[coined]`
+  - pron. “Brood-uhl-ayk”
+  - ledger: ME brood; IS breiður; GA leathan; EU zabal; DE breit; LA latus; CY llydan; DZ gyache; GRC eurys; SA pṛthu; Q palla; ON breiðr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Bure** — bar  `[coined]`
+  - pron. “bahr-eh”
+  - ledger: ME barre; IS slá; GA barra; EU barra; DE Stange; LA vectis; CY bar; DZ —; GRC mochlos; SA argala; Q —; ON slá
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **by** *(preposition)* — through / using / across
+  - grubby loan
+  - *source: reference §2*
+- **by** *(part.)* — via, as-a-process; [to] of purpose
+  - the maker’s $-note: côs by “[to] sleep”, gáns by “useless via”
+  - *source: reference §2*
+- **by ghiæan** *(verb)* — get, become  `[active]`  ↳ of ghiæan
+  - corrected from *ghæian (slip); the become-copula ( Duílúch Fæ’du’ærs fæ ghiæan ); by ghiæan “get over”; the frame of the becoming-gift (2.1.1.2.11) and of the passive-with-agent (2.1.1.2.13); pron. “sthɦih-ee-ah-neh-eh” (ghiæanea, the maker’s key - gh sounding [sθɦ]-wards)
+  - *source: All-Coinages concordance #088 (HTML reference + LDS PDF)*
+- **byclæírea** *(participle/adjective)* — enclothed
+  - by- 'wrapped-in/provided-with' + clæírea.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **byffub** — rub
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Byræao** *(preposition)* — through-from; out of
+  - 'Byræao Stár dúe Ruth' — out of love for Red.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Byraigách** — content  `[coined]`
+  - pron. “bee-rye'g-ayk”
+  - ledger: ME content; IS innihald; GA ábhar; EU eduki; DE Inhalt; LA —; CY cynnwys; DZ —; GRC —; SA viṣaya; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **bysclúnea** — enclose  `[coined]`
+  - pron. “bee-shloo-neh'uh”
+  - ledger: ME enclosen; IS umlykja; GA iaigh; EU hesitu; DE einschließen; LA includere; CY amgáu; DZ —; GRC periballein; SA pari-√vṛ; Q —; ON lykja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+
+## C
+
+- **C’achér’ed** *(noun | ordinal adjective)* — drawer · second  `[active]`  ↳ of ced, tachér, tachér | ced
+  - sheds its t when nested: C’achér’ed | nests its noun: C’achér’ed
+  - *source: All-Coinages concordance #090 (HTML reference + LDS PDF)*
+- **Cadu** — hump  `[coined]`
+  - pron. “Cuhth-ah”
+  - ledger: ME —; IS kryppa; GA cruit; EU konkor; DE Buckel; LA gibbus; CY crwb; DZ —; GRC hybos; SA kakud; Q —; ON kryppa
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Cælæ** — street  `[coined]`
+  - pron. “keeh-lee”
+  - ledger: ME strete; IS stræti; GA sráid; EU kale; DE Straße; LA strata; CY stryd; DZ lam; GRC plateia; SA rathyā; Q mallë; ON stræti
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Cærnúa** — twist  `[coined]`
+  - pron. “Kee'er-nooh'uh”
+  - ledger: ME twisten; IS snúa; GA cas; EU bihurritu; DE verdrehen; LA torquere; CY troelli; DZ —; GRC strephein; SA √veṣṭ; Q ric-; ON snúa
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Cafi** *(noun)* — coffee
+  - loanword
+  - *source: reference §2*
+- **Cafi œr Sî** *(conjunction)* — or  `[active]`  ↳ of œr
+  - Cafi œr Sî - between every pair (1.3.1.2)
+  - *source: All-Coinages concordance #092 (HTML reference)*
+- **Cafiarmaí** — café  `[coined]`
+  - pron. “Kuh-vih-uhr-muyh-ih”
+  - ledger: ME —; IS kaffihús; GA caife; EU kafetegi; DE Café; LA —; CY caffi; DZ jakhang; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **cafsrau** — hollow  `[coined]`
+  - pron. “cuhv-ssrah'uh”
+  - ledger: ME holwe; IS holur; GA cuasach; EU barnehuts; DE hohl; LA cavus; CY cau; DZ —; GRC koilos; SA suṣira; Q unqua; ON holr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Cain** *(noun)* — kind, sort  `[active]`  ↳ of Chain
+  - base Cain ; lenited
+  - *source: All-Coinages concordance #093 (HTML reference)*
+- **caír** *(Verb (modal))* — can  `[working]`
+  - 'ygyg caír-e o át-e' — eke can-of and do-of. át attested in use (the renamed †aoát).
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Cairy** — material  `[coined]`
+  - coined against the twelve-language ledger
+  - ledger: ME material; IS efni; GA ábhar; EU material; DE Stoff; LA materia; CY defnydd; DZ —; GRC hylē; SA upādāna; Q —; ON efni
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Cais** — must  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **Caisáchaíæn** — need  `[coined]`
+  - pron. “Cuh'ihss-ayk-eye-ee'en”
+  - ledger: ME nede; IS þörf; GA gá; EU behar; DE Not; LA necessitas; CY angen; DZ go-ni; GRC chreia; SA apekṣā; Q maurë; ON þǫrf
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Cáithoor** *(Noun)* — general
+  - state-form Cáithoorhr takes the object slot, not the bare noun (2.1.1.4.17)
+  - *source: reference §2*
+- **Cáithoorhr** *(Noun (state))* — general-being
+  - Cáithoor + the -r state-former — its fifth witness; Mith fær-dúe Cáithoorhr oothíthea ‘we appointed him as general’ (2.1.1.4.17)
+  - *source: reference §2*
+- **Caonth** — account  `[coined]`
+  - pron. “cow-nt; same as count”
+  - ledger: ME acounte; IS frásögn; GA cuntas; EU kontu; DE Bericht; LA ratio; CY cyfrif; DZ —; GRC logos; SA vṛttānta; Q quentalë; ON frásǫgn
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Caontharmæn** — narrate  `[coined]`
+  - pron. “Count-uh'rm-ee'en”
+  - ledger: ME —; IS segja frá; GA aithris; EU kontatu; DE erzählen; LA narrare; CY adrodd; DZ —; GRC aphēgeisthai; SA √kath; Q nyar-; ON segja frá
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Carnfogh** *(Noun)* — execution
+  - æœá-e niïl Carnfogh — without an execution.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **cáru** *(author form)* — scratch  `[active]`
+  - *source: All-Coinages concordance #096 (LDS PDF)*
+- **cáru (noun: Cárur)** — scratch
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Cárur** *(author form)* — scratch (noun)  `[active]`
+  - *source: All-Coinages concordance #097 (LDS PDF)*
+- **Cäther** — chain  `[coined]`
+  - pron. “Catter”
+  - ledger: ME cheyne; IS keðja; GA slabhra; EU kate; DE Kette; LA catena; CY cadwyn; DZ —; GRC halysis; SA śṛṅkhalā; Q —; ON festr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **ced** *(ordinal adjective)* — second
+  - nests its noun: C’achér’ed
+  - *source: reference §2*
+- **cerłách** — possible  `[coined]`
+  - pron. “kehr-lyayk”
+  - ledger: ME possible; IS mögulegur; GA féideartha; EU ahalezko; DE möglich; LA possibilis; CY posibl; DZ —; GRC dynatos; SA sambhava; Q cárima; ON gerligr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **chæn** *(verb)* — spend
+  - *source: reference §2*
+- **chætha** — mock  `[coined]`
+  - pron. “hee'eht-uh”
+  - ledger: ME mokken; IS hæða; GA fonóid; EU iseka; DE verspotten; LA irridere; CY gwatwar; DZ —; GRC skōptein; SA upa-√has; Q yaiwë; ON hæða
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Chagæn** — stroke  `[coined]`
+  - pron. “Huh-gee'en”
+  - ledger: ME stroken; IS strjúka; GA slíoc; EU laztandu; DE streicheln; LA mulcere; CY mwytho; DZ —; GRC katapsēn; SA √lal (caus.); Q —; ON strjúka
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Chain** *(noun)* — kind, sort
+  - base Cain; lenited
+  - *source: reference §2*
+  - **worksheet gloss:** type — pron. “Huyn”
+  - ledger: ME —; IS gerð; GA cineál; EU mota; DE Typ; LA genus; CY math; DZ rik; GRC typos; SA prakāra; Q —; ON kyn
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Chain e Bailch** *(particle)* — of (genitive / connective)  `[active]`  ↳ of e
+  - Chain e Bailch “kind of milk”
+  - *source: All-Coinages concordance #101 (HTML reference + LDS PDF)*
+- **Chainn** *(noun)* — sort; kind  `[working]`
+  - 'lus Chainn e Rraenaí dúaf-e iosthurn' — the sort of division upward-of there.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Chainnaí** — species  `[coined]`
+  - pron. “Huh'ihn-nuh'ih”
+  - ledger: ME species; IS tegund; GA speiceas; EU espezie; DE Art; LA species; CY rhywogaeth; DZ rik; GRC eidos; SA jāti; Q nostalë; ON kyn
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Chair** *(noun)* — rain
+  - Chair í gæn “it rains” — dummy-donor frame (1.2.1.2.1)
+  - *source: reference §2*
+- **chair** *(verb)* — rain
+  - seated via its reduplication Noun Chair-Chair “Rain” — the pattern’s sixth member (1.16.6)
+  - *source: reference §2*
+- **Chair í gæn** *(noun)* — rain  `[active]`  ↳ of Chair
+  - Chair í gæn “it rains” - dummy-donor frame (1.2.1.2.1)
+  - *source: All-Coinages concordance #107 (HTML reference + LDS PDF)*
+- **chair (noun: Chair-chair)** — rain
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Chair-Chair** *(verb)* — rain  `[active]`  ↳ of chair
+  - seated via its reduplication Noun Chair-Chair “Rain” - the pattern’s sixth member (1.16.6)
+  - *source: All-Coinages concordance #104 (HTML reference + LDS PDF)*
+- **Chair-Chair e Emma** *(Noun)* — blood  `[active]`  ↳ of Emma
+  - a Noun in a name’s clothing - never an exemplar-name: Chair-Chair e Emma “Rain of blood” (1.16.6)
+  - *source: All-Coinages concordance #106 (HTML reference + LDS PDF)*
+- **Chard** — horn  `[coined]`
+  - pron. “huh'rth”
+  - ledger: ME horn; IS horn; GA adharc; EU adar; DE Horn; LA cornu; CY corn; DZ —; GRC keras; SA śṛṅga; Q rassë; ON horn
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Chardea** *(adjective)* — horned
+  - the maker’s bracket: Chard-ea — the -ea participle on a horn-stem; Chardea Ixixaí “horned singularity: a unicorn, not the technological one” (2026-07-16)
+  - *source: reference §2*
+- **Charmænsy** — skin
+  - Stack-r2 also attests 'Charmænsy' (skin). Standalone; already seen inside tmesis afStrœ'charmænsy'œch 'dried-up skin' (stack-2). 'Úsét bilach Charmænsy Yon-e'.
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Charóiscindeaí** — jackalope  `[coined]`
+  - pron. “Huh-row-ih-shihn-deh-uh'ih”; alt. pron. “clyehp-eh-sheh'uhn”; also or* Cłepësceán
+  - ledger: ME —; IS —; GA —; EU —; DE Wolpertinger; LA —; CY —; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Chât** — top  `[coined]`
+  - pron. “had”
+  - ledger: ME top; IS toppur; GA barr; EU gain; DE Gipfel; LA summum; CY pen; DZ tse; GRC koryphē; SA śikhara; Q inga; ON toppr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Châtthap** — rooftop  `[coined]`
+  - pron. “Had-tuhp”
+  - ledger: ME —; IS húsþak; GA barr dín; EU teilatu; DE Dach; LA tectum; CY pen to; DZ thok; GRC stegē; SA chadis; Q tópa; ON þak
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Chcampâgn** — champagne  `[coined]`
+  - pron. “as champagne”
+  - ledger: ME —; IS kampavín; GA seaimpéin; EU xanpain; DE Champagner; LA —; CY siampên; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Chefen** — heave  `[coined]`
+  - pron. “heh-vehn”
+  - ledger: ME heven; IS lyfta; GA ardaigh; EU jaso; DE hieven; LA tollere; CY codi; DZ —; GRC airein; SA ud-√yam; Q orta-; ON lypta
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **chemy** — semi  `[coined]`
+  - pron. “heh-mee”
+  - ledger: ME —; IS hálf-; GA leath-; EU erdi-; DE halb-; LA semi-; CY hanner-; DZ cheka; GRC hēmi-; SA ardha-; Q per- (pref.); ON hálf- (pref.)
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Chíc** — home  `[coined]`
+  - pron. “Heeck”
+  - ledger: ME hom; IS heimili; GA baile; EU etxe; DE Heim; LA domus; CY cartref; DZ chim; GRC oikos; SA gṛha; Q már; ON heimili
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **chímæ** *(verb)* — bought (≈ spent)
+  - ← chæn “spend”
+  - *source: reference §2*
+- **Chin** — egg
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **chís** *(verb)* — chat
+  - → gerund Chís-Chís
+  - *source: reference §2*
+- **chís eibh eibh** *(verb (be))* — were (past, general)  `[active]`  ↳ of eibh
+  - chís eibh eibh ; NOT used with ios (there atáea is used)
+  - *source: All-Coinages concordance #114 (HTML reference + LDS PDF)*
+- **chísáchaíách** — social  `[coined]`
+  - pron. “Hee-say-high-ayk”
+  - ledger: ME —; IS félagslegur; GA sóisialta; EU sozial; DE sozial; LA socialis; CY cymdeithasol; DZ —; GRC koinōnikos; SA sāmājika; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **chísæn** — talk  `[coined]`
+  - pron. “hee-ssee'en”
+  - ledger: ME talken; IS tala; GA labhair; EU hitz egin; DE reden; LA loqui; CY siarad; DZ lab-ni; GRC dialegesthai; SA sam-√bhāṣ; Q carpa-; ON tala
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Chís-Chís** *(noun (gerund))* — chatting, the chatting
+  - gerund by rendering-past reduplication of the verb chís
+  - *source: reference §2*
+- **Chœin** — angle  `[coined]`
+  - coined against the twelve-language ledger
+  - ledger: ME angle; IS horn; GA uillinn; EU angelu; DE Winkel; LA angulus; CY ongl; DZ zur; GRC gōnia; SA koṇa; Q —; ON horn
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **chóm** — deep  `[coined]`
+  - pron. “home”
+  - ledger: ME dep; IS djúpur; GA domhain; EU sakon; DE tief; LA profundus; CY dwfn; DZ —; GRC bathys; SA gambhīra; Q tumna; ON djúpr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Chóp-chóp** — bounce  `[coined]`
+  - pron. “Hope-hope”
+  - ledger: ME bunsen; IS skoppa; GA preab; EU errebotatu; DE hüpfen; LA resilire; CY sboncio; DZ —; GRC —; SA ut-√plu; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **chorpi** *(author form)* — laugh  `[active]`
+  - *source: All-Coinages concordance #115 (LDS PDF)*
+- **chorpi (noun: Chorpiff)** — laugh
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Chorpiff** *(author form)* — laugh (noun)  `[active]`
+  - *source: All-Coinages concordance #116 (LDS PDF)*
+- **chraff** — bite
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Chuagg** — hack  `[coined]`
+  - pron. “Hah'uhck”
+  - ledger: ME hakken; IS höggva; GA gearr; EU moztu; DE hacken; LA caedere; CY hacio; DZ —; GRC koptein; SA √takṣ; Q hyar-; ON hǫggva
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Chúat** *(-)* — (leniting pair)  `[active]`
+  - conditioning withheld - §9
+  - *source: All-Coinages concordance #118 (HTML reference + LDS PDF)*
+- **Chuffchœm-chuffchœm** — shortcoming  `[coined]`
+  - pron. “Huff-heuhm_huff-heuhm”
+  - ledger: ME —; IS annmarki; GA easnamh; EU hutsune; DE Manko; LA vitium; CY gwendid; DZ —; GRC elleimma; SA nyūnatā; Q —; ON annmarki
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Churt** — cardboard  `[coined]`
+  - pron. “Card”
+  - ledger: ME —; IS pappi; GA cairtchlár; EU kartoi; DE Pappe; LA —; CY cardbord; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **chwícómæn** — soak  `[coined]`
+  - pron. “hweeh-co-mee'en”
+  - ledger: ME soken; IS bleyta; GA maos; EU beratu; DE einweichen; LA madefacere; CY mwydo; DZ —; GRC brechein; SA √klid; Q —; ON bleyta
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Chýstég** — uterus  `[coined]`
+  - pron. “Hist-ague”
+  - ledger: ME wombe; IS leg; GA broinn; EU umetoki; DE Gebärmutter; LA uterus; CY croth; DZ ngal; GRC hystera; SA garbha; Q —; ON móðurkviðr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **cía** *(pronoun)* — they
+  - *source: reference §2*
+- **Cíaos** — theirs  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **cías** *(possessive)* — their; them (as sê-base — the maker)
+  - possessive of cía
+  - *source: reference §2*
+- **cías-sê** *(pronoun (reflexive/reciprocal))* — each-other; (with mé) all-alone, plural
+  - the sê-family’s fifth member (1.6.9.3); the bases are the object series — “faer, us, and them” (the maker’s word): sê-fær “faer-self”, miths-sê “us-self”, cías-sê “them-self”
+  - *source: reference §2*
+- **cící** — fret  `[coined]`
+  - pron. “kee-kee”
+  - ledger: ME freten; IS ergja sig; GA imní; EU kezkatu; DE sich grämen; LA angi; CY anesmwytho; DZ —; GRC aschallein; SA pari-√tap; Q —; ON angrask
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Cíltenthuct** — compendium  `[coined]`
+  - pron. “Keel-den-tucked”
+  - ledger: ME —; IS samantekt; GA díolaim; EU bilduma; DE Kompendium; LA compendium; CY crynhoad; DZ —; GRC epitomē; SA saṃgraha; Q —; ON ágrip
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Cimiuain** — chemical  `[coined]`
+  - pron. “Kihm-ih-wayne”
+  - ledger: ME —; IS efnafræðilegur; GA ceimiceán; EU kimiko; DE chemisch; LA —; CY cemegol; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Cläch** — complain  `[coined]`
+  - pron. “Clah'ak”
+  - ledger: ME compleynen; IS kvarta; GA gearán; EU kexatu; DE klagen; LA queri; CY cwyno; DZ —; GRC memphesthai; SA pari-√div; Q nurru-; ON kæra
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Clæffy** — predicament  `[coined]`
+  - pron. “Klee-fee”
+  - ledger: ME predicament; IS klípa; GA cruachás; EU estualdi; DE Zwickmühle; LA angustiae; CY cyfyngder; DZ —; GRC amēchania; SA saṃkaṭa; Q —; ON vandræði
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Clæír-clæír** — dress  `[coined]`
+  - pron. “Klee-ear-klee-ear”
+  - ledger: ME dressen; IS klæða; GA gléas; EU jantzi; DE kleiden; LA vestire; CY gwisgo; DZ gön-ni; GRC endyein; SA pari-√dhā; Q —; ON klæða
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **clæírea** *(participle/adjective)* — clothed
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Clæn** — tilt  `[coined]`
+  - pron. “Klee'en”
+  - ledger: ME tilten; IS halla; GA claon; EU okertu; DE kippen; LA inclinare; CY gogwyddo; DZ —; GRC klinein; SA ā-√nam; Q talta-; ON halla
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Clâmæn** — cheer  `[coined]`
+  - pron. “klahrm-ee'en”
+  - ledger: ME chere; IS fagna; GA gáir; EU txalo egin; DE jubeln; LA acclamare; CY gorfoleddu; DZ —; GRC epeuphēmein; SA abhi-√nand; Q —; ON fagna
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Claóf** — pop  `[coined]`
+  - pron. “Cluh-owe'ff”
+  - ledger: ME poppen; IS hvellur; GA plab; EU —; DE knallen; LA crepare; CY clec; DZ —; GRC —; SA —; Q —; ON hvellr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Claóghsab** — collarbone  `[coined]`
+  - pron. “Cluh-eauxsths-uhb”
+  - ledger: ME canel-bon; IS viðbein; GA dealrachán; EU klabikula; DE Schlüsselbein; LA clavicula; CY pont yr ysgwydd; DZ —; GRC kleis; SA jatru; Q —; ON viðbein
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **cliff** *(numeral)* — five
+  - the counting table grows: 0 ssíns · 2 ssai · 5 cliff · 6 éx · 8 As · 1000 thíthíl (2.1.1.4.21) Stack-2: digit-mode — 'slár-cliffýa' = 95 (of 1695 AD). Year-series pair unruled.
+  - *source: reference §2*
+- **Clófœ** — alcove  `[coined]`
+  - pron. “cleaux'veugh”
+  - ledger: ME —; IS veggskot; GA clúid; EU —; DE Nische; LA —; CY cilfach; DZ —; GRC mychos; SA —; Q —; ON lokrekkja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Cloro** — chlorine  `[coined]`
+  - pron. “Clor-oh”
+  - ledger: ME —; IS klór; GA clóirín; EU kloro; DE Chlor; LA —; CY clorin; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Clorumín** — chloramine  `[coined]`
+  - pron. “Clor-ah-meen”
+  - ledger: ME —; IS klóramín; GA clóraimín; EU kloramina; DE Chloramin; LA —; CY cloramin; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Coc** — beak  `[coined]`
+  - pron. “Kohk”
+  - ledger: ME bec; IS goggur; GA gob; EU moko; DE Schnabel; LA rostrum; CY pig; DZ —; GRC rhynchos; SA cañcu; Q —; ON nef
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Cócuolt** — cuck  `[coined]`
+  - pron. “Coke-uold”
+  - ledger: ME cokewold; IS kokkáll; GA —; EU adardun; DE Hahnrei; LA —; CY cwcwallt; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Cóiscin** — bunny  `[coined]`
+  - pron. “Coy-shin”
+  - ledger: ME —; IS kanína; GA coinín; EU untxi; DE Häschen; LA cuniculus; CY cwningen; DZ —; GRC kyniklos; SA śaśaka; Q —; ON heri
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Cóiscy** — rabbit  `[coined]`
+  - pron. “Co'ih-shee”
+  - ledger: ME rabet; IS kanína; GA coinín; EU untxi; DE Kaninchen; LA cuniculus; CY cwningen; DZ —; GRC kyniklos; SA śaśa; Q —; ON heri
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **cómíthuræn** — escort  `[coined]`
+  - pron. “koh-meet-ahr-ee'en”
+  - ledger: ME —; IS fylgja; GA tionlaic; EU lagundu; DE geleiten; LA comitari; CY hebrwng; DZ —; GRC propempein; SA anu-√gam; Q —; ON fylgja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Conthasct** — conflict  `[coined]`
+  - pron. “Cont-ashed”
+  - ledger: ME conflicte; IS átök; GA coimhlint; EU gatazka; DE Konflikt; LA conflictus; CY gwrthdaro; DZ —; GRC diaphora; SA virodha; Q —; ON deila
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **cornff** — furl  `[coined]`
+  - pron. “cohrnf”
+  - ledger: ME —; IS vefja upp; GA corn; EU bildu; DE einrollen; LA complicare; CY —; DZ —; GRC systellein; SA sam-√veṣṭ; Q —; ON hlaða seglum
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Côs** *(Verb)* — sleep
+  - attested inside its reduplication (farewell attestation)
+  - *source: reference §2*
+- **côs** *(verb)* — sleep
+  - Or’threïg’il côs by “not-tired-enough to sleep”
+  - *source: reference §2*
+- **côs by** *(part.)* — via, as-a-process; [to] of purpose  `[active]`  ↳ of by
+  - the maker’s $-note: côs by “[to] sleep”, gáns by “useless via”
+  - *source: All-Coinages concordance #125 (HTML reference + LDS PDF)*
+- **côs (noun: Côs-côs)** — sleep
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Côs-Côs** *(Noun (gerund))* — sleep(ing)
+  - the gerund-maker’s fourth witness, beside Glaoh-Glaoh, shrai-shrai, Chís-Chís (farewell attestation)
+  - *source: reference §2*
+- **Cost** — quality  `[coined]`
+  - pron. “kohst”
+  - ledger: ME qualite; IS gæði; GA cáilíocht; EU kalitate; DE Güte; LA qualitas; CY ansawdd; DZ —; GRC poiotēs; SA guṇa; Q —; ON kostr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Coufflichs** — contact  `[coined]`
+  - pron. “Cor'ehf-licks”
+  - ledger: ME —; IS snerting; GA teagmháil; EU kontaktu; DE Kontakt; LA contactus; CY cyswllt; DZ —; GRC haphē; SA saṃsparśa; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Coufîytin** — contest  `[coined]`
+  - pron. “Coh'ah-vie'yuh-dihn”
+  - ledger: ME —; IS véfengja; GA conspóid; EU eztabaidatu; DE bestreiten; LA contendere; CY herio; DZ —; GRC amphisbētein; SA vi-√vad; Q —; ON þræta
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Cræthr** — creature  `[coined]`
+  - pron. “Kreet-rr”
+  - ledger: ME creature; IS skepna; GA créatúr; EU izaki; DE Geschöpf; LA creatura; CY creadur; DZ semchen; GRC zōion; SA prāṇin; Q onna; ON skepna
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Cræty** — rodent  `[coined]`
+  - pron. “Cree-dee”
+  - ledger: ME —; IS nagdýr; GA creimire; EU karraskari; DE Nagetier; LA rodens; CY cnofil; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Craghê** *(Noun (plural))* — cracks
+  - 'Sin Craghê fœrmæn sy farm' — as cracks form, so build.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **craif** *(adjective)* — hungry
+  - pays the hard-c toll inside the degree circumfix: or’raif’il “not hungry enough” (1.11.2.2.3 canon-turn)
+  - *source: reference §2*
+- **craig** *(verb)* — take (present)
+  - seated with the resumptive-í frame (1.11.2.2.2.3)
+  - *source: reference §2*
+- **craig** — hold/take
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Craigachaí** *(Noun)* — purchase (grip)
+  - for purchase = for gripping.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **craigea** *(verb)* — took
+  - past of craig — the -ea past’s fifth witness (nhœmea, silgáea, atáea, gænea; 1.11.2.2.2.3)
+  - *source: reference §2*
+- **Craimh** *(noun)* — hunger
+  - gæn mé X Craimh “X is hungry” (es-gibt × tá-ocras-orm)
+  - *source: reference §2*
+- **craïscíg** — represent  `[coined]`
+  - pron. “cruh'ee'ih-sheeg”
+  - ledger: ME representen; IS tákna; GA seas do; EU ordezkatu; DE darstellen; LA repraesentare; CY cynrychioli; DZ —; GRC sēmainein; SA √sūc; Q —; ON tákna
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **craithië** *(adverb)* — hungrily
+  - craith- the keeper-inferred hunger-root, unattested bare; further attests fith ‘eat’ via fithea ‘ate’ — the standing watch stands regardless (2.2.4.4)
+  - *source: reference §2*
+- **Craoif** *(adjective)* — wise
+  - tmesis host: Crao’ælth’if
+  - *source: reference §2*
+- **críspæn** *(Verb)* — scuff
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **crith** *(verb/noun)* — jitter
+  - Reduplicated: Crith-crith 'the jittering'.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Crith-crith** *(verbal noun (reduplicated))* — the jittering  `[working]`  ↳ of crith
+  - Of crith.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Crïúdha** — game  `[coined]`
+  - pron. “Kree-ooh-thuh”
+  - ledger: ME gamen; IS leikur; GA cluiche; EU joko; DE Spiel; LA ludus; CY gêm; DZ tsemo; GRC paignion; SA krīḍā; Q tyalië; ON leikr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **criwgg** — grasp  `[coined]`
+  - pron. “krihwk”
+  - ledger: ME graspen; IS grípa; GA greim; EU heldu; DE greifen; LA prehendere; CY gafael; DZ —; GRC drassesthai; SA √grah; Q mapa-; ON grípa
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Cróiffy** — cage  `[coined]`
+  - coined against the twelve-language ledger
+  - ledger: ME cage; IS búr; GA cás; EU kaiola; DE Käfig; LA cavea; CY cawell; DZ —; GRC —; SA pañjara; Q —; ON búr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Cruaff** *(Noun)* — clutch
+  - 'niïl Cruaff e Garrohyê' — a clutch of tentacles.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Cruích** *(noun)* — face
+  - Inside the monster tmesis; pairs with Piell 'face' (fork/register watch).
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Crúich** — mug  `[coined]`
+  - pron. “Crew-ihk”
+  - ledger: ME mugge; IS krús; GA muga; EU kikara; DE Becher; LA cantharus; CY mwg; DZ —; GRC kōthōn; SA —; Q —; ON krús
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **crýff** — strong  `[coined]`
+  - pron. “creef”
+  - ledger: ME strong; IS sterkur; GA láidir; EU indartsu; DE stark; LA fortis; CY cryf; DZ shukchen; GRC ischyros; SA balavat; Q polda; ON sterkr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Cthug** *(Noun)* — club
+  - Ten sy Cthug sin lus Acusthia lynœa ‘I used the stick as a club’ — standing canon, not freshly coined (2.1.1.4.14)
+  - *source: reference §2*
+- **Cúat** *(-)* — (leniting pair)  `[active]`
+  - conditioning withheld - §9
+  - *source: All-Coinages concordance #135 (HTML reference + LDS PDF)*
+- **Cúat / Chúat** *(—)* — (leniting pair)
+  - conditioning withheld — §9
+  - *source: reference §2*
+- **Cubo** — box  `[coined]`
+  - pron. “Kah-boh”
+  - ledger: ME box; IS kassi; GA bosca; EU kutxa; DE Kiste; LA capsa; CY blwch; DZ gam; GRC kibōtos; SA mañjūṣā; Q colca; ON kista
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **cuirsea** *(participle (-ea))* — arched
+  - Yon cuirsea o baouea — Night arched and bowed.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Cuisc** — crush  `[coined]`
+  - pron. “Quish”
+  - ledger: ME cruschen; IS kremja; GA brúigh; EU birrindu; DE zerquetschen; LA conterere; CY mathru; DZ —; GRC syntribein; SA √mṛd; Q —; ON kremja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Culc** — plaster  `[coined]`
+  - pron. “Kahlk”
+  - ledger: ME plaster; IS gifs; GA plástar; EU igeltsu; DE Putz; LA gypsum; CY plastr; DZ —; GRC gypsos; SA sudhā; Q —; ON kalk
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Cump** — field  `[coined]`
+  - pron. “Kahmp”
+  - ledger: ME feld; IS völlur; GA páirc; EU zelai; DE Feld; LA campus; CY cae; DZ zhing; GRC agros; SA kṣetra; Q resta; ON vǫllr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Cupsédaí** — capital  `[coined]`
+  - pron. “Kahpss-e'eh-dhuh-ih”
+  - ledger: ME capital; IS fjármagn; GA caipiteal; EU kapital; DE Kapital; LA caput; CY cyfalaf; DZ —; GRC aphormē; SA mūladhana; Q —; ON fé
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Cupsrimaí** — capacity  `[coined]`
+  - pron. “Kahpss-rim-uh-ih”
+  - ledger: ME capacite; IS geta; GA cumas; EU gaitasun; DE Kapazität; LA capacitas; CY gallu; DZ —; GRC dynamis; SA śakti; Q —; ON megin
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Cura** — mess  `[coined]`
+  - pron. “cahr-uh”
+  - ledger: ME —; IS óreiða; GA praiseach; EU nahaspila; DE Durcheinander; LA confusio; CY llanast; DZ —; GRC tarachē; SA saṃkara; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Cúrthin** — curtain  `[coined]`
+  - pron. “cur-tin”
+  - ledger: ME cortin; IS gluggatjald; GA cuirtín; EU errezel; DE Vorhang; LA cortina; CY llen; DZ —; GRC parapetasma; SA yavanikā; Q —; ON tjald
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Curthy** — map  `[coined]`
+  - pron. “kahrt-ee”
+  - ledger: ME mappe; IS kort; GA léarscáil; EU mapa; DE Karte; LA mappa; CY map; DZ saptra; GRC pinax; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Curutsc** — effort  `[coined]`
+  - pron. “Cahr-ahch”
+  - ledger: ME —; IS áreynsla; GA iarracht; EU ahalegin; DE Anstrengung; LA conatus; CY ymdrech; DZ tsöndrü; GRC spoudē; SA prayatna; Q —; ON erfiði
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **cyëlua** — kneel  `[coined]`
+  - pron. “kyehl-wuh”
+  - ledger: ME knelen; IS krjúpa; GA sléacht; EU belaunikatu; DE knien; LA genua flectere; CY penlinio; DZ —; GRC gonypetein; SA —; Q —; ON krjúpa
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **cyghafnu** — singe  `[coined]`
+  - pron. “kih-sthuhv-nah”
+  - ledger: ME sengen; IS svíða; GA barrdhóigh; EU kiskali; DE sengen; LA amburere; CY deifio; DZ —; GRC heuein; SA √pluṣ; Q —; ON svíða
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **cyghu** — kiss  `[coined]`
+  - pron. “kisth-ah”
+  - ledger: ME kissen; IS kyssa; GA póg; EU musu; DE küssen; LA basiare; CY cusanu; DZ —; GRC kynein; SA √cumb; Q miqu-; ON kyssa
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+
+## D
+
+- **Dæmóny** — example  `[coined]`
+  - pron. “Deem-owe-knee”
+  - ledger: ME ensample; IS dæmi; GA sampla; EU adibide; DE Beispiel; LA exemplum; CY enghraifft; DZ pe; GRC paradeigma; SA udāharaṇa; Q —; ON dœmi
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **dænæei** — weak  `[coined]`
+  - pron. “thee'eh-nee'ey”
+  - ledger: ME weik; IS veikur; GA lag; EU ahul; DE schwach; LA debilis; CY gwan; DZ —; GRC asthenēs; SA durbala; Q —; ON veikr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **dair** — heed  `[coined]`
+  - pron. “duh'ihr”
+  - ledger: ME heden; IS gaumur; GA aird; EU jaramon; DE achten; LA animadvertere; CY ystyriaeth; DZ —; GRC —; SA avadhāna; Q —; ON gaumr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Daírá** — animal
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **dant** — fall
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Daomum** — miracle  `[coined]`
+  - pron. “Thou-mahm”
+  - ledger: ME miracle; IS kraftaverk; GA míorúilt; EU mirari; DE Wunder; LA miraculum; CY gwyrth; DZ dzuthrül; GRC thauma; SA āścarya; Q —; ON jartein
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **dapaths** *(verb)* — fail
+  - Past dápathsea attested.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Darág** — limb  `[coined]`
+  - pron. “duhrayg”
+  - ledger: ME lim; IS útlimur; GA géag; EU gorputz-adar; DE Glied; LA membrum; CY aelod; DZ —; GRC melos; SA aṅga; Q —; ON limr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Dé'ahor'cruí'sáillaí'ch'ía'er** *(monster tmesis)* — toward-facing-audience-speaking-being  `[working]`
+  - Dé'…'er ('toward-facing-being') wrapped around ahor(ía)-cruí(ch)-sáillaí-ch-ía. 'mís Dé'ahor'cruí'sáillaí'ch'ía'er' — our facing-the-audience speech.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **degsëu** — inner  `[coined]`
+  - pron. “thehg-sseh'ooh”
+  - ledger: ME inner; IS innri; GA inmheánach; EU barneko; DE innere; LA interior; CY mewnol; DZ —; GRC entos; SA ābhyantara; Q —; ON innri
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **degsëuách** — internal  `[coined]`
+  - pron. “thehg-sseh'ooh-ayk”
+  - ledger: ME —; IS innvortis; GA inmheánach; EU barne-; DE innerlich; LA internus; CY mewnol; DZ —; GRC entos; SA ābhyantara; Q —; ON innanverðr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **deóghsgú** — upright  `[coined]`
+  - pron. “theh'eauxssths-gooh”
+  - ledger: ME upright; IS uppréttur; GA díreach; EU tente; DE aufrecht; LA erectus; CY unionsyth; DZ drangpo; GRC orthos; SA ṛju; Q téra; ON uppréttr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Dhælaort** — comfort  `[coined]`
+  - pron. “Thee-luh'ord”
+  - ledger: ME confort; IS þægindi; GA compord; EU erosotasun; DE Behagen; LA solacium; CY cysur; DZ kipu; GRC paramythia; SA sukha; Q —; ON huggan
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Dic** *(noun)* — dick
+  - Register: clinical-blunt.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **diffaíách** *(adjective)* — different
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **dífílách** — violent  `[coined]`
+  - pron. “deeh-veehl-ayk”
+  - ledger: ME violent; IS ofbeldisfullur; GA foréigneach; EU bortitz; DE gewalttätig; LA violentus; CY treisgar; DZ drakpo; GRC biaios; SA ugra; Q —; ON óðr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **dífilaí** — harm  `[coined]`
+  - pron. “dee-vihl-uh'ee”
+  - ledger: ME harm; IS skaði; GA díobháil; EU kalte; DE Schaden; LA damnum; CY niwed; DZ nöpa; GRC blabē; SA hiṃsā; Q —; ON skaði
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **dîsêin** — imagine  `[coined]`
+  - pron. “die-seh'ihn”
+  - ledger: ME ymaginen; IS ímynda sér; GA samhlaigh; EU irudikatu; DE sich vorstellen; LA imaginari; CY dychmygu; DZ —; GRC phantazesthai; SA vi-√kḷp; Q —; ON ætla
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **dmäffa** — inflate  `[coined]`
+  - pron. “thmuh'ah-fuh”
+  - ledger: ME —; IS blása upp; GA séid; EU puztu; DE aufblasen; LA inflare; CY chwyddo; DZ —; GRC physan; SA ā-√dhmā; Q —; ON blása upp
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **dósafu** — prescribe  `[coined]`
+  - pron. “Though-zuh-vah”
+  - ledger: ME —; IS ávísa; GA ordaigh; EU agindu; DE verschreiben; LA praescribere; CY rhagnodi; DZ —; GRC prostattein; SA upa-√diś; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Dræaig** — abduct  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **Dræaigeainê** — abductees  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **dræao** *(prep.)* — from
+  - fæ dræao nhœme “fæ from comes”; second office: the agent — Dræao lus Ufín “from the enemy”, the will’s dress against by’s channel (the von/durch split, 2.1.1.2.13); pron. “Dree-ow”
+  - *source: reference §2*
+- **Dræao lus Ufín** *(prep. | Noun)* — from · enemy  `[active]`  ↳ of Ufín, dræao, dræao | Ufín
+  - fæ dræao nhœme “fæ from comes”; second office: the agent - Dræao lus Ufín “from the enemy”, the will’s dress against by’s channel (the von/durch split, 2.1.1.2.13); pron. “Dree-ow” | pron. “Oofeenn”; Dræao lus Ufín “from the enemy” - the first agent-phrase (2.1.1.2.13)
+  - *source: All-Coinages concordance #139 (HTML reference + LDS PDF)*
+- **dræœa** *(preposition)* — from  `[working]`
+  - 'dræœa Raíwíl-ínhe duálthë'. Variant of dræao? Fork-noted.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **drag** — trudge  `[coined]`
+  - pron. “Thruhg”
+  - ledger: ME —; IS lötra; GA spágáil; EU arrastaka; DE stapfen; LA —; CY llusgo; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Draurh** — smoke
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **drescer** — thrash  `[coined]`
+  - pron. “threh-shehr”
+  - ledger: ME thresshen; IS berja; GA únfairt; EU astindu; DE dreschen; LA verberare; CY dyrnu; DZ dung-ni; GRC aloan; SA √taḍ; Q palpa-; ON berja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Drézic** — seal  `[coined]`
+  - pron. “Dray-zihk”
+  - ledger: ME selen; IS innsigla; GA séalaigh; EU zigilatu; DE versiegeln; LA obsignare; CY selio; DZ —; GRC sphragizein; SA √mudray (denom.); Q —; ON innsigla
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **drú** *(P-modifier)* — direct
+  - sealed at workbook 1.2.4.3; order per 1.2.4.3.5
+  - *source: reference §2*
+- **drúach** — next  `[coined]`
+  - pron. “drooh-uhk”
+  - ledger: ME nexte; IS næstur; GA an chéad eile; EU hurrengo; DE nächste; LA proximus; CY nesaf; DZ —; GRC hexēs; SA anantara; Q —; ON næstr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **drugæn** — bear  `[coined]`
+  - pron. “Dhruh-gee'en”
+  - ledger: ME beren; IS bera; GA iompair; EU eraman; DE tragen; LA ferre; CY dwyn; DZ —; GRC pherein; SA √bhṛ; Q col-; ON bera
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **drúłix** — even  `[coined]`
+  - pron. “equal or level”; alt. pron. “including an unexpected case”; “droo-lyihks”; “oh'7'ee'en”; also ohæn
+  - ledger: ME even; IS jafnvel; GA fiú; EU are; DE sogar; LA etiam; CY hyd yn oed; DZ yang; GRC kai; SA api; Q —; ON jafnvel
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Drúnhœme-Drúnhœme** *(verbal noun (reduplicated))* — the Coming-Forward  `[working]`
+  - The assault-disclosure; 'ten dús Drúnhœme-Drúnhœme aoa sin't niïl yGriebh-aoya' — I toward the Coming-Forward about an assault.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **drúræao** *(preposition)* — subsequent from [direct from]
+  - the posterior country whole (2.1.1.6.8–.11); drú- ’s second witness beside drúsót — the blessing’s word gains kin (keeper-note)
+  - *source: reference §2*
+- **drúrísæn** — depart  `[coined]`
+  - coined against the twelve-language ledger
+  - ledger: ME departen; IS fara; GA imigh; EU abiatu; DE abreisen; LA proficisci; CY ymadael; DZ —; GRC apienai; SA pra-√sthā; Q auta-; ON fara
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **du** *(root)* — to / toward / -ward
+  - in dúirá “leftward”
+  - *source: reference §2*
+- **duáf** *(prepositions)* — upward  `[active]`
+  - the local table filled (gate S1) Stack-r2 also attests 'dúaf' (upward). dúaf-e 'upward-of'.
+  - *source: All-Coinages concordance #144 (HTML reference + LDS PDF)*
+- **duáf / ufel / dúy / uÿth** *(prepositions)* — upward / downward / to-through / to-over
+  - the local table filled (gate S1)
+  - *source: reference §2*
+- **Duaígéainethéx** — fortnight  `[coined]`
+  - pron. “Thoo-uh'ee-geh'uh'in-eh-tehks”
+  - ledger: ME fourtenight; IS hálfur mánuður; GA coicís; EU hamabostaldi; DE vierzehn Tage; LA —; CY pythefnos; DZ —; GRC —; SA pakṣa; Q —; ON hálfr mánaðr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **duaínais** — double  `[coined]`
+  - pron. “doo-uh'ihn-ice”
+  - ledger: ME double; IS tvöfaldur; GA dúbailte; EU bikoitz; DE doppelt; LA duplex; CY dwbl; DZ —; GRC diplous; SA dviguṇa; Q atwa; ON tvífaldr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **duałef** — fugue  `[coined]`
+  - pron. “dwuh-lyehv”
+  - ledger: ME —; IS fúga; GA fiúga; EU fuga; DE Fuge; LA fuga; CY ffiwg; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **duálthë** *(Noun/adverb)* — today
+  - 'dræœa Raíwíl-ínhe duálthë' — from 2983 to today.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **duáo** *(preposition)* — ago
+  - du-family, past-pointing — “here two hours ago” = duáo + measure (2.1.1.6.4); completes the relational time-set with dúiri · drúræao · duilín Stack-r2 variant spelling dúao — 'ghraíïe Theráfthyê-e dúao atáea' (it was four therapists ago).
+  - *source: reference §2*
+- **dúaríc** *(author form)* — sand (verb)  `[active]`
+  - *source: All-Coinages concordance #146 (LDS PDF)*
+- **duátcaíryách** — feasible  `[coined]`
+  - pron. “doo-ate-cuh'eehr-yayk”
+  - ledger: ME fesible; IS gerlegur; GA indéanta; EU egingarri; DE machbar; LA —; CY dichonadwy; DZ —; GRC dynatos; SA śakya; Q cárima; ON gerligr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **dúauffy** — audible  `[coined]`
+  - pron. “doo-aah-fee”
+  - ledger: ME —; IS heyranlegur; GA inchloiste; EU entzungarri; DE hörbar; LA audibilis; CY clywadwy; DZ —; GRC akoustos; SA śravya; Q hlárima; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **dubildách** — together  `[coined]`
+  - pron. “thah-bihl-thayk”
+  - ledger: ME togidere; IS saman; GA le chéile; EU elkarrekin; DE zusammen; LA simul; CY ynghyd; DZ —; GRC homou; SA saha; Q ó- (pref.); ON saman
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **dúdát** — befall  `[coined]`
+  - pron. “dhoodh-ate”
+  - ledger: ME bifallen; IS henda; GA bain do; EU gertatu; DE widerfahren; LA accidere; CY digwydd; DZ —; GRC symbainein; SA ā-√pat; Q marta-; ON henda
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **dúe** *(preposition (du-family))* — to-of / for
+  - three offices: purposive linker (dúe fith), infinitive-subject flag (dúe sê, 2.1.1.3.2), benefactive (dúe Piell, 2.1.1.4.1) — “dúe (to-of/for) already distinguishes this fine”; recipient stays duîm’s (Ten duîm Piell í gæn) Stack-r2: Dúe 'for' — 'Byræao Stár dúe Ruth' (out of love for Red) · 'Yáe dúe saílturn' (the sun to welcome). Stack-r2 also attests 'Dúe' (for). 'Dúe After sain í bhie' — for Upland great it is. Cf. dué.
+  - *source: reference §2*
+- **dúe / dué** *(linker)* — to-of — purposive before the infinitive
+  - “hungry enough to-of eat”; the accent wanders between the maker’s twin sentences — lemma unfixed, gentle fork §12
+  - *source: reference §2*
+- **dúe fith** *(preposition (du-family))* — to-of / for  `[active]`  ↳ of dúe
+  - three offices : purposive linker ( dúe fith ), infinitive-subject flag ( dúe sê , 2.1.1.3.2), benefactive ( dúe Piell , 2.1.1.4.1) - “dúe (to-of/for) already distinguishes this fine”; recipient stays duîm’s ( Ten duîm Piell í gæn )
+  - *source: All-Coinages concordance #149 (HTML reference)*
+- **dúe Piell** *(preposition (du-family))* — to-of / for  `[active]`  ↳ of dúe
+  - three offices : purposive linker ( dúe fith ), infinitive-subject flag ( dúe sê , 2.1.1.3.2), benefactive ( dúe Piell , 2.1.1.4.1) - “dúe (to-of/for) already distinguishes this fine”; recipient stays duîm’s ( Ten duîm Piell í gæn )
+  - *source: All-Coinages concordance #150 (HTML reference + LDS PDF)*
+- **dúe sê** *(preposition (du-family))* — to-of / for  `[active]`  ↳ of dúe
+  - three offices : purposive linker ( dúe fith ), infinitive-subject flag ( dúe sê , 2.1.1.3.2), benefactive ( dúe Piell , 2.1.1.4.1) - “dúe (to-of/for) already distinguishes this fine”; recipient stays duîm’s ( Ten duîm Piell í gæn )
+  - *source: All-Coinages concordance #151 (HTML reference + LDS PDF)*
+- **dúe silgá** *(verb)* — think  `[active]`  ↳ of silgá
+  - dúe silgá “to-of think” in the communal existential (2.1.1.4.28-amend)
+  - *source: All-Coinages concordance #152 (HTML reference)*
+- **dúéalaf** *(preposition)* — up-inside-of
+  - 'dúéalaf Gnasthýa sê-ír-e' — up-inside-of the nest itself.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **dúfelóch** — dangle  `[coined]`
+  - pron. “doo-fel-oak”
+  - ledger: ME —; IS dingla; GA —; EU zintzilikatu; DE baumeln; LA pendere; CY —; DZ —; GRC aiōreisthai; SA √lamb; Q linga-; ON dingla
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Dúfendy** — term  `[coined]`
+  - pron. “Thooh-vehn-thee”
+  - ledger: ME terme; IS hugtak; GA téarma; EU termino; DE Begriff; LA terminus; CY term; DZ —; GRC horos; SA saṃjñā; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Dúfendyách** — terminal  `[coined]`
+  - pron. “Thooh-vehn-thee-ayk”
+  - ledger: ME —; IS endastöð; GA críochfort; EU terminal; DE Endstation; LA —; CY terfynfa; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **dúfrœdh** *(adverb)* — lengthwise
+  - dú- directional.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **dúïl** *(directional)* — toward-a(n)
+  - du + niïl; indefinite partner of dús
+  - *source: reference §2*
+- **dúïl Háfaí sót** — tie
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **duilín** *(preposition)* — within [all-in]
+  - the all-word welded into the in-word (2.1.1.6.12–13) Stack-2: 'tack duilín yMedhamýa' (smackbang within the middle).
+  - *source: reference §2*
+- **Duílúch Fæ’du’ærs fæ** *(verb)* — ghiæan cited under ghiæan: get, become  `[active]`  ↳ of ghiæan
+  - corrected from *ghæian (slip); the become-copula ( Duílúch Fæ’du’ærs fæ ghiæan ); by ghiæan “get over”; the frame of the becoming-gift (2.1.1.2.11) and of the passive-with-agent (2.1.1.2.13); pron. “sthɦih-ee-ah-neh-eh” (ghiæanea, the maker’s key - gh sounding [sθɦ]-wards)
+  - *source: All-Coinages concordance #156 (HTML reference + LDS PDF)*
+- **duîm** *(preposition)* — to, with
+  - duîm thénu mæ
+  - *source: reference §2*
+- **duîm** *(prep.)* — to-with (recipient / instrument)
+  - tmetic; Duîm-fær niïl Rîbha fæ gæn “to-with-fær a book fæ gave” Stack-2: '-'r duîm mao Boc' (-being to-with your mouth).
+  - *source: reference §2*
+- **duîm thénu mæ** *(preposition)* — to, with  `[active]`  ↳ of duîm
+  - duîm thénu mæ
+  - *source: All-Coinages concordance #158 (HTML reference + LDS PDF)*
+- **duín** *(preposition)* — in (to-at)
+  - the toward-family grows: du, dús, duîm, dúïl, dúe — now duín (1.12.1.2.1)
+  - *source: reference §2*
+- **duín Ærmuchaí tugea** *(verb)* — eibh cited under tug: bring  `[active]`  ↳ of tug
+  - past tugea ’brought’; duín Ærmuchaí tugea eibh ’brought to exhaustion’ - cause as motion, a fourth metaphor beside gift and origin (2.1.1.4.12)
+  - *source: All-Coinages concordance #160 (HTML reference + LDS PDF)*
+- **duín tes-mé Matthsyr** *(Noun)* — teacher  `[active]`  ↳ of Matthsy
+  - Matthsyr “teacher-being” - the functive: duín tes-mé Matthsyr “as a teacher” (2.1.1.4.16-amend)
+  - *source: All-Coinages concordance #161 (HTML reference)*
+- **Duínráshië** *(adverb)* — reversely (in reverse)
+  - 'Duínráshië afArch úsét Gradhamýa' — reversely way-up on stage.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Duínsaig** — to vote  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **dúirá** *(adverb)* — leftward
+  - du + irá
+  - *source: reference §2*
+- **dúiri** *(preposition)* — unto
+  - ‹ du + niri — in the epithet Sê-dúi’gheo-e’ri “Self-Unto-God-of” (2.1.2.1.12.1); and the temporal office — “until is also dúiri” (the maker): the anterior country whole (2.1.1.6.6–7)
+  - *source: reference §2*
+  - **worksheet gloss:** until — pron. “thooh'ihr-ih”
+  - ledger: ME til; IS þar til; GA go dtí; EU arte; DE bis; LA donec; CY hyd nes; DZ —; GRC heōs; SA yāvat; Q tenna; ON þar til (er)
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **duíxeis** *(directional)* — rightward
+  - pairs dúirá “leftward”
+  - *source: reference §2*
+- **duł** — fly
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **dulagá** *(verb / gerund)* — embark(ing)
+  - (1.12.1.2.3)
+  - *source: reference §2*
+- **dúlebendr** *(adverbial)* — toward-being-alive
+  - 'being-alive': dú- + Lebendach + -r.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **dułeon** — march  `[coined]`
+  - pron. “dahl-lyeh'ohn”
+  - ledger: ME marchen; IS marséra; GA máirseáil; EU martxa; DE marschieren; LA incedere; CY ymdeithio; DZ —; GRC poreuesthai; SA pra-√yā; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Dumsy** — sting  `[coined]`
+  - pron. “Tahm-see”
+  - ledger: ME stingen; IS stinga; GA cealg; EU eztenkatu; DE stechen; LA pungere; CY pigo; DZ —; GRC kentein; SA √daṃś; Q nasta-; ON stinga
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Dúordh** *(noun)* — tidiness
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Dúordhách** *(adjective)* — tidy
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **dúpró** — forward  `[coined]`
+  - pron. “doo-preaux”
+  - ledger: ME forward; IS áfram; GA ar aghaidh; EU aurrera; DE vorwärts; LA prorsum; CY ymlaen; DZ —; GRC prosō; SA puras; Q ompa; ON fram
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **dúrrync** *(adverb)* — back; backward
+  - 'o dúrrync dús Sclostaíría' — and backward toward the wrenching.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **dús** *(preposition)* — to-the (toward + definite)
+  - the article lives inside (cf. German zum); prospective: dús Fith-Fith e bhie “to-the Eating of is” = “going to eat”
+  - *source: reference §2*
+- **dús Fith-Fith e bhie** *(preposition)* — to-the (toward + definite)  `[active]`  ↳ of dús
+  - the article lives inside (cf. German zum ); prospective: dús Fith-Fith e bhie “to-the Eating of is” = “going to eat”
+  - *source: All-Coinages concordance #168 (HTML reference)*
+- **dúsáille** *(Verb (infinitive))* — to-speak  `[working]`
+  - áille 'speak'; 'dúsáille mæ ghlæscer' — to-speak you learn.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **dusëin** — inside  `[coined]`
+  - pron. “dah-sseh'ihn”
+  - ledger: ME withinne; IS inni; GA istigh; EU barruan; DE innen; LA intus; CY tu mewn; DZ nang; GRC endon; SA antar; Q mi; ON inni
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **dúy** *(prepositions)* — to-through  `[active]`
+  - the local table filled (gate S1) Stack-2: 'through' — 'sin duý Sæculomê' (as through centuries). Cf. yduý 'in'; Dúy 'Hell'.
+  - *source: All-Coinages concordance #169 (HTML reference + LDS PDF)*
+
+## E
+
+- **-e** *(compound (Sin + efui + -e))* — as per the topic of - the quidem-replica  `[active]`  ↳ of s’efui-e’in
+  - placed after its topic, for-its-part-wise; the hyphen-hung -e ’s second witness (1.12.1)
+  - *source: All-Coinages concordance #170 (HTML reference)*
+- **e** *(particle)* — of (genitive / connective)
+  - Chain e Bailch “kind of milk”
+  - *source: reference §2*
+- **e mÿel Ældhr** *(author form)* — Sídia-teos eldest-sídia  `[active]`
+  - *source: All-Coinages concordance #172 (LDS PDF)*
+- **e mÿel Ældhr Sídia-teos** — eldest-sídia
+  - *source: Final-Boss Haul · Semantic fields (2026-07-17)*
+- **e mÿel Frælr** *(author form)* — Sídia-teos youngest-sídia  `[active]`
+  - *source: All-Coinages concordance #173 (LDS PDF)*
+- **e mÿel Frælr Sídia-teos** — youngest-sídia
+  - *source: Final-Boss Haul · Semantic fields (2026-07-17)*
+- **ebb** — ebb  `[coined]`
+  - pron. “ebb”
+  - ledger: ME ebbe; IS fjara; GA trá; EU itsasbehera; DE Ebbe; LA —; CY trai; DZ —; GRC ampōtis; SA —; Q nanwë; ON fjara
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **eës** *(part.)* — of-the
+  - lus Sáinsu eës Hrádai “the task-set of-the crown”
+  - *source: reference §2*
+- **efelgú** — wilt  `[coined]`
+  - pron. “Eh-vehl-goo”
+  - ledger: ME welken; IS visna; GA sleabhac; EU zimeldu; DE welken; LA marcescere; CY gwywo; DZ —; GRC marainesthai; SA √mlai; Q hesta-; ON visna
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **efuæni** — matter  `[coined]`
+  - coined against the twelve-language ledger
+  - ledger: ME matere; IS efni; GA ábhar; EU gai; DE Materie; LA materia; CY mater; DZ —; GRC hylē; SA dravya; Q erma; ON efni
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Efui** *(Noun)* — topic
+  - announces the office by name: Efui • Scean: “Topic!: Scean:” (1.12.1) Stack-r2: topic resumption in the build-liturgy — 'Efui niïl drúach thas — ios 'æ -'farm' (topic: a next what — that-you -build); Oath preamble now in Danæam: 'Efui dué Thaln sëain æxó duínsaig' (of-to land own NAND to-vote).
+  - *source: reference §2*
+- **Eg** *(noun)* — way
+  - sís Eg / ios Eg; Eg’ya / Eg’t — capital ruled
+  - *source: reference §2*
+- **eg** *(element (class awaiting))* — way, such-way
+  - inside S’eg’in “such-way” — the topic-resumptive as-frame, no e-joint (2.1.1.3.2)
+  - *source: reference §2*
+- **Eghlínt** — footpath  `[coined]`
+  - pron. “eh-sthleehnt”
+  - ledger: ME —; IS göngustígur; GA cosán; EU bidezidor; DE Fußweg; LA semita; CY llwybr; DZ kanglam; GRC atrapos; SA padavī; Q tië; ON stígr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **egnui** — thin
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **egornú** — ignore  `[coined]`
+  - pron. “eh-gohrn-ooh”
+  - ledger: ME —; IS hunsa; GA neamhaird; EU ez ikusi egin; DE ignorieren; LA ignorare; CY anwybyddu; DZ —; GRC paroran; SA upa-√īkṣ; Q —; ON virða at engu
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **ëgwal** — divorce  `[coined]`
+  - pron. “ee-gwuhl”
+  - ledger: ME divorce; IS skilnaður; GA colscaradh; EU dibortzio; DE Scheidung; LA divortium; CY ysgariad; DZ —; GRC apopempsis; SA tyāga; Q —; ON skilnaðr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **eibh** *(verb (be))* — were (past, general)
+  - chís eibh eibh; NOT used with ios (there atáea is used)
+  - *source: reference §2*
+- **Eigain** — property  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **Eileth** *(noun)* — rest, remainder
+  - lus Eileth e mao Fía “the rest of your food”
+  - *source: reference §2*
+- **-eith** *(suffix)* — ordinal suffix (year series)
+  - ghslár-ghüleith = 10.18th. Cf. Ssaighisseith (ruled erroneous) — the sealed ordinal is -eith.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Eîyk** — chin  `[coined]`
+  - pron. “Eh'eye'ck”
+  - ledger: ME chin; IS haka; GA smig; EU kokots; DE Kinn; LA mentum; CY gên; DZ —; GRC geneion; SA cibuka; Q venta; ON haka
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Élan** — art  `[coined]`
+  - pron. “Ay-luhn”
+  - ledger: ME art; IS list; GA ealaín; EU arte; DE Kunst; LA ars; CY celf; DZ zorig; GRC technē; SA kalā; Q carmë; ON íþrótt
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Élanfarmaí** — artifice  `[coined]`
+  - pron. “Ay-luhn-fuhrm-eye'ee”
+  - ledger: ME —; IS bragð; GA cleas; EU amarru; DE Kunstgriff; LA artificium; CY ystryw; DZ —; GRC technasma; SA upāya; Q curwë; ON bragð
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **eleven: îfy** — twelve (variant)  `[coined]`
+  - variant of **ghîfy**; see that entry
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **elf** *(Noun)* — Hope
+  - base of the derivation pair (1.12.1.2.1)
+  - *source: reference §2*
+- **elfæn** *(verb)* — hope
+  - elf + -æn — the verbalizer’s first explicit pair (shape-kin to gæn / gilæn noted, not claimed) (1.12.1.2.1)
+  - *source: reference §2*
+- **Elfhín** — human  `[coined]`
+  - pron. “Hope-man”; alt. pron. “Ehlv-7-ee'ehn”
+  - ledger: ME humain; IS mannlegur; GA daonna; EU giza; DE menschlich; LA humanus; CY dynol; DZ mi; GRC anthrōpinos; SA mānuṣa; Q firya; ON mennskr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **El’huethnea’in** *(noun)* — verve  `[active]`  ↳ of Elin
+  - hosts tmesis in El’huethnea’in ’served-with-verve, fused’ (whether its own -in tail kins Sin’s family is unclear, raised as a light watch); suffixes in elinië (2.1.1.4.11)
+  - *source: All-Coinages concordance #181 (HTML reference + LDS PDF)*
+- **Elin** *(noun)* — verve
+  - hosts tmesis in El’huethnea’in ‘served-with-verve, fused’ (whether its own -in tail kins Sin’s family is unclear, raised as a light watch); suffixes in elinië (2.1.1.4.11)
+  - *source: reference §2*
+- **elinië** *(adverb)* — vervely
+  - Elin + -ië; a fresh witness for the roster’s 2.2.4.4 (nirïë ‹ niri + -ië) — noun-to-adverb here, not adverb-to-adverb, so it supports the suffix without settling that item (2.1.1.4.11)
+  - *source: reference §2*
+- **Elintïmma** — lineage ("the line of one's Rhié")
+  - *source: Final-Boss Haul · Semantic fields (2026-07-17)*
+- **Emhdúscna** — doubt  `[coined]`
+  - pron. “Ev-douche-nuh”
+  - ledger: ME doute; IS efi; GA amhras; EU zalantza; DE Zweifel; LA dubium; CY amheuaeth; DZ thetshom; GRC aporia; SA saṃśaya; Q —; ON efi
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Emma** *(Noun)* — blood
+  - a Noun in a name’s clothing — never an exemplar-name: Chair-Chair e Emma “Rain of blood” (1.16.6)
+  - *source: reference §2*
+- **Emmasy** — heart
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Em'ruth'mæ** — blood-red
+  - *source: Final-Boss Haul · Semantic fields (2026-07-17)*
+- **Em’ruth’mæ** *(author form)* — blood-red  `[active]`
+  - *source: All-Coinages concordance #187 (LDS PDF)*
+- **Eœd** *(Noun)* — worth, value
+  - niïl Eœd e cliff Lyrê (2.1.1.4.21)
+  - *source: reference §2*
+- **eolágg** — thorough  `[coined]`
+  - pron. “eh'oh-layk”
+  - ledger: ME thurgh; IS ítarlegur; GA críochnúil; EU sakon; DE gründlich; LA accuratus; CY trwyadl; DZ —; GRC akribēs; SA sāṅgopāṅga; Q —; ON vandligr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **erinæn** — remember  `[coined]`
+  - pron. “eh-rih-nee'en”
+  - ledger: ME remembren; IS muna; GA cuimhnigh; EU gogoan izan; DE sich erinnern; LA meminisse; CY cofio; DZ dren-ni; GRC memnēsthai; SA √smṛ; Q ren-; ON muna
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Erl** *(Verb)* — let
+  - 'mæ sê-maos brís erl' — let the building break you.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Erly** *(Noun)* — letter (of script)
+  - pl. Erlyê.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Errepa** — guilt  `[coined]`
+  - pron. “ehr-rehp-uh”
+  - ledger: ME gilt; IS sekt; GA ciontacht; EU erru; DE Schuld; LA culpa; CY euogrwydd; DZ dikpa; GRC —; SA aparādha; Q —; ON sekt
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Ërscu** — mistake  `[coined]`
+  - pron. “Eh'ersh-ah”
+  - ledger: ME mistaken; IS mistök; GA botún; EU hutsegite; DE Fehler; LA error; CY camgymeriad; DZ nor-ni (err); GRC hamartia; SA bhrānti; Q —; ON villa
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **esclárgæn** — explain  `[coined]`
+  - pron. “esh-lair-gee'en”
+  - ledger: ME expounen; IS útskýra; GA mínigh; EU azaldu; DE erklären; LA explanare; CY esbonio; DZ —; GRC exēgeisthai; SA vi-√vṛ; Q —; ON skýra
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Esóg** — passage  `[coined]`
+  - pron. “ehss-owe'g”
+  - ledger: ME passage; IS göng; GA pasáiste; EU pasabide; DE Durchgang; LA transitus; CY tramwyfa; DZ —; GRC diodos; SA saṃcāra; Q —; ON gǫng
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Ësthaíê** — odds  `[coined]`
+  - pron. “Eh'e-sth*uh'ih-eh”; *exception
+  - ledger: ME —; IS líkur; GA corrlach; EU —; DE Chancen; LA —; CY siawns; DZ —; GRC —; SA —; Q —; ON líkindi
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **eumirda** — drear  `[coined]`
+  - pron. “euh-mihr-duh”
+  - ledger: ME drery; IS drungalegur; GA gruama; EU goibel; DE trüb; LA tristis; CY prudd; DZ —; GRC stygnos; SA viṣaṇṇa; Q —; ON dapr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Eumruiýa** — the Darkness  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **Eurggug** — knockoff  `[coined]`
+  - pron. “eh'ahrk-ahg”
+  - ledger: ME —; IS eftirlíking; GA —; EU imitazio; DE Nachahmung; LA imitatio; CY efelychiad; DZ —; GRC mimēma; SA pratikṛti; Q —; ON eptirlíking
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **every number 1-60 pairs with its prior odd** — sixteen (variant)  `[coined]`
+  - variant of **Ghyfu**; see that entry
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **éx** *(numeral)* — six
+  - éx Nímhogê “six dogs” (1.13.1) Stack-2: digit-mode — 'uain-éx' = 16 (of 1695 AD). Year-series pair unruled.
+  - *source: reference §2*
+- **éx Nímhogê** *(numeral)* — six  `[active]`  ↳ of éx
+  - éx Nímhogê “six dogs” (1.13.1)
+  - *source: All-Coinages concordance #192 (HTML reference + LDS PDF)*
+- **Ëxiczisái** — reach  `[coined]`
+  - pron. “Eh'ek-sihk-zih-say'ih”
+  - ledger: ME rechen; IS ná; GA sroich; EU iritsi; DE erreichen; LA attingere; CY cyrraedd; DZ —; GRC exikneisthai; SA pra-√āp; Q ten-; ON ná
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **exilgha** — devise  `[coined]`
+  - pron. “ehx-ill-sthuh”
+  - ledger: ME devisen; IS hugsa upp; GA ceap; EU asmatu; DE ersinnen; LA excogitare; CY dyfeisio; DZ —; GRC mēchanasthai; SA √kḷp (caus.); Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+
+## F
+
+- **fách** — empty  `[coined]`
+  - pron. “fake”
+  - ledger: ME empti; IS tómur; GA folamh; EU huts; DE leer; LA vacuus; CY gwag; DZ tongpa; GRC kenos; SA śūnya; Q lusta; ON tómr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **fæ** *(pronoun)* — fæ (3rd person: she / he / they)
+  - the fæ 3rd person; resumes persons in the dislocation tier — the fæ-frame, twin to resumptive í (1.11.2.2.3.2; exemplar awaited §12)
+  - *source: reference §2*
+- **fæ dræao nhœme** *(prep.)* — from  `[active]`  ↳ of dræao
+  - fæ dræao nhœme “fæ from comes”; second office: the agent - Dræao lus Ufín “from the enemy”, the will’s dress against by’s channel (the von/durch split, 2.1.1.2.13); pron. “Dree-ow”
+  - *source: All-Coinages concordance #194 (HTML reference + LDS PDF)*
+- **fædu** — feed  `[coined]`
+  - pron. “feed-ah”
+  - ledger: ME feden; IS fæða; GA beathaigh; EU elikatu; DE füttern; LA pascere; CY bwydo; DZ —; GRC boskein; SA √bhuj (caus.); Q —; ON fœða
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Fæ’hín-iy’ær** *(noun | pronoun)* — man · fær (object form of fæ, as attested after iy)  `[active]`  ↳ of fær, hín, hín | fær
+  - the head Noun, guesting inside the standard-pronoun: Fæ’hín-iy’ær “a man … than fær” | hosts the comparative complex: Fæ’hín-iy’ær ; bare - the capital belongs to the Noun-complex’s left edge
+  - *source: All-Coinages concordance #195 (HTML reference + LDS PDF)*
+- **fælaê** *(noun)* — fae-gender-havers; fey (collective)
+  - 'Sísthurn Fælaê dús Útcár-Útcár Fælaê-e í gæn' — here fey accuse fey.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **fær** *(possessive)* — her / his
+  - possessive of fæ
+  - *source: reference §2*
+- **fær** *(pronoun)* — fær (object form of fæ, as attested after iy)
+  - hosts the comparative complex: Fæ’hín-iy’ær; bare — the capital belongs to the Noun-complex’s left edge Stack-r2: '*-Łix-* fær Sclíeclu-Sclíeclu sœinea' — 'Exact' faer conclusion sounded (faer as quotative tag after direct speech).
+  - *source: reference §2*
+- **Fær Alcuilaí** *(Noun (-aí))* — radiance  `[active]`  ↳ of Alcuilaí
+  - honorific style: Fær Alcuilaí “Fær Radiance” (2.1.2.1.12.1)
+  - *source: All-Coinages concordance #197 (HTML reference + LDS PDF)*
+- **fæsei** — sure  `[coined]`
+  - pron. “veess-eh'ih”
+  - ledger: ME sur; IS viss; GA cinnte; EU ziur; DE sicher; LA certus; CY siŵr; DZ —; GRC saphēs; SA niścita; Q tanca; ON víss
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Fainía** *(noun)* — catch (noun)
+  - Her gloss kept verbatim.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Fáiscaol** — faction  `[coined]`
+  - pron. “Vay-shaowl”
+  - ledger: ME —; IS fylking; GA faicsean; EU fakzio; DE Fraktion; LA factio; CY carfan; DZ —; GRC stasis; SA pakṣa; Q —; ON flokkr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **fal** *(adjective)* — beautiful
+  - tmesis: the’fal’m; near-synonym Lain
+  - *source: reference §2*
+- **Fál** — engine  `[coined]`
+  - pron. “Vail”
+  - ledger: ME engin; IS vél; GA inneall; EU motor; DE Motor; LA machina; CY peiriant; DZ thrülkhor; GRC mēchanē; SA yantra; Q —; ON vél
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **fałain** — fine  `[coined]`
+  - pron. “fuh-lyuh-ihn”
+  - ledger: ME fin; IS fínn; GA breá; EU ondo; DE fein; LA bellus; CY braf; DZ lekshom; GRC kalos; SA cāru; Q mára; ON fagr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Fally** — leaf
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Fály** — vehicle  `[coined]`
+  - pron. “Vay-lee”
+  - ledger: ME —; IS farartæki; GA feithicil; EU ibilgailu; DE Fahrzeug; LA vehiculum; CY cerbyd; DZ numkhor; GRC ochēma; SA vāhana; Q —; ON farkostr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **fan** *(author form)* — fruit (verb)  `[active]`
+  - *source: All-Coinages concordance #200 (LDS PDF)*
+- **Fan-fan** *(author form)* — fruit  `[active]`
+  - *source: All-Coinages concordance #201 (LDS PDF)*
+- **Fan-fan (verb: fan)** — fruit
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Faníucæí** — reply  `[coined]`
+  - pron. “Vuh-nyah-key'ee”
+  - ledger: ME replien; IS svara; GA freagair; EU erantzun; DE erwidern; LA respondere; CY ateb; DZ len; GRC apokrinesthai; SA prati-√vac; Q hanquenta; ON svara
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **farm** *(verb)* — make · build
+  - farmea “made” — the -ea past’s seventh witness (2.1.1.2.10) Stack-2: 'build' (Red's article — Farm-farm 'the building'). make/build.
+  - *source: reference §2*
+- **farmea** *(verb)* — make  `[active]`  ↳ of farm
+  - farmea “made” - the -ea past’s seventh witness (2.1.1.2.10)
+  - *source: All-Coinages concordance #204 (HTML reference + LDS PDF)*
+- **Farm-farm** *(noun (gerund))* — making
+  - reduplication of farm “make”; capital-then-lowercase — the gerund-reduplication’s fourth witness, a further data-point for the Fith-Fith/Fith-fith watch (§12 iv) (2.1.1.4.10)
+  - *source: reference §2*
+- **fásæarm** — prove  `[coined]`
+  - pron. “face-eeh'uh'rm”
+  - ledger: ME preven; IS sanna; GA cruthaigh; EU frogatu; DE beweisen; LA probare; CY profi; DZ —; GRC apodeiknynai; SA √sādh (caus.); Q tana-; ON sanna
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Fath** — duration  `[coined]`
+  - pron. “fuht”
+  - ledger: ME duracioun; IS tímalengd; GA fad; EU iraupen; DE Dauer; LA duratio; CY hyd; DZ —; GRC —; SA sthiti; Q —; ON stund
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Fauf** — wave  `[coined]`
+  - pron. “Vuh'ahv”
+  - ledger: ME wawe; IS bylgja; GA tonn; EU uhin; DE Welle; LA unda; CY ton; DZ —; GRC kyma; SA taraṅga; Q falma; ON bylgja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Faz** — bat  `[coined]`
+  - pron. “Vuhz”
+  - ledger: ME bakke; IS leðurblaka; GA ialtóg; EU saguzar; DE Fledermaus; LA vespertilio; CY ystlum; DZ —; GRC nykteris; SA jatukā; Q —; ON leðrblaka
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Fbainchund** — problem  `[coined]`
+  - pron. “Vbuh'ihn-hahnth”
+  - ledger: ME probleme; IS vandamál; GA fadhb; EU arazo; DE Problem; LA problema; CY problem; DZ —; GRC problēma; SA samasyā; Q —; ON vandi
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **feaonthæn** — show  `[coined]`
+  - pron. “veh'ount-ee'en”
+  - ledger: ME shewen; IS sýna; GA taispeáin; EU erakutsi; DE zeigen; LA monstrare; CY dangos; DZ tön-ni; GRC deiknynai; SA √dṛś (caus.); Q tana-; ON sýna
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **fegæn** — open  `[coined]`
+  - pron. “vehg-ee'en”
+  - ledger: ME open; IS opinn; GA oscail; EU ireki; DE offen; LA apertus; CY agored; DZ —; GRC anoigein; SA vivṛta; Q latina; ON opinn
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Feghlis** — forget  `[coined]`
+  - pron. “Veh-sthlihss”
+  - ledger: ME foryeten; IS gleyma; GA déan dearmad; EU ahaztu; DE vergessen; LA oblivisci; CY anghofio; DZ je-ni; GRC epilanthanesthai; SA vi-√smṛ; Q —; ON gleyma
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **féirti** — partner  `[coined]`
+  - pron. “vay'ihr-dee”
+  - ledger: ME partener; IS maki; GA páirtí; EU bikotekide; DE Partner; LA consors; CY cymar; DZ —; GRC koinōnos; SA sahacara; Q —; ON félagi
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Feisr** — party  `[coined]`
+  - pron. “Veh-ihss-rr”
+  - ledger: ME —; IS veisla; GA cóisir; EU festa; DE Feier; LA convivium; CY parti; DZ —; GRC symposion; SA samāja; Q merendë; ON veizla
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **fel-** *(prefix)* — down 🥀
+  - twin of af-; felTi’amár’th; segmental kin to the trills ∆/V (2.1.1.2.8)
+  - *source: reference §2*
+- **Felcadhá** *(Noun)* — cascade
+  - 'niïl Felcadhá e Príónê' — a cascade of prions.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **felCneilea** *(participle)* — ground-down
+  - fel- hosted; cf. felCne'téxt'ilea.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **felCne'téxt'ilea** *(Noun (tmesis compound))* — ground-down tissue
+  - felCne'…'ilea hosting Téxt.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **fëłefuách** — level  `[coined]`
+  - pron. “veh'el-lev-wayk”
+  - ledger: ME level; IS stig; GA leibhéal; EU maila; DE Ebene; LA gradus; CY lefel; DZ rim; GRC epipedon; SA bhūmi; Q —; ON stig
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **felth** — paper  `[coined]`
+  - pron. “Vehlt”
+  - ledger: ME papir; IS pappír; GA páipéar; EU paper; DE Papier; LA charta; CY papur; DZ shogu; GRC papyros; SA —; Q —; ON bókfell
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **felTi’amár’th** *(prefix)* — down    `[active]`  ↳ of fel-
+  - twin of af-; felTi’amár’th ; segmental kin to the trills  /V (2.1.1.2.8)
+  - *source: All-Coinages concordance #206 (HTML reference + LDS PDF)*
+- **Felyáëg** — sunset  `[coined]`
+  - pron. “Vehl-yay-eh'eg”
+  - ledger: ME —; IS sólsetur; GA luí gréine; EU ilunabar; DE Sonnenuntergang; LA occasus solis; CY machlud; DZ nyim nup; GRC dysis; SA sūryāsta; Q andúnë; ON sólsetr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **femythïæn** — admit  `[coined]`
+  - pron. “veh-mitt-ee-ee'en”
+  - ledger: ME admitten; IS viðurkenna; GA admhaigh; EU aitortu; DE zugeben; LA fateri; CY cyfaddef; DZ —; GRC homologein; SA prati-√pad; Q —; ON játa
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **fend** — end  `[coined]`
+  - pron. “venth”
+  - ledger: ME ende; IS endir; GA deireadh; EU amaiera; DE Ende; LA finis; CY diwedd; DZ juk; GRC telos; SA anta; Q metta; ON endir
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **fendách** — final  `[coined]`
+  - pron. “venth-ayk”
+  - ledger: ME final; IS endanlegur; GA deiridh; EU azken; DE endgültig; LA ultimus; CY terfynol; DZ —; GRC teleutaios; SA antima; Q métima; ON hinztr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **fendúheg** — sell  `[coined]`
+  - pron. “vehn-doo-7ehg”
+  - ledger: ME sellen; IS selja; GA díol; EU saldu; DE verkaufen; LA vendere; CY gwerthu; DZ tshong-ni; GRC pōlein; SA vi-√krī; Q —; ON selja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Fenis** — window  `[coined]`
+  - pron. “Venice”
+  - ledger: ME windowe; IS gluggi; GA fuinneog; EU leiho; DE Fenster; LA fenestra; CY ffenestr; DZ —; GRC thyris; SA vātāyana; Q henet; ON vindauga
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Fenthœs** *(noun)* — defence
+  - 'lus Œurdê e Fenthœs Ruth-e' — the words of Red's defence.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Férás** *(Noun)* — boy (casual: sexual tops and/or dominants)
+  - pron. “Fay-raiss”; an agender culture — gendered sub- and minority cultures notwithstanding (the maker’s note) (2.1.1.2.12)
+  - *source: reference §2*
+- **férás-ufsae** *(adjective (compound))* — boy-crazy
+  - the compound road’s exemplar ratified (1.2.2.2.2 → 2.1.1.2.12); the Noun stands small inside the adjective-complex
+  - *source: reference §2*
+- **ferfïzen** — refer  `[coined]`
+  - pron. “vehr-veeh-zehn”
+  - ledger: ME referren; IS vísa til; GA tagair; EU aipatu; DE verweisen; LA referre; CY cyfeirio; DZ —; GRC anapherein; SA ud-√diś; Q —; ON vísa
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **feüła** — lurch  `[coined]`
+  - pron. “veh'ooh-lyuh”
+  - ledger: ME —; IS kastast til; GA —; EU balantzaka; DE torkeln; LA titubare; CY gwegian; DZ —; GRC sphallesthai; SA √skhal; Q —; ON rasa
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **ffagha** — insist  `[coined]`
+  - pron. “fuh-sthuh”
+  - ledger: ME —; IS halda fast við; GA seas ar; EU tematu; DE bestehen auf; LA insistere; CY mynnu; DZ —; GRC diischyrizesthai; SA nir-√bandh; Q —; ON halda fast (við)
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Ffar** — week  `[coined]`
+  - pron. “Far”
+  - ledger: ME weke; IS vika; GA seachtain; EU aste; DE Woche; LA hebdomas; CY wythnos; DZ dünthra; GRC hebdomas; SA saptāha; Q enquië; ON vika
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Ffás** — affect  `[coined]`
+  - pron. “pronounced the same as "face"”
+  - ledger: ME —; IS —; GA —; EU —; DE Affekt; LA affectus; CY —; DZ —; GRC pathos; SA bhāva; Q felmë; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Ffáx** — case  `[coined]`
+  - pron. “same as: Fakes”
+  - ledger: ME cas; IS tilvik; GA cás; EU kasu; DE Fall; LA casus; CY achos; DZ —; GRC —; SA prasaṅga; Q —; ON atburðr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Ffáxcíassëæn** — concur  `[coined]`
+  - pron. “Fakes-key-ass-sseh'eh-ee'en”
+  - ledger: ME —; IS fara saman; GA comhtharlaigh; EU batera gertatu; DE zusammenfallen; LA concurrere; CY cyd-ddigwydd; DZ —; GRC sympiptein; SA sam-√pat; Q —; ON bera saman
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Ffeærách** — wild  `[coined]`
+  - pron. “Fair-ayk”
+  - ledger: ME wilde; IS villtur; GA fiáin; EU basati; DE wild; LA ferus; CY gwyllt; DZ —; GRC agrios; SA vanya; Q verca; ON villr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Ffearhsy** *(Noun)* — horse
+  - lit. “horser — one who horses (around)”; niïl Ffearhsy attested (order-canon exemplars)
+  - *source: reference §2*
+- **Ffee** — tooth
+  - Stack-2: plural use — 'Ffeë fiulæn' (teeth chip).
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Ffemá'bissal-iy'dheach** *(Noun (tmesis compound))* — Appellate court
+  - Ffemá'…'dheach hosting bissal-iy. 'ySíonæiya Ffemá'bissal-iy'dheach-e' — the Faerieland Appellate Court.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **fflathe** — flutter  `[coined]`
+  - pron. “fluh-teh”
+  - ledger: ME floteren; IS flögra; GA foluain; EU —; DE flattern; LA volitare; CY —; DZ —; GRC pōtasthai; SA —; Q wilwa; ON flǫgra
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Fflébæn** — beg  `[coined]`
+  - pron. “Flay-bee'en”
+  - ledger: ME beggen; IS grátbiðja; GA impigh; EU erregutu; DE flehen; LA obsecrare; CY erfyn; DZ —; GRC hiketeuein; SA √yāc; Q arca-; ON biðja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **ffléfuff** — blur  `[coined]`
+  - pron. “Fleh'uh-vahf”
+  - ledger: ME bleren; IS móða; GA doiléirigh; EU lausotu; DE verschwimmen; LA obscurare; CY pylu; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Fflifagœrm** — pentagon  `[coined]`
+  - pron. “Flihv-uhg-euhrm”
+  - ledger: ME —; IS fimmhyrningur; GA peinteagán; EU pentagono; DE Fünfeck; LA pentagonum; CY pumochr; DZ —; GRC pentagōnon; SA pañcakoṇa; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **fflifíách** — furtive  `[coined]`
+  - pron. “flihv-ee'ayk”
+  - ledger: ME —; IS laumulegur; GA fáilí; EU isilpeko; DE verstohlen; LA furtivus; CY lladradaidd; DZ —; GRC lathraios; SA pracchanna; Q —; ON á laun
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Fflusch** — bottle  `[coined]`
+  - pron. “Flask”
+  - ledger: ME botel; IS flaska; GA buidéal; EU botila; DE Flasche; LA lagoena; CY potel; DZ —; GRC lagynos; SA —; Q —; ON flaska
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **fflyc** — flick  `[coined]`
+  - pron. “flick”
+  - ledger: ME —; IS —; GA smeach; EU —; DE schnippen; LA —; CY cnith; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Ffócas** — focus  `[coined]`
+  - pron. “foe-kuss”
+  - ledger: ME —; IS einbeiting; GA fócas; EU foku; DE Fokus; LA focus; CY ffocws; DZ —; GRC —; SA ekāgratā; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Ffócoi** — reason  `[coined]`
+  - pron. “Foe-coy”
+  - ledger: ME resoun; IS ástæða; GA cúis; EU arrazoi; DE Grund; LA causa; CY rheswm; DZ gyumtshen; GRC aitia; SA hetu; Q —; ON sǫk
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Fforfÿaí** — battlement  `[coined]`
+  - pron. “Forv-yah-ee”
+  - ledger: ME batelment; IS —; GA forbhalla; EU almena; DE Zinne; LA pinna; CY bylchfur; DZ —; GRC epalxis; SA kapiśīrṣa; Q —; ON vígskǫrð
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Fforís** — forest  `[coined]`
+  - pron. “Fohr-eess”
+  - ledger: ME forest; IS skógur; GA foraois; EU baso; DE Wald; LA silva; CY coedwig; DZ nagtshel; GRC hylē; SA vana; Q taurë; ON skógr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **ffors** — work  `[coined]`
+  - pron. “force”
+  - ledger: ME werk; IS vinna; GA obair; EU lan; DE Arbeit; LA opus; CY gwaith; DZ lâ; GRC ergon; SA karman; Q —; ON verk
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **ffráigaf** — occupy  `[coined]`
+  - pron. “fray'ihg-uhv”
+  - ledger: ME occupien; IS taka upp; GA seilbh; EU okupatu; DE beanspruchen; LA occupare; CY meddiannu; DZ —; GRC katechein; SA adhi-√ṣṭhā; Q —; ON taka upp
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Ffrugjách** — brittle  `[coined]`
+  - pron. “frahj-ayk”
+  - ledger: ME britel; IS stökkur; GA briosc; EU hauskor; DE spröde; LA fragilis; CY brau; DZ —; GRC psathyros; SA bhaṅgura; Q —; ON stǫkkr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Ffrynfely** — gullet  `[coined]`
+  - pron. “Fri'ihn-vehl-ee”
+  - ledger: ME golet; IS vélinda; GA craos; EU eztarri; DE Schlund; LA gula; CY llwnc; DZ —; GRC pharynx; SA gala; Q lanco; ON kok
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **fhaołith** — rotten
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Fhós** *(Noun)* — bitch
+  - coined in the niïl-position (Niïl Fhós); cf. mhís, where the softened shape is the lemma (1.12.1.2.1)
+  - *source: reference §2*
+- **Fía** *(noun)* — food
+  - *source: reference §2*
+- **Fialth** *(Noun)* — charge
+  - the word is your charge.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **fibher** — free  `[coined]`
+  - pron. “vih-vehr”
+  - ledger: ME fre; IS frjáls; GA saor; EU aske; DE frei; LA liber; CY rhydd; DZ rangwang; GRC eleutheros; SA svatantra; Q léra; ON frjáls
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **fiïl** *(adjective)* — loyal
+  - *source: reference §2*
+- **fiłain** — inform  `[coined]`
+  - pron. “vih-lyuh'ihn”
+  - ledger: ME enfourmen; IS upplýsa; GA cuir ar an eolas; EU jakinarazi; DE benachrichtigen; LA certiorem facere; CY hysbysu; DZ —; GRC angellein; SA ni-√vid (caus.); Q —; ON segja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **film** *(verb)* — turn
+  - grubby loan — a reel turns
+  - *source: reference §2*
+- **filuld** — keep  `[coined]`
+  - pron. “vihl-ahld”
+  - ledger: ME kepen; IS halda; GA coinnigh; EU gorde; DE behalten; LA servare; CY cadw; DZ nyar-ni; GRC phylattein; SA √rakṣ; Q hep-; ON halda
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **fingen** — beckon  `[coined]`
+  - pron. “vihn-gehn”
+  - ledger: ME beknen; IS benda; GA sméid; EU keinu egin; DE winken; LA innuere; CY amneidio; DZ —; GRC neuein; SA —; Q —; ON benda
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Fír** — while  `[coined]`
+  - pron. “Veer”
+  - ledger: ME while; IS meðan; GA fad is; EU bitartean; DE während; LA dum; CY tra; DZ —; GRC heōs; SA yāvat; Q írë; ON meðan
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Fírladr** *(Noun)* — length  `[working]`
+  - 'Lus mÿel Fírladr-e' — the most length = the longest.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Fís** — blood  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+  - **worksheet gloss:** debt — pron. “Feess”
+  - ledger: ME dette; IS skuld; GA fiach; EU zor; DE Schuld; LA debitum; CY dyled; DZ bulön; GRC chreos; SA ṛṇa; Q —; ON skuld
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **fîsen** — bind  `[coined]`
+  - pron. “Vicen”
+  - ledger: ME binden; IS binda; GA ceangail; EU lotu; DE binden; LA vincire; CY rhwymo; DZ —; GRC dein; SA √bandh; Q nut-; ON binda
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Fit** — feather
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **fith** *(verb)* — eat, eating
+  - *source: reference §2*
+- **fith** *(Verb)* — — (gloss awaiting the maker)
+  - the emphasis-paradigm’s exemplar verb (1.11.2.1.7)
+  - *source: reference §2*
+- **fithea** *(adverb)* — hungrily  `[active]`  ↳ of craithië
+  - craith- the keeper-inferred hunger-root, unattested bare; further attests fith ’eat’ via fithea ’ate’ - the standing watch stands regardless (2.2.4.4)
+  - *source: All-Coinages concordance #220 (HTML reference + LDS PDF)*
+- **Fith’t** *(clitic)* — negative  `[active]`  ↳ of ’t
+  - post-CONSONANT; Fith’t , thurn’t
+  - *source: All-Coinages concordance #218 (HTML reference + LDS PDF)*
+- **Fith’ya** *(clitic)* — positive answer / tag  `[active]`  ↳ of ’ya
+  - INVARIANT; Fith’ya , scé’ya
+  - *source: All-Coinages concordance #219 (HTML reference + LDS PDF)*
+- **fiulæn** *(Verb)* — chip
+  - Ffeë fiulæn — teeth chip.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Fíura** — friend  `[coined]`
+  - pron. “Vee-ahr-uh”
+  - ledger: ME frend; IS vinur; GA cara; EU lagun; DE Freund; LA amicus; CY cyfaill; DZ charo; GRC philos; SA mitra; Q meldo; ON vinr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **fiuwfílm** — interview  `[coined]`
+  - pron. “view-vealm”
+  - ledger: ME —; IS viðtal; GA agallamh; EU elkarrizketa; DE Interview; LA colloquium; CY cyfweliad; DZ —; GRC —; SA saṃlāpa; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **fix** — squeeze
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **fixáigæn** — attach  `[coined]`
+  - pron. “fihx-ay'ih-gee'en”
+  - ledger: ME attachen; IS festa; GA ceangail; EU erantsi; DE anheften; LA affigere; CY atodi; DZ —; GRC prosaptein; SA ā-√sañj; Q —; ON festa
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Flæu** — sheet  `[coined]`
+  - pron. “vleeh'ah”
+  - ledger: ME shete; IS lak; GA braillín; EU maindire; DE Laken; LA linteum; CY cynfas; DZ —; GRC othonē; SA pracchada; Q —; ON blæja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Flang** — meat/flesh
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **fłúgár** — penetrate  `[coined]`
+  - pron. “vlyooh-gay'r”
+  - ledger: ME —; IS smjúga; GA treáigh; EU barneratu; DE durchdringen; LA penetrare; CY treiddio; DZ —; GRC diikneisthai; SA √vyadh; Q —; ON smjúga
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **fluimæaæn** — fade  `[coined]`
+  - pron. “flwihm-ee-uh-ee'en”
+  - ledger: ME faden; IS dofna; GA tréig; EU histu; DE verblassen; LA evanescere; CY edwino; DZ —; GRC marainesthai; SA √mlai; Q sinta-; ON fǫlna
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Foëbendœrm** — lifeform  `[coined]`
+  - pron. “Voh'eh'eb-ehn-theurm”
+  - ledger: ME —; IS lífvera; GA —; EU bizidun; DE Lebensform; LA —; CY ffurf bywyd; DZ —; GRC —; SA jīva; Q —; ON kykvendi
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **fœdh** *(verb)* — steal, stole
+  - Stack-2: Fœdh-fœdhýa-e 'the-stealing-of' (reduplicated verbal noun).
+  - *source: reference §2*
+- **Fœdh-fœdhýa** *(verbal noun (reduplicated + -ýa))* — the stealing-of
+  - 'yFræli Fœdh-fœdhýa-e' — the stealing of children.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Fœrm** *(Noun/Verb)* — form / shape
+  - 'Mis Bocraíp mith Fœrm gæn' — our lips we shape give.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **fœrmæn** *(Verb)* — form (verb)
+  - 'Sin Craghê fœrmæn' — as cracks form.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Fœrmain** *(adjective)* — formal
+  - 'annadh fœrmain œr –'ma' — whether formal or otherwise.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Fog** *(Noun)* — sod
+  - 'o Fogýa' — and the-sod-of.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Foll** *(Noun)* — pit
+  - 'Dræao lus Foll mæ brís' — from the pit you break.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Folpthá** — curve  `[coined]`
+  - pron. “Volp-tay”
+  - ledger: ME —; IS sveigja; GA cuar; EU kurba; DE Kurve; LA curvatura; CY crymedd; DZ —; GRC kampē; SA vakra; Q cú; ON bugr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **fołu** — roll  `[coined]`
+  - pron. “voh-lyah”
+  - ledger: ME rollen; IS velta; GA rolláil; EU errodatu; DE rollen; LA volvere; CY rholio; DZ dril-ni; GRC kylindein; SA √luṭh; Q pel-; ON velta
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Fótca** — vodka  `[coined]`
+  - pron. “Vote-kuh”
+  - ledger: ME —; IS vodka; GA vodca; EU vodka; DE Wodka; LA —; CY fodca; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Fræli** *(Noun)* — child
+  - ssai e Frælithi’ya ‘two of the children’ (2.1.1.4.19.1) Stack-2: plural use — 'yFræli Fœdh-fœdhýa-e' (the stealing of children).
+  - *source: reference §2*
+- **Frælithi** *(Noun (irreg. pl.))* — children
+  - an irregular plural — her words, “different to the more common plural form of ê”; pluralization isn’t uniformly -ê after all (2.1.1.4.19.1)
+  - *source: reference §2*
+- **Frætár** — babe  `[coined]`
+  - pron. “Vree-tayr”
+  - ledger: ME babe; IS elskan; GA a stór; EU maitea; DE Schatz; LA deliciae; CY cariad; DZ —; GRC philtatē; SA priyā; Q melissë; ON unnasta
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **frehunt** — mate  `[coined]`
+  - pron. “vreh-7-ahnd”
+  - ledger: ME mate; IS félagi; GA comrádaí; EU kide; DE Kumpel; LA sodalis; CY mêt; DZ charo; GRC hetairos; SA sakhi; Q otorno; ON félagi
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **fremách** — strange  `[coined]`
+  - pron. “vreh-make”
+  - ledger: ME straunge; IS undarlegur; GA aisteach; EU arraro; DE seltsam; LA mirus; CY rhyfedd; DZ —; GRC atopos; SA vicitra; Q ettelëa; ON undarligr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Frígó** — stripe  `[coined]`
+  - pron. “Vree-go”
+  - ledger: ME stripe; IS rönd; GA stríoc; EU marra; DE Streifen; LA virga; CY rhesen; DZ —; GRC rhabdos; SA rekhā; Q —; ON rǫnd
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **fródh** — long
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Frœ** *(adv.)* — nearabouts  `[active]`  ↳ of Frœ’thte
+  - bare Frœ : unruled
+  - *source: All-Coinages concordance #227 (HTML reference + LDS PDF)*
+- **Frœli-tóff** — chosen-child
+  - *source: Final-Boss Haul · Semantic fields (2026-07-17)*
+- **Frœ’thte** *(adv.)* — nearabouts
+  - bare Frœ: unruled
+  - *source: reference §2*
+- **Frÿn** *(author form)* — neck (informal); throat  `[active]`
+  - Stack-r2 also attests 'Frÿn' (throat). 'yios duý þis Frÿn atáea ghydæa' — that in her throat was meant.
+  - *source: All-Coinages concordance #230 (LDS PDF)*
+- **fultós** — power  `[coined]`
+  - pron. “vahld-owe'ss”
+  - ledger: ME power; IS vald; GA cumhacht; EU botere; DE Macht; LA potestas; CY grym; DZ wang; GRC kratos; SA bala; Q túrë; ON vald
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **funýáín** — start  `[coined]`
+  - pron. “vahn-yay-ee'en”
+  - ledger: ME sterten; IS byrja; GA tosaigh; EU hasi; DE anfangen; LA incipere; CY dechrau; DZ go tsug-ni; GRC archesthai; SA ā-√rabh; Q yesta-; ON byrja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Furcool (Vahr-kuul** — crumple  `[coined]`
+  - coined against the twelve-language ledger
+  - ledger: ME crumplen; IS krumpa; GA roc; EU zimurtu; DE zerknüllen; LA corrugare; CY crychu; DZ —; GRC —; SA sam-√kuc; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **fyót** — float
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+
+## G
+
+- **gæe** *(verb | suffix)* — gave · echo suffix (vowel-harmonising)  `[active]`  ↳ of -as, gæea, gæea | -as
+  - base gæe “give” | laí laías , gæe gæeäs , Ghusci Ghuscias
+  - *source: All-Coinages concordance #233 (HTML reference + LDS PDF)*
+- **gæea** *(verb)* — gave
+  - base gæe “give”
+  - *source: reference §2*
+- **gæeäs** *(suffix)* — echo suffix (vowel-harmonising)  `[active]`  ↳ of -as
+  - laí laías , gæe gæeäs , Ghusci Ghuscias
+  - *source: All-Coinages concordance #235 (HTML reference)*
+- **gæłós** — scarce  `[coined]`
+  - pron. “gee-lyowe'ss”
+  - ledger: ME scars; IS sjaldgæfur; GA gann; EU urri; DE knapp; LA rarus; CY prin; DZ —; GRC spanios; SA durlabha; Q —; ON fágætr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **gæn** *(verb)* — gives
+  - the existential “there is” (German es gibt style)
+  - *source: reference §2*
+- **gæn mé X Craimh** *(noun)* — hunger  `[active]`  ↳ of Craimh
+  - gæn mé X Craimh “X is hungry” (es-gibt × tá-ocras-orm)
+  - *source: All-Coinages concordance #238 (HTML reference)*
+- **Gæn’ma** *(clitic)* — au contraire (the Danæam doch )  `[active]`  ↳ of ’ma
+  - INVARIANT; Gæn’ma , Sin’ma
+  - *source: All-Coinages concordance #237 (HTML reference + LDS PDF)*
+- **gænyin** *(verb (existential))* — gives, temporally bound
+  - temporary possession/tenure (1.10.3)
+  - *source: reference §2*
+- **Gæsy** — giver
+  - *source: Final-Boss Haul · Semantic fields (2026-07-17)*
+- **gâgg** — tap  `[coined]`
+  - pron. “gaak”
+  - ledger: ME tappen; IS banka; GA cnag; EU jo; DE klopfen; LA pulsare; CY tapio; DZ —; GRC krouein; SA √taḍ; Q tam-; ON banga
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **gáns** *(adjective)* — useless
+  - *source: reference §2*
+- **gáns by** *(part.)* — via, as-a-process; [to] of purpose  `[active]`  ↳ of by
+  - the maker’s $-note: côs by “[to] sleep”, gáns by “useless via”
+  - *source: All-Coinages concordance #242 (HTML reference + LDS PDF)*
+- **gaœlfolách** — lupine  `[coined]`
+  - pron. “guh'euhlv-ohl-ayk”
+  - ledger: ME —; IS úlfslegur; GA —; EU otso-; DE wölfisch; LA lupinus; CY bleiddaidd; DZ —; GRC lykeios; SA —; Q —; ON úlfúð (n.)
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Gaol e bissal-by** — court-kin
+  - *source: Final-Boss Haul · Semantic fields (2026-07-17)*
+- **Gaolaí ythé dúy Lawu rihea** — dream-kin
+  - *source: Final-Boss Haul · Semantic fields (2026-07-17)*
+- **Gaolaí ythé e Fís mainea atá** — debt-kin
+  - *source: Final-Boss Haul · Semantic fields (2026-07-17)*
+- **Gaolaí ythé e Win-łixach atá** — name-kin
+  - *source: Final-Boss Haul · Semantic fields (2026-07-17)*
+- **gaomæn** — burst  `[coined]`
+  - pron. “gaow-mee'en”
+  - ledger: ME bersten; IS springa; GA pléasc; EU lehertu; DE bersten; LA rumpere; CY byrstio; DZ —; GRC rhēgnynai; SA √sphuṭ; Q —; ON springa
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Gap** — group  `[coined]`
+  - pron. “Guhp”
+  - ledger: ME —; IS hópur; GA grúpa; EU talde; DE Gruppe; LA caterva; CY grŵp; DZ —; GRC homilos; SA gaṇa; Q —; ON hópr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Garrohyê** *(Noun (plural))* — tentacles
+  - elastic and yellow.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Gârty** — garden  `[coined]`
+  - coined against the twelve-language ledger
+  - ledger: ME gardin; IS garður; GA gairdín; EU lorategi; DE Garten; LA hortus; CY gardd; DZ dumra; GRC kēpos; SA udyāna; Q tarwa; ON garðr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Gáthfrái** — mystery  `[coined]`
+  - pron. “Gate-fray-ih”
+  - ledger: ME misterie; IS ráðgáta; GA rúndiamhair; EU misterio; DE Geheimnis; LA mysterium; CY dirgelwch; DZ —; GRC mystērion; SA rahasya; Q —; ON gáta
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **gehorhín** — lead  `[coined]`
+  - pron. “geh7-oh-hreen”
+  - ledger: ME leden; IS leiða; GA treoraigh; EU gidatu; DE führen; LA ducere; CY arwain; DZ thri-ni; GRC agein; SA √nī; Q —; ON leiða
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **genách** — genuine  `[coined]`
+  - pron. “gehnayk”
+  - ledger: ME —; IS ósvikinn; GA fíor; EU benetako; DE echt; LA genuinus; CY dilys; DZ ngöma; GRC gnēsios; SA akṛtrima; Q anwa; ON ósvikinn
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **gerthúæn** — emerge  `[coined]`
+  - pron. “ger-too-ee'en”
+  - ledger: ME —; IS koma fram; GA eascair; EU azaleratu; DE auftauchen; LA emergere; CY dod i'r amlwg; DZ —; GRC anadyesthai; SA ud-√bhū; Q —; ON koma upp
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Ghæffter** — fan  `[coined]`
+  - pron. “Stheef-tehr”
+  - ledger: ME fan; IS vifta; GA gaothrán; EU haizagailu; DE Ventilator; LA flabellum; CY gwyntyll; DZ —; GRC rhipis; SA vyajana; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **gháilbu** — half  `[coined]`
+  - pron. “sthay-ihl-bah”
+  - ledger: ME half; IS hálfur; GA leath; EU erdi; DE halb; LA dimidius; CY hanner; DZ cheka; GRC hēmisys; SA ardha; Q perta; ON hálfr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Ghainn** — clade  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **Ghaint** *(numeral)* — two
+  - SEALED 2026-07-23 (Elm ruling): ghaint = 2 — gh- voiced pair of aint 'one'; gh- marks the even member, matching the year-stem pairs (Slár 9/Ghslár 10 · Îæth 27/Ghîæth 28 · Ínhe 43/Ghínhe 44 · Raíwil 49/Ghraíwil 50). Small cardinals so far: 1 Aint · 2 Ghaint · 3 Raí · 4 Ghraí; 5 and 6 unmade — awaiting the maker.
+  - *source: Elm ruling (2026-07-23)*
+- **Gháintól** — bike  `[coined]`
+  - pron. “Sthay'ihn-d'owe'l”
+  - ledger: ME —; IS hjól; GA rothar; EU bizikleta; DE Fahrrad; LA birota; CY beic; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **ghéalíl** *(author form)* — right / correct  `[active]`
+  - *source: All-Coinages concordance #244 (LDS PDF)*
+- **Gheatth** *(numeral (year series))* — 58
+  - year-series numeral · base 2+30 (base-60 pair-stem). Pair: Heatth 57 (odd, bare) / Gheatth 58 (even, lenited). Year names: A-B = A×60 + B, hyphen-joined, second element bare. This form: even · lenited.
+  - *source: session 2026-07-21, the maker*
+- **Gheinn** — moon
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Gheo** *(Noun)* — god
+  - given directly by the maker in a closing blessing, 2026-07-15: “O • o mao-mé Gheor mæ drúsót” (may you go forth with your god-being) and “O mao-mé mæ ∆ Gheo aobh” (God be with you); state-form Gheor — the -r state-former’s further witness
+  - *source: reference §2*
+- **Gheor** *(Noun)* — god  `[active]`  ↳ of Gheo
+  - given directly by the maker in a closing blessing, 2026-07-15: “O • o mao-mé Gheor mæ drúsót” (may you go forth with your god-being) and “O mao-mé mæ   Gheo aobh” (God be with you); state-form Gheor - the -r state-former’s further witness
+  - *source: All-Coinages concordance #247 (HTML reference + LDS PDF)*
+- **Ghiadhán** — mountain
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **ghiæan** *(verb)* — get, become
+  - corrected from *ghæian (slip); the become-copula (Duílúch Fæ’du’ærs fæ ghiæan); by ghiæan “get over”; the frame of the becoming-gift (2.1.1.2.11) and of the passive-with-agent (2.1.1.2.13); pron. “sthɦih-ee-ah-neh-eh” (ghiæanea, the maker’s key — gh sounding [sθɦ]-wards)
+  - *source: reference §2*
+- **Ghîæth** *(numeral (year series))* — 28
+  - year-series numeral · base 2+30 (base-60 pair-stem). Pair: Îæth 27 (odd, bare) / Ghîæth 28 (even, lenited). Year names: A-B = A×60 + B, hyphen-joined, second element bare. This form: even · lenited.
+  - *source: session 2026-07-21, the maker*
+- **ghíchæn** — draw  `[coined]`
+  - pron. “sthee-hee'en”
+  - ledger: ME drawen; IS draga; GA tarraing; EU tiratu; DE ziehen; LA trahere; CY tynnu; DZ —; GRC helkein; SA √kṛṣ; Q tuc-; ON draga
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **ghîfy** — twelve  `[coined]`
+  - pron. “stheye-vee”; alt. pron. “eye-vee”; also eleven: îfy
+  - ledger: ME twelve; IS tólf; GA dó dhéag; EU hamabi; DE zwölf; LA duodecim; CY deuddeg; DZ chunyi; GRC dōdeka; SA dvādaśa; Q yunquë; ON tólf
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **ghim** — dry
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Ghínhe** *(numeral (year series))* — 44
+  - year-series numeral · base 2+30 (base-60 pair-stem). Pair: Ínhe 43 (odd, bare) / Ghínhe 44 (even, lenited). Year names: A-B = A×60 + B, hyphen-joined, second element bare. This form: even · lenited.
+  - *source: session 2026-07-21, the maker*
+- **Ghitasiu-minú** *(Noun)* — detail-sized quote (pull quote)
+  - 'lus Ghitasiu minú-e yiosnÿ glúmach yAolt Ruth-e' — the pull-quote of Red's famous article. Stack-r2 also attests 'Ghitasiu-minú' (detail-sized quote; the pull-quote). 'lus Ghitasiu minú-e yiosnÿ glúmach yAolt Ruth-e' — the detail-sized quote of the famous article of-Red's.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **ghlæscer** *(Verb)* — learn
+  - 'dúsáille mæ ghlæscer' — to-speak you learn.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Ghłúrm** — worm
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **ghœdách** — limp  `[coined]`
+  - pron. “stheuh-thayk”
+  - ledger: ME —; IS haltra; GA bacaíl; EU herrenka; DE hinken; LA claudicare; CY cloffi; DZ —; GRC chōlainein; SA √khañj; Q —; ON haltra
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Ghoobœ** — bulge  `[coined]`
+  - pron. “Sthoo-beuh”
+  - ledger: ME bulge; IS bunga; GA boilsc; EU konkor; DE Wölbung; LA tuber; CY chwydd; DZ —; GRC kyrtōma; SA —; Q —; ON bunga
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **ghrag** — gulp  `[coined]`
+  - pron. “sthruhg”
+  - ledger: ME gulpen; IS gleypa; GA slog; EU irentsi; DE schlucken; LA glutire; CY llowcio; DZ —; GRC rhophein; SA √gṝ; Q —; ON gleypa
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **ghraí** — four
+  - SEALED 2026-07-23 (Elm ruling): ghraí = 4 — supersedes the Final-Boss Haul record 'three'; the 3/4 fork is closed: raí = 3 (odd), ghraí = 4 (even). gh- marks the even member, matching the year-stem pairs (Slár 9/Ghslár 10 · Ínhe 43/Ghínhe 44 · Raíwil 49/Ghraíwil 50). The Oath clause raí-ghíl-ssaighisseith ([4.9.21]) belongs to the retired analytic system; the date-clause replacement is under revision (likely Raíwíl-sfeith = 49.21 = 2961).
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Ghraíïe** *(adverb)* — fourily; in fours
+  - 'Łyüsnÿ ghraíïe Theráfthyê-e dúao atáea' = it was four therapists ago. Root numeral belongs to the ruled-error analytic system (root Ghraí = 4 — sealed 2026-07-23) — the adverb is text-attested regardless.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Ghraíwil** *(numeral (year series))* — 50
+  - year-series numeral · base 2+30 (base-60 pair-stem). Pair: Raíwil 49 (odd, bare) / Ghraíwil 50 (even, lenited). Year names: A-B = A×60 + B, hyphen-joined, second element bare. This form: even · lenited.
+  - *source: session 2026-07-21, the maker*
+- **Ghríntr** — peace  `[coined]`
+  - pron. “Sthreehnd'r”
+  - ledger: ME pees; IS friður; GA síocháin; EU bake; DE Frieden; LA pax; CY heddwch; DZ zhide; GRC eirēnē; SA śānti; Q sérë; ON friðr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **ghróchær** — fascinate  `[coined]`
+  - pron. “sth'roke-ear”
+  - ledger: ME —; IS heilla; GA cuir draíocht ar; EU liluratu; DE faszinieren; LA fascinare; CY hudo; DZ —; GRC kēlein; SA √muh (caus.); Q luhta-; ON heilla
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Ghrœlisea** — descended  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **Ghrœliseæ** — descendants  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **Ghrórimag** — gumtree  `[coined]`
+  - pron. “shtr'owe-rih-muhg”
+  - ledger: ME —; IS tröllatré; GA eoclaip; EU eukalipto; DE Eukalyptus; LA eucalyptus; CY ewcalyptws; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Ghrudás** — play
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Ghsfeith** *(numeral (year series))* — 20
+  - year-series numeral · base 2+30 (base-60 pair-stem). Pair: Sfeith 21 (odd, bare) / Ghsfeith 20 (even, lenited). Year names: A-B = A×60 + B, hyphen-joined, second element bare. This form: even · lenited.
+  - *source: session 2026-07-21, the maker*
+- **Ghslár** *(numeral (year series))* — 10
+  - year-series numeral · base 2+30 (base-60 pair-stem). Pair: Slár 9 (odd, bare) / Ghslár 10 (even, lenited). Year names: A-B = A×60 + B, hyphen-joined, second element bare. This form: even · lenited.
+  - *source: session 2026-07-21, the maker*
+- **ghuethn** *(verb)* — serve
+  - past ghuethnea; toll-paid huethnea when tmesis-embedded (gh a hard-consonant payer) (2.1.1.4.11)
+  - *source: reference §2*
+- **ghuethnea** *(verb)* — serve  `[active]`  ↳ of ghuethn
+  - past ghuethnea ; toll-paid huethnea when tmesis-embedded (gh a hard-consonant payer) (2.1.1.4.11)
+  - *source: All-Coinages concordance #255 (HTML reference + LDS PDF)*
+- **Ghül** *(numeral (year series))* — 18
+  - year-series numeral · base 2+30 (base-60 pair-stem). Pair: Ül 17 (odd, bare) / Ghül 18 (even, lenited). Year names: A-B = A×60 + B, hyphen-joined, second element bare. This form: even · lenited.
+  - *source: session 2026-07-21, the maker*
+- **Ghusci** *(noun)* — ghost
+  - base Gusci; lenited after niïl
+  - *source: reference §2*
+- **Ghuscias** *(suffix)* — echo suffix (vowel-harmonising)  `[active]`  ↳ of -as
+  - laí laías , gæe gæeäs , Ghusci Ghuscias
+  - *source: All-Coinages concordance #257 (HTML reference + LDS PDF)*
+- **ghydæa** *(verb (past/participle))* — meant
+  - 'lus Fainía yios duý þis Frÿn atáea ghydæa' — the catch that in her throat was meant.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Ghyfu** — sixteen  `[coined]`
+  - pron. “Sthih-vuh”; alt. pron. “pairs with 15 = Yfu (Ih-vah”; also every number 1-60 pairs with its prior odd / subsequent even number, so pairs are coined together)
+  - ledger: ME sixtene; IS sextán; GA sé déag; EU hamasei; DE sechzehn; LA sedecim; CY un ar bymtheg; DZ chudru; GRC hekkaideka; SA ṣoḍaśa; Q —; ON sextán
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Gibub** — rod  `[coined]`
+  - pron. “Gih-bahb”
+  - ledger: ME rodde; IS stöng; GA slat; EU haga; DE Stab; LA virga; CY gwialen; DZ —; GRC rhabdos; SA daṇḍa; Q vandl; ON stǫng
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **gifúf** — vomit
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Gig** *(noun)* — jaw
+  - Inside tmesis Gi'regéar'gýa — the jaw-region.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **gígwid** — happen  `[coined]`
+  - pron. “gee'eg-wih'th”
+  - ledger: ME happenen; IS gerast; GA tarlaigh; EU gertatu; DE geschehen; LA evenire; CY digwydd; DZ jung-ni; GRC gignesthai; SA √ghaṭ; Q marta-; ON gerask
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Gil** *(Noun)* — Object-of-Negative-Giving’s-Force — “gift” (feminine)
+  - the eternal future’s frame-noun (2.1.1.2.8)
+  - *source: reference §2*
+- **Gil** — the unreturnable gift
+  - *source: Final-Boss Haul · Semantic fields (2026-07-17)*
+- **gilæn** *(verb (existential))* — eternally regives
+  - permanent possession as the gift given again and again, forever (1.10.3). Etymology, the maker’s gift (1.10.5): g’[w]il’æn — wil “all” tmesized into gæn, the hard w paid as toll, welds solid; the keeper’s earlier il-guess was wil’s toll-ghost Stack-r2: 'lus Ædthýa gilæn dápathsea' — the smile that eternally-regave failed. Negative fusion gilæn't 'never-gave' attested, doubled for emphasis ('gilæn't gilæn't').
+  - *source: reference §2*
+- **gilæn't** *(verb (fused negative))* — never-gave; not-eternally-regives  `[working]`  ↳ of gilæn
+  - Negative fusion of gilæn; doubled 'gilæn't gilæn't' = never, never.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+  - **worksheet gloss:** never — pron. “  gihl-ee'ent”; Í/mith; eeh/miht
+  - ledger: ME nevere; IS aldrei; GA choíche; EU inoiz ez; DE nie; LA numquam; CY byth; DZ namyang; GRC oudepote; SA na kadācit; Q —; ON aldri
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **githua** — mention  `[coined]`
+  - pron. “gih-twuh”
+  - ledger: ME mencioun; IS minnast á; GA luaigh; EU aipatu; DE erwähnen; LA mentionem facere; CY crybwyll; DZ —; GRC mneian poieisthai; SA √kīrt; Q —; ON geta
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **gla** *(prefix)* — questioning-echo marker  `[active]`  ↳ of gla-
+  - Glascér = gla + scér
+  - *source: All-Coinages concordance #261 (HTML reference)*
+- **gla-** *(prefix)* — questioning-echo marker
+  - Glascér = gla + scér
+  - *source: reference §2*
+- **Gláchomaí** — function  `[coined]`
+  - pron. “Glayk-ohm-uh-ee”
+  - ledger: ME —; IS hlutverk; GA feidhm; EU funtzio; DE Funktion; LA munus; CY swyddogaeth; DZ —; GRC ergon; SA vṛtti; Q —; ON hlutr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Glaiyfarmaí** — clockwork  `[coined]`
+  - pron. “Gluh'ih'ee-vuhrm-uh'ee”
+  - ledger: ME —; IS gangverk; GA —; EU —; DE Uhrwerk; LA —; CY gwaith cloc; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **glaltrách** — teal  `[coined]`
+  - pron. “gluhl-trayk”
+  - ledger: ME tele; IS blágrænn; GA —; EU —; DE Petrol; LA —; CY gwyrddlas; DZ —; GRC glaukos; SA —; Q —; ON blágrœnn
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Glaoárca** — energy  `[coined]`
+  - pron. “glaow-air-kuh”
+  - ledger: ME —; IS orka; GA fuinneamh; EU energia; DE Energie; LA energia; CY egni; DZ —; GRC energeia; SA ojas; Q —; ON orka
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **glaoh** — wash
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Glaohao** — fat/grease
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Glaoh-Glaoh** *(gerund (Noun))* — washing
+  - reduplication’s third witness (1.10.2)
+  - *source: reference §2*
+- **gláornoï** — leer  `[coined]`
+  - pron. “glay-ohrn-oh'ee”
+  - ledger: ME —; IS glápa; GA —; EU —; DE angaffen; LA limis spectare; CY cilwenu; DZ —; GRC hypoblepein; SA —; Q —; ON glápa
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Glaoscál** *(noun)* — automobile
+  - native word; the source of the loan “Scale”
+  - *source: reference §2*
+- **Glaoscêlintilény** — aircraft  `[coined]`
+  - pron. “Automaton: Glaoscá; of-Liner: e-Lintiy; Ley: Lén; y: -er = Automatic-ley-liner: Glaoscêlintilény”; alt. pron. “Gl'ouw-shay-lint-ih-lei-knee”
+  - ledger: ME —; IS loftfar; GA aerárthach; EU aireontzi; DE Luftfahrzeug; LA —; CY awyren; DZ namdru; GRC —; SA vimāna; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Glaoscêlintiługy** — airliner  `[coined]`
+  - pron. “Gl'ouw-shay-lint-ih-lah-khee”
+  - ledger: ME —; IS farþegaþota; GA aerlínéar; EU —; DE Verkehrsflugzeug; LA —; CY awyren deithwyr; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Glaoscléÿ** — phone  `[coined]`
+  - pron. “Glaow-shlay-eeh”
+  - ledger: ME —; IS sími; GA guthán; EU telefono; DE Telefon; LA telephonum; CY ffôn; DZ khapa; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **glaosclíntách** — railside  `[coined]`
+  - pron. “glaow-shleen-dayk”
+  - ledger: ME —; IS —; GA —; EU —; DE Gleisrand; LA —; CY —; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Glaoscóterugy** — locomotive  `[coined]`
+  - pron. “glaow-shoh-teh-rahg-ee”
+  - ledger: ME —; IS eimreið; GA inneall traenach; EU lokomotora; DE Lokomotive; LA —; CY locomotif; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Glaostalê** *(Noun (plural))* — crystals
+  - scour and scuff and grind up through centuries.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **glar** — blue  `[coined]`
+  - pron. “kluhr”
+  - ledger: ME bleu; IS blár; GA gorm; EU urdin; DE blau; LA caeruleus; CY glas; DZ hoem; GRC kyaneos; SA nīla; Q luinë; ON blár
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Glar afthæ** — sky-blue
+  - *source: Final-Boss Haul · Semantic fields (2026-07-17)*
+- **glás** *(prefix)* — the one-word herald  `[active]`  ↳ of glés-
+  - a special glás : warns that the single word about to be spoken is all that’s getting said; never outside one-word echoes (ruled)
+  - *source: All-Coinages concordance #268 (HTML reference)*
+- **Glascér** *(prefix)* — questioning-echo marker  `[active]`  ↳ of gla-
+  - Glascér = gla + scér
+  - *source: All-Coinages concordance #269 (HTML reference + LDS PDF)*
+- **Glâscí** — device  `[coined]`
+  - pron. “clash-key”
+  - ledger: ME devis; IS tæki; GA gléas; EU gailu; DE Gerät; LA instrumentum; CY dyfais; DZ —; GRC mēchanēma; SA yantra; Q tanwë; ON tól
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **glatærn** — wipe
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **glés-** *(prefix)* — the one-word herald
+  - a special glás: warns that the single word about to be spoken is all that’s getting said; never outside one-word echoes (ruled)
+  - *source: reference §2*
+- **Glésdanæams** — Danæam (reduced/form of address?)  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **glingï** — grin  `[coined]`
+  - pron. “glihn-gee”
+  - ledger: ME grennen; IS glotta; GA cár; EU irri; DE grinsen; LA ringi; CY crechwenu; DZ —; GRC sesērenai; SA —; Q raita-; ON glotta
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Glinte** — client  `[coined]`
+  - pron. “Glihn-deh”
+  - ledger: ME client; IS viðskiptavinur; GA cliant; EU bezero; DE Kunde; LA cliens; CY cleient; DZ —; GRC pelatēs; SA āśrita; Q —; ON skjólstœðingr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Gliúsam** — delight  `[coined]`
+  - pron. “glih'oo-sum”
+  - ledger: ME delit; IS unaður; GA aoibhneas; EU atsegin; DE Wonne; LA delectatio; CY hyfrydwch; DZ —; GRC terpsis; SA prīti; Q alassë; ON unaðr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **glœwtách** — pretty  `[coined]`
+  - pron. “glaw-dayk”
+  - ledger: ME prati; IS sætur; GA gleoite; EU polit; DE hübsch; LA venustus; CY pert; DZ jarim; GRC kompsos; SA ramya; Q vanima; ON fríðr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **glom** — glom  `[coined]`
+  - coined against the twelve-language ledger
+  - ledger: ME —; IS —; GA —; EU —; DE —; LA —; CY —; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **glów** — shine  `[coined]`
+  - pron. “glow”
+  - ledger: ME shinen; IS skína; GA lonraigh; EU distiratu; DE scheinen; LA lucere; CY disgleirio; DZ —; GRC lampein; SA √bhā; Q sil-; ON skína
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **glúmach** *(adjective)* — famous
+  - Stack-r2 also attests 'glúmach' (famous).
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Gnæx** — sex  `[coined]`
+  - pron. “neeks”
+  - ledger: ME sexe; IS kyn; GA gnéas; EU sexu; DE Geschlecht; LA sexus; CY rhyw; DZ —; GRC genos; SA liṅga; Q —; ON kyn
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Gna'frœli'sth** — nest-child
+  - *source: Final-Boss Haul · Semantic fields (2026-07-17)*
+- **Gna’frœli’sth** *(author form)* — nest-child  `[active]`
+  - *source: All-Coinages concordance #272 (LDS PDF)*
+- **gnággách** — usual  `[coined]`
+  - pron. “nayk-ayk”
+  - ledger: ME usuel; IS venjulegur; GA gnách; EU ohiko; DE üblich; LA solitus; CY arferol; DZ —; GRC eiōthōs; SA ucita; Q senya; ON venjuligr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Gnast** *(noun)* — nest  `[working]`
+  - Gnasthýa 'nest-of': 'dúéalaf Gnasthýa sê-ír-e' — up-inside-of the nest itself.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Gneemí** — flute  `[coined]`
+  - pron. “Nee-meeh”
+  - ledger: ME floute; IS flauta; GA fliúit; EU txirula; DE Flöte; LA tibia; CY ffliwt; DZ lingm; GRC aulos; SA vaṃśī; Q simpa; ON pípa
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **gneíth** — sew
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **gnídt (neet'eh** — act  `[coined]`
+  - coined against the twelve-language ledger
+  - ledger: ME acte; IS verk; GA gníomh; EU ekintza; DE Tat; LA actus; CY gweithred; DZ —; GRC praxis; SA karman; Q carda; ON verk
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Gnifúi** — knuckle  `[coined]`
+  - pron. “Nih'vwee”
+  - ledger: ME knokel; IS hnúi; GA alt; EU hatz-koskor; DE Knöchel; LA condylus; CY migwrn; DZ —; GRC kondylos; SA parvan; Q —; ON knúi
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Gnipáuíc** — crackle  `[coined]`
+  - pron. “Nihp-ay-ah'eek”
+  - ledger: ME crakken; IS snarka; GA cnagarnach; EU karraska; DE knistern; LA crepitare; CY clindarddach; DZ —; GRC —; SA caṭacaṭāya-; Q —; ON snarka
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **gnith** — narrow
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Gnitthïc** — townhouse  `[coined]`
+  - pron. “Nihd-teek”
+  - ledger: ME —; IS raðhús; GA teach baile; EU —; DE Reihenhaus; LA domus urbana; CY tŷ tref; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Gnoth** — node  `[coined]`
+  - pron. “nohtt”
+  - ledger: ME knotte; IS hnútur; GA nód; EU nodo; DE Knoten; LA nodus; CY cwlwm; DZ düpa; GRC hamma; SA granthi; Q nardo; ON hnútr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Gnýorchubý** — tabletop  `[coined]`
+  - pron. “Nee'ohr-huh-bee”
+  - ledger: ME —; IS borðplata; GA clár boird; EU mahai-gain; DE Tischplatte; LA —; CY wyneb y bwrdd; DZ —; GRC —; SA —; Q —; ON borð
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **góïyth** — akin  `[coined]`
+  - pron. “goh-ee'ih-ihtt”
+  - ledger: ME —; IS skyldur; GA gaolmhar; EU —; DE verwandt; LA cognatus; CY perthynol; DZ —; GRC syngenēs; SA sajātīya; Q —; ON skyldr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **góïyth** — similar  `[coined]`
+  - pron. “goh-ee'ih-ihtt”; same as akin
+  - ledger: ME —; IS svipaður; GA cosúil; EU antzeko; DE ähnlich; LA similis; CY tebyg; DZ dra; GRC homoios; SA sadṛśa; Q —; ON líkr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **goleafsæn** — thaw  `[coined]`
+  - pron. “goh-leh'uhv-see'en”
+  - ledger: ME thawen; IS þiðna; GA leáigh; EU urtu; DE tauen; LA regelare; CY dadmer; DZ zhu-ni; GRC tēkesthai; SA vi-√lī; Q —; ON þiðna
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Golthoo** — canyon  `[coined]`
+  - pron. “Golt-oo”
+  - ledger: ME —; IS gljúfur; GA cainneon; EU arroila; DE Schlucht; LA —; CY ceunant; DZ rong; GRC pharanx; SA kandara; Q cilya; ON gljúfr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Goo** — grass
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **górtách** — raw  `[coined]`
+  - pron. “go'ehr-dayk”
+  - ledger: ME rawe; IS hrár; GA amh; EU gordin; DE roh; LA crudus; CY amrwd; DZ —; GRC ōmos; SA āma; Q —; ON hrár
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Gosferê** *(Noun (plural))* — geysers
+  - 'Sin Gosferê leafæn' — as geysers melt.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Gradhamýa** *(Noun)* — stage
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **gradyæ** — thank  `[coined]`
+  - pron. “gruh-thyee”
+  - ledger: ME thanken; IS þakka; GA buíochas; EU eskertu; DE danken; LA gratias agere; CY diolch; DZ kadrinche; GRC charin echein; SA kṛtajñatā; Q hanta-; ON þakka
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Grælië** — offspring  `[coined]`
+  - pron. “Greehl-ih'eh'eh”
+  - ledger: ME ofspring; IS afkvæmi; GA sliocht; EU ondorengo; DE Nachkommen; LA progenies; CY epil; DZ —; GRC gonos; SA apatya; Q indyo; ON afkvæmi
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **gráhunæ** — prehensile  `[coined]`
+  - pron. “gray-7ahn-ee”
+  - ledger: ME —; IS grip-; GA —; EU —; DE Greif-; LA prehensilis; CY gafaelgar; DZ —; GRC —; SA grāhin; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Grainê** *(Noun)* — grave(s)
+  - attested after ssai; number-after-numeral watched (§12) (1.12.1.2.3)
+  - *source: reference §2*
+- **grásach** — thick
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Grëach** *(adjective)* — humorous
+  - Gree → Grëach — the double vowel contracts to ë before -ach, not bare *Greeach (keeper’s-eye note on the rule’s reach, one word); Grëach Hín “a humoured man” (2.1.1.4.8)
+  - *source: reference §2*
+- **Grëach Hín** *(adjective)* — humorous  `[active]`  ↳ of Grëach
+  - Gree   Grëach - the double vowel contracts to ë before -ach, not bare *Greeach (keeper’s-eye note on the rule’s reach, one word); Grëach Hín “a humoured man” (2.1.1.4.8)
+  - *source: All-Coinages concordance #279 (HTML reference + LDS PDF)*
+- **Grëachaí** *(Noun)* — humorousness
+  - Gree → Grëach → Grëachaí — the -aí abstract former’s second witness, after Státachaí (2.1.1.4.8)
+  - *source: reference §2*
+- **Gree** *(noun)* — humour
+  - completes 2.1.1.4.8’s three roads: Hín e Gree, lus Gree e lus Hín, æœá-e Gree (2.1.1.4.8)
+  - *source: reference §2*
+- **Grëeth** — concrete  `[coined]`
+  - pron. “greeh'eet”
+  - ledger: ME —; IS steinsteypa; GA coincréit; EU hormigoi; DE Beton; LA —; CY concrit; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **greib** *(verb)* — believe
+  - 'mis Dú'greibach-greibach-e's Uoinainê mith gæn' — our toward-the-believing-of women we give.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **greibach-greibach** *(verbal noun (reduplicated))* — the believing  ↳ of greib
+  - Of greib; inside tmesis Dú'greibach-greibach-e's 'toward-the-believing-of'.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Griebh** *(noun)* — assault
+  - 'aoa sin't niïl yGriebh-aoya' — about an assault (the disclosure).
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Gúénsra** — goose  `[coined]`
+  - pron. “Gwehn-sruh”
+  - ledger: ME goos; IS gæs; GA gé; EU antzara; DE Gans; LA anser; CY gŵydd; DZ —; GRC chēn; SA haṃsa; Q wán; ON gás
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Gufær** — ginger  `[coined]`
+  - pron. “Gah-vee'er”
+  - ledger: ME gingivere; IS engifer; GA sinséar; EU jengibre; DE Ingwer; LA zingiber; CY sinsir; DZ —; GRC zingiberis; SA śṛṅgavera; Q —; ON engifer
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **guiáł** *(noun/adjective)* — gold
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Guiïn** — yellow
+  - Stack-2: 'leagístach o guiïn' (elastic and yellow; Night's tentacles).
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Guiïn yáë** — sun-yellow
+  - *source: Final-Boss Haul · Semantic fields (2026-07-17)*
+- **Gulícaí** — magic  `[coined]`
+  - pron. “gah-leeh'ihk-uh'eeh”
+  - ledger: ME magik; IS galdur; GA draíocht; EU magia; DE Zauber; LA magia; CY hud; DZ thrül; GRC mageia; SA māyā; Q lúcë; ON galdr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **guoíd** — gum  `[coined]`
+  - pron. “gwoyth”
+  - ledger: ME gome; IS gómur; GA drandal; EU oi; DE Zahnfleisch; LA gingiva; CY deintgig; DZ —; GRC oulon; SA dantamāṃsa; Q —; ON gómr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **gurden** — regard  `[coined]`
+  - pron. “gahrdehn”
+  - ledger: ME regarden; IS líta á; GA meas; EU -tzat hartu; DE betrachten; LA existimare; CY ystyried; DZ —; GRC nomizein; SA √man; Q —; ON virða
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Guresës** — heat  `[coined]`
+  - pron. “Gah-rehz-eh'ehz”
+  - ledger: ME hete; IS hiti; GA teas; EU bero; DE Hitze; LA calor; CY gwres; DZ tshawa; GRC thermotēs; SA tāpa; Q úrë; ON hiti
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Gusci** *(noun)* — ghost  `[active]`  ↳ of Ghusci
+  - base Gusci ; lenited after niïl
+  - *source: All-Coinages concordance #284 (HTML reference)*
+- **g’[w]il’æn** *(verb (existential))* — eternally regives  `[active]`  ↳ of gilæn
+  - permanent possession as the gift given again and again, forever (1.10.3). Etymology, the maker’s gift (1.10.5): g’[w]il’æn - wil “all” tmesized into gæn , the hard w paid as toll, welds solid; the keeper’s earlier il-guess was wil’s toll-ghost
+  - *source: All-Coinages concordance #232 (HTML reference)*
+
+## H
+
+- **hafn** *(author form)* — burn  `[active]`
+  - *source: All-Coinages concordance #285 (LDS PDF)*
+- **hafn (noun: Hafnó)** — burn
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Hafnó** *(author form)* — burn (noun)  `[active]`
+  - *source: All-Coinages concordance #286 (LDS PDF)*
+- **hagg** — high  `[coined]`
+  - pron. “7uhck”
+  - ledger: ME heigh; IS hár; GA ard; EU garai; DE hoch; LA altus; CY uchel; DZ —; GRC hypsēlos; SA ucca; Q tára; ON hár
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Hair** — hail  `[coined]`
+  - pron. “7'uh'ihr”
+  - ledger: ME hailen; IS heilsa; GA beannaigh; EU agurtu; DE begrüßen; LA salutare; CY cyfarch; DZ —; GRC aspazesthai; SA abhi-√vad; Q aiya (interj.); ON heilsa
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Heatth** *(numeral (year series))* — 57
+  - year-series numeral · base 2+30 (base-60 pair-stem). Pair: Heatth 57 (odd, bare) / Gheatth 58 (even, lenited). Year names: A-B = A×60 + B, hyphen-joined, second element bare. This form: odd · bare stem.
+  - *source: session 2026-07-21, the maker*
+- **Herhic** — creak  `[coined]`
+  - pron. “H7eh-hrihk”
+  - ledger: ME creken; IS braka; GA díosc; EU kirrinka; DE knarren; LA stridere; CY gwichian; DZ —; GRC trizein; SA —; Q —; ON braka
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Hhílty** — gun  `[coined]`
+  - pron. “hee'el-dee”
+  - ledger: ME gonne; IS byssa; GA gunna; EU su-arma; DE Schusswaffe; LA sclopetum; CY gwn; DZ menda; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Him** — ice
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **hín** *(noun)* — man
+  - the head Noun, guesting inside the standard-pronoun: Fæ’hín-iy’ær “a man … than fær”
+  - *source: reference §2*
+- **Hín e Gree** *(noun)* — humour  `[active]`  ↳ of Gree
+  - completes 2.1.1.4.8’s three roads: Hín e Gree , lus Gree e lus Hín , æœá-e Gree (2.1.1.4.8)
+  - *source: All-Coinages concordance #289 (HTML reference + LDS PDF)*
+- **hín-iy** *(part.)* — than  `[active]`  ↳ of iy
+  - corrected by decree from earlier il (which remains “multiple”); stands free in predication ( Holdhmÿa iy tens ), hangs by the tmeter inside tmesis ( hín-iy )
+  - *source: All-Coinages concordance #290 (HTML reference + LDS PDF)*
+- **holdh** *(adjective)* — tall
+  - holdhmÿa “taller” — the tetrad as degree, “positively contrary” (sealed 1.2.2.3.3)
+  - *source: reference §2*
+- **holdhmÿa** *(adjective | clitic)* — tall · comparative - “positively contrary”  `[active]`  ↳ of holdh, holdh | mÿa, mÿa
+  - holdhmÿa “taller” - the tetrad as degree, “positively contrary” (sealed 1.2.2.3.3) | weld of ’ma + ’ya by decree (replaces the sequence mÿa); holdhmÿa “taller”
+  - *source: All-Coinages concordance #292 (HTML reference + LDS PDF)*
+- **Holdhmÿa iy tens** *(part.)* — than  `[active]`  ↳ of iy
+  - corrected by decree from earlier il (which remains “multiple”); stands free in predication ( Holdhmÿa iy tens ), hangs by the tmeter inside tmesis ( hín-iy )
+  - *source: All-Coinages concordance #293 (HTML reference + LDS PDF)*
+- **hoy** — cold
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Hrádai** *(noun)* — crown
+  - *source: reference §2*
+- **Hthom** *(Noun)* — World
+  - splits Hth’—…—’om — swallows whole propositions; Hthom’t “worldn’t” (2.1.1.2.8)
+  - *source: reference §2*
+- **Hth’-…-’om** *(Noun)* — World  `[active]`  ↳ of Hthom
+  - splits Hth’-…-’om - swallows whole propositions ; Hthom’t “worldn’t” (2.1.1.2.8)
+  - *source: All-Coinages concordance #296 (HTML reference)*
+- **Hthom’t** *(Noun)* — World  `[active]`  ↳ of Hthom
+  - splits Hth’-…-’om - swallows whole propositions ; Hthom’t “worldn’t” (2.1.1.2.8)
+  - *source: All-Coinages concordance #298 (HTML reference + LDS PDF)*
+- **huethnea** *(verb)* — serve  `[active]`  ↳ of ghuethn
+  - past ghuethnea ; toll-paid huethnea when tmesis-embedded (gh a hard-consonant payer) (2.1.1.4.11)
+  - *source: All-Coinages concordance #299 (HTML reference + LDS PDF)*
+- **huffach** — short
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+
+## I
+
+- **í** *(pronoun)* — it
+  - heads the resumptive-í emphasis frame (1.11.2.2.2.3) — ledger question in §12 Stack-r2: 'Scræsach í bhie' (tricky it is) · 'Dúe After sain í bhie' · 'Sísthurn Fælaê … í gæn'. 3sg pronoun in live use.
+  - *source: reference §2*
+- **Î** — image  `[coined]`
+  - pron. “eye”
+  - ledger: ME ymage; IS mynd; GA íomhá; EU irudi; DE Bild; LA imago; CY delwedd; DZ —; GRC eikōn; SA pratimā; Q emma; ON mynd
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Îæth** *(numeral (year series))* — 27
+  - year-series numeral · base 2+30 (base-60 pair-stem). Pair: Îæth 27 (odd, bare) / Ghîæth 28 (even, lenited). Year names: A-B = A×60 + B, hyphen-joined, second element bare. This form: odd · bare stem.
+  - *source: session 2026-07-21, the maker*
+- **Iarn** — iron  `[coined]`
+  - pron. “ih'uh'rn”
+  - ledger: ME iren; IS járn; GA iarann; EU burdina; DE Eisen; LA ferrum; CY haearn; DZ chag; GRC sidēros; SA ayas; Q anga; ON járn
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Iarnachyathaí** *(Noun)* — technology
+  - the maker’s bracket: Iarn-ach-ya[th]-aí (2026-07-16)
+  - *source: reference §2*
+- **Iarnbha** *(noun)* — blacksmith
+  - iron-smith
+  - *source: reference §2*
+- **Iarnimff** — cyborg  `[coined]`
+  - pron. “Ih'uh'rr-nymph”
+  - ledger: ME —; IS sæborg; GA cibearg; EU ziborg; DE Cyborg; LA —; CY seiborg; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Îcłách** — likely  `[coined]`
+  - pron. “Ike-lyayk”
+  - ledger: ME likli; IS líklegur; GA dóchúil; EU —; DE wahrscheinlich; LA verisimilis; CY tebygol; DZ —; GRC eikos; SA sambhāvya; Q —; ON líkligr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **îcýalaíách** — probable  `[coined]`
+  - pron. “eye-kyuh-luh'ih'ayk”
+  - ledger: ME probable; IS líklegur; GA dócha; EU gertagarri; DE wahrscheinlich; LA probabilis; CY tebygol; DZ —; GRC eikos; SA sambhāvya; Q —; ON líkligr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **-ië** *(adv.)* — just, merely (“just-by”)  `[active]`  ↳ of nirïë
+  - niri + -ië (“that’s all” - the maker); the i-i seam writes ï , cf. niïl ‹ ni + il; opens the clefted-P frame; capitalised in corpus only sentence-initially
+  - *source: All-Coinages concordance #305 (HTML reference)*
+- **ië** *(suffix)* — future morph
+  - detachable; prefixes in tmetic relatives (’Ië’…) and on the copula (iëao); suffixes to Nouns as measure-adverbial “by-X”: mêdhië, nirïë — the Noun decapitalises on departure
+  - *source: reference §2*
+- **Iëao As í iëátea** *(prefix)* — the perfect former  `[active]`  ↳ of stíl-
+  - Ten stílsótea ; the double pluperfect Ten úteo tes St’sót-sót’íl stílgænea ; future perfect Iëao As í iëátea (gate S10)
+  - *source: All-Coinages concordance #307 (HTML reference + LDS PDF)*
+- **iëát** *(verb-form)* — will-do
+  - the ië- future face on át (gate S6)
+  - *source: reference §2*
+- **ïegæn't** *(verb (fused negative, future))* — will-not-give  `[working]`
+  - 'mis ainteith Arbhenu ïegæn't' — will not give our first event.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **iësulæn** *(verb)* — dig  `[active]`  ↳ of sulæn
+  - attested as iësulæn “will-dig” - the ië- future worn plainly (1.12.1.2.3)
+  - *source: All-Coinages concordance #309 (HTML reference + LDS PDF)*
+- **ïeythërîea** — again  `[coined]`
+  - pron. “lit. iteratedly”; alt. pron. “ih-eh'eye'tt-euh-rye-eh-uh”
+  - ledger: ME ayein; IS aftur; GA arís; EU berriro; DE wieder; LA iterum; CY eto; DZ —; GRC palin; SA punar; Q ata; ON aptr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **ígherác** — pretend  `[coined]`
+  - pron. “eehss-theh-rayk”
+  - ledger: ME pretenden; IS þykjast; GA lig ort; EU itxurak egin; DE vortäuschen; LA simulare; CY cymryd ar; DZ —; GRC prospoieisthai; SA √chal; Q —; ON láta sem
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Îië** — screen  `[coined]`
+  - pron. “Eye'ih-eh'eh”
+  - ledger: ME scren; IS skjár; GA scáileán; EU pantaila; DE Bildschirm; LA —; CY sgrin; DZ —; GRC —; SA paṭa; Q —; ON skjár
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **îiełocë** — lockscreen  `[coined]`
+  - pron. “Eye-ih'ehl-lyohk-eh'e”
+  - ledger: ME —; IS lásskjár; GA scáileán glasála; EU blokeo-pantaila; DE Sperrbildschirm; LA —; CY sgrin gloi; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **ïíst** — initial  `[coined]`
+  - pron. “e'eh'ee'ihst”
+  - ledger: ME —; IS upphaflegur; GA tosaigh; EU hasierako; DE anfänglich; LA initialis; CY cychwynnol; DZ —; GRC prōtos; SA ādya; Q minya; ON fyrstr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Iíuu!** — delight-word
+  - *source: Final-Boss Haul · Semantic fields (2026-07-17)*
+- **il** *(article | part.)* — a, an (indefinite) · than  `[active]`  ↳ of iy, niïl, niïl | iy
+  - compound: ni “fewer-than” + il “multiple” | corrected by decree from earlier il (which remains “multiple”); stands free in predication ( Holdhmÿa iy tens ), hangs by the tmeter inside tmesis ( hín-iy )
+  - *source: All-Coinages concordance #310 (HTML reference)*
+- **Íláty** — receptacle  `[coined]`
+  - pron. “Eeh-lay-tee”
+  - ledger: ME receptacle; IS ílát; GA gabhdán; EU ontzi; DE Behältnis; LA receptaculum; CY llestr; DZ —; GRC angeion; SA pātra; Q calpa; ON ílát
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Ílthasr** *(Noun (-r being))* — receptacle-being
+  - 'Mao Ílthasr yiosnÿ dué yelSœinaí-aoya' — your receptacle for any-sound.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **ílu** — small
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Imadachaí** *(Noun)* — substitution
+  - of upland children; with Fœdh-fœdhýa 'the stealing-of'.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **immi** — suck
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **in** *(preposition)* — at (temporal)
+  - In As “at Eight”
+  - *source: reference §2*
+- **’in   ’n** *(compound (Sin + air))* — as per the taking-note of - topic marker  `[active]`  ↳ of S’air’n
+  - Sin-tmesis, second crown beside S’aige’in ; note the ’in   ’n seam-elision (§12) (1.12.1)
+  - *source: All-Coinages concordance #315 (HTML reference)*
+- **In As** *(numeral (Noun) | preposition)* — eight · at (temporal)  `[active]`  ↳ of As, As | in, in
+  - In As “at Eight”
+  - *source: All-Coinages concordance #314 (HTML reference + LDS PDF)*
+- **Ínhe** *(numeral (year series))* — 43
+  - year-series numeral · base 2+30 (base-60 pair-stem). Pair: Ínhe 43 (odd, bare) / Ghínhe 44 (even, lenited). Year names: A-B = A×60 + B, hyphen-joined, second element bare. This form: odd · bare stem.
+  - *source: session 2026-07-21, the maker*
+- **Insaig** — vote  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **Insaig-insaig** *(verbal noun (reduplicated))* — voting  ↳ of Insaig
+  - Reduplicated verbal noun.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **intîf** — arrive  `[coined]`
+  - pron. “in-dive”
+  - ledger: ME ariven; IS koma; GA sroich; EU iritsi; DE ankommen; LA advenire; CY cyrraedd; DZ —; GRC aphikneisthai; SA ā-√gam; Q ten-; ON koma
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **iocías** *(demonstrative (pl.))* — those
+  - compositional, not a new root — ios ‘that’ + cías ‘their/them’, “that-them”; replaces lus as the partitive whole-marker in this scenario (2.1.1.4.19)
+  - *source: reference §2*
+- **Ióggu** — mission  `[coined]`
+  - pron. “Iowe'k-ah”
+  - ledger: ME —; IS erindi; GA misean; EU misio; DE Auftrag; LA missio; CY cenhadaeth; DZ —; GRC apostolē; SA niyoga; Q —; ON erendi
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **ios** *(demonstrative / complementiser)* — that; the frozen cleft “[it is] that”
+  - demonstrative, relative complementiser, AND the question-cleft — mysteriously bound to thas, elsewhere by resonance (§9); ios thurn “there”. Dropped in echoes — even thas loses it there. Compounds with cías as iocías ‘those’ (2.1.1.4.19).
+  - *source: reference §2*
+- **ios ærmuch atá fæ** *(verb (be))* — is / are - the form that accompanies ios  `[active]`  ↳ of atá
+  - ios ærmuch atá fæ
+  - *source: All-Coinages concordance #318 (HTML reference + LDS PDF)*
+- **ios thas** — thing  `[coined]`
+  - pron. “that what”; alt. pron. “yohss tuhss”
+  - ledger: ME thing; IS hlutur; GA rud; EU gauza; DE Ding; LA res; CY peth; DZ cala; GRC chrēma; SA vastu; Q nat; ON hlutr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **ios thurn** *(demonstrative / complementiser)* — that; the frozen cleft “[it is] that”  `[active]`  ↳ of ios
+  - demonstrative, relative complementiser, AND the question-cleft - mysteriously bound to thas , elsewhere by resonance (§9); ios thurn “there”. Dropped in echoes - even thas loses it there. Compounds with cías as iocías ’those’ (2.1.1.4.19).
+  - *source: All-Coinages concordance #319 (HTML reference + LDS PDF)*
+- **ios thüs** — then  `[coined]`
+  - pron. “that when”; alt. pron. “yohss toohss”
+  - ledger: ME thanne; IS þá; GA ansin; EU orduan; DE dann; LA tum; CY yna; DZ dene; GRC tote; SA tataḥ; Q tá; ON þá
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **ios uaothas** — something  `[coined]`
+  - pron. “yóss wow-tuhss”
+  - ledger: ME som thing; IS eitthvað; GA rud éigin; EU zerbait; DE etwas; LA aliquid; CY rhywbeth; DZ —; GRC ti; SA kiṃcit; Q nat; ON eitthvat
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **ios yelthas** — anything  `[coined]`
+  - pron. “thing=what+that”; alt. pron. “ih-ohss yell-tuhss”
+  - ledger: ME any thing; IS hvað sem er; GA aon rud; EU ezer; DE irgendetwas; LA quidquam; CY unrhyw beth; DZ —; GRC hotioun; SA kiṃcit; Q aiqua; ON nǫkkut
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **iosaoya** *(text-deictic)* — farther along (the yet-to-be-said)
+  - cataphoric far (1.5.1.6)
+  - *source: reference §2*
+- **iosiya** *(text-deictic)* — farther (direction-unspecified)
+  - (1.5.1.6)
+  - *source: reference §2*
+- **iosiyao** *(text-deictic)* — farther back (the earlier-said; “the former”)
+  - the six-cell text-deixis paradigm (1.5.1.6): sís/ios × back (-iyao) / along (-aoya) / plain (-iya); “along” is cataphoric — the about-to-be-said. Chunk-order in the direction pair mirrored (observed, not decomposed)
+  - *source: reference §2*
+- **iostá** *(cleft-closer)* — UNCLEFTING-that
+  - etymologically ios + atá — but only etymologically (the maker): grammaticalised as the declefter, for occasions that can’t otherwise be cleanly declefted; gloss “the de-clefting that”; closes what y-…nÿ opened; doctrined the manual de-clefter — deployed against ambiguity (1.11.2.2.2.2)
+  - *source: reference §2*
+- **ios-thurn** — there
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **iosthurn** *(adverb)* — there  `[working]`
+  - Cf. sísthurn 'here'.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **ír** *(possessive)* — its
+  - beside fær ‘his/her’ — an animate/inanimate possessive split, unwitnessed before now; light fork, not pressed (§12) (2.1.1.4.12)
+  - *source: reference §2*
+- **irá** *(noun (direction))* — left
+  - partner attested: íxeis “right(-side)”, duíxeis “rightward”
+  - *source: reference §2*
+- **Íra** — leftside
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Îraigeaië** — screenshot  `[coined]`
+  - pron. “Eye-ruh'ih-geh'uh-ih'eh”
+  - ledger: ME —; IS skjáskot; GA gabháil scáileáin; EU pantaila-argazki; DE Bildschirmfoto; LA —; CY sgrinlun; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **írsifarach** *(adjective)* — silvery
+  - List form. The TEXT reads sírffrach — fork, awaiting decree (F2).
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **is** *(verb (be))* — is (3sg present, attested)
+  - Æœá-e Fía fæ is (2.1.1.4); beside bhies (present, general) — division or free variation, one word
+  - *source: reference §2*
+- **Isc** *(noun)* — fish
+  - corrected from *Isch
+  - *source: reference §2*
+- **í-sê** *(pronoun (reflexive))* — itself
+  - the sê-tetrad (1.6.5)
+  - *source: reference §2*
+- **isfar** — white
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Isfar óghs-e** — bone-white
+  - *source: Final-Boss Haul · Semantic fields (2026-07-17)*
+- **Ithłooch** — little  `[coined]`
+  - pron. “Ihtt-lyoohk”
+  - ledger: ME litel; IS lítill; GA beag; EU txiki; DE klein; LA parvus; CY bach; DZ chungku; GRC mikros; SA alpa; Q pitya; ON lítill
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **íthó** — drown  `[coined]`
+  - pron. “ee-toe”
+  - ledger: ME drounen; IS drukkna; GA báigh; EU ito; DE ertrinken; LA submergi; CY boddi; DZ —; GRC apopnigesthai; SA ni-√majj; Q quor-; ON drukkna
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **ítspa** — whit  `[coined]`
+  - pron. “ee-tzpuh”
+  - ledger: ME whit; IS vitund; GA pioc; EU izpi; DE Deut; LA hilum; CY mymryn; DZ —; GRC akarēs; SA leśa; Q —; ON hót
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Íun** — door  `[coined]`
+  - pron. “Ee-ahn”
+  - ledger: ME dore; IS hurð; GA doras; EU ate; DE Tür; LA ianua; CY drws; DZ go; GRC thyra; SA dvāra; Q fenna; ON hurð
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **iw** — flap  `[coined]`
+  - pron. “Ihw”
+  - ledger: ME flappen; IS blaka; GA buail; EU astindu; DE schlagen; LA plaudere; CY fflapio; DZ —; GRC pteryssesthai; SA —; Q —; ON blaka
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Íxeis** — rightside
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **íxeis** *(noun)* — right(-side)
+  - closes irá’s missing partner
+  - *source: reference §2*
+- **ixixaí** *(Noun)* — unicorn; literally “singularity”
+  - tmesis-attested: Ia’ixixaí’rnach, Ch’ixixaí’ardea; the -aí shimmer apparent (2026-07-16)
+  - *source: reference §2*
+- **Ixixaíyon** *(Noun)* — nightmare
+  - literally “unicorn-of-the-night” — ixixaí + yon (the maker, interim coining, 2026-07-16)
+  - *source: reference §2*
+- **ixyff** — freeze
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **iy** *(part.)* — than
+  - corrected by decree from earlier il (which remains “multiple”); stands free in predication (Holdhmÿa iy tens), hangs by the tmeter inside tmesis (hín-iy)
+  - *source: reference §2*
+- **iy mæ silgá** *(verb)* — think  `[active]`  ↳ of silgá
+  - iy mæ silgá “than you think”
+  - *source: All-Coinages concordance #338 (HTML reference + LDS PDF)*
+- **-iya** *(suffix)* — one-who / that-which (per the nearest sísiya or íosiya)
+  - Agentive-relativising: Thérafthyiya 'therapist', Líciya 'body-one'. Her note kept verbatim.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Iyao** — back  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **Iyfwuludao** — backlash  `[coined]`
+  - pron. “Ih'ehv-wool-ooth-aow”
+  - ledger: ME —; IS bakslag; GA —; EU —; DE Gegenreaktion; LA —; CY adlach; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Iyitê** — guts
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Îy-îy** — pic  `[coined]`
+  - pron. “Eye-yeye-iy”
+  - ledger: ME —; IS mynd; GA pictiúr; EU argazki; DE Foto; LA —; CY llun; DZ par; GRC —; SA citra; Q emma; ON mynd
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+
+## L
+
+- **Łærmuê** *(Noun (plural))* — the noises
+  - 'Thas yŁærmuê mæ ygyg' — what noises you eke.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Laff** *(noun)* — slacking  `[working]`
+  - 'Gi'regéar'gýa nïil Laff e sæánách Rimái afTolea' — the jaw-region a slacking of negative space filled.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **laí** *(verb)* — see, saw
+  - *source: reference §2*
+- **laí** — see
+  - Stack-2: 'say' — 'o laí o — efui Laí-laí'thte — ygyg' (and say and — saying-not — eke). Forks: laí 'see' (haul) vs laí 'say' (stack-2), with saí 'say' already canon. Homograph or slip: awaiting decree.
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Laíaí** — sight  `[coined]`
+  - pron. “Lie-eye”
+  - ledger: ME sighte; IS sjón; GA radharc; EU ikusmen; DE Sehkraft; LA visus; CY golwg; DZ —; GRC opsis; SA dṛṣṭi; Q cen; ON sjón
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Laíaí** — vision  `[coined]`
+  - pron. “lie-eye”; same as sight
+  - ledger: ME visioun; IS sýn; GA fís; EU ikuspen; DE Vision; LA visio; CY gweledigaeth; DZ nangwa; GRC horama; SA darśana; Q olos; ON sýn
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Laíaíýalaílaí** — sightseeing  `[coined]`
+  - pron. “Lie-eye-yuh-lie-lie”
+  - ledger: ME —; IS skoðunarferð; GA fámaireacht; EU —; DE Besichtigung; LA —; CY gweld y golygfeydd; DZ —; GRC theōria; SA deśāṭana; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **laías** *(suffix)* — echo suffix (vowel-harmonising)  `[active]`  ↳ of -as
+  - laí laías , gæe gæeäs , Ghusci Ghuscias
+  - *source: All-Coinages concordance #341 (HTML reference + LDS PDF)*
+- **Lain** *(adjective)* — beautiful
+  - Or’lain’il / Ro’lain’il; near-synonym fal
+  - *source: reference §2*
+- **Laiyin** — watch  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **Łamis** *(Noun)* — saliva
+  - the Ł-family grows (2.1.1.2.8)
+  - *source: reference §2*
+- **lang** — lick  `[coined]`
+  - pron. “luhng”
+  - ledger: ME likken; IS sleikja; GA ligh; EU miazkatu; DE lecken; LA lambere; CY llyfu; DZ dag-ni; GRC leichein; SA √lih; Q lav-; ON sleikja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Langaí** — tongue
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Langaír** *(noun)* — language(s)
+  - capitalised as a Noun Stack-2 uses for 'tongue' — 'Mao Langaír dúfrœdh mæ rifæn' (your tongue lengthwise you tear) — but the lexicon already has Langaí 'tongue' (minimal pair, final -r). Register choice or fork: unruled.
+  - *source: reference §2*
+- **łathn** *(Verb)* — kill
+  - the plain-repetition attestation: Fær mæ łathn! Łathn! (1.11.2.2.2.1)
+  - *source: reference §2*
+- **Law** — dream  `[coined]`
+  - pron. “Luhw”
+  - ledger: ME drem; IS draumur; GA brionglóid; EU amets; DE Traum; LA somnium; CY breuddwyd; DZ milam; GRC oneiros; SA svapna; Q olos; ON draumr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Lawubœegh** — dream-road
+  - *source: Final-Boss Haul · Semantic fields (2026-07-17)*
+- **Łax** — lack  `[coined]`
+  - pron. “lyuhks”
+  - ledger: ME lak; IS skortur; GA easpa; EU gabezia; DE Mangel; LA inopia; CY diffyg; DZ —; GRC endeia; SA abhāva; Q penya; ON skortr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Łaxaí** — slack  `[coined]`
+  - pron. “lyuhks-uh'ih”
+  - ledger: ME slak; IS slakur; GA scaoilte; EU lasai; DE schlaff; LA laxus; CY llac; DZ lhö; GRC chalaros; SA śithila; Q —; ON slakr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **leafæn** *(Verb)* — melt
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **leagístach** *(adjective)* — elastic
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Lebatscúne** — respect  `[coined]`
+  - pron. “Leh-buh-skooh-neh”
+  - ledger: ME respect; IS virðing; GA meas; EU begirune; DE Achtung; LA reverentia; CY parch; DZ —; GRC aidōs; SA ādara; Q áya; ON virðing
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Lebend** — life  `[coined]`
+  - pron. “lehb-ehnth”
+  - ledger: ME lif; IS líf; GA beatha; EU bizitza; DE Leben; LA vita; CY bywyd; DZ tshe; GRC bios; SA jīvita; Q cuilë; ON líf
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Lebendach** *(adjective)* — alive
+  - German lebendig-shaped.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Lëc** — lid  `[coined]`
+  - pron. “leh'ek”
+  - ledger: ME lid; IS lok; GA claibín; EU estalki; DE Deckel; LA operculum; CY caead; DZ —; GRC pōma; SA pidhāna; Q —; ON lok
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **leff** — live
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Łége** — route  `[coined]`
+  - pron. “Lyay-geh”
+  - ledger: ME route; IS leið; GA bealach; EU ibilbide; DE Strecke; LA iter; CY ffordd; DZ lam; GRC hodos; SA mārga; Q tië; ON leið
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Łeid** — mud  `[coined]`
+  - pron. “lyeh'ith”
+  - ledger: ME mudde; IS leðja; GA clábar; EU lokatz; DE Schlamm; LA lutum; CY llaid; DZ dam; GRC pēlos; SA paṅka; Q luxo; ON leir
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Łeidhœrþ** *(author form)* — hunt (noun)  `[active]`
+  - *source: All-Coinages concordance #350 (LDS PDF)*
+- **łeit** *(author form)* — hunt  `[active]`
+  - *source: All-Coinages concordance #351 (LDS PDF)*
+- **łeit (noun: Łeidhœrþ)** — hunt
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Lén** — ley  `[coined]`
+  - pron. “leh'en”
+  - ledger: ME leye; IS —; GA —; EU —; DE —; LA —; CY —; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **léntæn** — bend  `[coined]`
+  - pron. “layn-tee'en”
+  - ledger: ME benden; IS beygja; GA lúb; EU makurtu; DE biegen; LA flectere; CY plygu; DZ —; GRC kamptein; SA √nam; Q cúna-; ON beygja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **lesenach** *(adjective)* — pubic
+  - 'lesenach Rhëw' — the pubic triangle.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Le’sídia’th** *(author form)* — half-sídia  `[active]`
+  - *source: All-Coinages concordance #348 (LDS PDF)*
+- **letaí** — look  `[coined]`
+  - pron. “leh-duh'i”
+  - ledger: ME loken; IS líta; GA féach; EU begiratu; DE schauen; LA spectare; CY edrych; DZ ta-ni; GRC blepein; SA √īkṣ; Q cen-; ON líta
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Lethr** *(noun)* — hobbit, halfling
+  - (1.2.2.3)
+  - *source: reference §2*
+- **Léy** — call  `[coined]`
+  - pron. “Lay-ee”
+  - ledger: ME callen; IS kalla; GA glaoigh; EU deitu; DE rufen; LA vocare; CY galw; DZ —; GRC kalein; SA ā-√hve; Q yal-; ON kalla
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **lhanc** — green
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Lhanc wíc-e** — water-green
+  - *source: Final-Boss Haul · Semantic fields (2026-07-17)*
+- **lheifs** *(adjective)* — grey
+  - Text form lheif: 'lus V lheif ∆ guiáł V lheif ∆ Yac' — the …grey… !gold! …grey… strobe.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Líc** *(noun)* — body
+  - Possessed: Líciya 'body-one/-of' — 'byclæírea Líciya Yon-e' — enclothed Night's body.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Łicaíách** — physical  `[coined]`
+  - pron. “Lyick-eye-ayk”
+  - ledger: ME phisical; IS líkamlegur; GA corpartha; EU fisiko; DE körperlich; LA corporeus; CY corfforol; DZ —; GRC sōmatikos; SA śārīra; Q —; ON líkamligr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **lich** *(author form)* — smell  `[active]`
+  - *source: All-Coinages concordance #355 (LDS PDF)*
+- **lich (noun: Lich-lich)** — smell
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Lich-lich** *(author form)* — smell (noun)  `[active]`
+  - *source: All-Coinages concordance #356 (LDS PDF)*
+- **Lichsyas** — beverage  `[coined]`
+  - pron. “lihckhss-yuhss”
+  - ledger: ME beverage; IS drykkur; GA deoch; EU edari; DE Getränk; LA potio; CY diod; DZ —; GRC poton; SA pāna; Q yulda; ON drykkr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Łícintac** — shroud  `[coined]`
+  - pron. “Lyee-cihn-duhc”
+  - ledger: ME shroud; IS líkklæði; GA taiséadach; EU hil-oihal; DE Leichentuch; LA sindon; CY amdo; DZ —; GRC sindōn; SA —; Q —; ON líkblæja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Łif** *(Noun)* — Hell
+  - the Ł-onset family beside łathn, Łítarthír (1.12.1.2.1)
+  - *source: reference §2*
+- **Lifía** — real  `[coined]`
+  - pron. “Lih-vih'uh”
+  - ledger: ME real; IS raunverulegur; GA fíor; EU erreal; DE wirklich; LA realis; CY real; DZ ngöma; GRC alēthinos; SA sat; Q anwa; ON sannr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **límés** — align  `[coined]`
+  - pron. “lee-mace”
+  - ledger: ME —; IS samstilla; GA ailínigh; EU lerrokatu; DE ausrichten; LA —; CY alinio; DZ —; GRC stoichein; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **linchs** *(verb)* — drinks
+  - *source: reference §2*
+- **linchs** — drink
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Linchsy** — liver
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Linwhárt** — hairline  `[coined]`
+  - pron. “Lihn-hway'rrd”
+  - ledger: ME —; IS —; GA —; EU —; DE Haaransatz; LA —; CY —; DZ —; GRC —; SA keśānta; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **líp** — paste  `[coined]`
+  - pron. “leep”
+  - ledger: ME past; IS líma; GA taos; EU ore; DE Paste; LA —; CY past; DZ —; GRC kolla; SA piṣṭa; Q —; ON líma
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Łítarthír** *(Noun)* — Hell  `[active]`  ↳ of Łif
+  - the Ł-onset family beside łathn, Łítarthír (1.12.1.2.1)
+  - *source: All-Coinages concordance #360 (HTML reference)*
+- **lith** *(verb)* — run
+  - Ai’lith!
+  - *source: reference §2*
+- **Łithax** — fact  `[coined]`
+  - pron. “Lyih-tuhcks”
+  - ledger: ME —; IS staðreynd; GA fíric; EU egitate; DE Tatsache; LA factum; CY ffaith; DZ —; GRC pragma; SA vastu; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Łiuafth** *(Noun)* — heaven
+  - ułiuafth “Heavensward” — small inside the u-complex, the swallowed-word law (2.1.1.3.2)
+  - *source: reference §2*
+- **Líuu!** *(author form)* — delight-word  `[active]`
+  - *source: All-Coinages concordance #363 (LDS PDF)*
+- **łix** *(P-modifier)* — exact
+  - sealed at workbook 1.2.4.3; rides the cleft before iostá
+  - *source: reference §2*
+- **łixach** *(author form)* — right / correct  `[active]`
+  - *source: All-Coinages concordance #365 (LDS PDF)*
+- **łixach / ghéalíl** — right/correct
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Localoc** — lock  `[coined]`
+  - pron. “Lohk-uh-lohk”
+  - ledger: ME lok; IS lás; GA glas; EU sarraila; DE Schloss; LA sera; CY clo; DZ gochag; GRC kleis; SA tālaka; Q —; ON láss
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Locy** — latch  `[coined]`
+  - pron. “Lock-ee”
+  - ledger: ME lacche; IS klinka; GA laiste; EU krisket; DE Klinke; LA pessulus; CY clicied; DZ —; GRC klēithron; SA argala; Q —; ON loka
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Łœrmix** — rectangle  `[coined]`
+  - pron. “Lyeuhr-mihks”
+  - ledger: ME —; IS rétthyrningur; GA dronuilleog; EU laukizuzen; DE Rechteck; LA rectangulum; CY petryal; DZ —; GRC heteromēkes; SA āyata; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Ł'oob-e'ix** — before / exactly under-of  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **Lore** — colour  `[coined]`
+  - pron. “lohr-eh”
+  - ledger: ME colour; IS litur; GA dath; EU kolore; DE Farbe; LA color; CY lliw; DZ —; GRC chrōma; SA varṇa; Q quilë; ON litr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Lóscó** — phrase  `[coined]`
+  - pron. “Low-show”
+  - ledger: ME —; IS orðasamband; GA frása; EU esapide; DE Wendung; LA locutio; CY ymadrodd; DZ —; GRC phrasis; SA ukti; Q —; ON orðtak
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **lósëlós** — obvious  `[coined]`
+  - pron. “Low'ss-eh'e-low'ss”
+  - ledger: ME —; IS augljós; GA follasach; EU begi-bistako; DE offensichtlich; LA manifestus; CY amlwg; DZ —; GRC dēlos; SA vyakta; Q —; ON augljóss
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Lóst** — fault  `[coined]`
+  - pron. “low'st”
+  - ledger: ME faute; IS sök; GA locht; EU erru; DE Schuld; LA culpa; CY bai; DZ —; GRC aitia; SA doṣa; Q —; ON sǫk
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **-luai-** *(interjection)* — aiee!  `[working]`
+  - tmesis guest of pure cry: Ai'æ'titlop -luai-.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **luaræn** — accelerate  `[coined]`
+  - pron. “lah-uh-ree'en”
+  - ledger: ME —; IS hraða; GA luathaigh; EU bizkortu; DE beschleunigen; LA accelerare; CY cyflymu; DZ —; GRC epitachynein; SA √tvar; Q horta-; ON hraða
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **łúcraí** — yell  `[coined]`
+  - pron. “lyooh-cry”
+  - ledger: ME yellen; IS öskra; GA liúigh; EU garrasi; DE schreien; LA vociferari; CY bloeddio; DZ —; GRC krazein; SA √krand; Q —; ON gjalla
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Lueffu** — ashes
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Ług** — air  `[coined]`
+  - coined against the twelve-language ledger
+  - ledger: ME air; IS loft; GA aer; EU aire; DE Luft; LA aer; CY awyr; DZ —; GRC aēr; SA vāyu; Q vista; ON lopt
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **ługfách** — aerial  `[coined]`
+  - pron. “lyahg-vayk”
+  - ledger: ME —; IS loft-; GA aerga; EU aireko; DE luftig; LA aerius; CY awyrol; DZ —; GRC aerios; SA khecara; Q vilina; ON loptligr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Łúgr** — fire
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Łúgrchain** *(Noun)* — fireman
+  - mith Łúgrchainr-mé “we firemanbeing-with” — the mé-apposition road (gate S2)
+  - *source: reference §2*
+- **Łúgthom** — atmosphere  `[coined]`
+  - pron. “Lyoog-tom”
+  - ledger: ME —; IS andrúmsloft; GA atmaisféar; EU atmosfera; DE Atmosphäre; LA —; CY awyrgylch; DZ —; GRC —; SA —; Q fanyarë; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **łuíct** — moist  `[coined]`
+  - pron. “lyweehkt”
+  - ledger: ME moiste; IS rakur; GA tais; EU heze; DE feucht; LA madidus; CY llaith; DZ —; GRC hygros; SA ārdra; Q nítë; ON rakr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Lund** *(noun)* — pound
+  - Niïl Lund e Shar “a pound of sugar” (2.1.1.4.9)
+  - *source: reference §2*
+- **Lürsfs** — course  `[coined]`
+  - pron. “Leugh'ssv'ss”
+  - ledger: ME cours; IS rás; GA cúrsa; EU ibilbide; DE Lauf; LA cursus; CY cwrs; DZ —; GRC dromos; SA gati; Q —; ON rás
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **lus** *(article)* — the (definite)
+  - *source: reference §2*
+- **lus Sáinsu eës Hrádai** *(part.)* — of-the  `[active]`  ↳ of eës
+  - lus Sáinsu eës Hrádai “the task-set of-the crown”
+  - *source: All-Coinages concordance #371 (HTML reference + LDS PDF)*
+- **lus Yüain s'ráshea'in** — returned echo
+  - *source: Final-Boss Haul · Semantic fields (2026-07-17)*
+- **lus Yüain s’ráshea’in** *(author form)* — returned echo  `[active]`
+  - *source: All-Coinages concordance #372 (LDS PDF)*
+- **luth** — fight
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Lutý** — muck  `[coined]`
+  - pron. “Lah-day”
+  - ledger: ME muk; IS for; GA láib; EU lohi; DE Dreck; LA caenum; CY baw; DZ —; GRC kopros; SA mala; Q —; ON saurr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Lutýrê** *(Noun (plural))* — muckinesses
+  - the muck.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **lyn** *(verb)* — use
+  - past lynœa ‘used’ — spelled with œ rather than plain -ea, possibly a vowel-harmony variant, unconfirmed (2.1.1.4.14)
+  - *source: reference §2*
+- **łýngga** — swallow  `[coined]`
+  - pron. “lyeen-cuh”
+  - ledger: ME swolwen; IS kyngja; GA slog; EU irentsi; DE schlucken; LA deglutire; CY llyncu; DZ —; GRC katapinein; SA √gras; Q —; ON svelgja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **lynœa** *(verb)* — use  `[active]`  ↳ of lyn
+  - past lynœa ’used’ - spelled with œ rather than plain -ea, possibly a vowel-harmony variant, unconfirmed (2.1.1.4.14)
+  - *source: All-Coinages concordance #375 (HTML reference + LDS PDF)*
+- **lynraigóæn** — avail  `[coined]`
+  - pron. “linn-ruh'ihg-eaux'ee'en”
+  - ledger: ME availen; IS gagnast; GA fóin; EU baliatu; DE nützen; LA prodesse; CY tycio; DZ —; GRC ōphelein; SA upa-√yuj; Q —; ON duga
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Lyr** *(Noun)* — pound (currency)
+  - beside Lund, the weight-pound — “currency and weight pounds have different names” (2.1.1.4.21)
+  - *source: reference §2*
+- **Łyüsnÿ** *(temporal adverb)* — the-that-when(-that); the-then-when
+  - Opens the therapy flashback. Case form łyüs-e 'the-that-when-of'.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **lÿzaonth** — describe  `[coined]`
+  - pron. “leez-ount”
+  - ledger: ME descriven; IS lýsa; GA cuir síos ar; EU deskribatu; DE beschreiben; LA describere; CY disgrifio; DZ —; GRC diēgeisthai; SA √varṇ; Q —; ON lýsa
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+
+## M
+
+- **’ma** *(clitic)* — au contraire (the Danæam doch)
+  - INVARIANT; Gæn’ma, Sin’ma
+  - *source: reference §2*
+- **maæn** — contradict  `[coined]`
+  - pron. “muh-ee'en”
+  - ledger: ME —; IS andmæla; GA bréagnaigh; EU kontraesan; DE widersprechen; LA contradicere; CY gwrthddweud; DZ —; GRC antilegein; SA prati-√vac; Q —; ON mæla í mót
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **mac** *(verb)* — like
+  - ten mac “I like” (1.12.1.2)
+  - *source: reference §2*
+- **macsy** — local  `[coined]`
+  - pron. “muhk-see”
+  - ledger: ME local; IS staðbundinn; GA áitiúil; EU bertako; DE örtlich; LA localis; CY lleol; DZ —; GRC epichōrios; SA sthānīya; Q —; ON innlendr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **mæ** *(pronoun)* — you
+  - *source: reference §2*
+- **mælcen** *(verb)* — bought (≈ traded)
+  - ← maræien “trade”
+  - *source: reference §2*
+- **Mælcy** — customer  `[coined]`
+  - pron. “Meelk-ee”
+  - ledger: ME custumer; IS viðskiptavinur; GA custaiméir; EU bezero; DE Kunde; LA emptor; CY cwsmer; DZ —; GRC ōnētēs; SA kretṛ; Q —; ON kaupunautr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **mæos** *(suffix)* — absolute-possessive former  `[active]`  ↳ of -os
+  - teos “mine”, mæos “yours” (mao mæ at the seam); the kin-frame’s anatomy re-read (§12) (2.1.1.2.8)
+  - *source: All-Coinages concordance #381 (HTML reference + LDS PDF)*
+- **mäern** — warm
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Magh** *(noun)* — soldier
+  - given directly by the maker, beside its state-form Maghr (2.1.1.4.16)
+  - *source: reference §2*
+- **Maghr** *(Noun (state))* — soldier-being, soldierhood
+  - Magh + the -r state-former — the same suffix as Væxr, its fourth witness; essive-roles join become-states under one nominalizer (2.1.1.4.16)
+  - *source: reference §2*
+- **Magy** — cod  `[coined]`
+  - pron. “Muh-ghee”
+  - ledger: ME jape; IS gabb; GA magadh; EU txantxa; DE Jux; LA iocus; CY cellwair; DZ —; GRC skōmma; SA parihāsa; Q —; ON gabb
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Maíælrhië** — grandparent ("elder-Rhié")
+  - *source: Final-Boss Haul · Semantic fields (2026-07-17)*
+- **Mainyin** — bond-for-a-season
+  - *source: Final-Boss Haul · Semantic fields (2026-07-17)*
+- **maios** *(pronoun (possessive))* — yours  `[working]`
+  - '-'ya maios'ya' — yours. Cf. Mao 'your', sê-maos 'yourself'.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Malach** *(adjective)* — late
+  - *source: reference §2*
+- **Manaowr** — wall  `[coined]`
+  - pron. “Muh-now-rr”
+  - ledger: ME wal; IS veggur; GA balla; EU horma; DE Wand; LA murus; CY mur; DZ gyang; GRC teichos; SA bhitti; Q ramba; ON veggr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **mao** *(possessive)* — your
+  - 2nd-person possessive (cf. fær, cías)
+  - *source: reference §2*
+- **maræien** *(verb)* — trade
+  - *source: reference §2*
+- **marcæn** *(Verb)* — to mark
+  - 'lus Sgiesaetthum-e … marcæn' — marks the Sgiesaetthum.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **marguritha** — margarita  `[coined]`
+  - pron. “mahr-gah-rih-tuh”
+  - ledger: ME —; IS —; GA —; EU —; DE —; LA —; CY —; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Mârigalt** — emerald  `[coined]`
+  - pron. “Mar-ih-guhld”
+  - ledger: ME emeraude; IS smaragður; GA smaragaid; EU esmeralda; DE Smaragd; LA smaragdus; CY emrallt; DZ —; GRC smaragdos; SA marakata; Q —; ON smaragðr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Márr** — morning  `[coined]`
+  - pron. “may'r”
+  - ledger: ME morwe; IS morgunn; GA maidin; EU goiz; DE Morgen; LA mane; CY bore; DZ drôba; GRC orthros; SA prātar; Q arin; ON morginn
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **más** *(verb (be))* — am (1sg present)
+  - Más-ten ærmuch · Más nhœme ten
+  - *source: reference §2*
+- **Más nhœme ten** *(verb (be))* — am (1sg present)  `[active]`  ↳ of más
+  - Más-ten ærmuch · Más nhœme ten
+  - *source: All-Coinages concordance #391 (HTML reference + LDS PDF)*
+- **Más-ten ærmuch** *(pronoun | verb (be))* — I · am (1sg present)  `[active]`  ↳ of más, ten, ten | más
+  - 1st person; Más-ten ærmuch “I’m tired” | Más-ten ærmuch · Más nhœme ten
+  - *source: All-Coinages concordance #392 (HTML reference + LDS PDF)*
+- **Math** *(noun)* — mat
+  - *source: reference §2*
+- **Matthsy** *(Noun)* — teacher
+  - Matthsyr “teacher-being” — the functive: duín tes-mé Matthsyr “as a teacher” (2.1.1.4.16-amend)
+  - *source: reference §2*
+- **mawspur** — suspect  `[coined]`
+  - pron. “maow-spahr”
+  - ledger: ME suspecten; IS gruna; GA amhras; EU susmatu; DE vermuten; LA suspicari; CY amau; DZ —; GRC hypopteuein; SA √śaṅk; Q —; ON gruna
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Mâx** — mass  `[coined]`
+  - coined against the twelve-language ledger
+  - ledger: ME masse; IS massi; GA mais; EU masa; DE Masse; LA massa; CY màs; DZ —; GRC onkos; SA piṇḍa; Q —; ON þungi
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **mé** *(preposition)* — with
+  - thénu mé “whose”; too small to host tmesis — guests hyphen-dangle: mé-saige
+  - *source: reference §2*
+- **Medham** *(Noun)* — middle
+  - Medhamýa 'the middle-of': the 618th Olympiad's.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Mêdhe** *(noun)* — metre
+  - measure-adverbial mêdhië “by-a-metre” (-ië suffixed; lowercase as adverb)
+  - *source: reference §2*
+- **mêdhië** *(noun)* — metre  `[active]`  ↳ of Mêdhe
+  - measure-adverbial mêdhië “by-a-metre” (-ië suffixed; lowercase as adverb)
+  - *source: All-Coinages concordance #398 (HTML reference + LDS PDF)*
+- **Mee** *(geas-marker)* — woe-tide
+  - tiers Me’æ’e (2sg), Me’en’e (1sg); converts O •-optative to imperative — §4½
+  - *source: reference §2*
+- **mehil** — more  `[coined]`
+  - pron. “Meh7-ihl”
+  - ledger: ME more; IS meira; GA níos mó; EU gehiago; DE mehr; LA plus; CY mwy; DZ —; GRC pleon; SA bhūyas; Q —; ON meiri
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Meilstory** *(Noun)* — diving suit
+  - loan-flavoured, among the grubby walkers-in (2.1.1.2.8)
+  - *source: reference §2*
+- **Méith** — size  `[coined]`
+  - pron. “mite”
+  - ledger: ME sise; IS stærð; GA méid; EU tamaina; DE Größe; LA magnitudo; CY maint; DZ chechung; GRC megethos; SA parimāṇa; Q —; ON stœrð
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **melum** — soft  `[coined]`
+  - pron. “meh-lahm”
+  - ledger: ME softe; IS mjúkur; GA bog; EU bigun; DE weich; LA mollis; CY meddal; DZ jam; GRC malakos; SA mṛdu; Q maxa; ON mjúkr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **menscenæn** — attend  `[coined]`
+  - pron. “Mensh-en-ee'en”
+  - ledger: ME attenden; IS sinna; GA freastail; EU kasu egin; DE beachten; LA attendere; CY talu sylw; DZ —; GRC prosechein; SA ava-√dhā; Q —; ON gefa gaum
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Meos** *(pronoun)* — ours
+  - predicate possessive
+  - *source: reference §2*
+- **Mers-mers** — extra  `[coined]`
+  - pron. “merce-merce”
+  - ledger: ME —; IS auka-; GA breise; EU gehigarri; DE zusätzlich; LA —; CY ychwanegol; DZ —; GRC perittos; SA adhika; Q —; ON auka- (pref.)
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **mé-saige** *(preposition)* — with  `[active]`  ↳ of mé
+  - thénu mé “whose”; too small to host tmesis - guests hyphen-dangle: mé-saige
+  - *source: All-Coinages concordance #396 (HTML reference + LDS PDF)*
+- **Méstár** — dear  `[coined]`
+  - coined against the twelve-language ledger
+  - ledger: ME dere; IS kær; GA dil; EU maite; DE lieb; LA carus; CY annwyl; DZ —; GRC philos; SA priya; Q melda; ON kærr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **metałie** *(preposition (trailing))* — inclusive-of
+  - Wilhíæ yScéan metałie (2.1.1.4.25)
+  - *source: reference §2*
+- **Mëtmët** — amount  `[coined]`
+  - pron. “meh'ehd-meh'ehd”
+  - ledger: ME —; IS magn; GA méid; EU kopuru; DE Menge; LA quantitas; CY swm; DZ —; GRC plēthos; SA mātrā; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Mhís** *(quantifier)* — lots / much
+  - the h is native — †Mís unexisted by decree (cf. †them’s ghost †thrum); distinct from mis “our”
+  - *source: reference §2*
+- **miłió** — million  `[coined]`
+  - pron. “mih-lyih-owe”; alt. pron. “words for 216,000 and 12,960,000: thrhaithíl and thíghráied (t'hruh'it-eel”; “tee'ih-sthreye-ehth”
+  - ledger: ME milioun; IS milljón; GA milliún; EU milioi; DE Million; LA millio; CY miliwn; DZ saya; GRC —; SA prayuta; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **minach** — near
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **minách** — brief  `[coined]`
+  - pron. “mih-nayk”
+  - ledger: ME bref; IS stuttur; GA gairid; EU labur; DE kurz; LA brevis; CY byr; DZ thungku; GRC brachys; SA saṃkṣipta; Q sinta; ON skammr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Minaigísty** — notepad  `[coined]`
+  - pron. “Mihn-uh'ihg-eehss-dee”
+  - ledger: ME —; IS minnisblokk; GA ceap nótaí; EU koaderno; DE Notizblock; LA —; CY nodiadur; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Miníst** — note  `[coined]`
+  - pron. “Mihneehst”
+  - ledger: ME note; IS minnismiði; GA nóta; EU ohar; DE Notiz; LA nota; CY nodyn; DZ —; GRC hypomnēma; SA patrikā; Q —; ON rit
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Minth** — mint  `[coined]`
+  - pron. “Mihnt”
+  - ledger: ME minte; IS minta; GA miontas; EU menda; DE Minze; LA mentha; CY mintys; DZ —; GRC minthē; SA —; Q —; ON minta
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **minú** *(adjective)* — detail-sized  `[working]`
+  - Inside Ghitasiu-minú 'the detail-sized quote / pull-quote'.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+  - **worksheet gloss:** detail — pron. “mih-noo”
+  - ledger: ME —; IS smáatriði; GA mionsonra; EU xehetasun; DE Einzelheit; LA —; CY manylyn; DZ —; GRC —; SA viśeṣa; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **miny** — mini  `[coined]`
+  - pron. “mih-nee”
+  - ledger: ME —; IS smá-; GA mion-; EU mini-; DE Mini-; LA —; CY bach; DZ —; GRC mikro-; SA laghu-; Q -incë (suff.); ON smá- (pref.)
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **mioobaínách** — low  `[coined]`
+  - pron. “mih-oohb-uh'ihn-ayk”
+  - ledger: ME lowe; IS lágur; GA íseal; EU baxu; DE niedrig; LA humilis; CY isel; DZ —; GRC tapeinos; SA nīca; Q —; ON lágr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Mis** *(possessive)* — our
+  - article in existentials; never tmeses there Stack-r2 also attests 'mís' (our). Also 'mis ainteith Arbhenu'; cf. mis.
+  - *source: reference §2*
+- **Mis ssai Grainê** *(numeral)* — two  `[active]`  ↳ of ssai
+  - Mis ssai Grainê “our two graves” (1.12.1.2.3)
+  - *source: All-Coinages concordance #407 (HTML reference + LDS PDF)*
+- **Misctíul** — blemish  `[coined]`
+  - pron. “Mish-tee-ahl”
+  - ledger: ME blemisshen; IS lýti; GA smál; EU akats; DE Makel; LA macula; CY nam; DZ —; GRC kēlis; SA kalaṅka; Q —; ON lýti
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **mist** — blend  `[coined]`
+  - pron. “missed”
+  - ledger: ME blenden; IS blanda; GA measc; EU nahastu; DE mischen; LA miscere; CY cymysgu; DZ —; GRC kerannynai; SA √miśr; Q —; ON blanda
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Misteaí** — mix  `[coined]`
+  - pron. “mih-steh-uh'ih”
+  - ledger: ME medlen; IS blanda; GA measc; EU nahastu; DE mischen; LA miscere; CY cymysgu; DZ dre-ni; GRC mignynai; SA √miśr; Q —; ON blanda
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **mith** *(pronoun)* — we (revealed 1.10.2: the existential’s default donor)
+  - also substituted for I / you in neutral questions
+  - *source: reference §2*
+- **Mith ax ten’ya** *(coordinator)* — but; but-especially  `[active]`  ↳ of ax
+  - long-established (n-1 pattern; “O cruel ax fair”) - the maker asked, the study answered: yes, well-seated; today extended to the selective-emphatic office, Mith ax ten’ya (2.1.2.1.15.3)
+  - *source: All-Coinages concordance #409 (HTML reference + LDS PDF)*
+- **Mith fær-dúe** *(Noun (state))* — Cáithoorhr oothíthea cited under Cáithoorhr: general-being  `[active]`  ↳ of Cáithoorhr
+  - Cáithoor + the -r state-former - its fifth witness; Mith fær-dúe Cáithoorhr oothíthea ’we appointed him as general’ (2.1.1.4.17)
+  - *source: All-Coinages concordance #410 (HTML reference + LDS PDF)*
+- **mith Łúgrchainr-mé** *(Noun)* — fireman  `[active]`  ↳ of Łúgrchain
+  - mith Łúgrchainr-mé “we firemanbeing-with” - the mé-apposition road (gate S2)
+  - *source: All-Coinages concordance #411 (HTML reference + LDS PDF)*
+- **mithæn** — please  `[coined]`
+  - pron. “mitt-ee'en”; alt. pron. “uh'ih-tee'enn”; also a'ithæ'nn
+  - ledger: ME plesen; IS gjörðu svo vel; GA le do thoil; EU mesedez; DE bitte; LA quaeso; CY os gwelwch yn dda; DZ nang (imper.); GRC antibolō; SA kṛpayā; Q —; ON ger svá vel
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **miths** *(pronoun)* — us
+  - 1pl object; the sê-base of miths-sê — glossed by the maker (“faer, us, and them”)
+  - *source: reference §2*
+- **miths-sê** *(pronoun (reflexive/reciprocal))* — ourselves (us-self)
+  - the sê-family (1.6.5); base miths “us” — “faer, us, and them” (the maker)
+  - *source: reference §2*
+- **Miuggy** — mould  `[coined]`
+  - pron. “mew-key”
+  - ledger: ME moul; IS mygla; GA caonach liath; EU lizun; DE Schimmel; LA mucor; CY llwydni; DZ —; GRC eurōs; SA —; Q hwan; ON mygla
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Miúrroo** — louse
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **mîyánách** — miniature  `[coined]`
+  - pron. “my-yay-nayk”
+  - ledger: ME —; IS smámynd; GA mionsamhail; EU miniatura; DE Miniatur; LA —; CY manlun; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Mloiytí** — crowd  `[coined]`
+  - pron. “Mloy-tee”
+  - ledger: ME crouden; IS mannfjöldi; GA slua; EU jendetza; DE Menschenmenge; LA turba; CY torf; DZ mimang; GRC ochlos; SA vṛnda; Q rimbë; ON mannfjǫlði
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Mœs** — moss  `[coined]`
+  - pron. “Meuhss”
+  - ledger: ME mos; IS mosi; GA caonach; EU goroldio; DE Moos; LA muscus; CY mwsogl; DZ —; GRC bryon; SA śaivala; Q —; ON mosi
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Moldit** — lake
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **mordach** *(adjective)* — big
+  - sin mordach sy fær “as big as her” (2.1.1.2.7); extends toward ‘enormous’ in mordachië ‘enormously’ and mordachaí ‘enormity’ (2.2.4.4, mended 2026-07-15 — a duplicate row wrongly marking this word new has been removed)
+  - *source: reference §2*
+- **mordachaí** *(Noun (abstract))* — enormity
+  - mordach + -aí — the -aí abstract former’s fourth witness; alternate frame mordachaí-by ‘with enormity’ (2.2.4.4)
+  - *source: reference §2*
+- **mordachaí-by** *(Noun (abstract))* — enormity  `[active]`  ↳ of mordachaí
+  - mordach + -aí - the -aí abstract former ’s fourth witness; alternate frame mordachaí-by ’with enormity’ (2.2.4.4)
+  - *source: All-Coinages concordance #418 (HTML reference)*
+- **mordachië** *(adverb)* — enormously
+  - mordach + -ië; wrapped by the or…il attenuator in or’mordachië’il—’t ‘not-insufficiently-enormously’ (2.2.4.4)
+  - *source: reference §2*
+- **Mót** — fashion  `[coined]`
+  - pron. “mode”
+  - ledger: ME fasoun; IS háttur; GA faisean; EU era; DE Art; LA modus; CY modd; DZ —; GRC tropos; SA rīti; Q —; ON háttr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **mótferighæn** — control  `[coined]`
+  - pron. “Mode-verih-sthee'en”
+  - ledger: ME controllen; IS stjórna; GA rialaigh; EU kontrolatu; DE kontrollieren; LA moderari; CY rheoli; DZ —; GRC kratein; SA ni-√yam; Q tur-; ON stjórna
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Móth** — moot  `[coined]`
+  - pron. “Moat”
+  - ledger: ME mot; IS álitamál; GA —; EU eztabaidagarri; DE strittig; LA anceps; CY dadleuol; DZ —; GRC amphisbētēsimos; SA vivādāspada; Q —; ON deiluefni
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Móthíff** — motif  `[coined]`
+  - pron. “mow-teef”
+  - ledger: ME —; IS stef; GA móitíf; EU motibo; DE Motiv; LA —; CY motiff; DZ —; GRC —; SA —; Q —; ON stef
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **múlch** — good
+  - Stack-2: 'annadh múlch œr scicach' (whether good or shit). Stack-r2: múlchtma 'worse' glossed 'less-good' — decomposition (-tma privative/comparative?) an open watch.
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **múlchtma** *(adjective)* — worse (less-good)
+  - Her gloss 'less-good' kept; decomposition (-tma) open watch.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Musthës** — master  `[coined]`
+  - pron. “Mah-steess”
+  - ledger: ME maister; IS meistari; GA máistir; EU maisu; DE Meister; LA magister; CY meistr; DZ lopön; GRC despotēs; SA svāmin; Q heru; ON meistari
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **muydh** — big
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Muzóghs** — cheekbone  `[coined]`
+  - pron. “Mah-zeauxsths”
+  - ledger: ME cheke-bon; IS kinnbein; GA cnámh grua; EU masail-hezur; DE Jochbein; LA —; CY asgwrn boch; DZ —; GRC —; SA —; Q —; ON kinnbein
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **mÿa** *(clitic)* — comparative — “positively contrary”
+  - weld of ’ma + ’ya by decree (replaces the sequence mÿa); holdhmÿa “taller”
+  - *source: reference §2*
+- **myach** — heavy
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **mÿel** *(superlatives)* — more-than-any  `[active]`
+  - with variant definite articles; partitive e placements (chain B) Stack-2: 'Lus mÿel Fírladr-e ... marcæn' (marks the most length = the longest).
+  - *source: All-Coinages concordance #424 (HTML reference + LDS PDF)*
+  - **worksheet gloss:** most — pron. “mee'e'yehl”
+  - ledger: ME most; IS mest; GA is mó; EU gehien; DE meist; LA plurimum; CY mwyaf; DZ mangsho; GRC pleiston; SA bhūyiṣṭha; Q —; ON mestr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **mÿel / niyel** *(superlatives)* — more-than-any / fewer-than-any
+  - with variant definite articles; partitive e placements (chain B)
+  - *source: reference §2*
+- **mÿmomÿ** — several  `[coined]`
+  - pron. “mee-mow-mee”
+  - ledger: ME several; IS nokkrir; GA roinnt; EU hainbat; DE mehrere; LA complures; CY amryw; DZ khashe; GRC enioi; SA katipaya; Q —; ON nǫkkurir
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Myth** *(noun)* — nose
+  - *source: reference §2*
+
+## N
+
+- **neria** — new
+  - Stack-r2: 'mis neria o múlchtma ax niecscách Yáe' — our new and worse but necessary sun.
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Newth** — current  `[coined]`
+  - pron. “Neh'uh'tt”
+  - ledger: ME —; IS núverandi; GA reatha; EU egungo; DE aktuell; LA praesens; CY cyfredol; DZ —; GRC —; SA vartamāna; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **nhirma** — swim
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **nhœme** *(verb)* — come, coming
+  - *source: reference §2*
+- **nhœme** — come
+  - Stack-2: 'yios nhœme atá' (that comes is).
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Nhœme’thte** *(clitic)* — negative  `[active]`  ↳ of ’thte
+  - post-VOWEL; Nhœme’thte , scé’thte
+  - *source: All-Coinages concordance #429 (HTML reference + LDS PDF)*
+- **ni** *(article | quant.)* — a, an (indefinite) · single, singular  `[active]`  ↳ of niyail, niïl, niïl | niyail
+  - compound: ni “fewer-than” + il “multiple” | ni “fewer-than” + yail “many”
+  - *source: All-Coinages concordance #430 (HTML reference)*
+- **niaintiálch** — private  `[coined]`
+  - pron. “nih'uh'ihn-tih-aylk”
+  - ledger: ME privat; IS einka-; GA príobháideach; EU pribatu; DE privat; LA privatus; CY preifat; DZ —; GRC idios; SA nija; Q véra; ON einka- (pref.)
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **níbísy** — another  `[coined]`
+  - pron. “níbísy: an alternative: not this beer but another beer (aoa sís Beyr ax Beyr níbísy-e”; alt. pron. “no Beyrê aodruýscain-e”; “uain Beyrceg nibísïl-e a'ithæ'nn”; “nee-beess-eeh”; “ow-dru'ih-sheh'in”; “wayn nihb-ess-ee'il-eh”; “Beyr: beh-ear”; “Ceg: Keg”; also aodruýscain / uain nibísïl-e / aodruýscain: another / sequentially more: another few beers / uain nibísïl-e: another / one more: another beerkeg, please
+  - ledger: ME another; IS annar; GA ceann eile; EU beste bat; DE ein anderer; LA alius; CY arall; DZ —; GRC allos; SA anya; Q hyana; ON annarr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **nichuff** — almost  `[coined]`
+  - pron. “nih-h'haf”
+  - ledger: ME almest; IS næstum; GA beagnach; EU ia; DE fast; LA fere; CY bron; DZ —; GRC schedon; SA prāyaḥ; Q —; ON nær
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **niecscách** *(adjective)* — necessary
+  - 'múlchtma ax niecscách Yáe' — a worse but necessary sun.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Nif** *(Noun)* — nose
+  - resolved (gate-answers): Nif “nose”; Myth re-glossed “snout” — both live, divided (2.1.1.8.4)
+  - *source: reference §2*
+- **nihæfách** — ordinary  `[coined]`
+  - pron. “nih7-ee'ehv-ayk”
+  - ledger: ME ordinarie; IS venjulegur; GA gnách; EU arrunt; DE gewöhnlich; LA ordinarius; CY cyffredin; DZ —; GRC tychōn; SA prākṛta; Q —; ON venjuligr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **niheag** *(adjective)* — tiny
+  - sírffrach niheag Erlyê — silver tiny letters.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **niïl** *(article)* — a, an (indefinite)
+  - compound: ni “fewer-than” + il “multiple”
+  - *source: reference §2*
+- **niïl Ffearhsy** *(Noun)* — horse  `[active]`  ↳ of Ffearhsy
+  - lit. “horser - one who horses (around)”; niïl Ffearhsy attested (order-canon exemplars)
+  - *source: All-Coinages concordance #433 (HTML reference)*
+- **Niïl Fhós** *(Noun)* — bitch  `[active]`  ↳ of Fhós
+  - coined in the niïl-position ( Niïl Fhós ); cf. mhís , where the softened shape is the lemma (1.12.1.2.1)
+  - *source: All-Coinages concordance #434 (HTML reference + LDS PDF)*
+- **Niïl Lund e Shar** *(noun)* — pound  `[active]`  ↳ of Lund
+  - Niïl Lund e Shar “a pound of sugar” (2.1.1.4.9)
+  - *source: All-Coinages concordance #435 (HTML reference + LDS PDF)*
+- **niïl Pat sulænea** *(Noun)* — hole  `[active]`  ↳ of Pat
+  - niïl Pat sulænea “a hole dug” (2.1.1.3.1)
+  - *source: All-Coinages concordance #436 (HTML reference + LDS PDF)*
+- **Nímhog** *(noun)* — dog
+  - lenited after niïl → *niïl Nímhog*
+  - *source: reference §2*
+- **Nímhogê** *(Noun)* — dog(s)
+  - after éx — the -ê after numerals gains its second witness beside Grainê; lemma unresolved (§12) (1.13.1)
+  - *source: reference §2*
+- **Nimil** — room  `[coined]`
+  - pron. “nih-mihl”
+  - ledger: ME roum; IS herbergi; GA seomra; EU gela; DE Zimmer; LA cubiculum; CY ystafell; DZ khangmi; GRC oikēma; SA koṣṭha; Q sambë; ON herbergi
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Nímloc** *(noun)* — minute (of time)
+  - 'Nïil Nímloc thiransgenea' — a minute passed.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Nioobłicil** — organ  `[coined]`
+  - pron. “Nih-oohb-lyik-ihl”
+  - ledger: ME organ; IS líffæri; GA orgán; EU organo; DE Organ; LA organum; CY organ; DZ —; GRC organon; SA indriya; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Niornbeílil** — instant  `[coined]`
+  - pron. “Nih'ohrn-beh'eel-ihl”
+  - ledger: ME instant; IS andartak; GA meandar; EU une; DE Augenblick; LA momentum; CY ennyd; DZ —; GRC stigmē; SA kṣaṇa; Q lú; ON augabragð
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Niorneïl** — retina  `[coined]`
+  - pron. “Nih'ohr-neh'eel”
+  - ledger: ME —; IS sjónhimna; GA reitine; EU erretina; DE Netzhaut; LA retina; CY retina; DZ —; GRC amphiblēstroeidēs; SA dṛṣṭipaṭala; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **niri** *(adv. (stem))* — just, merely
+  - bare stem of nirïë (niri + -ië)
+  - *source: reference §2*
+  - **worksheet gloss:** only — pron. “nih-rih”
+  - ledger: ME oonly; IS aðeins; GA amháin; EU bakarrik; DE nur; LA solum; CY dim ond; DZ —; GRC monon; SA kevalam; Q erya; ON at eins
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **nirïë** *(adv.)* — just, merely (“just-by”)
+  - niri + -ië (“that’s all” — the maker); the i-i seam writes ï, cf. niïl ‹ ni + il; opens the clefted-P frame; capitalised in corpus only sentence-initially
+  - *source: reference §2*
+- **Nirïë yinÿ … iostá** *(noun)* — Ornbeíl cited under Ornbeíl: moment  `[active]`  ↳ of Ornbeíl
+  - Nirïë yinÿ … iostá Ornbeíl “just at that moment” - its iostá now doctrined: the manual de-clefter, closing the cleft explicitly (1.11.2.2.2.2)
+  - *source: All-Coinages concordance #442 (HTML reference)*
+- **niri’thte** *(adv.)* — “justn’t”, just about
+  - aoa niri’thte “just about” (1.2.3.2)
+  - *source: reference §2*
+- **niuain** *(quantifier (compositional))* — fewer-than-one
+  - ni + uain; niuain e Frælithi’ya (2.1.1.4.19.5)
+  - *source: reference §2*
+- **niuain e Frælithi’ya** *(quantifier (compositional))* — fewer-than-one  `[active]`  ↳ of niuain
+  - ni + uain; niuain e Frælithi’ya (2.1.1.4.19.5)
+  - *source: All-Coinages concordance #444 (HTML reference + LDS PDF)*
+- **Níuicailbhuëil** — hydrogen  `[coined]`
+  - pron. “Nee'ih-wihck-uh'il-vooh'eh'eh-ihl”
+  - ledger: ME —; IS vetni; GA hidrigin; EU hidrogeno; DE Wasserstoff; LA hydrogenium; CY hydrogen; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Niwinialæn** — choose  `[coined]`
+  - pron. “Nih-wihn-eeh-ahl-een”
+  - ledger: ME chesen; IS velja; GA roghnaigh; EU aukeratu; DE wählen; LA eligere; CY dewis; DZ —; GRC haireisthai; SA √vṛ; Q cil-; ON kjósa
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **niyail** *(quant.)* — single, singular
+  - ni “fewer-than” + yail “many”
+  - *source: reference §2*
+- **Niya'nchia'il** *(Noun phrase)* — single inch
+  - 'Niïl Niya'nchia'il mæ screppæn o brís' — a single inch you shrink and break.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **niyel** *(superlatives)* — fewer-than-any  `[active]`
+  - with variant definite articles; partitive e placements (chain B)
+  - *source: All-Coinages concordance #446 (HTML reference + LDS PDF)*
+- **no** — few
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **[no word]** — ye
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Nœrfy** — sinew  `[coined]`
+  - pron. “neuhr-vee”
+  - ledger: ME sinewe; IS sin; GA féith; EU zain; DE Sehne; LA nervus; CY gewyn; DZ —; GRC neuron; SA snāyu; Q tuo; ON sin
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Nótinú** — comment  `[coined]`
+  - pron. “Note-ihn-ooh”
+  - ledger: ME coment; IS athugasemd; GA trácht; EU iruzkin; DE Bemerkung; LA adnotatio; CY sylw; DZ —; GRC scholion; SA ṭippaṇī; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **nrïchs** — gaze  `[coined]`
+  - coined against the twelve-language ledger
+  - ledger: ME gasen; IS horfa; GA amharc; EU begirada; DE blicken; LA intueri; CY syllu; DZ —; GRC theasthai; SA nir-√īkṣ; Q tir-; ON horfa
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **nugænea** *(verb (past/participle))* — nodded
+  - Decomposition nu- + gænea ('a little give-participle')? — plausible, unconfirmed; open watch.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Nuthem** — breath  `[coined]`
+  - pron. “Nah-tem”
+  - ledger: ME breeth; IS andardráttur; GA anáil; EU arnasa; DE Atem; LA halitus; CY anadl; DZ —; GRC pneuma; SA prāṇa; Q súlë; ON andi
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **nÿel** — anyone  `[coined]`
+  - pron. “nyee'ehl”
+  - ledger: ME any oon; IS hver sem er; GA aon duine; EU inor; DE irgendwer; LA quisquam; CY rhywun; DZ —; GRC hostisoun; SA kaścit; Q aiquen; ON einhverr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+
+## O
+
+- **O** *(part.)* — the “all” modifier (list-opener)
+  - opens a coordination as a menu: O Cafi œr Sî “Coffee or Tea” — options offered, both exist, soft both-at-once; only with o / œr / ax (O cruel ax fair, the maker’s demonstration in English material), never æxó/aoæx; distinct from the optative O, which wears the • (1.3.1.2.1)
+  - *source: reference §2*
+  - **worksheet gloss:** both — pron. “oh”; alt. pron. “serves as and, as both and all, and as imperative marker and as optative marker”
+  - ledger: ME bothe; IS báðir; GA araon; EU biak; DE beide; LA ambo; CY y ddau; DZ —; GRC amphō; SA ubhau; Q yúyo; ON báðir
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **o** *(conj.)* — and
+  - before the last and/or between every pair (1.3.1.2)
+  - *source: reference §2*
+- **O Cafi œr Sî** *(part.)* — the “all” modifier (list-opener)  `[active]`  ↳ of O
+  - opens a coordination as a menu: O Cafi œr Sî “Coffee or Tea” - options offered, both exist, soft both-at-once; only with o / œr / ax ( O cruel ax fair , the maker’s demonstration in English material), never æxó/aoæx; distinct from the optative O , which wears the • (1.3.1.2.1)
+  - *source: All-Coinages concordance #450 (HTML reference)*
+- **Obloc** — Block  `[coined]`
+  - pron. “Ohb-lohck”
+  - ledger: ME blok; IS loka á; GA blocáil; EU blokeatu; DE blockieren; LA obstruere; CY rhwystro; DZ kag-ni; GRC emphrattein; SA √rudh; Q tap-; ON byrgja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **óc∆éy •** — okay  `[coined]`
+  - pron. “Oak- ay ”; trill; end-trill
+  - ledger: ME —; IS allt í lagi; GA ceart go leor; EU ados; DE in Ordnung; LA —; CY iawn; DZ —; GRC eien; SA astu; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Œdu** — nature  `[coined]`
+  - pron. “Euhth-ah”
+  - ledger: ME nature; IS náttúra; GA nádúr; EU izadi; DE Natur; LA natura; CY natur; DZ rangzhin; GRC physis; SA prakṛti; Q nassë; ON eðli
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Œgg** — option  `[coined]`
+  - pron. “Euhk”
+  - ledger: ME opcioun; IS valkostur; GA rogha; EU aukera; DE Option; LA optio; CY dewisiad; DZ —; GRC hairesis; SA vikalpa; Q cilmë; ON kostr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Œlimpiad** *(Noun (borrowed))* — Olympiad
+  - 'ghslár-ghüleith Œlimpiad-e' — the 10.18th Olympiad.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Œlsceil** *(Noun)* — muscle
+  - Rr'œlsceil'inch — the back muscles (tmesis).
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **œr** *(conjunction)* — or
+  - Cafi œr Sî — between every pair (1.3.1.2)
+  - *source: reference §2*
+- **Œr ’thte** *(conj.)* — neither-nor  `[active]`  ↳ of aoœr
+  - completes the æxó / aoæx set (1.4.4); patterning with its set - flexible (keeper’s reading, one word corrects). Not from attraction: Œr ’thte was a clipped fragment, “Or not.”
+  - *source: All-Coinages concordance #452 (HTML reference + LDS PDF)*
+- **Œurdê** *(noun)* — words (plural)  `[working]`
+  - Cf. Uœrd 'word'. 'lus Œurdê e Fenthœs Ruth-e' — the words of Red's defence.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Öfelfaí** — palm  `[coined]`
+  - pron. “oo'ehv-elv-uh'ee”
+  - ledger: ME paume; IS lófi; GA bos; EU ahur; DE Handfläche; LA palma; CY cledr; DZ lapthi; GRC thenar; SA karatala; Q palta; ON lófi
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **ofer** — throw
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Óghs** — bone  `[coined]`
+  - pron. “Owe'sths”
+  - ledger: ME bon; IS bein; GA cnámh; EU hezur; DE Knochen; LA os; CY asgwrn; DZ rüto; GRC ostoun; SA asthi; Q axo; ON bein
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Ógjin** — threat  `[coined]`
+  - pron. “Owe-jinn”
+  - ledger: ME thret; IS ógn; GA bagairt; EU mehatxu; DE Drohung; LA minae; CY bygythiad; DZ nyen; GRC apeilē; SA tarjana; Q —; ON ógn
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **óglîinæn** — compare  `[coined]`
+  - pron. “owe-glai-ih-nee'en”
+  - ledger: ME comparen; IS bera saman; GA cuir i gcomparáid; EU alderatu; DE vergleichen; LA comparare; CY cymharu; DZ —; GRC paraballein; SA upa-√mā; Q —; ON jafna
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **ohæn** — even (variant)  `[coined]`
+  - variant of **drúłix**; see that entry
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **ohíinst** — last  `[coined]`
+  - pron. “oh7-ee-ihnst”
+  - ledger: ME laste; IS síðastur; GA deireanach; EU azken; DE letzte; LA postremus; CY olaf; DZ thama; GRC hystatos; SA carama; Q métima; ON síðastr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **On** — foot
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Onê** *(Noun (plural))* — feet  `[working]`
+  - 'Oob Onê' — under feet.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **one more: another beerkeg, please** — another (variant)  `[coined]`
+  - variant of **níbísy**; see that entry
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Ónthr** — place  `[coined]`
+  - pron. “Ownt-rr”
+  - ledger: ME place; IS staður; GA áit; EU leku; DE Ort; LA locus; CY lle; DZ sacha; GRC topos; SA sthāna; Q nómë; ON staðr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Oó** — river
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Oob** *(preposition)* — under
+  - tmesis host: oo…b
+  - *source: reference §2*
+- **Oob lus Phailé** *(noun)* — bed  `[active]`  ↳ of Phailé
+  - Oob lus Phailé “under the bed”
+  - *source: All-Coinages concordance #457 (HTML reference + LDS PDF)*
+- **Oobâ** *(author form)* — tail  `[active]`
+  - *source: All-Coinages concordance #458 (LDS PDF)*
+- **Oobao** — other (otherly)  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **Oobdég** — downstairs  `[coined]`
+  - pron. “Oob-deh'ehg”
+  - ledger: ME —; IS niðri; GA thíos staighre; EU behean; DE unten; LA —; CY i lawr y grisiau; DZ —; GRC katō; SA adhastāt; Q undu; ON niðri
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **öobén** — underneath  `[coined]`
+  - pron. “euh-oh-bayn”
+  - ledger: ME undernethe; IS undir; GA faoi bhun; EU azpian; DE unterhalb; LA subter; CY oddi tanodd; DZ okha; GRC hypokatō; SA adhastāt; Q nu; ON undir
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **ooblógïch** — analog  `[coined]`
+  - pron. “oob-low-geek”
+  - ledger: ME —; IS hliðrænn; GA analógach; EU analogiko; DE analog; LA —; CY analog; DZ —; GRC analogos; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Oobrrhync** *(author form)* — tail  `[active]`
+  - *source: All-Coinages concordance #459 (LDS PDF)*
+- **Oobrrhync / Oobâ** — tail
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Oobrúd** — pink  `[coined]`
+  - pron. “oob-roohth”
+  - ledger: ME —; IS bleikur; GA bándearg; EU arrosa; DE rosa; LA roseus; CY pinc; DZ —; GRC rhodeos; SA pāṭala; Q —; ON bleikr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Oobsíg** *(Noun)* — prison
+  - Base of Oobsígænea 'imprisoned'; tmesis host Oob'…'sígænea.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Oobsígænea** *(participle (-ea))* — imprisoned
+  - Text form Oob'aufGaolaí'sígænea — 'incar'aufGaolaí'cerated': the host ingests the whole clade-name.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Oobýasig** — dungeon  `[coined]`
+  - pron. “oob-yuh-zihg”
+  - ledger: ME dongeoun; IS dýflissa; GA doinsiún; EU ziega; DE Verlies; LA carcer; CY daeardy; DZ —; GRC desmōtērion; SA bhūmigṛha; Q mando; ON myrkvastofa
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **oogh** — know
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **ooilæch** *(verb)* — wanted
+  - past of ooilich
+  - *source: reference §2*
+- **ooilich** *(verb)* — want
+  - past ooilæch
+  - *source: reference §2*
+- **ooraith** *(verb)* — kill
+  - sê fæ ooraith “himself he killed”; base of Ooraithr (2.1.1.3.1)
+  - *source: reference §2*
+- **Ooraithr** *(Noun)* — killed-being
+  - pron. “Oo*raiɦ-rr”; apparently Ooraith “killed” + -r — the state-noun former’s second witness; the base’s class and the kill-verb await (2.1.1.2.13) [closed 2026-07-14: the base is the verb ooraith “kill” — the -r former deverbal here, patient-flavoured]
+  - *source: reference §2*
+- **Oóscál** — ferry  `[coined]`
+  - pron. “Ooh'owe-shail”
+  - ledger: ME feri; IS ferja; GA farantóireacht; EU —; DE Fähre; LA ponto; CY fferi; DZ —; GRC porthmeion; SA tarī; Q —; ON ferja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **ooscylduí** — oblige  `[coined]`
+  - pron. “Ooh-shil-dwee”
+  - ledger: ME obligen; IS skylda; GA oibleagáid; EU behartu; DE verpflichten; LA obligare; CY gorfodi; DZ —; GRC anagkazein; SA vi-√dhā; Q —; ON skylda
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Oostú** — spit
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Ootascby** — pocket  `[coined]`
+  - pron. “Ooh-duhsh-bee”
+  - ledger: ME poket; IS vasi; GA póca; EU poltsiko; DE Tasche; LA sacculus; CY poced; DZ —; GRC kolpos; SA —; Q —; ON pungr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **oothíth** *(verb)* — appoint
+  - past oothíthea; takes the fær-dúe + -r-state-noun become-frame, same structure as ghiæan (2.1.1.4.17)
+  - *source: reference §2*
+- **oothíthea** *(verb)* — appoint  `[active]`  ↳ of oothíth
+  - past oothíthea ; takes the fær-dúe + -r-state-noun become-frame, same structure as ghiæan (2.1.1.4.17)
+  - *source: All-Coinages concordance #468 (HTML reference + LDS PDF)*
+- **Oothraí** *(Noun)* — Changing (the practice)
+  - 'yOthœsræ-othœsræ e Oothraí' — the outlawing of Changing. Oothraíthê = the Changed (people).
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Oothraíthê** — Changed (the Changed)  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **Oozoýu** — ooze  `[coined]`
+  - pron. “ooh-zoy-ah”
+  - ledger: ME wose; IS vætla; GA úsc; EU jario; DE quellen; LA manare; CY —; DZ —; GRC leibein; SA ni-√ṣyand; Q —; ON síga
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **or* Cłepësceán** — jackalope (variant)  `[coined]`
+  - variant of **Charóiscindeaí**; see that entry
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Oraï** — year
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Oraiê** — years (plural)  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **Orc** — scar  `[coined]`
+  - pron. “Ohrk”
+  - ledger: ME scarre; IS ör; GA colm; EU orbain; DE Narbe; LA cicatrix; CY craith; DZ —; GRC oulē; SA kiṇa; Q —; ON ǫrr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Orhéb** — orb  `[coined]`
+  - pron. “Oh-hrayb”
+  - ledger: ME orbe; IS hnöttur; GA meall; EU —; DE Kugel; LA orbis; CY pelen; DZ —; GRC sphaira; SA gola; Q coron; ON knǫttr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Or…il** *(circumfix)* — not X enough
+  - insufficiency degree; attaches by tmesis-seams and charges the standard toll — soft l rides free (Or’lain’il), hard c pays (or’raif’il) (order-canon turn)
+  - *source: reference §2*
+- **Or’lain’il** *(circumfix)* — not X enough  `[active]`  ↳ of Or…il
+  - insufficiency degree; attaches by tmesis-seams and charges the standard toll - soft l rides free ( Or’lain’il ), hard c pays ( or’raif’il ) (order-canon turn)
+  - *source: All-Coinages concordance #470 (HTML reference + LDS PDF)*
+- **or’mordachië’il-’t** *(adverb)* — enormously  `[active]`  ↳ of mordachië
+  - mordach + -ië; wrapped by the or…il attenuator in or’mordachië’il-’t ’not-insufficiently-enormously’ (2.2.4.4)
+  - *source: All-Coinages concordance #471 (HTML reference + LDS PDF)*
+- **Orn** *(author form)* — eye; also plural Orn  `[active]`
+  - *source: All-Coinages concordance #476 (LDS PDF)*
+- **Orn (also plural: Orn)** — eye
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **ornaoíth** — firsthand  `[coined]`
+  - pron. “Ohrn-ow-eat”
+  - ledger: ME —; IS af eigin raun; GA —; EU zuzenean; DE aus erster Hand; LA —; CY o lygad y ffynnon; DZ —; GRC autoptēs; SA pratyakṣa; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Ornbeíl** *(noun)* — moment
+  - Nirïë yinÿ … iostá Ornbeíl “just at that moment” — its iostá now doctrined: the manual de-clefter, closing the cleft explicitly (1.11.2.2.2.2)
+  - *source: reference §2*
+- **ornïrl** — hardly  `[coined]`
+  - pron. “ohr-nih'ehrl”
+  - ledger: ME unnethe; IS varla; GA ar éigean; EU nekez; DE kaum; LA vix; CY prin; DZ —; GRC mogis; SA kṛcchreṇa; Q —; ON varla
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Ornlawy** — avatar  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **Orn'pat'ách** — socket  `[coined]`
+  - pron. “Ohrn-puh-dayk”; tmetic construction
+  - ledger: ME soket; IS augntóft; GA logall; EU hobi; DE Höhle; LA orbita; CY crau; DZ —; GRC kotylē; SA koṭara; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **or’raif’il** *(circumfix | adjective)* — not X enough · hungry  `[active]`  ↳ of Or…il, Or…il | craif, craif
+  - insufficiency degree; attaches by tmesis-seams and charges the standard toll - soft l rides free ( Or’lain’il ), hard c pays ( or’raif’il ) (order-canon turn) | pays the hard-c toll inside the degree circumfix: or’raif’il “not hungry enough” (1.11.2.2.3 canon-turn)
+  - *source: All-Coinages concordance #472 (HTML reference)*
+- **Ó'rrync'ghs** *(Noun (tmesis compound))* — spine
+  - Ó'…'ghs hosting rrync. 'Dú'iths þis Ó'rrync'ghs' — toward us her spine.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Orscænyæn** *(Verb)* — to spider (letters)
+  - Orscænyæn-orscænyæn 'the spidering' — silver letters across Night's back.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Orscænyæn-orscænyæn** *(verbal noun (reduplicated))* — the spidering  ↳ of Orscænyæn
+  - Reduplicated verbal noun; of the silver letters on Night's back.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Or’threïg’il** *(adjective)* — tired  `[active]`  ↳ of threïg
+  - Or’threïg’il “not-tired-enough”
+  - *source: All-Coinages concordance #473 (HTML reference + LDS PDF)*
+- **Or’threïg’il côs by** *(verb)* — sleep  `[active]`  ↳ of côs
+  - Or’threïg’il côs by “not-tired-enough to sleep”
+  - *source: All-Coinages concordance #474 (HTML reference + LDS PDF)*
+- **-os** *(suffix)* — absolute-possessive former
+  - teos “mine”, mæos “yours” (mao→mæ at the seam); the kin-frame’s anatomy re-read (§12) (2.1.1.2.8)
+  - *source: reference §2*
+- **Othœsræaí** — outlaw  `[coined]`
+  - pron. “Ohtt-euhss-ree'uh'eeh”
+  - ledger: ME outlawe; IS útlagi; GA eisreachtaí; EU legez kanpoko; DE Geächteter; LA proscriptus; CY herwr; DZ —; GRC atimos; SA patita; Q hecil; ON útlagi
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Othœsræ-othœsræ** *(verbal noun (reduplicated))* — outlawing
+  - of Changing, 2667 I.T. Reduplication: X-X = the X-ing.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+
+## P
+
+- **Pách** — turn (noun)
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Padu** — step  `[coined]`
+  - pron. “puh-thah”
+  - ledger: ME steppen; IS skref; GA coiscéim; EU pauso; DE Schritt; LA gradus; CY cam; DZ gom; GRC bēma; SA pada; Q —; ON skref
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **pahæn** — turn (verb)
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **páłea** — old
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Pantoste** — hotel  `[coined]`
+  - pron. “Puhnd-ohst-eh”
+  - ledger: ME hostel; IS hótel; GA óstán; EU hotel; DE Hotel; LA deversorium; CY gwesty; DZ drönchim; GRC pandokeion; SA āvasatha; Q —; ON gisting
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **parcuil** — stab/pierce
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Pás** — pace  `[coined]`
+  - pron. “pace”
+  - ledger: ME pas; IS skref; GA luas; EU pauso; DE Tempo; LA passus; CY cam; DZ —; GRC bēma; SA pada; Q —; ON skref
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Pat** *(Noun)* — hole
+  - niïl Pat sulænea “a hole dug” (2.1.1.3.1)
+  - *source: reference §2*
+- **Pauth** *(author form)* — hit (noun)  `[active]`
+  - *source: All-Coinages concordance #484 (LDS PDF)*
+- **pauth (noun: Pauth)** — hit
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **pec** — tip  `[coined]`
+  - pron. “pehk”
+  - ledger: ME tip; IS oddur; GA barr; EU punta; DE Spitze; LA apex; CY blaen; DZ tse; GRC akron; SA agra; Q tildë; ON oddr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **peeriy** — sharp
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Pen** — pen  `[coined]`
+  - pron. “pen”
+  - ledger: ME penne; IS penni; GA peann; EU luma; DE Stift; LA penna; CY pin; DZ nyugu; GRC kalamos; SA lekhanī; Q tecil; ON penni
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Penu** — breast
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Penuê** *(noun (plural))* — breasts  `[working]`
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Phailé** *(noun)* — bed
+  - Oob lus Phailé “under the bed”
+  - *source: reference §2*
+- **Piell** *(Noun (name))* — — (Bill’s face)
+  - the exemplar-name: Ten dúe Piell í átea (2.1.1.4.1) Stack-r2 also attests 'Piell' (face). Pairs with Cruích 'face' — fork or register split; open watch.
+  - *source: reference §2*
+- **píschilách** — viscous  `[coined]`
+  - pron. “peach-ihl-ayk”
+  - ledger: ME viscous; IS seigfljótandi; GA slaodach; EU likatsu; DE zähflüssig; LA viscosus; CY gludiog; DZ —; GRC glischros; SA picchila; Q —; ON seigr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **pititítá** — perform  `[coined]`
+  - pron. “pih-tih-teeh-tay”
+  - ledger: ME parfournen; IS framkvæma; GA comhlíon; EU burutu; DE ausführen; LA perficere; CY cyflawni; DZ —; GRC epitelein; SA anu-√ṣṭhā; Q —; ON framkvæma
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **plâd** — flat  `[coined]`
+  - pron. “plath”
+  - ledger: ME flat; IS flatur; GA réidh; EU lau; DE flach; LA planus; CY gwastad; DZ —; GRC homalos; SA sama; Q lára; ON flatr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **pligu** *(Verb)* — fold
+  - pliguea 'folded'. Stack-r2 also attests 'pligu' (fold). Participle pliguea: 'dræao atáea pliguea' — from is folded (tense fix, stack-r2).
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **plœw** — yank  `[coined]`
+  - pron. “plaw”
+  - ledger: ME —; IS kippa; GA sracadh; EU tirakada; DE reißen; LA vellere; CY plycio; DZ —; GRC tillein; SA ā-√kṛṣ; Q —; ON kippa
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Plulcst** — plastic  `[coined]`
+  - pron. “Plahlkst”
+  - ledger: ME —; IS plast; GA plaisteach; EU plastiko; DE Kunststoff; LA —; CY plastig; DZ —; GRC plastikos; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Póintheau** — sign  `[coined]`
+  - pron. “Poyn-toe”
+  - ledger: ME signe; IS merki; GA comhartha; EU seinale; DE Zeichen; LA signum; CY arwydd; DZ tak; GRC sēmeion; SA cihna; Q tanna; ON merki
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Praxis** *(Noun)* — praxis
+  - hosted as 'raxis in Próitínä'raxis-e'íach.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **pric** — press  `[coined]`
+  - pron. “prihk”
+  - ledger: ME pressen; IS þrýsta; GA brúigh; EU sakatu; DE drücken; LA premere; CY gwasgu; DZ —; GRC piezein; SA √pīḍ; Q nir-; ON þrýsta
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Príónê** *(Noun (plural))* — prions
+  - Red's house style, in Danæam at last.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Prïxreg** *(noun)* — principle
+  - English-shaped loan. 'niïl sain Prïxreg bhie' — a great principle is.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Pró** — front  `[coined]`
+  - pron. “Pr'owe”
+  - ledger: ME front; IS framhlið; GA tosach; EU aurrealde; DE Vorderseite; LA frons; CY blaen; DZ dongkha; GRC prosthen; SA agra; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Próëlth** — profile  `[coined]`
+  - pron. “Pro-eh'elt”
+  - ledger: ME —; IS vangamynd; GA próifíl; EU profil; DE Profil; LA —; CY proffil; DZ —; GRC katagraphē; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Próitínäíach** *(adjective (tmesis host))* — proteinaceous
+  - Text form Próitínä'raxis-e'íach — 'proteinaceous-praxis': derivation ingests its twin.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **próthesthæn** — suggest  `[coined]`
+  - pron. “pro-test-ee'en”
+  - ledger: ME —; IS stinga upp á; GA mol; EU iradoki; DE vorschlagen; LA suggerere; CY awgrymu; DZ —; GRC hypotithesthai; SA √vyañj; Q —; ON leggja til
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Próthrî** — test  `[coined]`
+  - pron. “Pro-try”
+  - ledger: ME test; IS próf; GA triail; EU proba; DE Probe; LA probatio; CY prawf; DZ —; GRC dokimasia; SA parīkṣā; Q —; ON raun
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **prótugjæn** — summon  `[coined]`
+  - pron. “pro-dah-jee'en”
+  - ledger: ME somonen; IS stefna; GA toghairm; EU deitu; DE beschwören; LA evocare; CY gwysio; DZ bö-ni; GRC proskaleisthai; SA ā-√hve; Q yal-; ON stefna
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **prÿóch** — hang  `[coined]`
+  - pron. “pre-oak”
+  - ledger: ME hangen; IS hanga; GA croch; EU zintzilikatu; DE hängen; LA pendere; CY hongian; DZ —; GRC kremannysthai; SA ava-√lamb; Q linga-; ON hanga
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **pud** — read  `[coined]`
+  - pron. “pahth”
+  - ledger: ME reden; IS lesa; GA léigh; EU irakurri; DE lesen; LA legere; CY darllen; DZ —; GRC anagignōskein; SA √paṭh; Q cenda-; ON lesa
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Púlff** — pillow  `[coined]`
+  - pron. “polf”
+  - ledger: ME pilwe; IS koddi; GA piliúr; EU burko; DE Kissen; LA pulvinus; CY gobennydd; DZ —; GRC proskephalaion; SA upadhāna; Q quesset; ON koddi
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Pulsc** *(noun)* — dust
+  - Pulsc yiæn “dust lies” (1.2.4.2.2) Stack-2: 'lus Pulsc e felCne'téxt'ilea' (the dust of ground-down tissue).
+  - *source: reference §2*
+- **Pulsc yiæn** *(noun)* — dust  `[active]`  ↳ of Pulsc
+  - Pulsc yiæn “dust lies” (1.2.4.2.2)
+  - *source: All-Coinages concordance #491 (HTML reference + LDS PDF)*
+- **Pún** *(noun)* — tower
+  - guest inside S’i’pún’il’n (1.2.2.3)
+  - *source: reference §2*
+- **Púncy** — point  `[coined]`
+  - pron. “Poohnk-ee”
+  - ledger: ME point; IS punktur; GA pointe; EU puntu; DE Punkt; LA punctum; CY pwynt; DZ —; GRC stigmē; SA bindu; Q tixë; ON punktr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Purumrá** — sequence  `[coined]`
+  - pron. “Pah-rahm-ray”
+  - ledger: ME sequence; IS runa; GA seicheamh; EU segida; DE Abfolge; LA series; CY dilyniant; DZ gorim; GRC heirmos; SA paramparā; Q téma; ON rǫð
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Pury** — couple  `[coined]`
+  - pron. “Pahr-ee”
+  - ledger: ME couple; IS par; GA cúpla; EU bikote; DE Paar; LA par; CY pâr; DZ —; GRC zeugos; SA yugala; Q —; ON par
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **putæn** — tread  `[coined]`
+  - pron. “pah-dee'en”
+  - ledger: ME treden; IS troða; GA satail; EU zapaldu; DE treten; LA calcare; CY sathru; DZ —; GRC patein; SA ā-√kram; Q vanta-; ON troða
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+
+## R
+
+- **-r** *(suffix)* — state-noun former (“-being”)
+  - Væxr “king-being” — become’s complement; beside the elder du-dress, §12 (2.1.1.2.10)
+  - *source: reference §2*
+- **r** *(reduced allomorph of Air)* — notice! (fragments)  `[active]`  ↳ of Ai’
+  - Ai’lith! ; the r survives as liaison only before i-initial nested pronouns
+  - *source: All-Coinages concordance #494 (HTML reference)*
+- **Raghutíu** — silver  `[coined]`
+  - pron. “Ruh-sthah-tee'ah”
+  - ledger: ME silver; IS silfur; GA airgead; EU zilar; DE Silber; LA argentum; CY arian; DZ ngü; GRC argyros; SA rajata; Q telpë; ON silfr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Raí** *(numeral)* — three
+  - SEALED 2026-07-23 (Elm ruling): raí = 3 — odd member of the pair Raí 3 / Ghraí 4. The old Oath-clause use of raí for 4 ([4.9.21]) retires with the analytic counting system. stack-r2 list confirmed as canon.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Raige** — sea
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Ráip** — rope
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **ráit** — parade  `[coined]`
+  - pron. “ray'ihd”
+  - ledger: ME —; IS skrúðganga; GA mórshiúl; EU desfile; DE Umzug; LA pompa; CY gorymdaith; DZ —; GRC pompē; SA yātrā; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Raíwil** *(numeral (year series))* — 49
+  - year-series numeral · base 2+30 (base-60 pair-stem). Pair: Raíwil 49 (odd, bare) / Ghraíwil 50 (even, lenited). Year names: A-B = A×60 + B, hyphen-joined, second element bare. This form: odd · bare stem.
+  - *source: session 2026-07-21, the maker*
+- **Ralxú** *(Noun)* — government
+  - Yth ír Ralxú lus Both rüstea eibh ‘the city was ruined by its government’ (2.1.1.4.12)
+  - *source: reference §2*
+- **Réal** — document  `[coined]`
+  - pron. “reh-uhl”
+  - ledger: ME document; IS skjal; GA cáipéis; EU agiri; DE Urkunde; LA documentum; CY dogfen; DZ yigu; GRC grammata; SA lekhya; Q —; ON bréf
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Rege** — state  `[coined]`
+  - pron. “reh-geh”
+  - ledger: ME stat; IS ástand; GA staid; EU egoera; DE Zustand; LA status; CY cyflwr; DZ —; GRC hexis; SA avasthā; Q —; ON hagr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Regéar** *(noun)* — region
+  - Gi'regéar'gýa = Gi- + regéar + -gýa, 'the jaw's region'.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **rein** *(adjective)* — dirty  `[active]`  ↳ of reinach
+  - -ach shape apparent; base rein unminted - watched (2.1.1.4.5)
+  - *source: All-Coinages concordance #498 (HTML reference + LDS PDF)*
+- **reinach** *(adjective)* — dirty
+  - -ach shape apparent; base rein unminted — watched (2.1.1.4.5)
+  - *source: reference §2*
+- **Réul** — ray  `[coined]`
+  - pron. “ray-ahl”
+  - ledger: ME ray; IS geisli; GA ga; EU izpi; DE Strahl; LA radius; CY pelydryn; DZ özer; GRC aktis; SA raśmi; Q alca; ON geisli
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Rhácgy** — pariah  `[coined]`
+  - pron. “Hrayk-ee”
+  - ledger: ME —; IS úrhrak; GA díbeartach; EU paria; DE Ausgestoßener; LA —; CY alltud; DZ —; GRC apoblētos; SA caṇḍāla; Q hecil; ON úrhrak
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **rhaígæ** — ride  `[coined]`
+  - pron. “hruh'ih-gee”
+  - ledger: ME riden; IS ríða; GA marcaigh; EU zaldiz ibili; DE reiten; LA equitare; CY marchogaeth; DZ zhön-ni; GRC hippeuein; SA ā-√ruh; Q —; ON ríða
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **rhäntupách** *(adjective)* — relevant
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **rheetæ** — stare  `[coined]`
+  - pron. “hreeh-dee”
+  - ledger: ME staren; IS stara; GA stán; EU so egin; DE starren; LA —; CY rhythu; DZ —; GRC atenizein; SA animiṣa (adj.); Q —; ON stara
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Rhëw** *(noun)* — triangle
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Rhié** *(Noun)* — Parent
+  - te’rhié’os “parent-mine” — the te…’os kin-frame’s second witness beside Te’sídia’os; context renders “my mother” (1.12.1.2.1); pron. “Hrjaiy” (German j); familiar possessive rhié-færs “parent-his” — the kin-noun small (2.1.1.2.12)
+  - *source: reference §2*
+- **Rhié e Bailch** — milk-Rhié
+  - *source: Final-Boss Haul · Semantic fields (2026-07-17)*
+- **Rhié-Emma-mé-aoa** — Rhié-by-oath (parent-in-law)
+  - *source: Final-Boss Haul · Semantic fields (2026-07-17)*
+- **rhié-færs** *(Noun)* — Parent  `[active]`  ↳ of Rhié
+  - te’rhié’os “parent-mine” - the te…’os kin-frame’s second witness beside Te’sídia’os ; context renders “my mother” (1.12.1.2.1); pron. “Hrjaiy” (German j); familiar possessive rhié-færs “parent-his” - the kin-noun small (2.1.1.2.12)
+  - *source: All-Coinages concordance #503 (HTML reference + LDS PDF)*
+- **Rhié-tóff** — chosen-Rhié
+  - *source: Final-Boss Haul · Semantic fields (2026-07-17)*
+- **rhíster** — shake  `[coined]`
+  - pron. “hree-stehr”
+  - ledger: ME shaken; IS hrista; GA croith; EU astindu; DE schütteln; LA quatere; CY ysgwyd; DZ —; GRC seiein; SA √dhū; Q —; ON hrista
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **rhóil** — shudder  `[coined]`
+  - pron. “hreaux-ihl”
+  - ledger: ME shoddren; IS hrollur; GA creathán; EU ikara; DE schaudern; LA horrere; CY arswydo; DZ —; GRC phrissein; SA √vip; Q —; ON hrollr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Rhymos** — war  `[coined]`
+  - pron. “Hree-moss”
+  - ledger: ME werre; IS stríð; GA cogadh; EU gerra; DE Krieg; LA bellum; CY rhyfel; DZ mak; GRC polemos; SA yuddha; Q ohta; ON ófriðr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Rîbha** *(noun)* — book
+  - Rîbha-e John “book-o’-John” — e hyphen-hung on the possessum before a named possessor (keeper’s naming-split reading, §12; 1.11.2.2.2.3)
+  - *source: reference §2*
+- **Rîbha-e John** *(noun)* — book  `[active]`  ↳ of Rîbha
+  - Rîbha-e John “book-o’-John” - e hyphen-hung on the possessum before a named possessor (keeper’s naming-split reading, §12; 1.11.2.2.2.3)
+  - *source: All-Coinages concordance #506 (HTML reference + LDS PDF)*
+- **Rifæn** *(Verb)* — tear
+  - 'Mao Langaír dúfrœdh mæ rifæn' — your tongue lengthwise you tear.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Rim** *(noun)* — a space
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Rimái** *(noun)* — space (the space)
+  - 'Laff e sæánách Rimái afTolea' — a slacking of negative space filled.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **ríse** — breathe
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **ro’arch’il** *(adjective)* — far  `[active]`  ↳ of arch
+  - ro’arch’il “too-far”
+  - *source: All-Coinages concordance #508 (HTML reference + LDS PDF)*
+- **rócghrudaol** — roleplay  `[coined]`
+  - pron. “roke-sthrah-dowel”
+  - ledger: ME —; IS hlutverkaleikur; GA —; EU rol-joko; DE Rollenspiel; LA —; CY chwarae rôl; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **ro'gænstílgæn'il** *(verb (monster tmesis))* — not-insufficiently-had-and-still-gives
+  - ro'…'il ('not insufficiently') wrapped around gæn-stíl-gæn; i.e. gives — and has had, and still gives — sufficiently. Her gloss kept verbatim.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Rógu** — disease  `[coined]`
+  - pron. “Row-gah”
+  - ledger: ME disese; IS sjúkdómur; GA galar; EU gaixotasun; DE Krankheit; LA morbus; CY clefyd; DZ —; GRC nosos; SA roga; Q quámë; ON sótt
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Ro…il** *(circumfix)* — too X
+  - excess degree
+  - *source: reference §2*
+- **Rom** — wood  `[coined]`
+  - pron. “Rohmm”
+  - ledger: ME wode; IS viður; GA adhmad; EU zur; DE Holz; LA lignum; CY pren; DZ shing; GRC xylon; SA dāru; Q toa; ON viðr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Rósílgapágu** — neuropathy  `[coined]`
+  - pron. “Row-seel-guh-pay-guh”
+  - ledger: ME —; IS taugakvilli; GA néaropaite; EU neuropatia; DE Neuropathie; LA neuropathia; CY niwropathi; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Róxaí** — order  `[coined]`
+  - pron. “Row'ks-uh'eeh”
+  - ledger: ME ordre; IS röð; GA ord; EU ordena; DE Ordnung; LA ordo; CY trefn; DZ gorim; GRC taxis; SA krama; Q —; ON skipan
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Rraen** — divide  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **Rraenaí** *(noun)* — division  `[working]`
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Rrinch** *(adjective)* — back-related
+  - host Rr'…'inch.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Rrîyæn** — attempt  `[coined]`
+  - pron. “Rye-yee'en”
+  - ledger: ME attempten; IS reyna; GA iarracht; EU saiatu; DE versuchen; LA conari; CY ymgais; DZ —; GRC peirasthai; SA √yat; Q ric-; ON freista
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Rrync** — back
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Rryncaíýa Úsét-úsét-e** — backseat  `[coined]`
+  - pron. “The-Backness Sitting-of”; alt. pron. “Rink-uh'ee-i'ya Ooce-ehd_ooce-ehd_eh”
+  - ledger: ME —; IS aftursæti; GA suíochán cúil; EU atzeko eserleku; DE Rücksitz; LA —; CY sedd gefn; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Rúa** — wind
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **rubh** *(verb)* — touch
+  - *source: reference §2*
+- **Rúd** — fun  `[coined]`
+  - pron. “rood”
+  - ledger: ME —; IS gaman; GA spraoi; EU jolas; DE Spaß; LA —; CY hwyl; DZ —; GRC paidia; SA krīḍā; Q —; ON gaman
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Ruimais** *(Noun)* — novel
+  - attested in the maker’s passing (1.16.6)
+  - *source: reference §2*
+- **rulfæn** — bury  `[coined]`
+  - pron. “rahl-vee'en”
+  - ledger: ME burien; IS grafa; GA adhlaic; EU lurperatu; DE begraben; LA sepelire; CY claddu; DZ —; GRC thaptein; SA ni-√khan; Q —; ON grafa
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **rüst** *(verb)* — ruin
+  - past rüstea ‘ruined’ — the -ea past’s further witness (2.1.1.4.12)
+  - *source: reference §2*
+- **rüstea** *(verb)* — ruin  `[active]`  ↳ of rüst
+  - past rüstea ’ruined’ - the -ea past’s further witness (2.1.1.4.12)
+  - *source: All-Coinages concordance #515 (HTML reference + LDS PDF)*
+- **Ruth** *(noun | author form)* — red (noun)  `[active]`
+  - Stack-2: Red's Danæam name — Ruth, 'red (noun)'. ('lus Aoiyid e Ruth-e Útcáry'ya'.)
+  - *source: All-Coinages concordance #516 (LDS PDF)*
+- **ruth (noun: Ruth)** — red
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Rýun** — trace  `[coined]`
+  - pron. “Ree-ahn”
+  - ledger: ME trace; IS spor; GA rian; EU aztarna; DE Spur; LA vestigium; CY ôl; DZ je; GRC ichnos; SA aṅka; Q runya; ON spor
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+
+## S
+
+- **sæánách** *(adjective)* — negative
+  - 'sæánách Rimái' — negative space.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **sæcuiúlær** — ejaculate  `[coined]`
+  - pron. “see'ek-qu'ool-ee'er”
+  - ledger: ME —; IS sáðlát; GA —; EU —; DE ejakulieren; LA eiaculari; CY —; DZ —; GRC —; SA √sic; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Sæculomê** *(Noun (plural))* — centuries
+  - 'sin duý Sæculomê' — as through centuries.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **sæd** — seep  `[coined]`
+  - pron. “seethe”
+  - ledger: ME —; IS seytla; GA síothlaigh; EU iragazi; DE sickern; LA permanare; CY —; DZ —; GRC diēthein; SA √ścut; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **sæffa** — often  `[coined]`
+  - pron. “See'ehf-uh”
+  - ledger: ME ofte; IS oft; GA go minic; EU maiz; DE oft; LA saepe; CY yn aml; DZ —; GRC pollakis; SA bahuśaḥ; Q —; ON opt
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Sæmêntham** — cement  `[coined]`
+  - pron. “See-ment-uhm”
+  - ledger: ME ciment; IS sement; GA stroighin; EU zementu; DE Zement; LA caementum; CY sment; DZ —; GRC konia; SA sudhā; Q —; ON steinlím
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Sæmy** — rivet  `[coined]`
+  - pron. “see-mee”
+  - ledger: ME rivet; IS hnoð; GA seam; EU errematxe; DE Niete; LA —; CY rhybed; DZ —; GRC gomphos; SA āṇi; Q —; ON hnoð
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Sæsa** — shrug  `[coined]`
+  - pron. “See-suh”
+  - ledger: ME —; IS yppta öxlum; GA searradh; EU sorbaldak jaso; DE zucken; LA —; CY codi ysgwyddau; DZ —; GRC —; SA —; Q —; ON yppa ǫxlum
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **sæthw** — flow
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Saffîr** — sapphire  `[coined]`
+  - pron. “Ssuh-fire”
+  - ledger: ME saphir; IS safír; GA saifír; EU zafiro; DE Saphir; LA sapphirus; CY saffir; DZ —; GRC sappheiros; SA indranīla; Q —; ON safír
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **saí** *(verb)* — speak
+  - plain / present member of the pair; perfect: saige
+  - *source: reference §2*
+- **saí** *(verb)* — tell
+  - past saíea ‘told’ (2.1.1.4.15)
+  - *source: reference §2*
+- **saí** — say
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **saíea** *(verb)* — tell  `[active]`  ↳ of saí
+  - past saíea ’told’ (2.1.1.4.15)
+  - *source: All-Coinages concordance #526 (HTML reference + LDS PDF)*
+- **saige** *(verb)* — have spoken
+  - perfect of saí; quotative: Saige fæ “fæ said”
+  - *source: reference §2*
+- **Saige fæ** *(verb)* — have spoken  `[active]`  ↳ of saige
+  - perfect of saí ; quotative: Saige fæ “fæ said”
+  - *source: All-Coinages concordance #528 (HTML reference + LDS PDF)*
+- **S’aige’in** *(frame)* — “as-said”
+  - reportative shield; Sin + saige with seam-merge — literally “as-has-been-said”
+  - *source: reference §2*
+- **sáillaí** *(verbal noun)* — speaking
+  - Of sáille 'speak'; inside Dé'ahor'cruí'sáillaí'ch'ía'er.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **sáille** *(verb)* — speak
+  - *source: reference §2*
+- **saílturn** *(noun/verb)* — welcome
+  - 'Yáe dúe saílturn' — the sun to welcome.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Saiły** — sage  `[coined]`
+  - pron. “Suh'eye-lyee”
+  - ledger: ME sage; IS vitringur; GA saoi; EU jakintsu; DE Weiser; LA sapiens; CY doethwr; DZ khepa; GRC sophos; SA muni; Q istyar; ON spekingr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **sain** *(adjective)* — good
+  - (1.8.6) sainmÿa “better” FORK — stack-r2 list glosses Sain 'great' ('niïl sain Prïxreg bhie' = a great principle is · 'Dúe After sain í bhie' = for Upland great it is) against sain 'good' (reference §2). Awaiting Elm ruling.
+  - *source: reference §2*
+  - **worksheet gloss:** great — pron. “suh'ihn”
+  - ledger: ME gret; IS mikill; GA mór; EU handi; DE groß; LA magnus; CY mawr; DZ bom; GRC megas; SA mahat; Q alta; ON mikill
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Sainfasæn** — benefit  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **Sáins** — hand  `[coined]`
+  - pron. “Ssay-ihnss”
+  - ledger: ME hond; IS hönd; GA lámh; EU esku; DE Hand; LA manus; CY llaw; DZ lap; GRC cheir; SA hasta; Q má; ON hǫnd
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Sáinsfau** — arm  `[coined]`
+  - pron. “Ssay-ihnce-faah”
+  - ledger: ME arm; IS handleggur; GA lámh; EU beso; DE Arm; LA bracchium; CY braich; DZ lap; GRC brachiōn; SA bāhu; Q ranco; ON armr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Sáinsu** *(noun)* — task-set, “hands”; hands (the body’s task-set — attested 1.10.2)
+  - one’s tasks / handiwork (1.2.2.2.3)
+  - *source: reference §2*
+- **Saíntol** — month  `[coined]`
+  - pron. “Suh'ihn-dohl”
+  - ledger: ME monthe; IS mánuður; GA mí; EU hilabete; DE Monat; LA mensis; CY mis; DZ dawa; GRC mēn; SA māsa; Q asta; ON mánaðr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Saíny Wil-e** — alarm  `[coined]`
+  - pron. “Waker All-of”; alt. pron. “Suh-ee-knee Will-eh”
+  - ledger: ME alarme; IS viðvörun; GA aláram; EU alarma; DE Alarm; LA —; CY larwm; DZ —; GRC —; SA —; Q —; ON herblástr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **S’air’n** *(compound (Sin + air))* — as per the taking-note of — topic marker
+  - Sin-tmesis, second crown beside S’aige’in; note the ’in → ’n seam-elision (§12) (1.12.1)
+  - *source: reference §2*
+- **Saí-saí-síaima-e** — discourse  `[coined]`
+  - pron. “Sigh'ih-sigh'ih-see'uh'ihm'uh-eh”
+  - ledger: ME discours; IS orðræða; GA dioscúrsa; EU diskurtso; DE Diskurs; LA sermo; CY ymddiddan; DZ —; GRC dialexis; SA kathā; Q —; ON rœða
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Saln** *(author form)* — salt (noun)  `[active]`
+  - *source: All-Coinages concordance #532 (LDS PDF)*
+- **Sálthê** — wealds  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **Samcœry** — traffic  `[coined]`
+  - pron. “Ssuhm-keuh-ree”
+  - ledger: ME —; IS umferð; GA trácht; EU trafiko; DE Verkehr; LA commeatus; CY traffig; DZ —; GRC —; SA saṃcāra; Q —; ON umferð
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Samsca** *(noun)* — community
+  - Attested in tmesis: aufGao'samsca'laíê — aufGaolaí communities.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Sap** — stone
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+  - **worksheet gloss:** juice — pron. “suh'p”
+  - ledger: ME jus; IS safi; GA sú; EU zuku; DE Saft; LA sucus; CY sudd; DZ —; GRC chylos; SA rasa; Q sáva; ON safi
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Sapfarmyaí** — stonework  `[coined]`
+  - pron. “Ssuh-pfuh'rm-yuh'eeh”
+  - ledger: ME ston-werk; IS steinsmíði; GA saoirseacht chloiche; EU harlanketa; DE Mauerwerk; LA opus lapideum; CY gwaith maen; DZ dozo; GRC lithourgia; SA —; Q —; ON steinsmíð
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Sárghu** — seek  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+  - **worksheet gloss:** search — pron. “say'r-sthah”
+  - ledger: ME serchen; IS leita; GA cuardaigh; EU bilatu; DE suchen; LA scrutari; CY chwilio; DZ tshö-ni; GRC zētein; SA anu-√iṣ; Q cesta-; ON leita
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Sayäil** — claim  `[coined]`
+  - pron. “Suh-yah'eh-il”
+  - ledger: ME claimen; IS fullyrða; GA maígh; EU aldarrikatu; DE behaupten; LA affirmare; CY honni; DZ —; GRC phaskein; SA prati-√jñā; Q —; ON heimta
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **scæt** — shoot  `[coined]`
+  - pron. “sheed”
+  - ledger: ME shoten; IS skjóta; GA scaoil; EU tiro egin; DE schießen; LA iaculari; CY saethu; DZ —; GRC toxeuein; SA √as; Q —; ON skjóta
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Scaffath** — company  `[coined]`
+  - pron. “Shuhff-uht”
+  - ledger: ME companye; IS félagsskapur; GA comhluadar; EU konpainia; DE Gesellschaft; LA societas; CY cwmni; DZ —; GRC synousia; SA saṅga; Q —; ON fǫruneyti
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **scaírea** *(modal verb)* — could  `[working]`
+  - 'mís Dé'ahor'cruí'sáillaí'ch'ía'er scaírea gilæn't' — could never-give.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Scál** *(noun)* — cat
+  - Catscale “geas-car” (lore)
+  - *source: reference §2*
+- **Scál** *(noun)* — boat
+  - Niïl Scál e thíthíl Tonnaê “a boat of a thousand tons” (2.1.1.4.9)
+  - *source: reference §2*
+- **Scale** *(noun)* — car, automobile
+  - grubby loan-loop: Danæam Glaoscál → clipped → reborrowed as pseudo-English “Scale”; the commonest word for a car
+  - *source: reference §2*
+- **Scale* *truck*-e** — truck  `[coined]`
+  - pron. “Scale truck-eh”; both English loanwords
+  - ledger: ME —; IS vörubíll; GA trucail; EU kamioi; DE Lastwagen; LA —; CY lorri; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Scale-rim** — carpark  `[coined]`
+  - pron. “*Skayl*-rihm”
+  - ledger: ME —; IS bílastæði; GA carrchlós; EU aparkaleku; DE Parkplatz; LA —; CY maes parcio; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **scaoræn** *(Verb)* — scour
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **scaotha** — shout  `[coined]`
+  - pron. “shout-uh”
+  - ledger: ME shouten; IS hrópa; GA béic; EU oihu; DE brüllen; LA clamare; CY gweiddi; DZ kê tang-ni; GRC boan; SA √kruś; Q can-; ON œpa
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Scaoyn** — change  `[coined]`
+  - pron. “Shaow-ihn”
+  - ledger: ME chaungen; IS breyta; GA athraigh; EU aldatu; DE ändern; LA mutare; CY newid; DZ —; GRC metaballein; SA pari-√vṛt; Q ahya-; ON breyta
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Scarryfê** *(Noun (plural))* — fangs
+  - 'Scarryfê dué Craigachaí mæ sciapæn' — fangs for purchase you grab.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **scéaler** *(Verb)* — write
+  - scéalerea 'written'.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **scéałin** — lace  `[coined]`
+  - pron. “sheh'eh'uh-lyihn”
+  - ledger: ME las; IS blúnda; GA lása; EU parpaila; DE Spitze; LA —; CY les; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Scéalithaí** — story  `[coined]`
+  - pron. “Shay'uh-lihtt-eye”
+  - ledger: ME storie; IS saga; GA scéal; EU istorio; DE Geschichte; LA fabula; CY chwedl; DZ namthar; GRC mythos; SA kathā; Q quenta; ON saga
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Scéan** *(Noun (name))* — — (an exemplar-name)
+  - vocative riders: Scéan-teos in intimacy; O mis Scéan mith dúe silgá gæn (2.1.1.4.28-amend)
+  - *source: reference §2*
+- **Scëel-scëel** *(noun (reduplicated))* — ceiling
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Scelcs** — glass  `[coined]`
+  - pron. “Shelx”
+  - ledger: ME glas; IS gler; GA gloine; EU beira; DE Glas; LA vitrum; CY gwydr; DZ shel; GRC hyalos; SA kāca; Q hyellë; ON gler
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **scén** *(interrog. particle)* — question particle — NON-PAST (eclipsing)
+  - ← Irish an Stack-r2: 'Scén stil'ten'át stílát?' — NON-PAST question.
+  - *source: reference §2*
+- **Scepênuaí** — movie  `[coined]`
+  - pron. “Shehp-eh'en-why”
+  - ledger: ME —; IS kvikmynd; GA scannán; EU pelikula; DE Film; LA pellicula; CY ffilm; DZ lognyen; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Scepíël** — mirror  `[coined]`
+  - pron. “Shehp-ee-eh'el”
+  - ledger: ME mirour; IS spegill; GA scáthán; EU ispilu; DE Spiegel; LA speculum; CY drych; DZ melong; GRC katoptron; SA darpaṇa; Q —; ON spegill
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Scepíëlách** — special  `[coined]`
+  - pron. “Shehp-ee-eh'el-ayk”
+  - ledger: ME special; IS sérstakur; GA speisialta; EU berezi; DE besonder; LA specialis; CY arbennig; DZ —; GRC exairetos; SA viśiṣṭa; Q —; ON sérstakr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Scepíëlyæn** — speculate  `[coined]`
+  - pron. “Shehp-ee-eh'el-yeeh'en”
+  - ledger: ME —; IS velta fyrir sér; GA tuairimíocht; EU espekulatu; DE mutmaßen; LA speculari; CY dyfalu; DZ —; GRC theōrein; SA √tark; Q intya-; ON íhuga
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **scér** *(interrog. particle)* — question particle — PAST (leniting)
+  - ← Irish ar Stack-r2: 'Scér Ruth — syá — Yon Stár gilæn't gilæn't?' — PAST question over fused-negative gilæn't.
+  - *source: reference §2*
+- **scé’thte** *(clitic)* — negative  `[active]`  ↳ of ’thte
+  - post-VOWEL; Nhœme’thte , scé’thte
+  - *source: All-Coinages concordance #536 (HTML reference + LDS PDF)*
+- **Scéuturmy** — parasite  `[coined]`
+  - pron. “Shay-ahd-ahrm-ee”
+  - ledger: ME —; IS sníkjudýr; GA seadán; EU bizkarroi; DE Schmarotzer; LA parasitus; CY parasit; DZ —; GRC parasitos; SA upajīvin; Q —; ON boðflenna
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Sceúzal** — shadow  `[coined]`
+  - pron. “Sheh'ooh-zuhl”
+  - ledger: ME shadwe; IS skuggi; GA scáth; EU itzal; DE Schatten; LA umbra; CY cysgod; DZ dribma; GRC skia; SA chāyā; Q lumbulë; ON skuggi
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **scé’ya** *(clitic)* — positive answer / tag  `[active]`  ↳ of ’ya
+  - INVARIANT; Fith’ya , scé’ya
+  - *source: All-Coinages concordance #537 (HTML reference + LDS PDF)*
+- **sciapæn** *(Verb)* — grab
+  - felSciapæn 'grab-on'.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **scicach** *(adjective)* — shit (shitty)
+  - 'annadh múlch œr scicach' — whether good or shit.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **sciéłh** — smooth
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Scínsíy** — sparkle  `[coined]`
+  - pron. “Sheen-see”
+  - ledger: ME sparklen; IS glitra; GA drithligh; EU dir-dir; DE funkeln; LA scintillare; CY pefrio; DZ —; GRC stilbein; SA √sphur; Q tin-; ON glitra
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Scírsy** — snake
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Sciw** — wing
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **scîyn** — seem  `[coined]`
+  - pron. “shine”
+  - ledger: ME semen; IS virðast; GA is cosúil; EU iruditu; DE scheinen; LA videri; CY ymddangos; DZ —; GRC dokein; SA prati-√bhā; Q —; ON virðask
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **sclæs** — release  `[coined]`
+  - pron. “shleess”
+  - ledger: ME relesen; IS sleppa; GA scaoil; EU askatu; DE loslassen; LA liberare; CY rhyddhau; DZ tang-ni; GRC aphienai; SA √muc; Q lehta-; ON leysa
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **sclaí** *(verb)* — ask
+  - Participle sclaíea: 'sy atáea'thte sclaíea' — so wasn't asked.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **sclaíea** *(verb (participle))* — asked  `[working]`  ↳ of sclaí
+  - Of sclaí.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Sclaoímhú** *(noun)* — corkscrew
+  - *source: reference §2*
+- **Sclíeclu** *(verb)* — conclude
+  - Reduplicated: Sclíeclu-Sclíeclu 'the conclusion'.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Sclíeclu-Sclíeclu** *(verbal noun (reduplicated))* — the conclusion  `[working]`  ↳ of Sclíeclu
+  - Of Sclíeclu.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Sclosreæn** — contort  `[coined]`
+  - pron. “Shloss-reh-ee'en”
+  - ledger: ME —; IS vinda; GA freang; EU bihurritu; DE verrenken; LA contorquere; CY ystumio; DZ —; GRC diastrephein; SA vi-√veṣṭ; Q —; ON vinda
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Sclostaíría** *(noun)* — wrenching
+  - Closing cadence: 'dús Trawidía o dús Crith-crith o dúrrync dús Sclostaíría'.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Sclostaíry** — wrench  `[coined]`
+  - pron. “Shlohss-tuh'ih-ree”
+  - ledger: ME wrenchen; IS kippa; GA freang; EU bihurritu; DE reißen; LA extorquere; CY tyndro; DZ —; GRC apospan; SA ā-√chid; Q —; ON kippa
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Sclún** — close  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **Sclúnea** — closed  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **Sclúneäi** — closure  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **scmágr** — taste  `[coined]`
+  - pron. “shmay-grr”
+  - ledger: ME tasten; IS bragð; GA blas; EU zapore; DE Geschmack; LA gustus; CY blas; DZ bro; GRC geusis; SA rasa; Q tyav-; ON keimr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Scmaogg** — idea  `[coined]`
+  - pron. “Shmaowk”
+  - ledger: ME —; IS hugmynd; GA smaoineamh; EU ideia; DE Idee; LA idea; CY syniad; DZ —; GRC idea; SA saṃkalpa; Q sanwë; ON hugsan
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Scœltscéalp** — fiction  `[coined]`
+  - pron. “Shehr'ld-schay'uhlp”
+  - ledger: ME ficcioun; IS skáldskapur; GA ficsean; EU fikzio; DE Dichtung; LA fictio; CY ffuglen; DZ —; GRC plasma; SA kalpanā; Q —; ON skáldskapr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **scónách** — already  `[coined]`
+  - pron. “show-nayk”
+  - ledger: ME alredy; IS þegar; GA cheana; EU dagoeneko; DE schon; LA iam; CY eisoes; DZ —; GRC ēdē; SA —; Q —; ON þegar
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **scónë** — immediate  `[coined]`
+  - pron. “shown-e'eh”
+  - ledger: ME —; IS tafarlaus; GA láithreach; EU berehalako; DE unmittelbar; LA immediatus; CY di-oed; DZ —; GRC parachrēma; SA sadyaḥ; Q —; ON þegar í stað
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Scönscha** — weapon  `[coined]`
+  - pron. “Show'euhn-chuh”
+  - ledger: ME wepen; IS vopn; GA arm; EU arma; DE Waffe; LA arma; CY arf; DZ tshöncha; GRC hoplon; SA āyudha; Q —; ON vápn
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Scóuc** — scan  `[coined]`
+  - pron. “Show-ahk”
+  - ledger: ME —; IS skima; GA scanáil; EU eskaneatu; DE absuchen; LA perlustrare; CY sganio; DZ —; GRC periskopein; SA vi-√lok; Q —; ON skima
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Scræsach** *(adjective)* — tricky
+  - Cf. Oath Scræsachaí Tïcainê 'without-trickery'. 'Scræsach í bhie' — tricky it is.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Scræsachaí** — trickery  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **Scratean-scratean** — record  `[coined]`
+  - pron. “Shruh-deh'uhn_shruh-deh'uhn”
+  - ledger: ME recorden; IS skrá; GA taifead; EU grabatu; DE aufzeichnen; LA —; CY cofnodi; DZ —; GRC anagraphein; SA ni-√bandh; Q tec-; ON skrá
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Screamm** — crust  `[coined]`
+  - pron. “Shreh'um”
+  - ledger: ME cruste; IS skorpa; GA screamh; EU azal; DE Kruste; LA crusta; CY crawen; DZ —; GRC phloios; SA tvac; Q —; ON skorpa
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **screppæn** *(Verb)* — shrink
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Scuîfáin** — queue  `[coined]`
+  - pron. “Shwye-vay'ihn”
+  - ledger: ME —; IS biðröð; GA scuaine; EU ilara; DE Schlange; LA —; CY ciw; DZ —; GRC —; SA paṅkti; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **scúthách** — quick  `[coined]`
+  - pron. “Shooh-tayk”
+  - ledger: ME quik; IS fljótur; GA sciobtha; EU bizkor; DE rasch; LA velox; CY chwim; DZ gyokpa; GRC ōkys; SA āśu; Q tyelca; ON fljótr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **sê** *(pronoun)* — self (reflexive)
+  - coined to match Latin sē (1.5.1.4): logophoric — in reports, self bends back to the sayer; not caged to S’aige’in. Nearest kin Sî “tea”, thrice-distinguished. Paradigm (1.5.2.1): naked sê = 1st person (“myself” — the speaker owns the unmarked); sê-fær = 3rd (“færself”, hyphen-compound — turned 2026-07-14, the maker: “fær last — it’s an adjective so it takes the in-lieu-of-tmesis position”; formerly inked fær-sê); clause-mates otherwise disjoint; 2nd person unruled; naked sê never third — re-ratified. Placement free (1.6.4); serves as emphatic too (1.6.9.1). The family (1.6.5, 1.6.9.3): sê · í-sê · sê-fær · miths-sê · cías-sê — every antecedent pairs with its own compound, no exotic binding conditions. (Whether the family turns with fær’s compound — sê-miths, sê-cías, sê-í — stands forked, 2026-07-14.) (2026-07-15: cías also now compounds outside the sê-family, in iocías/sícías ‘those/these’, 2.1.1.4.19 — not a resolution, but its compounding behavior generally is a little better attested.) Dual duty by number: alone in the singular, each-other in the plural, the resonance reading; the alone-construction rides mé “with” (wil cías-sê mé), and a ’ya on wil reassures
+  - *source: reference §2*
+  - **worksheet gloss:** myself — pron. “Seh / Seh_deh-ohss”; also Sē-teos
+  - ledger: ME miself; IS ég sjálf; GA mé féin; EU neure burua; DE ich selbst; LA egomet; CY fi fy hun; DZ nga ra; GRC emauton; SA svayam; Q imni; ON ek sjálf
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **sê fæ ooraith** *(verb)* — kill  `[active]`  ↳ of ooraith
+  - sê fæ ooraith “himself he killed”; base of Ooraithr (2.1.1.3.1)
+  - *source: All-Coinages concordance #547 (HTML reference + LDS PDF)*
+- **Sëain** — own  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **Sëainyr** — ownership  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **Sê-dúi’gheo-e’ri** *(preposition)* — unto  `[active]`  ↳ of dúiri
+  - ‹ du + niri - in the epithet Sê-dúi’gheo-e’ri “Self-Unto-God-of” (2.1.2.1.12.1); and the temporal office - “until is also dúiri” (the maker): the anterior country whole (2.1.1.6.6-7)
+  - *source: All-Coinages concordance #546 (HTML reference + LDS PDF)*
+- **seegh** — push
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **sê-fær** *(pronoun (reflexive))* — færself (3rd)
+  - the sê-tetrad (1.5.2.1, 1.6.5); hyphen-compound; turned from fær-sê 2026-07-14 — “fær last: an adjective, the in-lieu-of-tmesis position” (the maker)
+  - *source: reference §2*
+- **s’efui-e’in** *(compound (Sin + efui + -e))* — as per the topic of — the quidem-replica
+  - placed after its topic, for-its-part-wise; the hyphen-hung -e’s second witness (1.12.1)
+  - *source: reference §2*
+- **S’eg’in** *(element (class awaiting))* — way, such-way  `[active]`  ↳ of eg
+  - inside S’eg’in “such-way” - the topic-resumptive as-frame, no e-joint (2.1.1.3.2)
+  - *source: All-Coinages concordance #521 (HTML reference + LDS PDF)*
+- **seifandræ** — respond  `[coined]`
+  - pron. “seh'ih-vuhn-three”
+  - ledger: ME responden; IS bregðast við; GA freagair; EU erantzun; DE reagieren; LA respondere; CY ymateb; DZ —; GRC apokrinesthai; SA prati-√vac; Q hanquet-; ON svara
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **seiffrathí** — withdraw  `[coined]`
+  - pron. “Seh'ih-fruh-tee”
+  - ledger: ME withdrawen; IS draga sig í hlé; GA tarraing siar; EU erretiratu; DE zurückziehen; LA se recipere; CY encilio; DZ —; GRC anachōrein; SA pratyā-√hṛ; Q —; ON hǫrfa
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **seïldhu** — recollect  `[coined]`
+  - pron. “Sseh'ee'ihl-thah”
+  - ledger: ME —; IS minnast; GA tabhair chun cuimhne; EU oroitu; DE sich besinnen; LA reminisci; CY atgofio; DZ —; GRC anamimnēskesthai; SA anu-√smṛ; Q enyal-; ON minnask
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **seïnaigg** — retract  `[coined]`
+  - pron. “seh'eeh-nuh'ihk”
+  - ledger: ME retracten; IS draga inn; GA tarraing siar; EU atzeratu; DE einziehen; LA retrahere; CY tynnu'n ôl; DZ —; GRC anaspan; SA sam-√hṛ; Q —; ON taka aptr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Seinhœmaí** — result  `[coined]`
+  - pron. “Sseh'ih-n7-euh-muh'ih”
+  - ledger: ME —; IS niðurstaða; GA toradh; EU emaitza; DE Ergebnis; LA eventus; CY canlyniad; DZ drebu; GRC ekbasis; SA phala; Q yávë; ON ávǫxtr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **seinutscu** — recall  `[coined]`
+  - pron. “Sseh'ih-nah-skah”
+  - ledger: ME —; IS rifja upp; GA meabhraigh; EU gogoratu; DE sich entsinnen; LA recordari; CY dwyn i gof; DZ —; GRC anamimnēskesthai; SA anu-√smṛ; Q enyal-; ON minnask
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **sê-maos** *(pronoun (reflexive))* — yourself
+  - sê- reflexive + maos 'your'.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **senthith** — feel  `[coined]`
+  - pron. “sent-it”
+  - ledger: ME felen; IS finna; GA mothaigh; EU sentitu; DE fühlen; LA sentire; CY teimlo; DZ tshor-ni; GRC aisthanesthai; SA anu-√bhū; Q fel-; ON kenna
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Senthithaí** — sense  `[coined]`
+  - pron. “sent-it-uh'ih”; alt. pron. “sent-it_sent-it”; also Senthith-senthith
+  - ledger: ME sens; IS skyn; GA ciall; EU zentzu; DE Sinn; LA sensus; CY synnwyr; DZ tshorwa; GRC aisthēsis; SA indriya; Q handë; ON skyn
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Senthith-senthith** — sense (variant)  `[coined]`
+  - variant of **Senthithaí**; see that entry
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **senthyei** — sentient  `[coined]`
+  - pron. “ssehnn-tee-eye”
+  - ledger: ME —; IS skyni gæddur; GA mothaitheach; EU —; DE empfindungsfähig; LA sentiens; CY ymwybodol; DZ semchen; GRC aisthētikos; SA sacetana; Q —; ON skyni gœddr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Sënty** — message  `[coined]`
+  - pron. “sseh'end-ee”
+  - ledger: ME message; IS skilaboð; GA teachtaireacht; EU mezu; DE Nachricht; LA nuntius; CY neges; DZ —; GRC angelia; SA sandeśa; Q —; ON orðsending
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Seoir** *(noun)* — key
+  - *source: reference §2*
+- **sequentially more: another few beers** — another (variant)  `[coined]`
+  - variant of **níbísy**; see that entry
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Sétcaonthy** — counter  `[coined]`
+  - pron. “Ssehd-cow'ntt-ee”
+  - ledger: ME countour; IS afgreiðsluborð; GA cuntar; EU salmahai; DE Theke; LA —; CY cownter; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Sē-teos** — myself (variant)  `[coined]`
+  - variant of **Sê**; see that entry
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **seth** — settle  `[coined]`
+  - pron. “sehtt”
+  - ledger: ME setlen; IS setjast að; GA socraigh; EU finkatu; DE sich niederlassen; LA considere; CY ymsefydlu; DZ dö-ni; GRC katoikein; SA ni-√vas; Q har-; ON setjask
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **sê-þon** — herself  `[coined]`
+  - coined against the twelve-language ledger
+  - ledger: ME hireself; IS hún sjálf; GA í féin; EU bere burua; DE sie selbst; LA ipsa; CY hi ei hun; DZ —; GRC autē; SA svayam; Q insë; ON hon sjálf
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **sétornú** — fixate  `[coined]`
+  - pron. “sed-ohrn-ooh”
+  - ledger: ME —; IS festa hugann; GA —; EU —; DE fixieren; LA —; CY —; DZ —; GRC —; SA ni-√dhyai; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Sétslaff-slaff** — cutup  `[coined]`
+  - pron. “Zehd-sluhf-sluhf”
+  - ledger: ME —; IS —; GA —; EU —; DE —; LA —; CY —; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Sfeith** *(numeral (year series))* — 21
+  - year-series numeral · base 2+30 (base-60 pair-stem). Pair: Sfeith 21 (odd, bare) / Ghsfeith 20 (even, lenited). Year names: A-B = A×60 + B, hyphen-joined, second element bare. This form: odd · bare stem.
+  - *source: session 2026-07-21, the maker*
+- **Sfêl** — cave  `[coined]`
+  - pron. “Ssvell”
+  - ledger: ME cave; IS hellir; GA uaimh; EU haitzulo; DE Höhle; LA spelunca; CY ogof; DZ —; GRC antron; SA guhā; Q felco; ON hellir
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Sgiesaetthum** — 120-year period  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **Shar** *(noun)* — sugar
+  - (2.1.1.4.9)
+  - *source: reference §2*
+- **shrai** *(verb)* — praise
+  - (1.6.6)
+  - *source: reference §2*
+- **shrai-shrai** *(gerund (Noun))* — the praising
+  - gerund by reduplication — the Chís-Chís pattern’s second witness (1.6.6)
+  - *source: reference §2*
+- **Sî** *(noun)* — tea
+  - *source: reference §2*
+- **Sîchaí** — soul  `[coined]`
+  - pron. “Sigh-kuh'ih”
+  - ledger: ME soule; IS sál; GA anam; EU arima; DE Seele; LA anima; CY enaid; DZ la; GRC psychē; SA ātman; Q fëa; ON ǫnd
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **sícías** *(demonstrative (pl.))* — these
+  - compositional, not a new root — sís ‘this’ + cías ‘their/them’, “this-them”; same replacement (2.1.1.4.19)
+  - *source: reference §2*
+- **Sídhá** *(noun)* — sídhe
+  - 'yThérafthyiya Sídháê-e' — the therapist sídhe-of.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Sídia** *(noun)* — sibling
+  - glossed by the maker 2026-07-14 (sídia-teos “sibling-mine”); context renders sister or brother — the agender culture’s word
+  - *source: reference §2*
+  - **worksheet gloss:** sister — pron. “see-dih'uh”; alt. pron. “lit. sibling”; no gendered sibling titles
+  - ledger: ME suster; IS systir; GA deirfiúr; EU ahizpa; DE Schwester; LA soror; CY chwaer; DZ num; GRC adelphē; SA svasṛ; Q seler; ON systir
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Sídia** *(Noun)* — —
+  - sibling — glossed by the maker (2026-07-14): sídia-teos “sibling-mine”, the familiar possessive; the standard-NP of the 1.8.4 frame (iy lus Sídia ___); renders sister or brother by context — the watch closes
+  - *source: reference §2*
+  - **worksheet gloss:** sister — pron. “see-dih'uh”; alt. pron. “lit. sibling”; no gendered sibling titles
+  - ledger: ME suster; IS systir; GA deirfiúr; EU ahizpa; DE Schwester; LA soror; CY chwaer; DZ num; GRC adelphē; SA svasṛ; Q seler; ON systir
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Sídia-afTo'emma'lach** — shared-parent kin (full-blood sibling)
+  - *source: Final-Boss Haul · Semantic fields (2026-07-17)*
+- **Sídia-afTo’emma’lach** *(author form)* — shared-parent kin / full-blood sibling  `[active]`
+  - *source: All-Coinages concordance #557 (LDS PDF)*
+- **Sídia-leth** *(author form)* — half-sídia  `[active]`
+  - *source: All-Coinages concordance #558 (LDS PDF)*
+- **Sídia-leth / Le'sídia'th** — half-sídia
+  - *source: Final-Boss Haul · Semantic fields (2026-07-17)*
+- **sídia-teos** *(noun | Noun)* — sibling · -  `[active]`  ↳ of Sídia
+  - glossed by the maker 2026-07-14 ( sídia-teos “sibling-mine”); context renders sister or brother - the agender culture’s word | sibling - glossed by the maker (2026-07-14): sídia-teos “sibling-mine”, the familiar possessive; the standard-NP of the 1.8.4 frame (iy lus Sídia ___); renders sister or brother by context - the watch closes
+  - *source: All-Coinages concordance #559 (HTML reference + LDS PDF)*
+- **Sídia-wal** — sídia-by-oath
+  - *source: Final-Boss Haul · Semantic fields (2026-07-17)*
+- **Sídia-wal** — oath-sídia
+  - *source: Final-Boss Haul · Semantic fields (2026-07-17)*
+- **Sídílë** — womb-kin / blood-sibling
+  - *source: Final-Boss Haul · Semantic fields (2026-07-17)*
+- **sïetcaír** — install  `[coined]`
+  - pron. “zee-ehd-cuh'ir”
+  - ledger: ME installen; IS setja upp; GA suiteáil; EU instalatu; DE installieren; LA collocare; CY gosod; DZ —; GRC kathistanai; SA prati-√ṣṭhā (caus.); Q panya-; ON setja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Sigureth** — cigarette  `[coined]`
+  - pron. “Sig-ah-rett”
+  - ledger: ME —; IS sígaretta; GA toitín; EU zigarreta; DE Zigarette; LA —; CY sigarét; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Síhr...** — grief-family word
+  - *source: Final-Boss Haul · Semantic fields (2026-07-17)*
+- **Siïlu** — seed
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **silgá** *(verb)* — think
+  - iy mæ silgá “than you think”
+  - *source: reference §2*
+- **Silinty** — cylinder  `[coined]`
+  - pron. “Cyl-in-dee ”
+  - ledger: ME chilindre; IS sívalningur; GA sorcóir; EU zilindro; DE Zylinder; LA cylindrus; CY silindr; DZ —; GRC kylindros; SA —; Q —; ON sívalr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **sílydol** — mutual  `[coined]`
+  - pron. “sih-lee-thohl”
+  - ledger: ME —; IS gagnkvæmur; GA frithpháirteach; EU elkarren; DE gegenseitig; LA mutuus; CY cilyddol; DZ —; GRC amoibaios; SA paraspara; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Sin** *(particle)* — so / “as was”
+  - behaves adjectivally in the imperative frame; hosts ’ma; tmesis host for verbs: S’aige’in “as-said” (seam-merge)
+  - *source: reference §2*
+- **sin** *(part.)* — as, so
+  - aich sin “also as”; the clefted so of the yinÿ…iostá frame
+  - *source: reference §2*
+- **sin … sy …** *(particle)* — so-then  `[active]`  ↳ of sy
+  - the correlative hinge’s second half: sin … sy … = the-X-er, the-Y-er (1.8.6); nearest kin Syá , distinguished
+  - *source: All-Coinages concordance #570 (HTML reference)*
+- **- sin e Ulfœrth -** *(Noun)* — Revenge-journey / -expedition / -quest  `[active]`  ↳ of Ulfœrth
+  - topic-phrase exemplar: - sin e Ulfœrth - / s’ulfœrth-e’in (1.12.1.2.3)
+  - *source: All-Coinages concordance #567 (HTML reference + LDS PDF)*
+- **sin mordach sy fær** *(adjective)* — big  `[active]`  ↳ of mordach
+  - sin mordach sy fær “as big as her” (2.1.1.2.7); extends toward ’enormous’ in mordachië ’enormously’ and mordachaí ’enormity’ (2.2.4.4, mended 2026-07-15 - a duplicate row wrongly marking this word new has been removed)
+  - *source: All-Coinages concordance #569 (HTML reference + LDS PDF)*
+- **sínësgách** — plausible  `[coined]`
+  - pron. “ssee-neh'e-ssgayk”
+  - ledger: ME —; IS trúverðugur; GA inchreidte; EU sinesgarri; DE glaubhaft; LA probabilis; CY credadwy; DZ —; GRC pithanos; SA upapanna; Q —; ON trúligr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **sininithíáchæ** — repeat  `[coined]`
+  - pron. “ssih-nih-nih-teeh'ay-key”
+  - ledger: ME repeten; IS endurtaka; GA athdhéan; EU errepikatu; DE wiederholen; LA repetere; CY ailadrodd; DZ —; GRC epanalambanein; SA abhi-√as; Q en- (pref.); ON endr- (pref.)
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Sinithaíl** — twin
+  - *source: Final-Boss Haul · Semantic fields (2026-07-17)*
+- **Sin’ma** *(clitic)* — au contraire (the Danæam doch )  `[active]`  ↳ of ’ma
+  - INVARIANT; Gæn’ma , Sin’ma
+  - *source: All-Coinages concordance #568 (HTML reference + LDS PDF)*
+- **Sinótæn** — follows  `[working]`
+  - from the Oath work session; terse gloss as given. Stack-2: reduplicated — 'lus Sinótæn-sinótæn eibh' (the following was).
+  - *source: session notes 2026-07-21*
+- **Sinótæn-sinótæn** *(verbal noun (reduplicated))* — the following  ↳ of Sinótæn
+  - Reduplicated verbal noun. 'lus Sinótæn-sinótæn eibh' — the following was.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **sin…sy** *(correlative particle)* — so-then - the equation-standard’s leg  `[active]`  ↳ of sy
+  - the sin…sy equative’s second leg; in practice the sy-phrase fronts to the object slot (2.1.1.2.7)
+  - *source: All-Coinages concordance #571 (HTML reference)*
+- **sin’t** *(part.)* — not so
+  - sin + ’t; aoa sin’t “seems, so-abouts” — the double-negative disembodiment (1.2.2.1)
+  - *source: reference §2*
+- **sinya** *(adv.)* — muchly
+  - sinya holdh “muchly tall”
+  - *source: reference §2*
+- **sinya holdh** *(adv.)* — muchly  `[active]`  ↳ of sinya
+  - sinya holdh “muchly tall”
+  - *source: All-Coinages concordance #575 (HTML reference + LDS PDF)*
+- **Síonæiya** *(proper noun)* — Faerieland (of Faerieland)
+  - THE ENDONYM: Faerieland's name in Danæam — 'ySíonæiya Ffemá'bissal-iy'dheach-e' = the Faerieland Appellate Court. Cf. Síonæya / the Síonæyais.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **S’i’pún’il’n** *(noun)* — tower  `[active]`  ↳ of Pún
+  - guest inside S’i’pún’il’n (1.2.2.3)
+  - *source: All-Coinages concordance #522 (HTML reference + LDS PDF)*
+- **sírffrach** *(adjective)* — silvery?  `[working]`
+  - TEXT form; the list gives írsifarach. Fork F2 — awaiting decree.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Sîrhoien** — lilac  `[coined]`
+  - pron. “Sigh-hroy-ehn”
+  - ledger: ME —; IS sýrena; GA líológ; EU lila; DE Flieder; LA syringa; CY lelog; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **sís** *(demonstrative)* — this
+  - sís thurn “here” (this-where). Compounds with cías as sícías ‘these’ (2.1.1.4.19).
+  - *source: reference §2*
+- **sís thurn** *(demonstrative)* — this  `[active]`  ↳ of sís
+  - sís thurn “here” (this-where). Compounds with cías as sícías ’these’ (2.1.1.4.19).
+  - *source: All-Coinages concordance #577 (HTML reference + LDS PDF)*
+- **sís Tïc e Bis** *(Noun)* — House · Grief  `[active]`  ↳ of Bis, Tïc, Tïc | Bis
+  - sís Tïc e Bis (1.16.6) | sís Tïc e Bis “This House of Grief” (1.16.6)
+  - *source: All-Coinages concordance #579 (HTML reference + LDS PDF)*
+- **sísaoya** *(text-deictic)* — nearer along
+  - cataphoric near (1.5.1.6) Stack-r2: 'sin-sísaoya aobisyach-e sy atáea'thte sclaíea' — as other-of so wasn't asked.
+  - *source: reference §2*
+- **Siselcuth** — carve  `[coined]`
+  - pron. “Sis-el-caht”
+  - ledger: ME kerven; IS skera út; GA snoigh; EU zizelkatu; DE schnitzen; LA sculpere; CY cerfio; DZ —; GRC glyphein; SA ut-√kṝ; Q —; ON skera
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **sísiya** *(text-deictic)* — nearer (direction-unspecified)
+  - (1.5.1.6) Stack-r2: -iya now an explicit derivative suffix ('per the nearest sísiya and nearest íosiya'); Sísiyaoýa 'one who/that the same one was' in the Oath.
+  - *source: reference §2*
+- **sísiyao** *(text-deictic)* — nearer back (“the latter”)
+  - (1.5.1.6)
+  - *source: reference §2*
+- **Sísiyaoýa** *(relative noun)* — one who/that the same one was
+  - Oath: 'dræao sísiya-iosiyaoýa Dræaigeainê atá' — from the same-one-abductees are.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Sísthnaoya** — hereby  `[working]`
+  - from the Oath work session; terse gloss as given. Stack-2 oath opening: 'Sís-thüs o drúræao' (this-when and subsequent-from).
+  - *source: session notes 2026-07-21*
+- **sís-thurn** — here
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Sísthurn** *(adverb)* — here  `[working]`
+  - 'Sísthurn Fælaê …' — here fey …. Variant of sís-thurn (stack-2); Oath reprise opens 'Sísthurn'.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Sithê** — seas (plural)  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **Sithera** — tremor  `[coined]`
+  - pron. “Sittehruh”
+  - ledger: ME tremour; IS skjálfti; GA creathán; EU dardara; DE Zittern; LA tremor; CY cryndod; DZ sayom; GRC tromos; SA kampa; Q pampilë; ON skjálfti
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Síthüs** *(Noun/adverb)* — now  `[working]`
+  - 'Duín Síthüs' — of-in Now. síthüsië 'nowily'. Cf. Sís-thüs 'this-when' (Oath).
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **síthüsië** *(adverb (-ië))* — nowily  `[working]`
+  - Síthüs + -ië.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Síuln** *(noun)* — wound
+  - keeper’s inference as the bare singular — only Síulnê is directly attested (2.1.1.4.12)
+  - *source: reference §2*
+- **Síulnê** *(noun (pl.))* — wounds
+  - a further witness of -ê as the plain pluraliser (1.16.6, mended 2026-07-15) (2.1.1.4.12)
+  - *source: reference §2*
+- **Sîunbloiy** — cornflower  `[coined]`
+  - pron. “Sigh-ahn-bloi-ee”
+  - ledger: ME —; IS kornblóm; GA gormán; EU —; DE Kornblume; LA cyanus; CY penlas; DZ —; GRC kyanos; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **S'iyail'in** — singly-so (niyail)  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **slaff** *(author form)* — cut  `[active]`
+  - *source: All-Coinages concordance #585 (LDS PDF)*
+- **slaff (noun: Slaff-slaff)** — cut
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Slaff-slaff** *(author form)* — cut (noun)  `[active]`
+  - *source: All-Coinages concordance #586 (LDS PDF)*
+- **Slár** *(numeral (year series))* — 9
+  - year-series numeral · base 2+30 (base-60 pair-stem). Pair: Slár 9 (odd, bare) / Ghslár 10 (even, lenited). Year names: A-B = A×60 + B, hyphen-joined, second element bare. This form: odd · bare stem. Stack-2: digit-mode — 'slár-cliffýa' = 95 (of 1695 AD).
+  - *source: session 2026-07-21, the maker*
+- **slísëghág** — meditate  `[coined]`
+  - pron. “slih-seh'es-thayg”
+  - ledger: ME —; IS hugleiða; GA machnaigh; EU gogoeta; DE nachsinnen; LA meditari; CY myfyrio; DZ gom-ni; GRC theōrein; SA √dhyai; Q —; ON hugleiða
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Slufru** — chair  `[coined]`
+  - pron. “sslah-vrah”
+  - ledger: ME chaire; IS stóll; GA cathaoir; EU aulki; DE Stuhl; LA sella; CY cadair; DZ —; GRC klismos; SA āsana; Q hamma; ON stóll
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Smiotherách** *(adjective)* — infectious
+  - Smiotherách Praxis — infectious praxis.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Smœtth** — board  `[coined]`
+  - pron. “Smeet”
+  - ledger: ME bord; IS fjöl; GA clár; EU ohol; DE Brett; LA tabula; CY astell; DZ —; GRC sanis; SA phalaka; Q pano; ON fjǫl
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Smughty** — mammal  `[coined]`
+  - pron. “Ssmah-sthtee”
+  - ledger: ME —; IS spendýr; GA mamach; EU ugaztun; DE Säugetier; LA mammale; CY mamal; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Snë** — snow
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **sœgafót** — climb  `[coined]`
+  - pron. “seuh-guh-vote”
+  - ledger: ME climben; IS klifra; GA dreap; EU igo; DE klettern; LA scandere; CY dringo; DZ —; GRC anabainein; SA ā-√ruh; Q —; ON klífa
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Sœinaí** *(Noun)* — sound
+  - yelSœinaí 'any sound'.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **sœinea** *(verb)* — sounded
+  - 'fær Sclíeclu-Sclíeclu sœinea' — faer conclusion sounded.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **sógjæn uÿth-e** — surpass  `[coined]`
+  - pron. “So-Jee'en Wheat_eh”
+  - ledger: ME —; IS fara fram úr; GA sáraigh; EU gainditu; DE übertreffen; LA superare; CY rhagori; DZ —; GRC hyperballein; SA ati-√śī; Q —; ON bera af
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **sólfu** — solve  `[coined]`
+  - pron. “sol-vah”
+  - ledger: ME —; IS leysa; GA réitigh; EU ebatzi; DE lösen; LA solvere; CY datrys; DZ —; GRC lyein; SA nir-√ṇī; Q —; ON leysa
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **sólitharách** — solitary  `[coined]`
+  - pron. “so-lih-tuh-rake”
+  - ledger: ME solitarie; IS einfari; GA aonarach; EU bakarti; DE einsam; LA solitarius; CY unig; DZ —; GRC erēmos; SA ekānta; Q eressëa; ON einn saman
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Son** *(verb)* — bleed
+  - soniú; gerund Son-Son
+  - *source: reference §2*
+- **Sór** — owed  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **sót** *(verb)* — go on
+  - usót “to go” — the u-infinitive’s first witness, sót serving plain-go (2.1.1.3.2)
+  - *source: reference §2*
+- **sót** — walk
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **spêcid** — expect  `[coined]`
+  - pron. “spek-ihth”
+  - ledger: ME —; IS búast við; GA bí ag súil le; EU espero; DE erwarten; LA exspectare; CY disgwyl; DZ —; GRC prosdokan; SA prati-√īkṣ; Q —; ON vænta
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Spítiya** — will  `[coined]`
+  - pron. “Spee-tih-yuh”
+  - ledger: ME wille; IS vilji; GA toil; EU nahi; DE Wille; LA voluntas; CY ewyllys; DZ —; GRC boulēsis; SA icchā; Q nirmë; ON vili
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **spoc** — bet  `[coined]`
+  - pron. “spock”
+  - ledger: ME —; IS veðja; GA geall; EU apustu egin; DE wetten; LA sponsio; CY betio; DZ —; GRC perididosthai; SA √paṇ; Q —; ON veðja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Sporth** — stitch  `[coined]`
+  - pron. “Sportt”
+  - ledger: ME stiche; IS spor; GA greim; EU puntada; DE Stich; LA sutura; CY pwyth; DZ tshem; GRC rhaphē; SA sīvana; Q —; ON spor
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Spriggig** — bulky  `[coined]`
+  - pron. “Sprig-gig”
+  - ledger: ME —; IS fyrirferðarmikill; GA toirtiúil; EU —; DE sperrig; LA —; CY swmpus; DZ —; GRC onkōdēs; SA sthūla; Q —; ON digr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **sprúigg** — exhort  `[coined]`
+  - pron. “sproo'ihk”
+  - ledger: ME exhorten; IS hvetja; GA spreag; EU —; DE ermahnen; LA exhortari; CY annog; DZ —; GRC parakalein; SA √cud; Q horta-; ON eggja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **spurgg** — kick  `[coined]`
+  - pron. “sspahrk”
+  - ledger: ME kiken; IS sparka; GA speach; EU ostikatu; DE treten; LA calcitrare; CY cicio; DZ —; GRC laktizein; SA —; Q —; ON sparka
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **ssai** *(numeral)* — two
+  - Mis ssai Grainê “our two graves” (1.12.1.2.3)
+  - *source: reference §2*
+- **ssai e Frælithi’ya** *(Noun)* — child  `[active]`  ↳ of Fræli
+  - ssai e Frælithi’ya ’two of the children’ (2.1.1.4.19.1)
+  - *source: All-Coinages concordance #591 (HTML reference + LDS PDF)*
+- **ssíns** *(numeral)* — zero
+  - ssíns e Frælithi’ya “zero of the children” — zero joins the numerals (2.1.1.4.19.5)
+  - *source: reference §2*
+- **ssíns e Frælithi’ya** *(numeral)* — zero  `[active]`  ↳ of ssíns
+  - ssíns e Frælithi’ya “zero of the children” - zero joins the numerals (2.1.1.4.19.5)
+  - *source: All-Coinages concordance #593 (HTML reference + LDS PDF)*
+- **Ssít** — bug  `[coined]`
+  - pron. “seat”
+  - ledger: ME —; IS padda; GA feithid; EU zomorro; DE Wanze; LA cimex; CY pryf; DZ bub; GRC koris; SA kīṭa; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **staffë** — meet  `[coined]`
+  - pron. “stuh-feh'eh”
+  - ledger: ME meten; IS hitta; GA buail le; EU topatu; DE treffen; LA convenire; CY cyfarfod; DZ che-ni; GRC apantan; SA sam-√gam; Q omentië; ON hitta
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Stár** *(noun)* — love
+  - 'Byræao Stár dúe Ruth' — out of love for Red; 'Yon Stár gilæn't gilæn't'.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Stát** *(noun)* — idiot
+  - Stát mæ •
+  - *source: reference §2*
+- **Státach** *(adjective)* — stupid, idiotic
+  - tmesis: Stá’fæ’tach
+  - *source: reference §2*
+- **Státachaí** *(Noun)* — idiocy
+  - apparently Stát → Státach → Státachaí — the -aí abstract former, 2.2.1.3’s first witness; the epithet státachaí-færs “His Idiocy” (2.1.1.3.1)
+  - *source: reference §2*
+- **státachaí-færs** *(Noun)* — idiocy  `[active]`  ↳ of Státachaí
+  - apparently Stát   Státach   Státachaí - the -aí abstract former , 2.2.1.3’s first witness; the epithet státachaí-færs “His Idiocy” (2.1.1.3.1)
+  - *source: All-Coinages concordance #597 (HTML reference + LDS PDF)*
+- **Státr** *(Noun)* — idiot-being
+  - the -r state-noun former’s third witness, given beside Stát by the maker (2.1.1.3.1)
+  - *source: reference §2*
+- **Steam** *(Noun)* — voice
+  - '-'t Steam' — 'ever voice. English-shaped Danæam.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Steam niyail-e** — unison  `[coined]`
+  - pron. “Steh-uhm nih-yuh-ihl_eh”
+  - ledger: ME —; IS einum rómi; GA d'aon ghuth; EU aho batez; DE einstimmig; LA una voce; CY unsain; DZ —; GRC homophōnia; SA ekakaṇṭha; Q —; ON einum rómi
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **stetyei** — steady  `[coined]`
+  - pron. “sted-y'eh”
+  - ledger: ME stedefast; IS stöðugur; GA seasmhach; EU egonkor; DE stetig; LA stabilis; CY cyson; DZ —; GRC bebaios; SA sthira; Q tulca; ON stǫðugr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **sthíff** — drip  `[coined]`
+  - pron. “steeff”
+  - ledger: ME drippen; IS drjúpa; GA sil; EU tanta; DE tropfen; LA stillare; CY diferu; DZ —; GRC stazein; SA √gal; Q —; ON drjúpa
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Sthuinë** *(author form)* — claw (noun)  `[active]`
+  - *source: All-Coinages concordance #599 (LDS PDF)*
+- **Sthwee** — fingernail  `[coined]`
+  - pron. “Stwee”
+  - ledger: ME fingernayl; IS nögl; GA ionga; EU azazkal; DE Fingernagel; LA unguis; CY ewin; DZ —; GRC onyx; SA nakha; Q —; ON nagl
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **sthynter** — offend  `[coined]`
+  - pron. “stihnd-ehr”
+  - ledger: ME offenden; IS móðga; GA maslaigh; EU iraindu; DE kränken; LA offendere; CY tramgwyddo; DZ —; GRC lypein; SA apa-√rādh; Q —; ON styggja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Stigma** — tattoo  `[coined]`
+  - pron. “stihg-muh”
+  - ledger: ME —; IS húðflúr; GA tatú; EU tatuaje; DE Tätowierung; LA stigma; CY tatŵ; DZ —; GRC stigma; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **stil** *(adverb)* — still (phase)
+  - pair of thúil Stack-r2: stílát 'still-do' (stíl- + át 'do'); contraction stil'ten'át 'sti'I'll-do'.
+  - *source: reference §2*
+  - **worksheet gloss:** yet — pron. “still”
+  - ledger: ME yet; IS enn; GA fós; EU oraindik; DE noch; LA adhuc; CY eto; DZ darung; GRC eti; SA adyāpi; Q —; ON enn
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **stíl-** *(prefix)* — the perfect former
+  - Ten stílsótea; the double pluperfect Ten úteo tes St’sót-sót’íl stílgænea; future perfect Iëao As í iëátea (gate S10)
+  - *source: reference §2*
+- **stílát** *(verb)* — still-do
+  - stíl- continuative + át 'do'. 'Scén stil'ten'át stílát?'
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **stílbrís** *(Verb (stíl-))* — still-breaking
+  - stíl- continuative; cf. stílgænea 'had-given'.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Stílgænea** — had-given (walk)  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **stil'ten'át** *(contraction)* — sti'I'll-do  `[working]`
+  - 'Scén stil'ten'át stílát?' — Q: sti'I'll-do still-do?
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **stirghæn** — reinforce  `[coined]`
+  - pron. “stihrs-thee'en”
+  - ledger: ME —; IS styrkja; GA treisigh; EU indartu; DE verstärken; LA firmare; CY atgyfnerthu; DZ —; GRC epirrhōnnynai; SA dṛḍhī-√kṛ; Q —; ON styrkja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **stírth** *(verb)* — drive
+  - *source: reference §2*
+- **Stó** — hour  `[coined]`
+  - pron. “Stow”
+  - ledger: ME houre; IS klukkustund; GA uair; EU ordu; DE Stunde; LA hora; CY awr; DZ chutshö; GRC hōra; SA horā; Q lúmë; ON stund
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Stöfy** — trunk  `[coined]`
+  - pron. “Steuhvy”
+  - ledger: ME trunke; IS stofn; GA stoc; EU enbor; DE Stamm; LA truncus; CY boncyff; DZ —; GRC stelechos; SA skandha; Q —; ON stofn
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Strauss** — ostrich  `[coined]`
+  - pron. “Straowss  ”; loanword
+  - ledger: ME ostriche; IS strútur; GA ostrais; EU ostruka; DE Strauß; LA struthio; CY estrys; DZ —; GRC strouthos; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **stun** — groan  `[coined]`
+  - pron. “stahn”
+  - ledger: ME gronen; IS stynja; GA cnead; EU intziri; DE stöhnen; LA gemere; CY griddfan; DZ —; GRC stenein; SA √stan; Q —; ON stynja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Stúpen** — rape  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **Stúpen-wínr** *(compound noun)* — rape-name-being  `[working]`  ↳ of wínr
+  - Æœstúpenear 'rape' + wínr 'name-being'.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **subsequent even number, so pairs are coined together)** — sixteen (variant)  `[coined]`
+  - variant of **Ghyfu**; see that entry
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **subultæn** — spread  `[coined]`
+  - pron. “Sah-bahl-dee'en”
+  - ledger: ME spreden; IS breiða; GA leath; EU zabaldu; DE ausbreiten; LA pandere; CY lledaenu; DZ dar-ni; GRC diaspeirein; SA vi-√stṛ; Q palya-; ON breiða
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **suïfæn** — fuck  `[coined]`
+  - pron. “sweev-ee'en”
+  - ledger: ME swiven; IS ríða; GA focáil; EU larrua jo; DE ficken; LA futuere; CY cnychu; DZ —; GRC binein; SA √yabh; Q —; ON serða
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Suinchí** — clamp  `[coined]`
+  - pron. “Swin-key”
+  - ledger: ME —; IS klemma; GA clampa; EU —; DE Zwinge; LA —; CY clamp; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **suiné** *(author form)* — claw  `[active]`
+  - *source: All-Coinages concordance #603 (LDS PDF)*
+- **suiné (noun: Sthuinë)** — claw
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **suippu** — snap  `[coined]`
+  - pron. “swip-pah”
+  - ledger: ME snappen; IS smella; GA snap; EU klask; DE schnappen; LA —; CY clecian; DZ —; GRC apokaulizein; SA √truṭ; Q —; ON bresta
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **sulæn** *(verb)* — dig
+  - attested as iësulæn “will-dig” — the ië- future worn plainly (1.12.1.2.3)
+  - *source: reference §2*
+- **sulænea** *(verb)* — dig  `[active]`  ↳ of sulæn
+  - sulænea “dug” - the -ea past’s ninth witness (2.1.1.3.1)
+  - *source: All-Coinages concordance #605 (HTML reference + LDS PDF)*
+- **sulfhœ** *(verb)* — blow
+  - sulfhœa past — the nose-sentence (2.1.1.8.4)
+  - *source: reference §2*
+- **sulfhœa** *(verb)* — blow  `[active]`  ↳ of sulfhœ
+  - sulfhœa past - the nose-sentence (2.1.1.8.4)
+  - *source: All-Coinages concordance #607 (HTML reference + LDS PDF)*
+- **s’ulfœrth-e’in** *(Noun)* — Revenge-journey / -expedition / -quest  `[active]`  ↳ of Ulfœrth
+  - topic-phrase exemplar: - sin e Ulfœrth - / s’ulfœrth-e’in (1.12.1.2.3)
+  - *source: All-Coinages concordance #523 (HTML reference + LDS PDF)*
+- **Sumferffaíya** — symmetry  `[coined]`
+  - pron. “Ssahm-vehr-fai-yuh”
+  - ledger: ME —; IS samhverfa; GA siméadracht; EU simetria; DE Ebenmaß; LA symmetria; CY cymesuredd; DZ —; GRC symmetria; SA sāmya; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **sumsumæn** — sweep  `[coined]`
+  - pron. “sahm-sahm-ee'en”
+  - ledger: ME swepen; IS sópa; GA scuab; EU —; DE fegen; LA verrere; CY ysgubo; DZ —; GRC korein; SA sam-√mṛj; Q —; ON sópa
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Súslaugg** — rocket  `[coined]`
+  - pron. “Soohss-laahk”
+  - ledger: ME —; IS eldflaug; GA roicéad; EU suziri; DE Rakete; LA —; CY roced; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Súsúr** — whisper  `[coined]`
+  - pron. “Ssooh-ssoohr”
+  - ledger: ME whisperen; IS hvísla; GA cogar; EU xuxurlatu; DE flüstern; LA susurrare; CY sibrwd; DZ —; GRC psithyrizein; SA upāṃśu (adv.); Q hlussa-; ON hvísla
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **sutscha** — match  `[coined]`
+  - pron. “sah-chuh”
+  - ledger: ME macche; IS passa; GA meaitseáil; EU bat etorri; DE übereinstimmen; LA congruere; CY cyfateb; DZ —; GRC harmottein; SA sam-√vad; Q —; ON sama
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **swil** — alone  `[coined]`
+  - pron. “swill”
+  - ledger: ME allone; IS einn; GA i d'aonar; EU bakarrik; DE allein; LA solus; CY unig; DZ —; GRC monos; SA ekākin; Q eressëa; ON einn
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Swýth** — suite  `[coined]`
+  - pron. “sweet”
+  - ledger: ME suite; IS svíta; GA sraith; EU —; DE Suite; LA —; CY cyfres; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **sy** *(particle)* — so-then
+  - the correlative hinge’s second half: sin … sy … = the-X-er, the-Y-er (1.8.6); nearest kin Syá, distinguished
+  - *source: reference §2*
+  - **worksheet gloss:** such — pron. “see”
+  - ledger: ME swich; IS slíkur; GA a leithéid; EU halako; DE solch; LA talis; CY cyfryw; DZ —; GRC toioutos; SA tādṛśa; Q taitë; ON slíkr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+  - **worksheet gloss:** thus — pron. “see”
+  - ledger: ME thus; IS þannig; GA amhlaidh; EU hala; DE also; LA sic; CY felly; DZ dezum; GRC houtōs; SA evam; Q sië; ON svá
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **sy** *(correlative particle)* — so-then — the equation-standard’s leg
+  - the sin…sy equative’s second leg; in practice the sy-phrase fronts to the object slot (2.1.1.2.7)
+  - *source: reference §2*
+  - **worksheet gloss:** such — pron. “see”
+  - ledger: ME swich; IS slíkur; GA a leithéid; EU halako; DE solch; LA talis; CY cyfryw; DZ —; GRC toioutos; SA tādṛśa; Q taitë; ON slíkr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+  - **worksheet gloss:** thus — pron. “see”
+  - ledger: ME thus; IS þannig; GA amhlaidh; EU hala; DE also; LA sic; CY felly; DZ dezum; GRC houtōs; SA evam; Q sië; ON svá
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Syá** *(answer word)* — maybe; perhaps
+  - ’thte + ’ya fused — say ’thte’ya ten times fast Stack-r2 also attests 'syá' (perhaps). 'Scér Ruth — syá — Yon Stár gilæn't gilæn't?'
+  - *source: reference §2*
+- **sýngjæn** — worry  `[coined]`
+  - pron. “see'en-jee'en”
+  - ledger: ME worien; IS áhyggjur; GA imní; EU kezkatu; DE sich sorgen; LA sollicitare; CY poeni; DZ semthre; GRC merimnan; SA cintā; Q —; ON áhyggja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+
+## T
+
+- **t** *(noun)* — drawer  `[active]`  ↳ of tachér
+  - sheds its t when nested: C’achér’ed
+  - *source: All-Coinages concordance #610 (HTML reference)*
+- **’t** *(clitic)* — negative
+  - post-CONSONANT; Fith’t, thurn’t
+  - *source: reference §2*
+- **tacfæuæn** — sustain  `[coined]`
+  - pron. “tuhk-vee'ah-ee'en”
+  - ledger: ME sustenen; IS viðhalda; GA cothaigh; EU eutsi; DE aufrechterhalten; LA sustinere; CY cynnal; DZ —; GRC diatērein; SA √dhṛ (caus.); Q —; ON halda uppi
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **tachér** *(noun)* — drawer
+  - sheds its t when nested: C’achér’ed
+  - *source: reference §2*
+- **tack** *(adverb)* — dab / plonk (smackbang)
+  - 'ythés tack duilín yMedhamýa' — which smackbang within the middle.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Tacýac** — support  `[coined]`
+  - pron. “Tuh-key'uhk”
+  - ledger: ME supporten; IS styðja; GA tacaigh; EU eutsi; DE unterstützen; LA sustinere; CY cynnal; DZ gyapkyor; GRC anechein; SA √dhṛ (caus.); Q —; ON styðja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **táic** — damp  `[coined]`
+  - pron. “tay'ihk”
+  - ledger: ME damp; IS rakur; GA tais; EU heze; DE feucht; LA umidus; CY llaith; DZ —; GRC hygros; SA ārdra; Q nítë; ON rakr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **táigura** — stretch  `[coined]`
+  - pron. “tay'ih-gah-ruh”
+  - ledger: ME strecchen; IS teygja; GA searr; EU luzatu; DE strecken; LA tendere; CY ymestyn; DZ —; GRC teinein; SA √tan; Q taita-; ON teygja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Talíraí** — terrain  `[coined]`
+  - pron. “Duh-leer-uh'ih”
+  - ledger: ME —; IS landslag; GA talamh; EU lur; DE Gelände; LA solum; CY tir; DZ sa; GRC chōrion; SA bhūmi; Q —; ON landsleg
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **taonmaën** — astonish  `[coined]`
+  - pron. “town-muh-ee'en”
+  - ledger: ME astonien; IS furða; GA ionadh a chur ar; EU harritu; DE erstaunen; LA obstupefacere; CY synnu; DZ —; GRC ekplēttein; SA vi-√smi; Q —; ON undra
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Tap** — head
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Tascy** — bag  `[coined]`
+  - pron. “Dash-ee”
+  - ledger: ME bagge; IS poki; GA mála; EU poltsa; DE Tasche; LA saccus; CY bag; DZ —; GRC thylakos; SA —; Q —; ON poki
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Tatsy** — finger  `[coined]`
+  - pron. “Duhtz-ee”
+  - ledger: ME finger; IS fingur; GA méar; EU hatz; DE Finger; LA digitus; CY bys; DZ —; GRC daktylos; SA aṅguli; Q leper; ON fingr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Tatsy-sthwee-e** — fingertip  `[coined]`
+  - pron. “Duhtz-ee_stwee_eh”
+  - ledger: ME —; IS fingurgómur; GA barr méire; EU hatz-mami; DE Fingerspitze; LA —; CY blaen bys; DZ —; GRC —; SA aṅgulyagra; Q —; ON fingrgómr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Tecnëê** — technics  `[coined]`
+  - pron. “Tehk-nee'eh”
+  - ledger: ME —; IS tækni; GA teicníc; EU teknika; DE Technik; LA —; CY technoleg; DZ —; GRC technē; SA śilpa; Q curwë; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Tegêy** — cover  `[coined]`
+  - pron. “Tegg-eh-ee”
+  - ledger: ME coveren; IS hylja; GA clúdaigh; EU estali; DE bedecken; LA tegere; CY gorchuddio; DZ —; GRC kalyptein; SA √chad; Q top-; ON hylja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **ten** *(pronoun)* — I
+  - 1st person; Más-ten ærmuch “I’m tired” Stack-r2: 'Byræao Stár dúe Ruth ten Stúpen-wínr … ïegæn't' — ten 'I' with future-negative.
+  - *source: reference §2*
+- **Ten æœá-e Fía más** *(determiner (the object-no))* — no, none (kein)  `[active]`  ↳ of æœá
+  - elder witness Æœá Cuthrá “no blame”; invited “to earn its stay with of-no”: æœá-e “of-no, without” - Ten æœá-e Fía más ; the without-twin breathes at last (2.1.1.4)
+  - *source: All-Coinages concordance #617 (HTML reference + LDS PDF)*
+- **ten mac** *(verb)* — like  `[active]`  ↳ of mac
+  - ten mac “I like” (1.12.1.2)
+  - *source: All-Coinages concordance #618 (HTML reference + LDS PDF)*
+- **Ten stílsótea** *(prefix)* — the perfect former  `[active]`  ↳ of stíl-
+  - Ten stílsótea ; the double pluperfect Ten úteo tes St’sót-sót’íl stílgænea ; future perfect Iëao As í iëátea (gate S10)
+  - *source: All-Coinages concordance #619 (HTML reference + LDS PDF)*
+- **teo** *(pronoun)* — me
+  - 1sg object — the object series completes: teo, fær, miths, cías (1.10.2)
+  - *source: reference §2*
+- **Teos** *(pronoun)* — mine
+  - tmeses in predication: Te’sídia’os
+  - *source: reference §2*
+- **te’rhié’os** *(Noun)* — Parent  `[active]`  ↳ of Rhié
+  - te’rhié’os “parent-mine” - the te…’os kin-frame’s second witness beside Te’sídia’os ; context renders “my mother” (1.12.1.2.1); pron. “Hrjaiy” (German j); familiar possessive rhié-færs “parent-his” - the kin-noun small (2.1.1.2.12)
+  - *source: All-Coinages concordance #614 (HTML reference + LDS PDF)*
+- **Tes** *(possessive)* — my
+  - *source: reference §2*
+- **tes** *(possessive)* — my
+  - beside mis “our”, mao “your” (2.1.1.2.8); hyphen-joins mé in tes-mé ‘my-with’, possessed accompaniment (2.1.1.4.16)
+  - *source: reference §2*
+- **Tesggtap** — laptop  `[coined]`
+  - pron. “Desk-tuhp”
+  - ledger: ME —; IS fartölva; GA ríomhaire glúine; EU eramangarri; DE Laptop; LA —; CY gliniadur; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Te’sídia’os** *(Noun)* — Parent  `[active]`  ↳ of Rhié
+  - te’rhié’os “parent-mine” - the te…’os kin-frame’s second witness beside Te’sídia’os ; context renders “my mother” (1.12.1.2.1); pron. “Hrjaiy” (German j); familiar possessive rhié-færs “parent-his” - the kin-noun small (2.1.1.2.12)
+  - *source: All-Coinages concordance #615 (HTML reference + LDS PDF)*
+- **tes-mé** *(possessive)* — my  `[active]`  ↳ of tes
+  - beside mis “our”, mao “your” (2.1.1.2.8); hyphen-joins mé in tes-mé ’my-with’, possessed accompaniment (2.1.1.4.16)
+  - *source: All-Coinages concordance #625 (HTML reference + LDS PDF)*
+- **Téxt** *(Noun)* — tissue
+  - hosted in felCne'téxt'ilea.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Thafern** — shop  `[coined]`
+  - pron. “tuh-vern”
+  - ledger: ME shoppe; IS búð; GA siopa; EU denda; DE Laden; LA taberna; CY siop; DZ tshongkhang; GRC kapēleion; SA āpaṇa; Q —; ON búð
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **thaioss't'ya** *(pronoun)* — what-mysterious-that-and-ever-and-totally  `[working]`
+  - Revised Oath: 'Ten s'aige'in -aoa o thaioss't'ya- Fís e Emma …' — I as-said, re: what[ever]-totally, debt of blood … Variant family with thiosas't / aoa-thas't.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Thal** — stop  `[coined]`
+  - pron. “tuh'l”
+  - ledger: ME stoppen; IS stöðva; GA stad; EU gelditu; DE anhalten; LA sistere; CY atal; DZ kag-ni; GRC pauein; SA vi-√ram; Q tap-; ON stǫðva
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Thaln** — land  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **Thalnafrê** *(noun)* — the Uplands
+  - Thaln 'land' + afrê 'in-the-uplands' — cf. Oath Thaln'ghrœliseæ-cías'afrê (their descendants in the uplands).
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Thapê** — cup  `[coined]`
+  - pron. “Tuh-peh”
+  - ledger: ME cuppe; IS bolli; GA cupán; EU katilu; DE Tasse; LA poculum; CY cwpan; DZ phop; GRC kylix; SA caṣaka; Q yulma; ON bolli
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Tharcaln** — landmark  `[coined]`
+  - pron. “Tar-kuhln”
+  - ledger: ME londmarke; IS kennileiti; GA sainchomhartha; EU mugarri; DE Wahrzeichen; LA —; CY tirnod; DZ —; GRC horos; SA —; Q —; ON kennileiti
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **thas** *(interrog. (th-word))* — what
+  - *source: reference §2*
+- **thâsæsæn** — vary  `[coined]`
+  - pron. “tah-ssee-ssee'en”
+  - ledger: ME varien; IS breytast; GA athraigh; EU aldatu; DE variieren; LA variare; CY amrywio; DZ —; GRC poikillein; SA vi-√kṛ; Q —; ON breytask
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **tháxya** *(interrog.)* — whom (fronting)
+  - coined 1.2.4.1; stands beside thénu — offices presumably distinct, held loosely
+  - *source: reference §2*
+- **thé** *(interrog. (th-word))* — who
+  - *source: reference §2*
+- **thé** *(relativiser (apparent))* — who (no-cleft frame)
+  - beside ythénÿ — division apparent, tracking the maker’s subjecthood semantics; one word confirms (2.1.1.4.5)
+  - *source: reference §2*
+- **thé-atáea ios atáea** *(verb (be))* — was / were - the past form with ios  `[active]`  ↳ of atáea
+  - thé-atáea ios atáea
+  - *source: All-Coinages concordance #629 (HTML reference + LDS PDF)*
+- **Thelefigjíon** — television  `[coined]`
+  - pron. “Teh-leh-vih-zhyon”
+  - ledger: ME —; IS sjónvarp; GA teilifís; EU telebista; DE Fernsehen; LA televisio; CY teledu; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **them** *(interrog. (th-word))* — how
+  - frame them…yail “how many”; replaces †thrum (unexisted)
+  - *source: reference §2*
+- **them…yail** *(interrog. (th-word))* — how  `[active]`  ↳ of them
+  - frame them…yail “how many”; replaces †thrum (unexisted)
+  - *source: All-Coinages concordance #631 (HTML reference)*
+- **thénu** *(interrog. (th-word))* — whom (oblique)
+  - used after prepositions; “whose” = thénu mé
+  - *source: reference §2*
+- **thénu mé** *(phrase)* — whose
+  - lit. “whom-with” — oblique thénu + mé “with”
+  - *source: reference §2*
+- **theraffæn** — terrify  `[coined]`
+  - pron. “tehr-uhff-ee'en”
+  - ledger: ME —; IS skelfa; GA scanraigh; EU izutu; DE entsetzen; LA terrere; CY dychryn; DZ —; GRC ekphobein; SA √tras (caus.); Q ruhta-; ON skelfa
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Theráfthyê-e** *(noun)* — therapy
+  - English-shaped loan, deliberate. Agent: Thérafthyiya 'therapist' (-iya).
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Thérafthyiya** *(noun)* — therapist  ↳ of Theráfthyê-e
+  - Theráfthyê-e + -iya agentive. 'lus yThérafthyiya nugænea' — the therapist nodded.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Therífách** — awful  `[coined]`
+  - pron. “Tehr-eev-ayk”
+  - ledger: ME aweful; IS hræðilegur; GA uafásach; EU izugarri; DE schrecklich; LA terribilis; CY ofnadwy; DZ —; GRC deinos; SA ghora; Q rúcima; ON ógurligr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **thés** *(interrog. (th-word))* — which
+  - *source: reference §2*
+- **Thesïógu** — evidence  `[coined]`
+  - pron. “Tess-ee-owe-guh”
+  - ledger: ME evidence; IS sönnun; GA fianaise; EU froga; DE Beweis; LA testimonium; CY tystiolaeth; DZ —; GRC tekmērion; SA pramāṇa; Q —; ON sǫnnun
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Theváre** *(verb)* — devour
+  - Theváre fæ — freely objectless (1.2.1.2.2)
+  - *source: reference §2*
+- **Theváre fæ** *(verb)* — devour  `[active]`  ↳ of Theváre
+  - Theváre fæ - freely objectless (1.2.1.2.2)
+  - *source: All-Coinages concordance #636 (HTML reference + LDS PDF)*
+- **Thexa** — text  `[coined]`
+  - pron. “Texuh”
+  - ledger: ME text; IS texti; GA téacs; EU testu; DE Text; LA textus; CY testun; DZ —; GRC syngramma; SA pāṭha; Q —; ON texti
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Thexa Ür-e** — urtext  `[coined]`
+  - pron. “Tehxuh Ur-eh”
+  - ledger: ME —; IS frumtexti; GA bunthéacs; EU jatorrizko testu; DE Urtext; LA archetypus; CY testun gwreiddiol; DZ —; GRC archetypon; SA mūlapāṭha; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Thídh** — festival  `[coined]`
+  - pron. “Teeth”
+  - ledger: ME festival; IS hátíð; GA féile; EU jaialdi; DE Fest; LA festum; CY gŵyl; DZ tshechu; GRC heortē; SA utsava; Q merendë; ON hátíð
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Thilsc** — fog
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **þin** *(ceremonial pronoun)* — she - the noncreation force  `[active]`
+  - the spicy þ in full harness; oblique þis-e (2.1.1.2.8)
+  - *source: All-Coinages concordance #638 (HTML reference + LDS PDF)*
+- **þin / þis** *(ceremonial pronoun)* — she — the noncreation force
+  - the spicy þ in full harness; oblique þis-e (2.1.1.2.8)
+  - *source: reference §2*
+- **þiníya** — nothing  `[coined]`
+  - pron. “Thihn-eeh-yuh”
+  - ledger: ME nothing; IS ekkert; GA faic; EU ezer ez; DE nichts; LA nihil; CY dim; DZ —; GRC ouden; SA na kiṃcit; Q munta; ON ekki
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **thiosas't** *(pronoun)* — what-mysterious-that-ever  `[working]`
+  - 'Aoa-thiosas't Uœrd' — whatever word. Variant family: thaioss't'ya (revised Oath) / aoa-thas't.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Thipthac** — limit  `[coined]`
+  - pron. “tip-tuhck”
+  - ledger: ME limite; IS takmörk; GA teorainn; EU muga; DE Grenze; LA limes; CY terfyn; DZ —; GRC peras; SA maryādā; Q —; ON takmark
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **thiransgenæn** *(verb)* — pass (of time)
+  - Past thiransgenea attested.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **thiransgenea** *(verb (past))* — passed  `[working]`  ↳ of thiransgenæn
+  - Of thiransgenæn.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **þis** *(ceremonial pronoun)* — she - the noncreation force  `[active]`
+  - the spicy þ in full harness; oblique þis-e (2.1.1.2.8) Stack-2: possessive use — 'Dú'iths þis Ó'rrync'ghs' (toward us her spine; of Night).
+  - *source: All-Coinages concordance #639 (HTML reference + LDS PDF)*
+- **þis-e** *(ceremonial pronoun)* — she - the noncreation force  `[active]`  ↳ of þin / þis
+  - the spicy þ in full harness; oblique þis-e (2.1.1.2.8)
+  - *source: All-Coinages concordance #640 (HTML reference + LDS PDF)*
+- **thíthíl** *(numeral)* — thousand
+  - its noun pluralises with -ê as any plural noun would (1.16.6, mended 2026-07-15); (2.1.1.4.9)
+  - *source: reference §2*
+- **Thiutel** — title  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **thœ** *(interrog. (th-word))* — why
+  - *source: reference §2*
+- **þoghásýa** — grace  `[coined]`
+  - pron. “Thoh-sthayss-ee'uh”
+  - ledger: ME grace; IS þokki; GA grásta; EU grazia; DE Anmut; LA gratia; CY gras; DZ —; GRC charis; SA lāvaṇya; Q Eruanna; ON þokki
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **thóleraré** — tolerate  `[coined]`
+  - pron. “toe-leh-ruh-ray”
+  - ledger: ME —; IS þola; GA fulaing; EU jasan; DE dulden; LA tolerare; CY goddef; DZ zö-ni; GRC anechesthai; SA √sah; Q col-; ON þola
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Thóm** — tome  `[coined]`
+  - pron. “tome”
+  - ledger: ME —; IS doðrantur; GA imleabhar; EU liburutzar; DE Wälzer; LA tomus; CY cyfrol; DZ pecha; GRC tomos; SA grantha; Q parma; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Thón** — tone  `[coined]`
+  - pron. “tone”
+  - ledger: ME ton; IS tónn; GA ton; EU tonu; DE Ton; LA tonus; CY tôn; DZ —; GRC tonos; SA svara; Q lindë; ON tónn
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **þon** — hers  `[coined]`
+  - pron. “thohn”
+  - ledger: ME hires; IS hennar; GA a cuid; EU berea; DE ihre; LA eius; CY eiddi; DZ —; GRC autēs; SA tasyāḥ; Q -rya (suff.); ON hennar
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Thórim** — tree
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Thrazunét** — traction  `[coined]`
+  - pron. “Truh-zah-nayt”
+  - ledger: ME —; IS grip; GA tarraingt; EU trakzio; DE Haftung; LA tractus; CY gafael; DZ —; GRC holkē; SA ākarṣaṇa; Q —; ON tak
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **threïg** *(adjective)* — tired
+  - Or’threïg’il “not-tired-enough”
+  - *source: reference §2*
+- **Thrîaí** — try  `[coined]`
+  - pron. “Try-uh'ih”
+  - ledger: ME trien; IS reyna; GA triail; EU saiatu; DE versuchen; LA temptare; CY ceisio; DZ —; GRC peirasthai; SA √yat; Q ric-; ON reyna
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **þrowê** — throes  `[coined]`
+  - pron. “throw-eh”
+  - ledger: ME throwes; IS fjörbrot; GA arraing; EU hilzori; DE Todeskampf; LA angor; CY gwewyr; DZ —; GRC ōdines; SA yātanā; Q —; ON fjǫrbrot
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Thrucuirgh** — archway  `[coined]`
+  - pron. “Trah-quih'ihrkh”
+  - ledger: ME —; IS bogagöng; GA áirse; EU —; DE Torbogen; LA fornix; CY bwa; DZ —; GRC hapsis; SA toraṇa; Q —; ON steinbogi
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Thruggy** — jacket  `[coined]`
+  - pron. “Trahk-ee”
+  - ledger: ME jaket; IS jakki; GA seaicéad; EU jaka; DE Jacke; LA —; CY siaced; DZ —; GRC —; SA —; Q —; ON treyja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Thrugh** *(noun)* — train
+  - grubby loan — the train that goes thrugh
+  - *source: reference §2*
+- **Thruxú** — woods
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **thryrách** — sluggish  `[coined]`
+  - pron. “Tree-Rake”
+  - ledger: ME sluggy; IS silalegur; GA spadánta; EU geldo; DE träge; LA segnis; CY swrth; DZ —; GRC nōthros; SA manda; Q lenca; ON seinn
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **’thte** *(clitic)* — negative
+  - post-VOWEL; Nhœme’thte, scé’thte
+  - *source: reference §2*
+- **'thte-aoa** — around (variant)  `[coined]`
+  - variant of **aoa 'thte**; see that entry
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Thtémayaí** — minimum  `[coined]`
+  - pron. “Ttay-muh-yuh-ih”
+  - ledger: ME —; IS lágmark; GA íosmhéid; EU gutxieneko; DE Minimum; LA minimum; CY isafswm; DZ —; GRC elachiston; SA alpiṣṭha; Q —; ON it minnsta
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **’thteya** *(clitic)* — negative emphatic stamp (fuller form)
+  - ’thte + -ya; as ’tya (1.11.2.2.2.5)
+  - *source: reference §2*
+- **’thte’ya** *(answer word)* — maybe  `[active]`  ↳ of Syá
+  - ’thte + ’ya fused - say ’thte’ya ten times fast
+  - *source: All-Coinages concordance #648 (HTML reference)*
+- **Thuaí** — earth (substance)
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Thüfath** *(Noun)* — period
+  - 'yThüfath-aoya lus Sgiesaetthum-e' — the period of the Sgiesaetthum.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **thuíl** *(verb/element)* — finish (terminative)
+  - four free orders: saige-thuíl · thuísaige · thu’aige’íl · thuíl saige (gate S11)
+  - *source: reference §2*
+- **thúil** *(adverb)* — no longer
+  - the negative of stil; citation form (not lenited *túil)
+  - *source: reference §2*
+- **Thúiła** — ex  `[coined]`
+  - pron. “Twill-yuh”
+  - ledger: ME —; IS fyrrverandi; GA —; EU ohia; DE Ex; LA —; CY cyn-gariad; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Thuíłaínfy** — knell  `[coined]`
+  - pron. “Tweell-lyuh'ihn-vee”
+  - ledger: ME knillen; IS líkhringing; GA creill; EU hil-kanpai; DE Totengeläut; LA —; CY cnul; DZ —; GRC —; SA —; Q —; ON hringing
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **thuíłf** — die
+  - Stack-2: 'Sin Afghalhê thuíłf' (as mountains die).
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **thuíłfeách** — dead  `[coined]`
+  - pron. “twill-feh'ayk”
+  - ledger: ME deed; IS dauður; GA marbh; EU hilda; DE tot; LA mortuus; CY marw; DZ —; GRC nekros; SA mṛta; Q firin; ON dauðr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Thunúz** — earth (planet)
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **thurn** *(interrog. (th-word))* — where
+  - INHERENTLY interrogative — has no non-question form
+  - *source: reference §2*
+- **thurn’t** *(clitic)* — negative  `[active]`  ↳ of ’t
+  - post-CONSONANT; Fith’t , thurn’t
+  - *source: All-Coinages concordance #656 (HTML reference + LDS PDF)*
+- **thüs** *(interrog. (th-word))* — when
+  - *source: reference §2*
+- **Thwee** — straw  `[coined]`
+  - pron. “twee”
+  - ledger: ME stree; IS strá; GA tuí; EU lasto; DE Stroh; LA stramen; CY gwellt; DZ —; GRC kalamē; SA palāla; Q —; ON strá
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Thwiłúfía** — flood  `[coined]`
+  - pron. “Twill-yoo-vee-uh”; alt. pron. “Note: the T in i.t. is for flood”
+  - ledger: ME flod; IS flóð; GA tuile; EU uholde; DE Flut; LA diluvium; CY llif; DZ chulok; GRC kataklysmos; SA ogha; Q luimë; ON flóð
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **thyann** *(conjunction)* — whether
+  - Cf. annadh 'either/whether' — two whether-words co-attested this stack.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Ti’amár’th** *(Noun)* — pain  `[active]`  ↳ of Tith
+  - splits Ti…th; Ti’amár’th - the ocean tmeted inside pain (2.1.1.2.8)
+  - *source: All-Coinages concordance #658 (HTML reference + LDS PDF)*
+- **Tïaolc** — family  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **Tïc** *(Noun)* — House
+  - sís Tïc e Bis (1.16.6)
+  - *source: reference §2*
+- **Tïc by Úrsapê** *(noun)* — brick  `[active]`  ↳ of Úrsap
+  - Tïc by Úrsapê “a house of bricks” - material takes by , not e (2.1.1.4.10)
+  - *source: All-Coinages concordance #660 (HTML reference + LDS PDF)*
+- **Tïcain** — host  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **Tîfal** — share  `[coined]`
+  - pron. “die-vuhl”
+  - ledger: ME share; IS deila; GA roinn; EU partekatu; DE teilen; LA partiri; CY rhannu; DZ —; GRC nemein; SA vi-√bhaj; Q —; ON deila
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **tifurk** — guess  `[coined]`
+  - pron. “dih-vahrk”
+  - ledger: ME gessen; IS giska; GA tomhais; EU asmatu; DE raten; LA divinare; CY dyfalu; DZ —; GRC eikazein; SA √tark; Q intya-; ON geta
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **tífyad** — hurt  `[coined]`
+  - pron. “teev-yuhth”
+  - ledger: ME hurten; IS meiða; GA gortaigh; EU min egin; DE verletzen; LA laedere; CY brifo; DZ —; GRC blaptein; SA √vyath; Q nwalya-; ON meiða
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Tintin** — rumble  `[coined]`
+  - pron. “Dihn-dihn”
+  - ledger: ME romblen; IS drynja; GA tormán; EU durundi; DE grollen; LA fremere; CY trystio; DZ —; GRC bremein; SA √garj; Q —; ON dynja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **tîr** — serious  `[coined]`
+  - pron. “dire”
+  - ledger: ME serious; IS alvarlegur; GA dáiríre; EU serio; DE ernst; LA serius; CY difrifol; DZ —; GRC spoudaios; SA gambhīra; Q —; ON alvarligr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **tïsárghuc** — visit  `[coined]`
+  - pron. “Dee-ssayer-sthahk”
+  - ledger: ME visiten; IS heimsækja; GA cuairt; EU bisitatu; DE besuchen; LA visitare; CY ymweld; DZ jal-ni; GRC episkeptesthai; SA abhi-√gam; Q —; ON heimsœkja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Titár** — bird
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Tith** *(Noun)* — pain
+  - splits Ti…th; Ti’amár’th — the ocean tmeted inside pain (2.1.1.2.8)
+  - *source: reference §2*
+- **Titheäí** — victim  `[coined]`
+  - pron. “Dih-teh'eh'ah-eeh”
+  - ledger: ME —; IS fórnarlamb; GA íospartach; EU biktima; DE Opfer; LA victima; CY aberth; DZ —; GRC thyma; SA paśu; Q —; ON fórn
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **titlop** *(Verb)* — topple
+  - 'Ai'æ'titlop -luai-' — note-you-topple, aiee!
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Tlinc** — star
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Tóby** — root
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **tólæn** — cycle  `[coined]`
+  - pron. “toe-lee'en”
+  - ledger: ME cicle; IS hringrás; GA timthriall; EU ziklo; DE Zyklus; LA cyclus; CY cylchred; DZ —; GRC kyklos; SA cakra; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Ton** *(ceremonial pronoun)* — he - the creation force  `[active]`
+  - outside the universal-fæ person system; oblique Tonu-e ; declension watched (2.1.1.2.8)
+  - *source: All-Coinages concordance #665 (HTML reference)*
+- **Ton / Tonu** *(ceremonial pronoun)* — he — the creation force
+  - outside the universal-fæ person system; oblique Tonu-e; declension watched (2.1.1.2.8)
+  - *source: reference §2*
+- **Toncæn** — create  `[coined]`
+  - pron. “Dohn-kee'en”
+  - ledger: ME createn; IS skapa; GA cruthaigh; EU sortu; DE erschaffen; LA creare; CY creu; DZ —; GRC dēmiourgein; SA √sṛj; Q onta-; ON skapa
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Tonna** *(noun)* — ton
+  - counted Tonnaê — a further witness of the numeral fence’s -ê (2.1.1.4.9)
+  - *source: reference §2*
+- **Tonnaê** *(noun)* — ton  `[active]`  ↳ of Tonna
+  - counted Tonnaê - a further witness of the numeral fence’s -ê (2.1.1.4.9)
+  - *source: All-Coinages concordance #667 (HTML reference + LDS PDF)*
+- **Tonu** *(ceremonial pronoun)* — he - the creation force  `[active]`
+  - outside the universal-fæ person system; oblique Tonu-e ; declension watched (2.1.1.2.8)
+  - *source: All-Coinages concordance #668 (HTML reference + LDS PDF)*
+- **Tonu-e** *(ceremonial pronoun)* — he - the creation force  `[active]`  ↳ of Ton / Tonu
+  - outside the universal-fæ person system; oblique Tonu-e ; declension watched (2.1.1.2.8)
+  - *source: All-Coinages concordance #669 (HTML reference + LDS PDF)*
+- **Tóny** — guy  `[coined]`
+  - pron. “doh-knee”
+  - ledger: ME gome; IS náungi; GA diúlach; EU tipo; DE Typ; LA homo; CY boi; DZ —; GRC anthrōpos; SA puruṣa; Q nér; ON náungr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **too** — dull
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Tórlt** — bolt  `[coined]`
+  - pron. “Toe-ehrld”
+  - ledger: ME bolt; IS bolti; GA bolta; EU torloju; DE Bolzen; LA —; CY bollt; DZ —; GRC balanos; SA kīla; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **trawid** *(verb)* — seize (as in to have a seizure)
+  - Her gloss kept verbatim. Noun: Trawidía 'seizure'.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Trawidía** *(noun)* — seizure  `[working]`  ↳ of trawid
+  - Of trawid 'seize'.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Trepíya** — reluctance  `[coined]`
+  - pron. “Treh-peeh-yuh”
+  - ledger: ME —; IS tregða; GA drogall; EU —; DE Widerwille; LA —; CY amharodrwydd; DZ —; GRC oknos; SA anicchā; Q —; ON tregða
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Trídé** — pitch  `[coined]`
+  - pron. “Dree-thay”
+  - ledger: ME —; IS tónhæð; GA airde; EU doinu; DE Tonhöhe; LA —; CY traw; DZ —; GRC tasis; SA śruti; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Trisáchaí** — misery  `[coined]`
+  - pron. “Drihss-ayk-uh'ih”
+  - ledger: ME miserie; IS eymd; GA ainnise; EU miseria; DE Elend; LA miseria; CY trueni; DZ dukngel; GRC talaipōria; SA duḥkha; Q —; ON eymd
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **trúbæn** — disturb  `[coined]`
+  - pron. “true-bee'en”
+  - ledger: ME distourben; IS trufla; GA cuir isteach ar; EU asaldatu; DE stören; LA turbare; CY aflonyddu; DZ —; GRC tarattein; SA vi-√kṣubh; Q —; ON ónáða
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Tscân** — offer  `[coined]`
+  - pron. “Scahn”
+  - ledger: ME offren; IS bjóða; GA tairg; EU eskaini; DE anbieten; LA offerre; CY cynnig; DZ phü-ni; GRC prospherein; SA upa-√hṛ; Q —; ON bjóða
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Tscoolæn** — check  `[coined]`
+  - pron. “Choo-lee'en”
+  - ledger: ME chek; IS athuga; GA seiceáil; EU egiaztatu; DE prüfen; LA inspicere; CY gwirio; DZ —; GRC exetazein; SA parī-√kṣ; Q —; ON hyggja at
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Tscræxca** — squeal  `[coined]`
+  - pron. “Skreek-skuh”
+  - ledger: ME —; IS skrækja; GA sceamh; EU kurrixka; DE quietschen; LA —; CY gwichian; DZ —; GRC trizein; SA —; Q —; ON skrækja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Tscrathy** — rattle  `[coined]`
+  - pron. “Scrah-tee”
+  - ledger: ME ratelen; IS skrölta; GA gliogar; EU —; DE rasseln; LA strepere; CY rhuglo; DZ —; GRC platagein; SA —; Q —; ON glamra
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Tscrîmfal** — monster  `[coined]`
+  - pron. “Scry'm-vuhl”
+  - ledger: ME monstre; IS skrímsli; GA arracht; EU munstro; DE Ungeheuer; LA monstrum; CY anghenfil; DZ sinpo; GRC teras; SA rākṣasa; Q úvanimo; ON skrímsl
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Tscrîncy** — sentence  `[coined]`
+  - pron. “Skryne-key”
+  - ledger: ME sentence; IS setning; GA abairt; EU esaldi; DE Satz; LA sententia; CY brawddeg; DZ —; GRC periodos; SA vākya; Q —; ON málsgrein
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **tscrípst** — slip  `[coined]`
+  - pron. “Screehpst”
+  - ledger: ME slippen; IS renna; GA sciorr; EU irrist; DE rutschen; LA labi; CY llithro; DZ —; GRC olisthanein; SA √skhal; Q talta-; ON skrika
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Tsilgáeíl** — revise  `[coined]`
+  - pron. “Ssihl-gay'eel”
+  - ledger: ME —; IS endurskoða; GA athbhreithnigh; EU berrikusi; DE überarbeiten; LA retractare; CY adolygu; DZ —; GRC epanorthoun; SA √śudh (caus.); Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **tug** *(verb)* — bring
+  - past tugea ‘brought’; duín Ærmuchaí tugea eibh ‘brought to exhaustion’ — cause as motion, a fourth metaphor beside gift and origin (2.1.1.4.12)
+  - *source: reference §2*
+- **tugea** *(verb)* — bring  `[active]`  ↳ of tug
+  - past tugea ’brought’; duín Ærmuchaí tugea eibh ’brought to exhaustion’ - cause as motion, a fourth metaphor beside gift and origin (2.1.1.4.12)
+  - *source: All-Coinages concordance #672 (HTML reference + LDS PDF)*
+- **túghýuæn** — generate  `[coined]`
+  - pron. “Too-sthiy'uh-ee'en”
+  - ledger: ME —; IS mynda; GA gin; EU sortu; DE erzeugen; LA generare; CY cenhedlu; DZ —; GRC gennan; SA √jan (caus.); Q onta-; ON geta
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **túm** — toe  `[coined]`
+  - pron. “doom”
+  - ledger: ME too; IS tá; GA ladhar; EU behatz; DE Zeh; LA digitus pedis; CY bys troed; DZ —; GRC daktylos; SA pādāṅguli; Q —; ON tá
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **tunsæn** — dance  `[coined]`
+  - pron. “Dahn-see'en”
+  - ledger: ME daunce; IS dans; GA damhsa; EU dantza; DE Tanz; LA saltatio; CY dawns; DZ cham; GRC orchēsis; SA nṛtya; Q lilta-; ON dans
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Túre** — hard  `[coined]`
+  - pron. “Dooh-reh”
+  - ledger: ME hard; IS harður; GA crua; EU gogor; DE hart; LA durus; CY caled; DZ —; GRC sklēros; SA kaṭhina; Q sarda; ON harðr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Túreonclæíry** — boot  `[coined]`
+  - pron. “Door-eh-ohn-clee'ih-ree”
+  - ledger: ME bote; IS stígvél; GA buatais; EU bota; DE Stiefel; LA caliga; CY botasen; DZ lham; GRC kothornos; SA upānah; Q saipo; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Turm** — fear
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **tút** — swell
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **’tya** *(clitic)* — negative emphatic stamp — “NOT-X” glow
+  - negator ’t + glow -ya; demands careful avoidance of added negators (1.11.2.2.2.5)
+  - *source: reference §2*
+
+## U
+
+- **u-** *(prefix)* — toward (= du-)
+  - the du→u reform, the maker verbatim: “a bunch of du-prefixes” become bare u- — “which I will and won’t replace remains to be seen; yes this will cause horrible confusion”; on verbs it makes the infinitive: usót “to go” (2.1.1.3.2)
+  - *source: reference §2*
+- **uaclanách** — grateful  `[coined]`
+  - pron. “wa-kluhn-ayk”
+  - ledger: ME —; IS þakklátur; GA buíoch; EU esker oneko; DE dankbar; LA gratus; CY diolchgar; DZ —; GRC eucharistos; SA kṛtajña; Q —; ON þakklátr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Uælt** — realm  `[coined]`
+  - pron. “Wee'ehld”
+  - ledger: ME reaume; IS ríki; GA ríocht; EU erresuma; DE Reich; LA regnum; CY teyrnas; DZ gyelkhab; GRC basileia; SA rājya; Q turmen; ON ríki
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Uæxrælt** — zone  `[coined]`
+  - pron. “Week-sreeld”
+  - ledger: ME zone; IS svæði; GA crios; EU eremu; DE Zone; LA zona; CY parth; DZ —; GRC zōnē; SA maṇḍala; Q —; ON belti
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **uafbéigh** — glance  `[coined]`
+  - pron. “wuv-bye'sth”
+  - ledger: ME —; IS augnagot; GA sracfhéachaint; EU —; DE flüchtiger Blick; LA —; CY cipolwg; DZ —; GRC blemma; SA kaṭākṣa; Q —; ON renna augum
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **uafcathú** — detach  `[coined]`
+  - pron. “waf-cuht-oo”
+  - ledger: ME —; IS losa; GA scaoil; EU bereizi; DE ablösen; LA separare; CY datod; DZ —; GRC apolyein; SA vi-√yuj; Q lehta-; ON losa
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **uafcláræn** — declare  `[coined]`
+  - pron. “wav-klai'r-ee'en”
+  - ledger: ME declaren; IS lýsa yfir; GA fógair; EU adierazi; DE erklären; LA declarare; CY datgan; DZ —; GRC apophainein; SA ā-√khyā; Q —; ON lýsa
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **uafegg** — dispose  `[coined]`
+  - pron. “wuv-ek”
+  - ledger: ME disposen; IS farga; GA diúscair; EU —; DE entsorgen; LA —; CY cael gwared (ar); DZ —; GRC apoballein; SA pari-√tyaj; Q —; ON farga
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **uaffthgju** — express  `[coined]`
+  - pron. “wuhf-tjah”
+  - ledger: ME expressen; IS tjá; GA cuir in iúl; EU adierazi; DE ausdrücken; LA exprimere; CY mynegi; DZ —; GRC phrazein; SA abhi-√vyañj; Q —; ON tjá
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **uafloor** — extend  `[coined]`
+  - pron. “wuhv-loo'ehr”
+  - ledger: ME extenden; IS framlengja; GA sín; EU luzatu; DE ausdehnen; LA extendere; CY ymestyn; DZ —; GRC ekteinein; SA √tan; Q taita-; ON lengja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **uaftug** — extract  `[coined]`
+  - pron. “wuv-dahg”
+  - ledger: ME extracte; IS draga út; GA bain as; EU atera; DE herausziehen; LA extrahere; CY echdynnu; DZ —; GRC exelkein; SA ud-√dhṛ; Q —; ON draga út
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **uafwinæn** — elect  `[coined]`
+  - pron. “wuf-wihn-ee'en”
+  - ledger: ME electen; IS kjósa; GA togh; EU hautatu; DE wählen; LA eligere; CY ethol; DZ —; GRC cheirotonein; SA √vṛ; Q cil-; ON kjósa
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **uaïlnïe** — each  `[coined]`
+  - pron. “while-knee-ih”
+  - ledger: ME ech; IS hver; GA gach; EU bakoitz; DE jeder; LA quisque; CY pob un; DZ rere; GRC hekastos; SA pratyeka; Q —; ON hverr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **uain** *(prop-word)* — “one” (stand-in body)
+  - the Danæam ceann: fills an elided head where the resonance calls for a body rather than a gap (1.3.3); lowercase as coined — pronoun-class, not a Noun Stack-2: digit-mode — 'uain-éx o slár-cliffýa' = 1695 AD, read as digit-pairs.
+  - *source: reference §2*
+- **uain nibísïl-e** — another (variant)  `[coined]`
+  - variant of **níbísy**; see that entry
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **uain nibísïl-e: another** — another (variant)  `[coined]`
+  - variant of **níbísy**; see that entry
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **uain’t-aoa** *(pronoun (compound))* — someone (“about one”)
+  - the double-negative device worn as a chain — and a pattern-seed for the quantifier compounds (2.1.6.6.1 watch) (2.1.2.1.14)
+  - *source: reference §2*
+- **uaołíc** — somebody  `[coined]`
+  - pron. “wow-lyeehk”
+  - ledger: ME som wight; IS einhver; GA duine éigin; EU norbait; DE jemand; LA aliquis; CY rhywun; DZ —; GRC tis; SA kaścit; Q quen; ON einhverr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **uaothë** — some
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **uaothüsýa** — sometime  `[coined]`
+  - pron. “wow-toohss-yuh”
+  - ledger: ME som time; IS einhvern tíma; GA am éigin; EU noizbait; DE irgendwann; LA aliquando; CY rywbryd; DZ —; GRC pote; SA kadācit; Q —; ON einhverju sinni
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **uazilæn** *(Verb)* — totter
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Ubádh** — plan  `[coined]`
+  - pron. “ah-bathe”
+  - ledger: ME —; IS áætlun; GA plean; EU asmo; DE Plan; LA consilium; CY cynllun; DZ —; GRC bouleuma; SA yojanā; Q —; ON ráð
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Úcsó** — pigeon  `[coined]`
+  - pron. “Oohk-sew”
+  - ledger: ME pijoun; IS dúfa; GA colúr; EU uso; DE Taube; LA columba; CY colomen; DZ —; GRC peristera; SA kapota; Q cu; ON dúfa
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **úcuinth** — because
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **ufel** *(prepositions)* — downward  `[active]`
+  - the local table filled (gate S1)
+  - *source: All-Coinages concordance #681 (HTML reference + LDS PDF)*
+- **uferghëa** — afraid  `[coined]`
+  - pron. “adjectivised verb: made-afraid”; alt. pron. “ah-ver-sth-eh-uh”
+  - ledger: ME afered; IS hræddur; GA eaglach; EU beldur; DE bange; LA territus; CY ofnus; DZ —; GRC phoberos; SA bhīta; Q caurëa; ON hræddr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **uff** — travel  `[coined]`
+  - pron. “ahf”
+  - ledger: ME travailen; IS ferðast; GA taistil; EU bidaiatu; DE reisen; LA peregrinari; CY teithio; DZ drül-ni; GRC apodēmein; SA √aṭ; Q lelya-; ON ferðask
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Ufín** *(Noun)* — enemy
+  - pron. “Oofeenn”; Dræao lus Ufín “from the enemy” — the first agent-phrase (2.1.1.2.13)
+  - *source: reference §2*
+- **ufsae** *(adjective)* — insane
+  - pron. “Oofschye” — the ae deliberate, not æ: “a weird ae”, /aɪ/ as in rye (2.1.1.2.12)
+  - *source: reference §2*
+- **Ufsaigy** — critic  `[coined]`
+  - pron. “Oohv-sigh-ghee”
+  - ledger: ME —; IS gagnrýnandi; GA léirmheastóir; EU kritikari; DE Kritiker; LA criticus; CY beirniad; DZ —; GRC kritēs; SA vicāraka; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **ugóïythaíách** — simultaneous  `[coined]`
+  - pron. “ah-goh-ee'ih-ihtt-eye-ayk”
+  - ledger: ME —; IS samtímis; GA comhuaineach; EU aldibereko; DE gleichzeitig; LA simultaneus; CY cydamserol; DZ —; GRC hama; SA yugapad; Q —; ON í senn
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **uíngæn** — assist  `[coined]`
+  - pron. “ween-gee'en”
+  - ledger: ME —; IS aðstoða; GA cuidigh; EU lagundu; DE beistehen; LA adiuvare; CY cynorthwyo; DZ —; GRC boēthein; SA upa-√kṛ; Q —; ON fulltingja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Ül** *(numeral (year series))* — 17
+  - year-series numeral · base 2+30 (base-60 pair-stem). Pair: Ül 17 (odd, bare) / Ghül 18 (even, lenited). Year names: A-B = A×60 + B, hyphen-joined, second element bare. This form: odd · bare stem.
+  - *source: session 2026-07-21, the maker*
+- **üła** — lunge  `[coined]`
+  - pron. “oohlyuh”
+  - ledger: ME —; IS —; GA áladh; EU oldartu; DE Ausfall; LA impetus; CY rhuthr; DZ —; GRC hormē; SA vega; Q —; ON atlaga
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **úlaghea** — fraught  `[coined]`
+  - pron. “ooh-luh-sthee'uh”
+  - ledger: ME fraught; IS þrunginn; GA —; EU —; DE belastet; LA onustus; CY llwythog; DZ —; GRC mestos; SA bhārin; Q —; ON þrunginn
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Ulfœrth** *(Noun)* — Revenge-journey / -expedition / -quest
+  - topic-phrase exemplar: — sin e Ulfœrth — / s’ulfœrth-e’in (1.12.1.2.3)
+  - *source: reference §2*
+- **Úlitírura** — literature  `[coined]`
+  - pron. “Ooh-lihd-ih'eh-rah-ruh”
+  - ledger: ME litterature; IS bókmenntir; GA litríocht; EU literatura; DE Literatur; LA litterae; CY llenyddiaeth; DZ —; GRC grammata; SA sāhitya; Q —; ON frœði
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **ułiuafth** *(Noun)* — heaven  `[active]`  ↳ of Łiuafth
+  - ułiuafth “Heavensward” - small inside the u-complex, the swallowed-word law (2.1.1.3.2)
+  - *source: All-Coinages concordance #685 (HTML reference + LDS PDF)*
+- **Uloofáhæn** — discover  `[coined]`
+  - pron. “Ah-loo-vay7-ee'en”
+  - ledger: ME discoveren; IS uppgötva; GA fionn; EU aurkitu; DE entdecken; LA invenire; CY darganfod; DZ —; GRC aneuriskein; SA upa-√labh; Q —; ON finna
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **uloominíäm** — aluminium  `[coined]`
+  - pron. “ah-loo-min-ee-ah'ahm”
+  - ledger: ME —; IS ál; GA alúmanam; EU aluminio; DE Aluminium; LA aluminium; CY alwminiwm; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **ulópescía** — alopecia  `[coined]`
+  - pron. “ah-lope-esh-i-uh”
+  - ledger: ME —; IS hármissir; GA —; EU —; DE Haarausfall; LA alopecia; CY moelni; DZ —; GRC alōpekia; SA khālitya; Q —; ON skalli
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **ulterái** — roam  `[coined]`
+  - pron. “ahl-deh-ray'ih”
+  - ledger: ME romen; IS reika; GA fánaíocht; EU alderrai; DE streifen; LA vagari; CY crwydro; DZ chamcham; GRC planasthai; SA √bhram; Q ranya-; ON reika
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Ułu (Ah-lyah** — hall  `[coined]`
+  - coined against the twelve-language ledger
+  - ledger: ME halle; IS salur; GA halla; EU areto; DE Saal; LA aula; CY neuadd; DZ —; GRC megaron; SA śālā; Q mardë; ON hǫll
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Ułuchaí** — transport  `[coined]`
+  - pron. “Ah-lyah-huh'ih”
+  - ledger: ME transporten; IS flytja; GA iompair; EU garraiatu; DE befördern; LA transportare; CY cludo; DZ kyel-ni; GRC komizein; SA √vah; Q —; ON flytja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Ułułegu** — hallway  `[coined]`
+  - pron. “Ahl-yah-lyehg-ah”
+  - ledger: ME —; IS gangur; GA dorchla; EU korridore; DE Flur; LA —; CY cyntedd; DZ —; GRC prodomos; SA —; Q —; ON gangr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **unburigg** — electric  `[coined]`
+  - pron. “ahn-bahr-ik”
+  - ledger: ME —; IS rafmagns-; GA leictreach; EU elektriko; DE elektrisch; LA electricus; CY trydanol; DZ log; GRC —; SA vaidyuta; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **unescæn** — vanish  `[coined]`
+  - pron. “ah-neh-shee'en”
+  - ledger: ME vanisshen; IS hverfa; GA imigh as; EU desagertu; DE verschwinden; LA evanescere; CY diflannu; DZ —; GRC aphanizesthai; SA antar-√dhā; Q auta-; ON hverfa
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **unghœsách** — innocent  `[coined]`
+  - pron. “Ahn-stheuhss-ayk”
+  - ledger: ME innocent; IS saklaus; GA neamhchiontach; EU errugabe; DE unschuldig; LA innocens; CY diniwed; DZ —; GRC anaitios; SA nirdoṣa; Q —; ON saklauss
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **unmordachaíæn** — exaggerate  `[coined]`
+  - pron. “ahn-morth-uhk-uh-ih-ee'en”
+  - ledger: ME —; IS ýkja; GA áibhéil; EU puztu; DE übertreiben; LA exaggerare; CY gorliwio; DZ —; GRC hyperballein; SA —; Q —; ON ýkja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **uodagarhn** — undulate  `[coined]`
+  - pron. “woah-thuh-guhr-7n”
+  - ledger: ME —; IS bylgjast; GA tonnaíl; EU uhindu; DE wogen; LA undare; CY tonni; DZ —; GRC kymainein; SA √taraṅg (denom.); Q falasta-; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Uœrd** *(Noun)* — word
+  - 'lus Uœrd mæ bhie o mao Fialth lus Uœrd bhie' — you are the word and the word is your charge.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Uoinainê** *(noun (plural))* — women
+  - 'believe women' line; also 'Uoinainê dús Útcár-Útcár Uoinainê-e í ro'gænstílgæn'il'.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Uonain** — woman
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **úprócê** — breed  `[coined]`
+  - pron. “ooh-pro-keh”
+  - ledger: ME breden; IS rækta; GA póraigh; EU ugaldu; DE züchten; LA procreare; CY bridio; DZ —; GRC trephein; SA √jan (caus.); Q onta-; ON ala
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **üranyum** — uranium  `[coined]`
+  - pron. “ur-uh-nee-ahm”
+  - ledger: ME —; IS úran; GA úráiniam; EU uranio; DE Uran; LA uranium; CY wraniwm; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **urcánam** — secret  `[coined]`
+  - pron. “ahr-kay-nuhm”
+  - ledger: ME secre; IS leyndarmál; GA rún; EU ezkutu; DE Geheimnis; LA arcanum; CY cyfrinach; DZ sangwa; GRC aporrhēton; SA guhya; Q muina; ON rún
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **urentách** — common  `[coined]`
+  - pron. “ah-rend-ayk”
+  - ledger: ME commun; IS algengur; GA coitianta; EU arrunt; DE gewöhnlich; LA communis; CY cyffredin; DZ —; GRC koinos; SA sādhāraṇa; Q —; ON almennr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Urgea** *(noun)* — fence
+  - Ythús Urgea mêdhië… “past the fence by a metre…”
+  - *source: reference §2*
+- **Uríár** — area  `[coined]`
+  - pron. “ah-ree-ay'er”
+  - ledger: ME —; IS svæði; GA ceantar; EU eremu; DE Gebiet; LA area; CY ardal; DZ lungpa; GRC chōra; SA pradeśa; Q arda; ON hérað
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **urłæir** — tinge  `[coined]`
+  - pron. “ahr-lyee'ihr”
+  - ledger: ME —; IS blær; GA imir; EU kutsu; DE Hauch; LA —; CY arlliw; DZ —; GRC chroia; SA rāga; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Úrsap** *(noun)* — brick
+  - Tïc by Úrsapê “a house of bricks” — material takes by, not e (2.1.1.4.10)
+  - *source: reference §2*
+- **Úrsapfarmach** *(adjective (past))* — brick-made  `[active]`  ↳ of Úrsapfarmea
+  - the sayable near-miss that shows why -ach was skipped for Úrsapfarmaí - Úrsapfarmach ’brick-makey’ is not sayable; F2 resolved (§12 xlii) (2.1.1.4.10)
+  - *source: All-Coinages concordance #689 (HTML reference + LDS PDF)*
+- **Úrsapfarmaí** *(Noun (abstract))* — brickmakery, the trade of brickmaking
+  - Úrsap + farm + -aí, no visible -ach stage — the -aí abstract former’s third witness; F2 open (§12 xlii) (2.1.1.4.10)
+  - *source: reference §2*
+- **Úrsapfarmea** *(adjective (past))* — brick-made
+  - the sayable near-miss that shows why -ach was skipped for Úrsapfarmaí — Úrsapfarmach ‘brick-makey’ is not sayable; F2 resolved (§12 xlii) (2.1.1.4.10)
+  - *source: reference §2*
+- **usaln** *(author form)* — salt (verb)  `[active]`
+  - *source: All-Coinages concordance #692 (LDS PDF)*
+- **usaln (verb), Saln (noun)** — salt
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **uscornu** — care  `[coined]`
+  - pron. “ah-shorn-ah”
+  - ledger: ME care; IS umhyggja; GA cúram; EU ardura; DE Sorge; LA cura; CY gofal; DZ —; GRC epimeleia; SA cintā; Q —; ON umhyggja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **úsét** *(preposition)* — on
+  - úsét Gradhamýa — on stage. Stack-r2: tense fix — 'ythasýa ios úsét í scéalerea atá' (what on it written is; was 'dræao atá' in stack-2, now 'dræao atáea pliguea' for the article line); also 'Úsét bilach Charmænsy Yon-e' (on bare skin Night-of).
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **úsétæn** — sit
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **usggur** — fast  `[coined]`
+  - pron. “ahss-kahr”
+  - ledger: ME faste; IS hraður; GA tapa; EU azkar; DE schnell; LA celer; CY cyflym; DZ gyokpa; GRC tachys; SA śīghra; Q linta; ON skjótr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **usládæn** — assign  `[coined]`
+  - coined against the twelve-language ledger
+  - ledger: ME assignen; IS úthluta; GA sann; EU esleitu; DE zuweisen; LA assignare; CY pennu; DZ —; GRC aponemein; SA ni-√yuj; Q —; ON hluta
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **usót** *(verb | prefix)* — go on · toward (= du-)  `[active]`  ↳ of sót, sót | u-, u-
+  - usót “to go” - the u-infinitive’s first witness, sót serving plain-go (2.1.1.3.2) | the du u reform , the maker verbatim: “a bunch of du-prefixes” become bare u- - “which I will and won’t replace remains to be seen; yes this will cause horrible confusion”; on verbs it makes the infinitive : usót “to go” (2.1.1.3.2)
+  - *source: All-Coinages concordance #694 (HTML reference + LDS PDF)*
+- **úsyá** — may  `[coined]`
+  - pron. “oohss-yay”
+  - ledger: ME mowen; IS mega; GA féad; EU ahal; DE dürfen; LA licere; CY cael; DZ chok; GRC exesti; SA √arh; Q ec-; ON mega
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Útcár'ma-Útcár'ma** *(noun (tmesis-reduplication))* — counter-accusation  ↳ of Útcár
+  - ma 'otherwise' infixed through the reduplicated stem.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Útcár-Útcár** *(verbal noun (reduplicated))* — the accusing; accusation  ↳ of Útcár
+  - Of Útcár; 'dús Útcár-Útcár Fælaê-e' — toward the accusing of fey.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Útcáry** *(Noun)* — accuser  `[working]`
+  - 'Ruth-e Útcáry'ya' — Red's accuser: Night.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **Útcáry'ya** *(noun phrase)* — accuser-of (reordered)  `[working]`
+  - Revised spidering line: 'lus Aoiyid e Útcáry'ya Ruth-e' (was 'lus Aoiyid e Ruth-e Útcáry'ya' in stack-2) — possessor now follows.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Úteo** — to-me (ten + -eo?)  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **utoghenæn** — agree  `[coined]`
+  - pron. “ah-doh-sthehn-ee'en”
+  - ledger: ME agreen; IS samþykkja; GA aontaigh; EU ados egon; DE zustimmen; LA consentire; CY cytuno; DZ —; GRC synainein; SA anu-√man; Q —; ON samþykkja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **úToræn** — adore  `[coined]`
+  - pron. “ooh-Doh-ree'en”
+  - ledger: ME adouren; IS tilbiðja; GA adhair; EU adoratu; DE anbeten; LA adorare; CY addoli; DZ chö-ni; GRC proskynein; SA √pūj; Q —; ON dýrka
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **útugh** — pull
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **uyrebendth** — survive  `[coined]`
+  - pron. “eyer-ehb-endt”
+  - ledger: ME surviven; IS lifa af; GA mair; EU bizirik iraun; DE überleben; LA superesse; CY goroesi; DZ —; GRC perieinai; SA ava-√śiṣ; Q termar-; ON lifa eptir
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Uyruscáth** — surprise  `[coined]`
+  - pron. “Eye-rah-shay't”
+  - ledger: ME surpryse; IS koma á óvart; GA ionadh; EU harritu; DE überraschen; LA improvisus; CY synnu; DZ yamtshen; GRC ekplēttein; SA vi-√smi; Q —; ON koma á óvart
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **uÿth** *(prepositions)* — to-over  `[active]`
+  - the local table filled (gate S1)
+  - *source: All-Coinages concordance #696 (HTML reference + LDS PDF)*
+
+## V
+
+- **Væx** *(Noun)* — king
+  - (2.1.1.2.10)
+  - *source: reference §2*
+- **Væxr** *(suffix)* — state-noun former (“-being”)  `[active]`  ↳ of -r
+  - Væxr “king-being” - become’s complement; beside the elder du-dress, §12 (2.1.1.2.10)
+  - *source: All-Coinages concordance #698 (HTML reference + LDS PDF)*
+
+## W
+
+- **Waelain** — spouse (agender, oath-kin)
+  - *source: Final-Boss Haul · Semantic fields (2026-07-17)*
+- **Wa'eo-mé'l-teos** — god-sworn kin
+  - *source: Final-Boss Haul · Semantic fields (2026-07-17)*
+- **Wa’eo-mé’l-teos** *(author form)* — god-sworn kin  `[active]`
+  - *source: All-Coinages concordance #700 (LDS PDF)*
+- **waf** — bluff  `[coined]`
+  - pron. “wuhff”
+  - ledger: ME —; IS blöffa; GA cur i gcéill; EU —; DE bluffen; LA —; CY —; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **wafíel** — every  `[coined]`
+  - pron. “wuh-vee-ehl”
+  - ledger: ME everich; IS sérhver; GA gach uile; EU oro; DE jeder; LA omnis; CY pob; DZ —; GRC pas; SA sarva; Q ilya; ON sérhverr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **wáil** — always  `[coined]`
+  - pron. “way-il; same as wail or whale”; alt. pron. “immer schon = always already = scónách waíl-e”
+  - ledger: ME alwey; IS alltaf; GA i gcónaí; EU beti; DE immer; LA semper; CY bob amser; DZ —; GRC aei; SA sadā; Q illumë; ON ávallt
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **W'ain'al** — bond-for-always
+  - *source: Final-Boss Haul · Semantic fields (2026-07-17)*
+- **W’ain’al** *(author form)* — bond-for-always  `[active]`
+  - *source: All-Coinages concordance #699 (LDS PDF)*
+- **walách** — true  `[coined]`
+  - pron. “wahl-ayk”
+  - ledger: ME trewe; IS sannur; GA fíor; EU egiazko; DE wahr; LA verus; CY gwir; DZ denpa; GRC alēthēs; SA satya; Q anwa; ON sannr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Waleäch** — bound  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **wantœ** — admire  `[coined]`
+  - pron. “Pronunciation: same as "wonder" with the usual dropped r and a drawlier e; past tense: wantoëa”
+  - ledger: ME —; IS dást að; GA —; EU miretsi; DE bewundern; LA admirari; CY edmygu; DZ —; GRC thaumazein; SA √ślāgh; Q —; ON dá
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Wa'oobao-ya'leäch** — Otherbound  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **wathreín** — manage  `[coined]`
+  - pron. “wuhtt-reh'ine”
+  - ledger: ME —; IS ráða við; GA bainistigh; EU kudeatu; DE bewältigen; LA administrare; CY ymdopi; DZ —; GRC dioikein; SA nir-√vah; Q —; ON ráða við
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Whár** — hair
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **whielïl** — count
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **wíach** — wet
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Wíáchonclæíry** — gumboot  `[coined]`
+  - pron. “wee'ayk-ohn-clee'eer-ee”
+  - ledger: ME —; IS gúmmístígvél; GA buatais rubair; EU —; DE Gummistiefel; LA —; CY botasen rwber; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Wíc** *(noun)* — water
+  - w is hard: pays the toll (’íc)
+  - *source: reference §2*
+- **Wighæln** — clan  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **Wightil** — right  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **wil** *(quantifier)* — all
+  - wil’ya — the ’ya-stamped “all” that reassures: not feeling alone (1.6.9.3)
+  - *source: reference §2*
+- **Wilfarmái** *(noun)* — factory
+  - 'lus Scëel-scëel Wilfarmái-e' — the ceiling factory-of.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Wilhíæ** *(pronoun/quantifier)* — everyone
+  - wil-blood apparent (2.1.1.4.25)
+  - *source: reference §2*
+- **Wilhíæ yScéan** *(preposition (trailing))* — metałie cited under metałie: inclusive-of  `[active]`  ↳ of metałie
+  - Wilhíæ yScéan metałie (2.1.1.4.25)
+  - *source: All-Coinages concordance #708 (HTML reference + LDS PDF)*
+- **Wilíl** — everybody  `[coined]`
+  - pron. “Will-eel”
+  - ledger: ME everichon; IS allir; GA gach duine; EU denak; DE alle; LA omnes; CY pawb; DZ thamche; GRC pantes; SA sarve; Q ilquen; ON allir
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Wín** — name
+  - Stack-r2: wínr 'name-being' — 'Stúpen-wínr' (rape-name-being), 'wínr' as suffixoid.
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **wínr** *(suffixoid/noun)* — name-being
+  - 'Stúpen-wínr' — rape-name-being; of wín 'name'.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **Withuíaosil** — everything  `[coined]`
+  - pron. “Wihtt-wee-ow-ss'ihl”
+  - ledger: ME al thing; IS allt; GA gach rud; EU dena; DE alles; LA omnia; CY popeth; DZ —; GRC panta; SA sarvam; Q ilqua; ON allt
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Withurnil** — everywhere  `[coined]`
+  - pron. “Witt-ahrn-ihl”
+  - ledger: ME overal; IS alls staðar; GA i ngach áit; EU nonahi; DE überall; LA ubique; CY pobman; DZ —; GRC pantachou; SA sarvatra; Q —; ON alls staðar
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Withüsêlïe** — constant  `[coined]`
+  - pron. “Witt-ooh'ehss-ehl-ee'eh”
+  - ledger: ME constant; IS stöðugur; GA seasmhach; EU etengabe; DE beständig; LA constans; CY cyson; DZ —; GRC bebaios; SA nitya; Q vorima; ON stǫðugr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Witîfl** — bond  `[coined]`
+  - pron. “Wid-eyevhl”
+  - ledger: ME bond; IS tengsl; GA banna; EU lotura; DE Bindung; LA vinculum; CY rhwym; DZ —; GRC desmos; SA bandha; Q nútë; ON band
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Wiuelænaí** — consent  `[coined]`
+  - pron. “Wih'ah'ehl-ee'en-uh'ih”
+  - ledger: ME consenten; IS samþykki; GA toiliú; EU baimen; DE Einwilligung; LA consensus; CY cydsyniad; DZ —; GRC synkatathesis; SA anumati; Q —; ON samþykki
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Wiunail** *(pronoun/quantifier)* — everyone
+  - beside Wilhíæ — resolved (gate-answers): Wiunail “everyone”, Wilhíæ “everybody” — both live (2.1.1.8.4)
+  - *source: reference §2*
+- **wîynæn** — cry  `[coined]`
+  - pron. “why-nee'en”
+  - ledger: ME crien; IS gráta; GA caoin; EU negar egin; DE weinen; LA flere; CY wylo; DZ ngu-ni; GRC klaiein; SA √rud; Q —; ON gráta
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Wułafy** — pickup  `[coined]`
+  - pron. “Wahl-yuhff-ee”
+  - ledger: ME —; IS pallbíll; GA —; EU —; DE Pritschenwagen; LA —; CY —; DZ —; GRC —; SA —; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **wythil** *(preposition)* — despite
+  - ‹ yth + wil, “all over/past” — the all-word welded over the past-word (2.1.1.4.24)
+  - *source: reference §2*
+  - **worksheet gloss:** though — pron. “wih-tihl”
+  - ledger: ME though; IS þó; GA cé go; EU nahiz eta; DE obwohl; LA quamvis; CY er; DZ rung (encl.); GRC kaiper; SA yadyapi; Q —; ON þó
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+
+## Y
+
+- **y-** *(marker)* — subordinate marker on proper nouns
+  - yScéan; the y-law: “the y in yScéan summons the atá family” — the maker (2.1.1.4.26)
+  - *source: reference §2*
+- **y-…** *(prefix)* — marks th-elements in all SECONDARY subordinate clauses
+  - yüs (‹ †ythüs, reformed), yés (‹ †ythés, likewise)
+  - *source: reference §2*
+- **-ya** *(clitic)* — negative emphatic stamp - “NOT-X” glow · negative emphatic stamp (fuller form)  `[active]`  ↳ of ’thteya, ’tya, ’tya | ’thteya
+  - negator ’t + glow -ya ; demands careful avoidance of added negators (1.11.2.2.2.5) | ’thte + -ya ; as ’tya (1.11.2.2.2.5)
+  - *source: All-Coinages concordance #715 (HTML reference)*
+- **’ya** *(clitic)* — positive answer / tag
+  - INVARIANT; Fith’ya, scé’ya
+  - *source: reference §2*
+- **Yac** *(noun)* — strobe
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **ýacýác** — plus  `[coined]`
+  - pron. “yeh'uh-ky'ayk”
+  - ledger: ME —; IS auk; GA móide; EU gehi; DE plus; LA plus; CY plws; DZ —; GRC —; SA yuta; Q —; ON auk
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Yáe** — sun
+  - Stack-r2 also attests 'Yáe' (sun). 'mis neria o múlchtma ax niecscách Yáe dúe saílturn'. Cf. Yálénëách 'solar'.
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **yæ** — ever  `[coined]`
+  - pron. “yee”
+  - ledger: ME evere; IS nokkurn tíma; GA riamh; EU inoiz; DE je; LA umquam; CY erioed; DZ —; GRC pōpote; SA kadācit; Q oi; ON nǫkkuru sinni
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **yail** *(quantifier)* — many
+  - discontinuous with them “how” → “how many”
+  - *source: reference §2*
+- **Yálénëách** *(adjective)* — solar
+  - Her gloss 'Sun-ley-ish': yál- (sun, cf. Yáe) + -ách.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **yduý** *(preposition)* — in  `[working]`
+  - 'yduý sírffrach niheag Erlyê' — in silver tiny letters. Cf. duý 'through'; Dúy 'Hell'.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **yel-** *(prefix)* — any
+  - yelSœinaí 'any sound'.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **yelëg** — anyway (variant)  `[coined]`
+  - variant of **yelmá**; see that entry
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **yełíc** — anybody  `[coined]`
+  - pron. “yel-lee'ihck”
+  - ledger: ME any wight; IS hver sem er; GA duine ar bith; EU inor; DE irgendjemand; LA quisquam; CY unrhyw un; DZ —; GRC hostisoun; SA kaścit; Q aiquen; ON nǫkkurr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **yelmá** — anyway  `[coined]`
+  - pron. “anywaaays”; alt. pron. “yell-may'uh”; “any direction”; “yell-eh'ehg”; also yelëg
+  - ledger: ME —; IS samt; GA ar aon nós; EU dena den; DE jedenfalls; LA utcumque; CY beth bynnag; DZ —; GRC homōs; SA tathāpi; Q —; ON allt at einu
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **yelSœinaí** *(Noun phrase)* — any sound
+  - yel- 'any' + Sœinaí.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **yelthurn** — anywhere  `[coined]`
+  - pron. “yell-turn”
+  - ledger: ME owhere; IS hvar sem er; GA áit ar bith; EU inon; DE irgendwo; LA usquam; CY unrhyw le; DZ —; GRC hopououn; SA kutracit; Q —; ON nǫkkurs staðar
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **yés** *(subord. th-word)* — which (secondary clauses)
+  - reformed from †ythés, as yüs ‹ †ythüs; primary yésnÿ as may arise; mischief-note: answering a which-question, a síog may say Yés flag-free — for the chaos
+  - *source: reference §2*
+- **yésnÿ** *(circumfix | subord. th-word)* — marks the th-element in the FIRST subordinate clause that contains a th-element · which (secondary clauses)  `[active]`  ↳ of y-…nÿ, y-…nÿ | yés, yés
+  - y-iosnÿ , yésnÿ | reformed from †ythés, as yüs ‹ †ythüs; primary yésnÿ as may arise; mischief-note: answering a which-question, a síog may say Yés flag-free - for the chaos
+  - *source: All-Coinages concordance #721 (HTML reference)*
+- **Yfrœli slaí Yonê-e** — hundred-nights-child
+  - *source: Final-Boss Haul · Semantic fields (2026-07-17)*
+- **Ygaol Tïc-mé walea** *(author form)* — atá hearth-sworn kin  `[active]`
+  - *source: All-Coinages concordance #723 (LDS PDF)*
+- **Ygaol Tïc-mé walea atá** — hearth-sworn kin
+  - *source: Final-Boss Haul · Semantic fields (2026-07-17)*
+- **yGhiéil** — the Feminine Parent  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+- **ygyg** *(Verb)* — eke
+  - eke out.
+  - *source: stack-2 · the Faerieland opening in Danæam (2026-07-22)*
+- **yiæn** *(verb)* — lie (rest, of dust etc.)
+  - *source: reference §2*
+- **yiæn** — lie (position)
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **y-iosnÿ** *(circumfix)* — marks the th-element in the FIRST subordinate clause that contains a th-element  `[active]`  ↳ of y-…nÿ
+  - y-iosnÿ , yésnÿ
+  - *source: All-Coinages concordance #713 (HTML reference + LDS PDF)*
+- **yiusétæn** — put  `[coined]`
+  - pron. “yew-ssay-tee'en”; alt. pron. “same word as set”
+  - ledger: ME putten; IS setja; GA cuir; EU jarri; DE setzen; LA ponere; CY rhoi; DZ zhag-ni; GRC tithenai; SA √dhā; Q panya-; ON setja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **yiusétæn** — set  `[coined]`
+  - pron. “yew-ssay-tee'en”
+  - ledger: ME setten; IS setja; GA socraigh; EU ezarri; DE setzen; LA ponere; CY gosod; DZ zhag-ni; GRC tithenai; SA √dhā; Q panya-; ON setja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Ynupthy** — husband
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Ynupthy** — wife
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **y-…nÿ** *(circumfix)* — marks the th-element in the FIRST subordinate clause that contains a th-element
+  - y-iosnÿ, yésnÿ
+  - *source: reference §2*
+- **yon** *(element)* — of the night
+  - inside Ixixaíyon; class unruled (2026-07-16) Stack-2: Night's Danæam name — Yon, 'of the night'. (Stage passage.)
+  - *source: reference §2*
+- **yth** *(prep.)* — past / over / beyond
+  - welds with lus where the resonance serves: ythús
+  - *source: reference §2*
+- **ythemnÿ** *(interrogative adverb)* — how  `[working]`
+  - 'Dúordhách ythemnÿ lus Chainn … atá í bhie' — tidy how the sort … is, it is.
+  - *source: stack-2 revised & extended · therapy passage & closing (2026-07-23)*
+- **ythénÿ** *(relativiser (apparent))* — who (no-cleft frame)  `[active]`  ↳ of thé
+  - beside ythénÿ - division apparent, tracking the maker’s subjecthood semantics; one word confirms (2.1.1.4.5)
+  - *source: All-Coinages concordance #728 (HTML reference + LDS PDF)*
+- **ythés** *(relativisers)* — (the cleft-paradigm’s pair to ythé/ythénÿ)  `[active]`
+  - nonrestrictives ride clefts (gate S3) Stack-2: relative use — 'ythés tack duilín' (which smackbang within).
+  - *source: All-Coinages concordance #729 (HTML reference + LDS PDF)*
+- **ythés / ythésnÿ** *(relativisers)* — (the cleft-paradigm’s pair to ythé/ythénÿ)
+  - nonrestrictives ride clefts (gate S3)
+  - *source: reference §2*
+- **ythésnÿ** *(relativisers)* — (the cleft-paradigm’s pair to ythé/ythénÿ)  `[active]`
+  - nonrestrictives ride clefts (gate S3)
+  - *source: All-Coinages concordance #730 (HTML reference + LDS PDF)*
+- **ythligu** — wrap  `[coined]`
+  - pron. “iht-lih-gah”
+  - ledger: ME wrappen; IS vefja; GA fill; EU bildu; DE einwickeln; LA involvere; CY lapio; DZ —; GRC eneilein; SA pari-√veṣṭ; Q vaita-; ON vefja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **ythús** *(prep.+art.)* — past-the
+  - weld of yth + lus — l paid at the gate, written solid (Syá-class); not kin to yüs “when”
+  - *source: reference §2*
+- **Ythús Urgea** *(noun)* — mêdhië… cited under Urgea: fence  `[active]`  ↳ of Urgea
+  - Ythús Urgea mêdhië… “past the fence by a metre…”
+  - *source: All-Coinages concordance #732 (HTML reference + LDS PDF)*
+- **Ytocfl** — choke  `[coined]`
+  - pron. “Ee'ihtt-ohck-fuhl”
+  - ledger: ME choken; IS kafna; GA tacht; EU ito; DE ersticken; LA suffocare; CY tagu; DZ —; GRC pnigein; SA —; Q quor-; ON kafna
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Yúpa** — well  `[coined]`
+  - pron. “Yoo-puh”
+  - ledger: ME wel; IS vel; GA go maith; EU ondo; DE wohl; LA bene; CY yn dda; DZ lekpar; GRC eu; SA suṣṭhu; Q mai; ON vel
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Yurgsæn** — chase  `[coined]`
+  - pron. “Yahrg-see'en”
+  - ledger: ME chacen; IS elta; GA tóir; EU —; DE jagen; LA persequi; CY ymlid; DZ —; GRC diōkein; SA anu-√dhāv; Q roita-; ON elta
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **yüs** *(subord. th-word)* — when (secondary clauses)
+  - reformed from †ythüs by decree (collision with ythús avoided); primary yüsnÿ as may arise; bare interrog. thüs untouched
+  - *source: reference §2*
+- **yüsnÿ** *(subord. th-word)* — when (secondary clauses)  `[active]`  ↳ of yüs
+  - reformed from †ythüs by decree (collision with ythús avoided); primary yüsnÿ as may arise; bare interrog. thüs untouched
+  - *source: All-Coinages concordance #734 (HTML reference)*
+- **yúyoo** — sing
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Yüyü** — bark
+  - *source: Final-Boss Haul · Basic vocabulary (2026-07-17)*
+- **Y'wil'th** — entire  `[working]`
+  - from the Oath work session; terse gloss as given.
+  - *source: session notes 2026-07-21*
+
+## Z
+
+- **zaza** — buzz  `[coined]`
+  - pron. “zuh-zuh”
+  - ledger: ME —; IS suða; GA dord; EU burrunba; DE summen; LA bombilare; CY suo; DZ —; GRC bombein; SA √guñj; Q —; ON suða
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Zëmpu** — pattern  `[coined]`
+  - pron. “Zeh'emp-ah”
+  - ledger: ME patron; IS mynstur; GA patrún; EU eredu; DE Muster; LA exemplar; CY patrwm; DZ —; GRC paradeigma; SA ādarśa; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Zfuffíách** — hypnagogic  `[coined]`
+  - pron. “Svah-fee'ih-ayk”
+  - ledger: ME —; IS —; GA —; EU —; DE hypnagog; LA —; CY —; DZ —; GRC hypnagōgos; SA svāpana; Q —; ON —
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **Zicsic** — safe  `[coined]`
+  - pron. “Zihk-tsihk”
+  - ledger: ME sauf; IS öruggur; GA slán; EU seguru; DE sicher; LA tutus; CY diogel; DZ nyenme; GRC asphalēs; SA kṣema; Q varna; ON ǫruggr
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **zóna** — produce  `[coined]`
+  - pron. “zowe-nuh”
+  - ledger: ME producen; IS framleiða; GA táirg; EU ekoitzi; DE herstellen; LA producere; CY cynhyrchu; DZ zo-ni; GRC poiein; SA ut-√pad (caus.); Q car-; ON yrkja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+- **zulær** — lay  `[coined]`
+  - pron. “zah-lee'er”
+  - ledger: ME leyen; IS leggja; GA leag; EU ezarri; DE legen; LA ponere; CY dodi; DZ zhag-ni; GRC tithenai; SA √dhā; Q panya-; ON leggja
+  - *source: Uncoined-Word Worksheet — 837-word ledger pass, completed 2026-07-27*
+
+---
+
+# Part II — English → Danæam
+
+### From the worksheet pass (837)
+
+- **accelerate** — luaræn
+- **accent** — Axscœth
+- **account** — Caonth
+- **act** — gnídt (neet'eh
+- **admire** — wantœ
+- **admit** — femythïæn
+- **adore** — úToræn
+- **aerial** — ługfách
+- **affect** — Ffás
+- **afraid** — uferghëa
+- **again** — ïeythërîea
+- **agree** — utoghenæn
+- **air** — Ług
+- **aircraft** — Glaoscêlintilény
+- **airliner** — Glaoscêlintiługy
+- **akin** — góïyth
+- **alarm** — Saíny Wil-e
+- **alcove** — Clófœ
+- **align** — límés
+- **almost** — nichuff
+- **aloft** — afLímésách
+- **alone** — swil
+- **alopecia** — ulópescía
+- **already** — scónách
+- **alternate** — afOobaoách
+- **aluminium** — uloominíäm
+- **always** — wáil
+- **amount** — Mëtmët
+- **analog** — ooblógïch
+- **angle** — Chœin
+- **another** — níbísy
+- **anybody** — yełíc
+- **anyone** — nÿel
+- **anything** — ios yelthas
+- **anyway** — yelmá
+- **anywhere** — yelthurn
+- **applause** — Blaotzúl-blaotzúl
+- **arcade** — Archwái
+- **archway** — Thrucuirgh
+- **area** — Uríár
+- **arm** — Sáinsfau
+- **around** — aoa 'thte
+- **arrive** — intîf
+- **art** — Élan
+- **artifice** — Élanfarmaí
+- **assign** — usládæn
+- **assist** — uíngæn
+- **astonish** — taonmaën
+- **atmosphere** — Łúgthom
+- **attach** — fixáigæn
+- **attempt** — Rrîyæn
+- **attend** — menscenæn
+- **audible** — dúauffy
+- **audio** — Auaí
+- **avail** — lynraigóæn
+- **awake** — afSaínách
+- **awful** — Therífách
+- **babe** — Frætár
+- **backlash** — Iyfwuludao
+- **backseat** — Rryncaíýa Úsét-úsét-e
+- **bag** — Tascy
+- **bar** — Bure
+- **basin** — Belfís
+- **bat** — Faz
+- **battlement** — Fforfÿaí
+- **beak** — Coc
+- **bear** — drugæn
+- **beckon** — fingen
+- **befall** — dúdát
+- **beg** — Fflébæn
+- **bend** — léntæn
+- **bet** — spoc
+- **beverage** — Lichsyas
+- **bike** — Gháintól
+- **bind** — fîsen
+- **bit** — Beth
+- **blast** — Blurme
+- **blemish** — Misctíul
+- **blend** — mist
+- **blink** — Beíl
+- **Block** — Obloc
+- **blue** — glar
+- **bluff** — waf
+- **blur** — ffléfuff
+- **board** — Smœtth
+- **bolt** — Tórlt
+- **bond** — Witîfl
+- **bone** — Óghs
+- **boot** — Túreonclæíry
+- **both** — O ·⁠ also in lexicon
+- **bottle** — Fflusch
+- **bounce** — Chóp-chóp
+- **box** — Cubo
+- **breath** — Nuthem
+- **breed** — úprócê
+- **brief** — minách
+- **brittle** — Ffrugjách
+- **broad** — Brútalách
+- **bug** — Ssít
+- **bulge** — Ghoobœ
+- **bulky** — Spriggig
+- **bunny** — Cóiscin
+- **burst** — gaomæn
+- **bury** — rulfæn
+- **buzz** — zaza
+- **café** — Cafiarmaí
+- **cage** — Cróiffy
+- **call** — Léy
+- **canyon** — Golthoo
+- **capacity** — Cupsrimaí
+- **capital** — Cupsédaí
+- **cardboard** — Churt
+- **care** — uscornu
+- **carpark** — Scale-rim
+- **carve** — Siselcuth
+- **case** — Ffáx
+- **cave** — Sfêl
+- **cement** — Sæmêntham
+- **chain** — Cäther
+- **chair** — Slufru
+- **champagne** — Chcampâgn
+- **change** — Scaoyn
+- **chase** — Yurgsæn
+- **check** — Tscoolæn
+- **cheekbone** — Muzóghs
+- **cheer** — Clâmæn
+- **chemical** — Cimiuain
+- **chin** — Eîyk
+- **chloramine** — Clorumín
+- **chlorine** — Cloro
+- **choke** — Ytocfl
+- **choose** — Niwinialæn
+- **cigarette** — Sigureth
+- **citizen** — Bothaíách
+- **clack** — Bac
+- **claim** — Sayäil
+- **clamp** — Suinchí
+- **client** — Glinte
+- **climb** — sœgafót
+- **clockwork** — Glaiyfarmaí
+- **cod** — Magy
+- **collarbone** — Claóghsab
+- **colour** — Lore
+- **comfort** — Dhælaort
+- **comment** — Nótinú
+- **common** — urentách
+- **company** — Scaffath
+- **compare** — óglîinæn
+- **compendium** — Cíltenthuct
+- **complain** — Cläch
+- **concrete** — Grëeth
+- **concur** — Ffáxcíassëæn
+- **conflict** — Conthasct
+- **consent** — Wiuelænaí
+- **constant** — Withüsêlïe
+- **contact** — Coufflichs
+- **content** — Byraigách
+- **contest** — Coufîytin
+- **contort** — Sclosreæn
+- **contour** — Baufilmarm
+- **contradict** — maæn
+- **control** — mótferighæn
+- **convert** — amntiqruæn
+- **cornflower** — Sîunbloiy
+- **counter** — Sétcaonthy
+- **couple** — Pury
+- **course** — Lürsfs
+- **cover** — Tegêy
+- **crackle** — Gnipáuíc
+- **creak** — Herhic
+- **create** — Toncæn
+- **creature** — Cræthr
+- **critic** — Ufsaigy
+- **crowd** — Mloiytí
+- **crumple** — Furcool (Vahr-kuul
+- **crush** — Cuisc
+- **crust** — Screamm
+- **cry** — wîynæn
+- **cuck** — Cócuolt
+- **cup** — Thapê
+- **current** — Newth
+- **curtain** — Cúrthin
+- **curve** — Folpthá
+- **customer** — Mælcy
+- **cutup** — Sétslaff-slaff
+- **cyborg** — Iarnimff
+- **cycle** — tólæn
+- **cylinder** — Silinty
+- **damp** — táic
+- **dance** — tunsæn
+- **dangle** — dúfelóch
+- **dead** — thuíłfeách
+- **dear** — Méstár
+- **debt** — Fís ·⁠ also in lexicon
+- **declare** — uafcláræn
+- **deep** — chóm
+- **delight** — Gliúsam
+- **depart** — drúrísæn
+- **describe** — lÿzaonth
+- **detach** — uafcathú
+- **detail** — Minú ·⁠ also in lexicon
+- **device** — Glâscí
+- **devise** — exilgha
+- **diamond** — Atum
+- **discourse** — Saí-saí-síaima-e
+- **discover** — Uloofáhæn
+- **disease** — Rógu
+- **dispose** — uafegg
+- **disturb** — trúbæn
+- **divorce** — ëgwal
+- **document** — Réal
+- **door** — Íun
+- **double** — duaínais
+- **doubt** — Emhdúscna
+- **downstairs** — Oobdég
+- **draw** — ghíchæn
+- **dream** — Law
+- **drear** — eumirda
+- **dress** — Clæír-clæír
+- **drip** — sthíff
+- **drown** — íthó
+- **dungeon** — Oobýasig
+- **duration** — Fath
+- **each** — uaïlnïe
+- **ebb** — ebb
+- **eel** — Ânger
+- **effect** — Arbhehe
+- **effort** — Curutsc
+- **ejaculate** — sæcuiúlær
+- **elect** — uafwinæn
+- **electric** — unburigg
+- **else** — aobíeg
+- **emerald** — Mârigalt
+- **emerge** — gerthúæn
+- **empty** — fách
+- **enclose** — bysclúnea
+- **end** — fend
+- **energy** — Glaoárca
+- **engine** — Fál
+- **enter** — Aólúæn
+- **escort** — cómíthuræn
+- **even** — drúłix
+- **ever** — yæ
+- **every** — wafíel
+- **everybody** — Wilíl
+- **everything** — Withuíaosil
+- **everywhere** — Withurnil
+- **evidence** — Thesïógu
+- **ex** — Thúiła
+- **exaggerate** — unmordachaíæn
+- **example** — Dæmóny
+- **exception** — Axuainaí
+- **exhort** — sprúigg
+- **expect** — spêcid
+- **explain** — esclárgæn
+- **express** — uaffthgju
+- **extend** — uafloor
+- **extra** — Mers-mers
+- **extract** — uaftug
+- **fact** — Łithax
+- **faction** — Fáiscaol
+- **fade** — fluimæaæn
+- **fan** — Ghæffter
+- **faraway** — aregch
+- **fascinate** — ghróchær
+- **fashion** — Mót
+- **fast** — usggur
+- **fault** — Lóst
+- **feasible** — duátcaíryách
+- **feed** — fædu
+- **feel** — senthith
+- **ferry** — Oóscál
+- **festival** — Thídh
+- **fiction** — Scœltscéalp
+- **field** — Cump
+- **figurehead** — Afthátap-scálr-e
+- **final** — fendách
+- **find** — áimghúæn
+- **fine** — fałain
+- **finger** — Tatsy
+- **fingernail** — Sthwee
+- **fingertip** — Tatsy-sthwee-e
+- **firsthand** — ornaoíth
+- **fixate** — sétornú
+- **flap** — iw
+- **flat** — plâd
+- **flick** — fflyc
+- **fling** — arfech
+- **flood** — Thwiłúfía
+- **flute** — Gneemí
+- **flutter** — fflathe
+- **focus** — Ffócas
+- **footpath** — Eghlínt
+- **forehead** — Aftap
+- **forest** — Fforís
+- **forget** — Feghlis
+- **forswear** — — (no lexeme; handled morphologically)
+- **fortnight** — Duaígéainethéx
+- **forward** — dúpró
+- **fraught** — úlaghea
+- **free** — fibher
+- **fret** — cící
+- **friend** — Fíura
+- **front** — Pró
+- **fuck** — suïfæn
+- **fugue** — duałef
+- **fun** — Rúd
+- **function** — Gláchomaí
+- **funeral** — Æltunaí
+- **furl** — cornff
+- **furtive** — fflifíách
+- **game** — Crïúdha
+- **garden** — Gârty
+- **gate** — Bortó
+- **gaze** — nrïchs
+- **generate** — túghýuæn
+- **genuine** — genách
+- **ginger** — Gufær
+- **glance** — uafbéigh
+- **glass** — Scelcs
+- **glom** — glom
+- **goose** — Gúénsra
+- **grace** — þoghásýa
+- **grasp** — criwgg
+- **grateful** — uaclanách
+- **great** — sain ·⁠ also in lexicon
+- **grin** — glingï
+- **groan** — stun
+- **group** — Gap
+- **grow** — blós
+- **guess** — tifurk
+- **guilt** — Errepa
+- **gullet** — Ffrynfely
+- **gulp** — ghrag
+- **gum** — guoíd
+- **gumboot** — Wíáchonclæíry
+- **gumtree** — Ghrórimag
+- **gun** — Hhílty
+- **guy** — Tóny
+- **hack** — Chuagg
+- **hail** — Hair
+- **hairline** — Linwhárt
+- **half** — gháilbu
+- **hall** — Ułu (Ah-lyah
+- **hallway** — Ułułegu
+- **hand** — Sáins
+- **hang** — prÿóch
+- **happen** — gígwid
+- **hard** — Túre
+- **hardly** — ornïrl
+- **harm** — dífilaí
+- **heat** — Guresës
+- **heave** — Chefen
+- **heed** — dair
+- **help** — afa
+- **hers** — þon
+- **herself** — sê-þon
+- **high** — hagg
+- **hollow** — cafsrau
+- **home** — Chíc
+- **horn** — Chard
+- **hotel** — Pantoste
+- **hour** — Stó
+- **human** — Elfhín
+- **hump** — Cadu
+- **hurt** — tífyad
+- **hydrogen** — Níuicailbhuëil
+- **hypnagogic** — Zfuffíách
+- **idea** — Scmaogg
+- **ignore** — egornú
+- **image** — Î
+- **imagine** — dîsêin
+- **immediate** — scónë
+- **immune** — æmiwnách
+- **inflate** — dmäffa
+- **inform** — fiłain
+- **inhale** — athnën
+- **initial** — ïíst
+- **inner** — degsëu
+- **innocent** — unghœsách
+- **insect** — Bathab
+- **inside** — dusëin
+- **insist** — ffagha
+- **install** — sïetcaír
+- **instant** — Niornbeílil
+- **internal** — degsëuách
+- **interrupt** — brecágge
+- **interview** — fiuwfílm
+- **invent** — affughúæn
+- **invest** — affughá
+- **iron** — Iarn
+- **jackalope** — Charóiscindeaí
+- **jacket** — Thruggy
+- **jealous** — brízłœách (breehz-lyeuh'ayk
+- **join** — átsethá
+- **jolt** — baowł
+- **juice** — Sap ·⁠ also in lexicon
+- **keep** — filuld
+- **kick** — spurgg
+- **kiss** — cyghu
+- **kneel** — cyëlua
+- **knell** — Thuíłaínfy
+- **knockoff** — Eurggug
+- **knuckle** — Gnifúi
+- **lace** — scéałin
+- **lack** — Łax
+- **landmark** — Tharcaln
+- **laptop** — Tesggtap
+- **last** — ohíinst
+- **latch** — Locy
+- **lay** — zulær
+- **lead** — gehorhín
+- **leer** — gláornoï
+- **level** — fëłefuách
+- **ley** — Lén
+- **lick** — lang
+- **lid** — Lëc
+- **life** — Lebend
+- **lifeform** — Foëbendœrm
+- **likely** — Îcłách
+- **lilac** — Sîrhoien
+- **limb** — Darág
+- **limit** — Thipthac
+- **limp** — ghœdách
+- **literature** — Úlitírura
+- **little** — Ithłooch
+- **local** — macsy
+- **lock** — Localoc
+- **lockscreen** — îiełocë
+- **locomotive** — Glaoscóterugy
+- **look** — letaí
+- **lose** — boolooyl
+- **low** — mioobaínách
+- **lunge** — üła
+- **lupine** — gaœlfolách
+- **lurch** — feüła
+- **magic** — Gulícaí
+- **mammal** — Smughty
+- **manage** — wathreín
+- **map** — Curthy
+- **march** — dułeon
+- **margarita** — marguritha
+- **mass** — Mâx
+- **massacre** — Árbeíl
+- **master** — Musthës
+- **match** — sutscha
+- **mate** — frehunt
+- **material** — Cairy
+- **matter** — efuæni
+- **may** — úsyá
+- **medicine** — Aloisi
+- **meditate** — slísëghág
+- **meet** — staffë
+- **mention** — githua
+- **mess** — Cura
+- **message** — Sënty
+- **midday** — Aúmedhæ
+- **million** — miłió
+- **mini** — miny
+- **miniature** — mîyánách
+- **minimum** — Thtémayaí
+- **mint** — Minth
+- **miracle** — Daomum
+- **mirror** — Scepíël
+- **misery** — Trisáchaí
+- **mission** — Ióggu
+- **mistake** — Ërscu
+- **mix** — Misteaí
+- **mock** — chætha
+- **moist** — łuíct
+- **monster** — Tscrîmfal
+- **month** — Saíntol
+- **moot** — Móth
+- **more** — mehil
+- **morning** — Márr
+- **moss** — Mœs
+- **most** — mÿel ·⁠ also in lexicon
+- **motif** — Móthíff
+- **mould** — Miuggy
+- **movie** — Scepênuaí
+- **muck** — Lutý
+- **mud** — Łeid
+- **mug** — Crúich
+- **mutual** — sílydol
+- **myself** — Sê ·⁠ also in lexicon
+- **mystery** — Gáthfrái
+- **narrate** — Caontharmæn
+- **native** — Aohúrn
+- **nature** — Œdu
+- **navigate** — aghegót
+- **need** — Caisáchaíæn
+- **neither** — aoannadh
+- **neuropathy** — Rósílgapágu
+- **never** — gilæn't ·⁠ also in lexicon
+- **next** — drúach
+- **nobody** — æœłíc
+- **node** — Gnoth
+- **nor** — aoœr ·⁠ also in lexicon
+- **note** — Miníst
+- **notepad** — Minaigísty
+- **nothing** — þiníya
+- **oblige** — ooscylduí
+- **observe** — arrnclaín
+- **obvious** — lósëlós
+- **occupy** — ffráigaf
+- **odds** — Ësthaíê
+- **offend** — sthynter
+- **offer** — Tscân
+- **offspring** — Grælië
+- **often** — sæffa
+- **okay** — óc∆éy •
+- **once** — aintüsách
+- **only** — niri ·⁠ also in lexicon
+- **ooze** — Oozoýu
+- **open** — fegæn
+- **option** — Œgg
+- **orb** — Orhéb
+- **order** — Róxaí
+- **ordinary** — nihæfách
+- **organ** — Nioobłicil
+- **ostrich** — Strauss
+- **outlaw** — Othœsræaí
+- **pace** — Pás
+- **palm** — Öfelfaí
+- **paper** — felth
+- **parade** — ráit
+- **parasite** — Scéuturmy
+- **pariah** — Rhácgy
+- **partner** — féirti
+- **party** — Feisr
+- **passage** — Esóg
+- **paste** — líp
+- **pattern** — Zëmpu
+- **pause** — Appaul
+- **peace** — Ghríntr
+- **pen** — Pen
+- **penetrate** — fłúgár
+- **pentagon** — Fflifagœrm
+- **people** — Áscíê
+- **perform** — pititítá
+- **phone** — Glaoscléÿ
+- **phrase** — Lóscó
+- **physical** — Łicaíách
+- **pic** — Îy-îy
+- **pickup** — Wułafy
+- **pigeon** — Úcsó
+- **pillow** — Púlff
+- **pink** — Oobrúd
+- **pitch** — Trídé
+- **place** — Ónthr
+- **plan** — Ubádh
+- **plaster** — Culc
+- **plastic** — Plulcst
+- **plausible** — sínësgách
+- **plea** — bœnaí
+- **plead** — bœn
+- **please** — mithæn
+- **plus** — ýacýác
+- **pocket** — Ootascby
+- **point** — Púncy
+- **policy** — Áscíáchaí
+- **pop** — Claóf
+- **possible** — cerłách
+- **power** — fultós
+- **predicament** — Clæffy
+- **prehensile** — gráhunæ
+- **prescribe** — dósafu
+- **press** — pric
+- **pretend** — ígherác
+- **pretty** — glœwtách
+- **prior** — aoyræcäch
+- **private** — niaintiálch
+- **probable** — îcýalaíách
+- **problem** — Fbainchund
+- **produce** — zóna
+- **profile** — Próëlth
+- **prove** — fásæarm
+- **provide** — afdaír
+- **public** — Ascíam
+- **put** — yiusétæn
+- **quality** — Cost
+- **queue** — Scuîfáin
+- **quick** — scúthách
+- **rabbit** — Cóiscy
+- **railside** — glaosclíntách
+- **rattle** — Tscrathy
+- **raw** — górtách
+- **ray** — Réul
+- **reach** — Ëxiczisái
+- **read** — pud
+- **real** — Lifía
+- **realm** — Uælt
+- **rear** — Aoyáchaí
+- **reason** — Ffócoi
+- **recall** — seinutscu
+- **receptacle** — Íláty
+- **recollect** — seïldhu
+- **record** — Scratean-scratean
+- **rectangle** — Łœrmix
+- **refer** — ferfïzen
+- **regard** — gurden
+- **reinforce** — stirghæn
+- **release** — sclæs
+- **reluctance** — Trepíya
+- **remember** — erinæn
+- **repeat** — sininithíáchæ
+- **reply** — Faníucæí
+- **represent** — craïscíg
+- **respect** — Lebatscúne
+- **respond** — seifandræ
+- **result** — Seinhœmaí
+- **retina** — Niorneïl
+- **retract** — seïnaigg
+- **revise** — Tsilgáeíl
+- **ride** — rhaígæ
+- **rim** — Brooth
+- **ring** — Angúl
+- **rivet** — Sæmy
+- **roam** — ulterái
+- **rocket** — Súslaugg
+- **rod** — Gibub
+- **rodent** — Cræty
+- **roleplay** — rócghrudaol
+- **roll** — fołu
+- **rooftop** — Châtthap
+- **room** — Nimil
+- **route** — Łége
+- **rumble** — Tintin
+- **safe** — Zicsic
+- **sage** — Saiły
+- **sapphire** — Saffîr
+- **scan** — Scóuc
+- **scar** — Orc
+- **scarce** — gæłós
+- **screen** — Îië
+- **screenshot** — Îraigeaië
+- **seal** — Drézic
+- **search** — sárghu ·⁠ also in lexicon
+- **secret** — urcánam
+- **seem** — scîyn
+- **seep** — sæd
+- **sell** — fendúheg
+- **semi** — chemy
+- **send** — affón
+- **sense** — Senthithaí
+- **sentence** — Tscrîncy
+- **sentient** — senthyei
+- **sequence** — Purumrá
+- **serious** — tîr
+- **set** — yiusétæn
+- **settle** — seth
+- **several** — mÿmomÿ
+- **sex** — Gnæx
+- **shadow** — Sceúzal
+- **shake** — rhíster
+- **shall** — — (no lexeme; handled morphologically)
+- **share** — Tîfal
+- **sheet** — Flæu
+- **shift** — aistær
+- **shine** — glów
+- **shoot** — scæt
+- **shop** — Thafern
+- **shortcoming** — Chuffchœm-chuffchœm
+- **shoulder** — Âxal
+- **shout** — scaotha
+- **show** — feaonthæn
+- **shroud** — Łícintac
+- **shrug** — Sæsa
+- **shudder** — rhóil
+- **sight** — Laíaí
+- **sightseeing** — Laíaíýalaílaí
+- **sign** — Póintheau
+- **silver** — Raghutíu
+- **similar** — góïyth
+- **simultaneous** — ugóïythaíách
+- **sinew** — Nœrfy
+- **singe** — cyghafnu
+- **sister** — Sídia ·⁠ also in lexicon
+- **sixteen** — Ghyfu
+- **size** — Méith
+- **slack** — Łaxaí
+- **slip** — tscrípst
+- **sluggish** — thryrách
+- **snap** — suippu
+- **soak** — chwícómæn
+- **social** — chísáchaíách
+- **socket** — Orn'pat'ách
+- **soft** — melum
+- **solitary** — sólitharách
+- **solve** — sólfu
+- **somebody** — uaołíc
+- **something** — ios uaothas
+- **sometime** — uaothüsýa
+- **sorry** — Ai'en'bitiths
+- **soul** — Sîchaí
+- **sparkle** — Scínsíy
+- **special** — Scepíëlách
+- **species** — Chainnaí
+- **speculate** — Scepíëlyæn
+- **speed** — Áłus
+- **spread** — subultæn
+- **squeal** — Tscræxca
+- **staff** — Âslutíê
+- **stain** — Ban
+- **stare** — rheetæ
+- **start** — funýáín
+- **state** — Rege
+- **steady** — stetyei
+- **step** — Padu
+- **sting** — Dumsy
+- **stitch** — Sporth
+- **stonework** — Sapfarmyaí
+- **stop** — Thal
+- **story** — Scéalithaí
+- **strange** — fremách
+- **straw** — Thwee
+- **street** — Cælæ
+- **stretch** — táigura
+- **stripe** — Frígó
+- **stroke** — Chagæn
+- **strong** — crýff
+- **style** — Ârtís
+- **such** — sy ·⁠ also in lexicon
+- **sudden** — Bruscách
+- **suggest** — próthesthæn
+- **suite** — Swýth
+- **summon** — prótugjæn
+- **sunrise** — Afyáëg
+- **sunset** — Felyáëg
+- **support** — Tacýac
+- **sure** — fæsei
+- **surface** — Âlathy
+- **surpass** — sógjæn uÿth-e
+- **surprise** — Uyruscáth
+- **survive** — uyrebendth
+- **suspect** — mawspur
+- **suspend** — aartanfu
+- **sustain** — tacfæuæn
+- **swallow** — łýngga
+- **sweep** — sumsumæn
+- **symmetry** — Sumferffaíya
+- **tabletop** — Gnýorchubý
+- **talk** — chísæn
+- **tap** — gâgg
+- **taste** — scmágr
+- **tattoo** — Stigma
+- **teal** — glaltrách
+- **technics** — Tecnëê
+- **television** — Thelefigjíon
+- **term** — Dúfendy
+- **terminal** — Dúfendyách
+- **terrain** — Talíraí
+- **terrify** — theraffæn
+- **test** — Próthrî
+- **text** — Thexa
+- **thank** — gradyæ
+- **thaw** — goleafsæn
+- **then** — ios thüs
+- **thing** — ios thas
+- **thorough** — eolágg
+- **though** — wythil ·⁠ also in lexicon
+- **thrash** — drescer
+- **threat** — Ógjin
+- **throes** — þrowê
+- **thus** — sy ·⁠ also in lexicon
+- **tilt** — Clæn
+- **tinge** — urłæir
+- **tip** — pec
+- **toe** — túm
+- **together** — dubildách
+- **tolerate** — thóleraré
+- **tome** — Thóm
+- **tone** — Thón
+- **top** — Chât
+- **toss** — berff
+- **townhouse** — Gnitthïc
+- **trace** — Rýun
+- **traction** — Thrazunét
+- **traffic** — Samcœry
+- **tram** — Anbwen
+- **transport** — Ułuchaí
+- **travel** — uff
+- **tread** — putæn
+- **tremor** — Sithera
+- **truck** — Scale* *truck*-e
+- **trudge** — drag
+- **true** — walách
+- **trunk** — Stöfy
+- **try** — Thrîaí
+- **twelve** — ghîfy
+- **twice** — aintghaintïe
+- **twist** — Cærnúa
+- **type** — Chain ·⁠ also in lexicon
+- **underneath** — öobén
+- **undulate** — uodagarhn
+- **unison** — Steam niyail-e
+- **until** — dúiri ·⁠ also in lexicon
+- **upright** — deóghsgú
+- **uranium** — üranyum
+- **urtext** — Thexa Ür-e
+- **usual** — gnággách
+- **uterus** — Chýstég
+- **vanish** — unescæn
+- **vary** — thâsæsæn
+- **vehicle** — Fály
+- **very** — aggïe
+- **victim** — Titheäí
+- **violent** — dífílách
+- **viscous** — píschilách
+- **vision** — Laíaí
+- **visit** — tïsárghuc
+- **vodka** — Fótca
+- **wall** — Manaowr
+- **war** — Rhymos
+- **wave** — Fauf
+- **weak** — dænæei
+- **weapon** — Scönscha
+- **week** — Ffar
+- **well** — Yúpa
+- **while** — Fír
+- **whisper** — Súsúr
+- **whit** — ítspa
+- **wild** — Ffeærách
+- **will** — Spítiya
+- **wilt** — efelgú
+- **window** — Fenis
+- **withdraw** — seiffrathí
+- **wood** — Rom
+- **work** — ffors
+- **worry** — sýngjæn
+- **wrap** — ythligu
+- **wrench** — Sclostaíry
+- **yank** — plœw
+- **yeah** — Bha ·⁠ also in lexicon
+- **yell** — łúcraí
+- **yet** — stil ·⁠ also in lexicon
+- **zone** — Uæxrælt
+
+### From the existing lexicon (glosses, 1084)
+
+- 10 — **Ghslár**
+- 120-year period — **Sgiesaetthum**
+- 17 — **Ül**
+- 18 — **Ghül**
+- 20 — **Ghsfeith**
+- 21 — **Sfeith**
+- 27 — **Îæth**
+- 28 — **Ghîæth**
+- 43 — **Ínhe**
+- 44 — **Ghínhe**
+- 49 — **Raíwil**
+- 50 — **Ghraíwil**
+- 57 — **Heatth**
+- 58 — **Gheatth**
+- 9 — **Slár**
+- a, an (indefinite) — **niïl**
+- a, an (indefinite) · single, singular — **ni**
+- a, an (indefinite) · than — **il**
+- a space — **Rim**
+- abdomen — **Aoiyid**
+- abduct — **Dræaig**
+- abductees — **Dræaigeainê**
+- about — **aoa sin't**
+- absolute-possessive former — **-os**
+- absolute-possessive former — **mæos**
+- accuser — **Útcáry**
+- accuser-of (reordered) — **Útcáry'ya**
+- ago — **duáo**
+- aiee! — **-luai-**
+- alive — **Lebendach**
+- all — **wil**
+- along — **Aoaya**
+- also — **aich**
+- am (1sg present) — **más**
+- am (1sg present) — **Más nhœme ten**
+- (an exemplar-name) — **Scéan**
+- and — **o**
+- and/or — **æxó**
+- animal — **Daírá**
+- any — **yel-**
+- any sound — **yelSœinaí**
+- Appellate court — **Ffemá'bissal-iy'dheach**
+- appoint — **oothíth**
+- appoint — **oothíthea**
+- arched — **cuirsea**
+- are — **bhie**
+- are / be (present, general) — **bhies**
+- article (written) — **Aolt**
+- as per the taking-note of - topic marker — **’in   ’n**
+- as per the taking-note of — topic marker — **S’air’n**
+- as per the topic of - the quidem-replica — **-e**
+- as per the topic of — the quidem-replica — **s’efui-e’in**
+- as, so — **aich sin**
+- as, so — **sin**
+- ashes — **Lueffu**
+- ask — **sclaí**
+- asked — **sclaíea**
+- “as-said” — **S’aige’in**
+- assault — **Griebh**
+- at (temporal) — **in**
+- atá hearth-sworn kin — **Ygaol Tïc-mé walea**
+- au contraire (the Danæam doch ) — **Gæn’ma**
+- au contraire (the Danæam doch ) — **Sin’ma**
+- au contraire (the Danæam doch) — **’ma**
+- audience — **Áhoría**
+- aufGaolaí communities — **aufGao'samsca'laíê**
+- automobile — **Glaoscál**
+- avatar — **Ornlawy**
+- back — **Iyao**
+- back — **Rrync**
+- back; backward — **dúrrync**
+- back-related — **Rrinch**
+- bad — **bainch**
+- bare — **bilach**
+- bark — **Yüyü**
+- beautiful — **fal**
+- beautiful — **Lain**
+- because — **úcuinth**
+- bed — **Oob lus Phailé**
+- bed — **Phailé**
+- before / exactly under-of — **Ł'oob-e'ix**
+- before (temporal) — **aoíth**
+- before (temporal) — **aoíth dulagá**
+- believe — **greib**
+- belly — **Bengsy**
+- benefit — **Sainfasæn**
+- Berlin — **Berolth**
+- big — **mordach**
+- big — **muydh**
+- big — **sin mordach sy fær**
+- (Bill’s face) — **Piell**
+- bird — **Titár**
+- bitch — **Fhós**
+- bitch — **Niïl Fhós**
+- bite — **chraff**
+- black — **blys**
+- blacksmith — **Iarnbha**
+- bleed — **Son**
+- blood — **Chair-Chair e Emma**
+- blood — **Emma**
+- blood — **Fís**
+- blood-red — **Em'ruth'mæ**
+- blood-red — **Em’ruth’mæ**
+- blow — **sulfhœ**
+- blow — **sulfhœa**
+- boat — **Scál**
+- body — **Líc**
+- bond-for-always — **W'ain'al**
+- bond-for-always — **W’ain’al**
+- bond-for-a-season — **Mainyin**
+- bone-white — **Isfar óghs-e**
+- book — **Rîbha**
+- book — **Rîbha-e John**
+- bought (≈ spent) — **chímæ**
+- bought (≈ traded) — **mælcen**
+- bound — **Waleäch**
+- bowed — **baouea**
+- boy (casual: sexual tops and/or dominants) — **Férás**
+- boy-crazy — **férás-ufsae**
+- break — **brís**
+- breast — **Penu**
+- breasts — **Penuê**
+- breathe — **ríse**
+- brick — **Tïc by Úrsapê**
+- brick — **Úrsap**
+- brick-made — **Úrsapfarmach**
+- brick-made — **Úrsapfarmea**
+- brickmakery, the trade of brickmaking — **Úrsapfarmaí**
+- bridge — **Brëch**
+- bring — **tug**
+- bring — **tugea**
+- broken — **Brísea**
+- burn — **hafn**
+- burn — **hafn (noun: Hafnó)**
+- burn (noun) — **Hafnó**
+- but — **ax**
+- but; but-especially — **ax**
+- but; but-especially — **Mith ax ten’ya**
+- but-for; except-for; all but — **Axuain**
+- Cáithoorhr oothíthea cited under Cáithoorhr: general-being — **Mith fær-dúe**
+- can — **caír**
+- car, automobile — **Scale**
+- cascade — **Felcadhá**
+- cat — **Scál**
+- catch (noun) — **Fainía**
+- ceiling — **Scëel-scëel**
+- centuries — **Sæculomê**
+- Changed (the Changed) — **Oothraíthê**
+- changelings — **aufFrœsíýa**
+- Changing (the practice) — **Oothraí**
+- charge — **Fialth**
+- chat — **chís**
+- chatting, the chatting — **Chís-Chís**
+- child — **Fræli**
+- child — **ssai e Frælithi’ya**
+- children — **Frælithi**
+- chip — **fiulæn**
+- chosen-child — **Frœli-tóff**
+- chosen-Rhié — **Rhié-tóff**
+- city — **Both**
+- clade — **Ghainn**
+- clan — **Wighæln**
+- claw — **suiné**
+- claw — **suiné (noun: Sthuinë)**
+- claw (noun) — **Sthuinë**
+- close — **Sclún**
+- closed — **Sclúnea**
+- closure — **Sclúneäi**
+- clothed — **clæírea**
+- cloud — **Bausy**
+- club — **Cthug**
+- clutch — **Cruaff**
+- coffee — **Cafi**
+- cold — **hoy**
+- come — **nhœme**
+- come, coming — **nhœme**
+- community — **Samsca**
+- comparative — “positively contrary” — **mÿa**
+- conclude — **Sclíeclu**
+- corkscrew — **Sclaoímhú**
+- could — **scaírea**
+- count — **whielïl**
+- counter-accusation — **Útcár'ma-Útcár'ma**
+- court-kin — **Gaol e bissal-by**
+- cracks — **Craghê**
+- crown — **Hrádai**
+- crystals — **Glaostalê**
+- cut — **slaff**
+- cut — **slaff (noun: Slaff-slaff)**
+- cut (noun) — **Slaff-slaff**
+- dab / plonk (smackbang) — **tack**
+- Danæam (reduced/form of address?) — **Glésdanæams**
+- day — **Aúh**
+- debt-kin — **Gaolaí ythé e Fís mainea atá**
+- defence — **Fenthœs**
+- delight-word — **Ai’ai!**
+- delight-word — **Iíuu!**
+- delight-word — **Líuu!**
+- descendants — **Ghrœliseæ**
+- descended — **Ghrœlisea**
+- despite — **wythil**
+- detail-sized — **minú**
+- detail-sized quote (pull quote) — **Ghitasiu-minú**
+- devour — **Theváre**
+- devour — **Theváre fæ**
+- dick — **Dic**
+- did — **át**
+- die — **thuíłf**
+- different — **diffaíách**
+- dig — **iësulæn**
+- dig — **sulæn**
+- dig — **sulænea**
+- direct — **drú**
+- dirty — **rein**
+- dirty — **reinach**
+- divide — **Rraen**
+- diving suit — **Meilstory**
+- division — **Rraenaí**
+- dog — **Nímhog**
+- dog(s) — **Nímhogê**
+- down   — **felTi’amár’th**
+- down 🥀 — **fel-**
+- downward — **ufel**
+- drawer — **t**
+- drawer — **tachér**
+- drawer · second — **C’achér’ed**
+- dream-kin — **Gaolaí ythé dúy Lawu rihea**
+- dream-road — **Lawubœegh**
+- dried-up — **afStrœch**
+- dried-up skin — **afStrœ'charmænsy'œch**
+- drink — **linchs**
+- drinks — **linchs**
+- drive — **stírth**
+- dry — **ghim**
+- dull — **too**
+- dust — **Pulsc**
+- dust — **Pulsc yiæn**
+- each-other; (with mé) all-alone, plural — **cías-sê**
+- ear — **Au**
+- earth (planet) — **Thunúz**
+- earth (substance) — **Thuaí**
+- eat, eating — **fith**
+- echo suffix (vowel-harmonising) — **-as**
+- echo suffix (vowel-harmonising) — **gæeäs**
+- echo suffix (vowel-harmonising) — **Ghuscias**
+- echo suffix (vowel-harmonising) — **laías**
+- egg — **Chin**
+- eibh cited under tug: bring — **duín Ærmuchaí tugea**
+- eight — **As**
+- eight · at (temporal) — **In As**
+- either · whether — **Annadh**
+- either-or-neither — **aoæx**
+- eke — **ygyg**
+- elastic — **leagístach**
+- elder — **Ælth**
+- eldest-sídia — **e mÿel Ældhr Sídia-teos**
+- embark(ing) — **dulagá**
+- enclothed — **byclæírea**
+- enemy — **Ufín**
+- enormity — **mordachaí**
+- enormity — **mordachaí-by**
+- enormously — **mordachië**
+- enormously — **or’mordachië’il-’t**
+- entire — **Y'wil'th**
+- eternally regives — **gilæn**
+- eternally regives — **g’[w]il’æn**
+- event — **Arbhenu**
+- everyone — **Wilhíæ**
+- everyone — **Wiunail**
+- exact — **łix**
+- execution — **Carnfogh**
+- exhausted — **Ærmuch**
+- exhaustion — **Ærmuchaí**
+- exhaustion — **Ærmuchaí e Síulnê**
+- eye — **Orn (also plural: Orn)**
+- eye; also plural Orn — **Orn**
+- face — **Cruích**
+- factory — **Wilfarmái**
+- fæ (3rd person: she / he / they) — **fæ**
+- fae-gender-havers; fey (collective) — **fælaê**
+- fær (object form of fæ, as attested after iy) — **fær**
+- Faerieland (of Faerieland) — **Síonæiya**
+- færself (3rd) — **sê-fær**
+- fail — **dapaths**
+- fall — **dant**
+- family — **Tïaolc**
+- famous — **glúmach**
+- fangs — **Scarryfê**
+- far — **arch**
+- far — **ro’arch’il**
+- far away — **ar'eg'ch**
+- farther along (the yet-to-be-said) — **iosaoya**
+- farther back (the earlier-said; “the former”) — **iosiyao**
+- farther (direction-unspecified) — **iosiya**
+- fat/grease — **Glaohao**
+- fear — **Turm**
+- feather — **Fit**
+- feet — **Onê**
+- fence — **Urgea**
+- few — **no**
+- fewer-than-any — **niyel**
+- fewer-than-one — **niuain**
+- fewer-than-one — **niuain e Frælithi’ya**
+- fight — **luth**
+- fill — **afTol**
+- filled — **afTolea**
+- finish (terminative) — **thuíl**
+- fire — **Łúgr**
+- fireman — **Łúgrchain**
+- fireman — **mith Łúgrchainr-mé**
+- first — **ainteith**
+- fish — **Isc**
+- five — **cliff**
+- float — **fyót**
+- flow — **sæthw**
+- flower — **Bloiy**
+- flower — **Bloiy (verb: bloi)**
+- flower (verb) — **bloi**
+- fly — **duł**
+- fog — **Thilsc**
+- fold — **pligu**
+- follows — **Sinótæn**
+- food — **Fía**
+- foot — **On**
+- form / shape — **Fœrm**
+- form (verb) — **fœrmæn**
+- formal — **Fœrmain**
+- four — **ghraí**
+- fourily; in fours — **Ghraíïe**
+- freeze — **ixyff**
+- from — **dræao**
+- from — **dræœa**
+- from — **fæ dræao nhœme**
+- from · enemy — **Dræao lus Ufín**
+- fruit — **Fan-fan**
+- fruit — **Fan-fan (verb: fan)**
+- fruit (verb) — **fan**
+- full — **afTolach**
+- future morph — **ië**
+- gather — **bildhuæn**
+- gave — **gæea**
+- gave · echo suffix (vowel-harmonising) — **gæe**
+- general — **Cáithoor**
+- general-being — **Cáithoorhr**
+- get, become — **by ghiæan**
+- get, become — **ghiæan**
+- geysers — **Gosferê**
+- ghiæan cited under ghiæan: get, become — **Duílúch Fæ’du’ærs fæ**
+- ghost — **Ghusci**
+- ghost — **Gusci**
+- giver — **Gæsy**
+- gives — **gæn**
+- gives, temporally bound — **gænyin**
+- (gloss awaiting the maker) — **fith**
+- go on — **sót**
+- go on · toward (= du-) — **usót**
+- god — **Gheo**
+- god — **Gheor**
+- god-sworn kin — **Wa'eo-mé'l-teos**
+- god-sworn kin — **Wa’eo-mé’l-teos**
+- gold — **guiáł**
+- good — **múlch**
+- good — **sain**
+- government — **Ralxú**
+- grab — **sciapæn**
+- grandparent ("elder-Rhié") — **Maíælrhië**
+- grass — **Goo**
+- grave(s) — **Grainê**
+- green — **lhanc**
+- grey — **lheifs**
+- Grief — **Bis**
+- grief-family word — **Síhr...**
+- grind up — **afCneilæn**
+- ground-down — **felCneilea**
+- ground-down tissue — **felCne'téxt'ilea**
+- guts — **Iyitê**
+- had-given (walk) — **Stílgænea**
+- hair — **Whár**
+- half-sídia — **Le’sídia’th**
+- half-sídia — **Sídia-leth**
+- half-sídia — **Sídia-leth / Le'sídia'th**
+- have spoken — **saige**
+- have spoken — **Saige fæ**
+- he - the creation force — **Ton**
+- he - the creation force — **Tonu**
+- he - the creation force — **Tonu-e**
+- he — the creation force — **Ton / Tonu**
+- head — **Tap**
+- hear — **auff**
+- heart — **Emmasy**
+- hearth-sworn kin — **Ygaol Tïc-mé walea atá**
+- heaven — **Łiuafth**
+- heaven — **ułiuafth**
+- heavy — **myach**
+- Hell — **Łif**
+- Hell — **Łítarthír**
+- her / his — **fær**
+- here — **sís-thurn**
+- here — **Sísthurn**
+- hereby — **Sísthnaoya**
+- hit — **pauth (noun: Pauth)**
+- hit (noun) — **Pauth**
+- hobbit, halfling — **Lethr**
+- hold/take — **craig**
+- hole — **niïl Pat sulænea**
+- hole — **Pat**
+- hope — **-æn**
+- Hope — **elf**
+- hope — **elfæn**
+- horned — **Chardea**
+- horse — **Ffearhsy**
+- horse — **niïl Ffearhsy**
+- host — **Tïcain**
+- hot — **aern**
+- House — **Tïc**
+- House · Grief — **sís Tïc e Bis**
+- how — **them**
+- how — **them…yail**
+- how — **ythemnÿ**
+- humorous — **Grëach**
+- humorous — **Grëach Hín**
+- humorousness — **Grëachaí**
+- humour — **æœá-e Gree**
+- humour — **Gree**
+- humour — **Hín e Gree**
+- hundred-nights-child — **Yfrœli slaí Yonê-e**
+- hunger — **Craimh**
+- hunger — **gæn mé X Craimh**
+- hungrily — **craithië**
+- hungrily — **fithea**
+- hungry — **craif**
+- hunt — **łeit**
+- hunt — **łeit (noun: Łeidhœrþ)**
+- hunt (noun) — **Łeidhœrþ**
+- husband — **Ynupthy**
+- I — **ten**
+- I · am (1sg present) — **Más-ten ærmuch**
+- ice — **Him**
+- idiocy — **Státachaí**
+- idiocy — **státachaí-færs**
+- idiot — **Stát**
+- idiot-being — **Státr**
+- if — **ann**
+- imprisoned — **Oobsígænea**
+- in — **yduý**
+- in (to-at) — **duín**
+- incident — **Atruens**
+- incident — **Atruensê**
+- inclusive-of — **metałie**
+- infectious — **Smiotherách**
+- insane — **ufsae**
+- is — **bha**
+- is / are - the form that accompanies ios — **ios ærmuch atá fæ**
+- is / are — the form that accompanies ios — **atá**
+- is (3sg present, attested) — **Æœá-e Fía fæ is**
+- is (3sg present, attested) — **is**
+- it — **í**
+- its — **ír**
+- itself — **í-sê**
+- jaw — **Gig**
+- jitter — **crith**
+- just, merely — **niri**
+- just, merely (“just-by”) — **-ië**
+- just, merely (“just-by”) — **nirïë**
+- “justn’t”, just about — **aoa niri’thte**
+- “justn’t”, just about — **niri’thte**
+- key — **Seoir**
+- kill — **łathn**
+- kill — **ooraith**
+- kill — **sê fæ ooraith**
+- killed-being — **Ooraithr**
+- kin for the delight-word — **Ai'ai!**
+- kind, sort — **Cain**
+- kind, sort — **Chain**
+- king — **Væx**
+- knee — **Bicá**
+- know — **oogh**
+- lake — **Moldit**
+- land — **Thaln**
+- language(s) — **Langaír**
+- late — **Malach**
+- laugh — **chorpi**
+- laugh — **chorpi (noun: Chorpiff)**
+- laugh (noun) — **Chorpiff**
+- leaf — **Fally**
+- learn — **ghlæscer**
+- left — **irá**
+- leftside — **Íra**
+- leftward — **dúirá**
+- leg — **Aoffau**
+- length — **Fírladr**
+- lengthwise — **dúfrœdh**
+- (leniting pair) — **Chúat**
+- (leniting pair) — **Cúat**
+- (leniting pair) — **Cúat / Chúat**
+- let — **Erl**
+- letter (of script) — **Erly**
+- lie (position) — **yiæn**
+- lie (rest, of dust etc.) — **yiæn**
+- like — **aoyth**
+- like — **mac**
+- like — **ten mac**
+- like — **…aoyth rhié-færs**
+- likewise(?) — **aich**
+- lineage ("the line of one's Rhié") — **Elintïmma**
+- lips — **Bocraíp**
+- live — **leff**
+- liver — **Linchsy**
+- long — **fródh**
+- lots / much — **Mhís**
+- louse — **Miúrroo**
+- love — **Stár**
+- loyal — **fiïl**
+- make — **farmea**
+- make · build — **farm**
+- making — **Farm-farm**
+- man — **hín**
+- man · fær (object form of fæ, as attested after iy) — **Fæ’hín-iy’ær**
+- many — **yail**
+- marks the th-element in the FIRST subordinate clause that contains a th-element — **y-iosnÿ**
+- marks the th-element in the FIRST subordinate clause that contains a th-element — **y-…nÿ**
+- marks the th-element in the FIRST subordinate clause that contains a th-element · which (secondary clauses) — **yésnÿ**
+- marks th-elements in all SECONDARY subordinate clauses — **y-…**
+- mat — **Math**
+- maybe — **’thte’ya**
+- maybe; perhaps — **Syá**
+- me — **teo**
+- meant — **ghydæa**
+- meat/flesh — **Flang**
+- mêdhië… cited under Urgea: fence — **Ythús Urgea**
+- melt — **leafæn**
+- metałie cited under metałie: inclusive-of — **Wilhíæ yScéan**
+- metre — **Mêdhe**
+- metre — **mêdhië**
+- middle — **Medham**
+- milk — **Bailc**
+- milk — **Bailch**
+- milk-Rhié — **Rhié e Bailch**
+- mine — **Teos**
+- minute (of time) — **Nímloc**
+- moment — **Ornbeíl**
+- moon — **Gheinn**
+- more-than-any — **mÿel**
+- more-than-any / fewer-than-any — **mÿel / niyel**
+- mountain — **Ghiadhán**
+- mountains — **Afghalhê**
+- mouth — **Bóc**
+- muchly — **sinya**
+- muchly — **sinya holdh**
+- muckinesses — **Lutýrê**
+- muscle — **Œlsceil**
+- must — **Cais**
+- my — **Tes**
+- my — **tes**
+- my — **tes-mé**
+- name — **Wín**
+- name-being — **wínr**
+- name-kin — **Gaolaí ythé e Win-łixach atá**
+- narrow — **gnith**
+- near — **minach**
+- nearabouts — **Frœ**
+- nearabouts — **Frœ’thte**
+- nearer along — **sísaoya**
+- nearer back (“the latter”) — **sísiyao**
+- nearer (direction-unspecified) — **sísiya**
+- necessary — **niecscách**
+- neck — **afYthrrync / Frÿn (formal/informal)**
+- neck (formal) — **afYthrrync**
+- neck (informal); throat — **Frÿn**
+- negative — **Fith’t**
+- negative — **Nhœme’thte**
+- negative — **sæánách**
+- negative — **scé’thte**
+- negative — **thurn’t**
+- negative — **’t**
+- negative — **’thte**
+- negative emphatic stamp — “NOT-X” glow — **’tya**
+- negative emphatic stamp - “NOT-X” glow · negative emphatic stamp (fuller form) — **-ya**
+- negative emphatic stamp (fuller form) — **’thteya**
+- neither-nor — **aoœr**
+- neither-nor — **Œr ’thte**
+- nest — **Gnast**
+- nest-child — **Gna'frœli'sth**
+- nest-child — **Gna’frœli’sth**
+- never-gave; not-eternally-regives — **gilæn't**
+- new — **neria**
+- night-black — **Blys yon**
+- nightmare — **Ixixaíyon**
+- no — **aobha**
+- no longer — **thúil**
+- no, none (kein) — **æœá**
+- no, none (kein) — **Æœá Cuthrá**
+- no, none (kein) — **Ten æœá-e Fía más**
+- nodded — **nugænea**
+- none — **æouain**
+- none — **æouain e Frælithi’ya**
+- nose — **Myth**
+- nose — **Nif**
+- not — **ao / aoa**
+- not — **aoa**
+- not — **Aoa thurn’t**
+- not | cited under aobha: no — **ao**
+- not so — **aoa sin’t**
+- not so — **sin’t**
+- not X enough — **Or’lain’il**
+- not X enough — **Or…il**
+- not X enough · hungry — **or’raif’il**
+- notice! — **Air**
+- notice! (fragments) — **Ai’**
+- notice! (fragments) — **r**
+- not-insufficiently-had-and-still-gives — **ro'gænstílgæn'il**
+- novel — **Ruimais**
+- now — **Síthüs**
+- nowily — **síthüsië**
+- oath-sídia — **Sídia-wal**
+- Object-of-Giving’s-Force — “entry” — **Aól**
+- Object-of-Negative-Giving’s-Force — “gift” (feminine) — **Gil**
+- ocean — **Amár**
+- ocean — **amár**
+- of (genitive / connective) — **Chain e Bailch**
+- of (genitive / connective) — **e**
+- of the night — **yon**
+- of-the — **eës**
+- of-the — **lus Sáinsu eës Hrádai**
+- old — **páłea**
+- Olympiad — **Œlimpiad**
+- on — **úsét**
+- one — **aint**
+- “one” (stand-in body) — **uain**
+- one who/that the same one was — **Sísiyaoýa**
+- one-who / that-which (per the nearest sísiya or íosiya) — **-iya**
+- or — **Cafi œr Sî**
+- or — **œr**
+- ordinal suffix (year series) — **-eith**
+- Ornbeíl cited under Ornbeíl: moment — **Nirïë yinÿ … iostá**
+- other — **Aobísy**
+- other — **aobisyach**
+- other (otherly) — **Oobao**
+- Otherbound — **Wa'oobao-ya'leäch**
+- our — **Mis**
+- ours — **Meos**
+- ourselves (us-self) — **miths-sê**
+- outlawing — **Othœsræ-othœsræ**
+- overheard — **auytha**
+- owed — **Sór**
+- own — **Sëain**
+- ownership — **Sëainyr**
+- pain — **Tith**
+- pain — **Ti’amár’th**
+- Parent — **Rhié**
+- Parent — **rhié-færs**
+- Parent — **te’rhié’os**
+- Parent — **Te’sídia’os**
+- pass (of time) — **thiransgenæn**
+- passed — **thiransgenea**
+- past / over / beyond — **yth**
+- past-the — **ythús**
+- period — **Thüfath**
+- pit — **Foll**
+- play — **Ghrudás**
+- positive answer / tag — **Fith’ya**
+- positive answer / tag — **scé’ya**
+- positive answer / tag — **’ya**
+- pound — **Lund**
+- pound — **Niïl Lund e Shar**
+- pound (currency) — **Lyr**
+- praise — **shrai**
+- praxis — **Praxis**
+- principle — **Prïxreg**
+- prions — **Príónê**
+- prison — **Oobsíg**
+- property — **Eigain**
+- proteinaceous — **Próitínäíach**
+- pubic — **lesenach**
+- pull — **útugh**
+- purchase (grip) — **Craigachaí**
+- push — **seegh**
+- question particle — NON-PAST (eclipsing) — **scén**
+- question particle — PAST (leniting) — **scér**
+- questioning-echo marker — **gla**
+- questioning-echo marker — **gla-**
+- questioning-echo marker — **Glascér**
+- radiance — **Alcuilaí**
+- radiance — **Fær Alcuilaí**
+- rain — **Chair**
+- rain — **chair**
+- rain — **chair (noun: Chair-chair)**
+- rain — **Chair í gæn**
+- rain — **Chair-Chair**
+- rape — **Stúpen**
+- rape-name-being — **Stúpen-wínr**
+- receptacle-being — **Ílthasr**
+- red — **ruth (noun: Ruth)**
+- red (noun) — **Ruth**
+- region — **Regéar**
+- relevant — **rhäntupách**
+- rest, remainder — **Eileth**
+- returned echo — **lus Yüain s'ráshea'in**
+- returned echo — **lus Yüain s’ráshea’in**
+- Revenge-journey / -expedition / -quest — **- sin e Ulfœrth -**
+- Revenge-journey / -expedition / -quest — **s’ulfœrth-e’in**
+- Revenge-journey / -expedition / -quest — **Ulfœrth**
+- reversely (in reverse) — **Duínráshië**
+- Rhié-by-oath (parent-in-law) — **Rhié-Emma-mé-aoa**
+- right — **Wightil**
+- right / correct — **ghéalíl**
+- right / correct — **łixach**
+- right/correct — **łixach / ghéalíl**
+- right(-side) — **íxeis**
+- rightside — **Íxeis**
+- rightward — **duíxeis**
+- river — **Oó**
+- road — **Bœgh**
+- 'rom (from) — **-æao**
+- root — **Tóby**
+- rope — **Ráip**
+- rotten — **fhaołith**
+- round — **bauch**
+- rub — **byffub**
+- ruin — **rüst**
+- ruin — **rüstea**
+- run — **lith**
+- run · notice! (fragments) — **Ai’lith!**
+- saliva — **Łamis**
+- salt — **usaln (verb), Saln (noun)**
+- salt (noun) — **Saln**
+- salt (verb) — **usaln**
+- sand — **Aríc**
+- sand — **Aríc (verb: dúaríc)**
+- sand (verb) — **dúaríc**
+- say — **saí**
+- scour — **scaoræn**
+- scratch — **cáru**
+- scratch — **cáru (noun: Cárur)**
+- scratch (noun) — **Cárur**
+- scream — **Barc**
+- scuff — **críspæn**
+- sea — **Raige**
+- seas (plural) — **Sithê**
+- second — **ced**
+- see — **laí**
+- see, saw — **laí**
+- seed — **Siïlu**
+- seek — **Sárghu**
+- seize (as in to have a seizure) — **trawid**
+- seizure — **Trawidía**
+- self (reflexive) — **sê**
+- serve — **ghuethn**
+- serve — **ghuethnea**
+- serve — **huethnea**
+- sew — **gneíth**
+- shared-parent kin / full-blood sibling — **Sídia-afTo’emma’lach**
+- shared-parent kin (full-blood sibling) — **Sídia-afTo'emma'lach**
+- sharp — **peeriy**
+- she - the noncreation force — **þin**
+- she - the noncreation force — **þis**
+- she - the noncreation force — **þis-e**
+- she — the noncreation force — **þin / þis**
+- shit (shitty) — **scicach**
+- short — **huffach**
+- shrink — **screppæn**
+- sibling — **Sídia**
+- sibling — **sídia-teos**
+- sídhe — **Sídhá**
+- sídia-by-oath — **Sídia-wal**
+- Sídia-teos eldest-sídia — **e mÿel Ældhr**
+- Sídia-teos youngest-sídia — **e mÿel Frælr**
+- silvery — **írsifarach**
+- silvery? — **sírffrach**
+- sing — **yúyoo**
+- single inch — **Niya'nchia'il**
+- single, singular — **niyail**
+- singly-so (niyail) — **S'iyail'in**
+- sit — **úsétæn**
+- six — **éx**
+- six — **éx Nímhogê**
+- skin — **Charmænsy**
+- sky — **Afthá**
+- sky-blue — **Glar afthæ**
+- slacking — **Laff**
+- sleep — **Côs**
+- sleep — **côs**
+- sleep — **côs (noun: Côs-côs)**
+- sleep — **Or’threïg’il côs by**
+- sleep(ing) — **Côs-Côs**
+- small — **ílu**
+- smell — **lich**
+- smell — **lich (noun: Lich-lich)**
+- smell (noun) — **Lich-lich**
+- smile — **Ædth**
+- smoke — **Draurh**
+- smooth — **sciéłh**
+- snake — **Scírsy**
+- snow — **Snë**
+- so / “as was” — **Sin**
+- sod — **Fog**
+- solar — **Yálénëách**
+- soldier — **Magh**
+- soldier-being, soldierhood — **Maghr**
+- some — **uaothë**
+- someone (“about one”) — **uain’t-aoa**
+- sort; kind — **Chainn**
+- so-then — **sin … sy …**
+- so-then — **sy**
+- so-then - the equation-standard’s leg — **sin…sy**
+- so-then — the equation-standard’s leg — **sy**
+- sound — **Sœinaí**
+- sounded — **sœinea**
+- space (the space) — **Rimái**
+- speak — **áille**
+- speak — **saí**
+- speak — **sáille**
+- speaking — **sáillaí**
+- spend — **chæn**
+- spine — **Ó'rrync'ghs**
+- spit — **Oostú**
+- split — **afDibb**
+- spouse (agender, oath-kin) — **Waelain**
+- squeeze — **fix**
+- stab/pierce — **parcuil**
+- stage — **Gradhamýa**
+- stand — **afSehá**
+- star — **Tlinc**
+- state-noun former (“-being”) — **-r**
+- state-noun former (“-being”) — **Væxr**
+- steal, stole — **fœdh**
+- stick — **Acusthia**
+- sti'I'll-do — **stil'ten'át**
+- still (phase) — **stil**
+- still-breaking — **stílbrís**
+- still-do — **stílát**
+- stone — **Sap**
+- straight — **aomeal**
+- strobe — **Yac**
+- stupid, idiotic — **Státach**
+- subordinate marker on proper nouns — **y-**
+- subsequent from [direct from] — **drúræao**
+- substitution — **Imadachaí**
+- suck — **immi**
+- sugar — **Shar**
+- sun — **Yáe**
+- sun-yellow — **Guiïn yáë**
+- swell — **tút**
+- swim — **nhirma**
+- table — **Borhu**
+- tail — **Oobâ**
+- tail — **Oobrrhync**
+- tail — **Oobrrhync / Oobâ**
+- take (present) — **craig**
+- tall — **holdh**
+- tall · comparative - “positively contrary” — **holdhmÿa**
+- task-set, “hands”; hands (the body’s task-set — attested 1.10.2) — **Sáinsu**
+- tea — **Sî**
+- teacher — **duín tes-mé Matthsyr**
+- teacher — **Matthsy**
+- tear — **Rifæn**
+- technology — **Iarnachyathaí**
+- tell — **saí**
+- tell — **saíea**
+- tentacles — **Garrohyê**
+- than — **hín-iy**
+- than — **Holdhmÿa iy tens**
+- than — **iy**
+- that; the frozen cleft “[it is] that” — **ios**
+- that; the frozen cleft “[it is] that” — **ios thurn**
+- the accusing; accusation — **Útcár-Útcár**
+- the “all” modifier (list-opener) — **O**
+- the “all” modifier (list-opener) — **O Cafi œr Sî**
+- the believing — **greibach-greibach**
+- the breaking — **Brís-brís**
+- the chain-linker — **=**
+- (the cleft-paradigm’s pair to ythé/ythénÿ) — **ythés**
+- (the cleft-paradigm’s pair to ythé/ythénÿ) — **ythés / ythésnÿ**
+- (the cleft-paradigm’s pair to ythé/ythénÿ) — **ythésnÿ**
+- the Coming-Forward — **Drúnhœme-Drúnhœme**
+- the conclusion — **Sclíeclu-Sclíeclu**
+- the Darkness — **Eumruiýa**
+- the (definite) — **lus**
+- the Feminine Parent — **yGhiéil**
+- the following — **Sinótæn-sinótæn**
+- the jittering — **Crith-crith**
+- the Light — **Alcuilýa**
+- the noises — **Łærmuê**
+- the one-word herald — **glás**
+- the one-word herald — **glés-**
+- the perfect former — **Iëao As í iëátea**
+- the perfect former — **stíl-**
+- the perfect former — **Ten stílsótea**
+- the praising — **shrai-shrai**
+- the spidering — **Orscænyæn-orscænyæn**
+- the stealing-of — **Fœdh-fœdhýa**
+- the unreturnable gift — **Gil**
+- the Uplands — **Thalnafrê**
+- their; them (as sê-base — the maker) — **cías**
+- theirs — **Cíaos**
+- therapist — **Thérafthyiya**
+- therapy — **Theráfthyê-e**
+- there — **ios-thurn**
+- there — **iosthurn**
+- these — **sícías**
+- the-that-when(-that); the-then-when — **Łyüsnÿ**
+- they — **cía**
+- thick — **grásach**
+- thin — **egnui**
+- think — **dúe silgá**
+- think — **iy mæ silgá**
+- think — **silgá**
+- this — **sís**
+- this — **sís thurn**
+- those — **iocías**
+- thousand — **thíthíl**
+- three — **Raí**
+- through / using / across — **by**
+- through-from; out of — **Byræao**
+- throw — **ofer**
+- tidiness — **Dúordh**
+- tidy — **Dúordhách**
+- tie — **dúïl Háfaí sót**
+- tiny — **niheag**
+- tired — **ærmuch**
+- tired — **Or’threïg’il**
+- tired — **threïg**
+- tissue — **Téxt**
+- title — **Thiutel**
+- to / toward / -ward — **du**
+- to mark — **marcæn**
+- to spider (letters) — **Orscænyæn**
+- to vote — **Duínsaig**
+- to, with — **duîm**
+- to, with — **duîm thénu mæ**
+- today — **duálthë**
+- to-me (ten + -eo?) — **Úteo**
+- ton — **Tonna**
+- ton — **Tonnaê**
+- tongue — **Langaí**
+- too X — **Ro…il**
+- to-of / for — **dúe**
+- to-of / for — **dúe fith**
+- to-of / for — **dúe Piell**
+- to-of / for — **dúe sê**
+- to-of — purposive before the infinitive — **dúe / dué**
+- took — **craigea**
+- tooth — **Ffee**
+- to-over — **uÿth**
+- topic — **Efui**
+- topple — **titlop**
+- to-speak — **dúsáille**
+- to-the (toward + definite) — **dús**
+- to-the (toward + definite) — **dús Fith-Fith e bhie**
+- to-through — **dúy**
+- totter — **uazilæn**
+- touch — **rubh**
+- toward (= du-) — **u-**
+- toward-a(n) — **dúïl**
+- toward-being-alive — **dúlebendr**
+- toward-facing-audience-speaking-being — **Dé'ahor'cruí'sáillaí'ch'ía'er**
+- tower — **Pún**
+- tower — **S’i’pún’il’n**
+- to-with (recipient / instrument) — **duîm**
+- trade — **maræien**
+- train — **Thrugh**
+- tree — **Thórim**
+- triangle — **Rhëw**
+- trickery — **Scræsachaí**
+- tricky — **Scræsach**
+- turn — **film**
+- turn (noun) — **Pách**
+- turn (verb) — **pahæn**
+- twin — **Sinithaíl**
+- two — **Ghaint**
+- two — **Mis ssai Grainê**
+- two — **ssai**
+- UNCLEFTING-that — **iostá**
+- under — **Oob**
+- unicorn; literally “singularity” — **ixixaí**
+- un-raped-being — **Æœstúpenear**
+- unto — **dúiri**
+- unto — **Sê-dúi’gheo-e’ri**
+- up   — **afŁamis**
+- up 🔥 — **af-**
+- up-inside-of — **dúéalaf**
+- Upland — **After**
+- up-trill — “ooh” — **∆**
+- upward — **duáf**
+- upward / downward / to-through / to-over — **duáf / ufel / dúy / uÿth**
+- us — **miths**
+- use — **lyn**
+- use — **lynœa**
+- useless — **gáns**
+- verve — **Elin**
+- verve — **El’huethnea’in**
+- vervely — **elinië**
+- via, as-a-process; [to] of purpose — **by**
+- via, as-a-process; [to] of purpose — **côs by**
+- via, as-a-process; [to] of purpose — **gáns by**
+- voice — **Steam**
+- vomit — **gifúf**
+- vote — **Insaig**
+- voting — **Insaig-insaig**
+- waking — **afSaín**
+- waking — **afSaín (gerund: afSaín-Saín)**
+- waking (gerund) — **afSaín-Saín**
+- walk — **sót**
+- want — **ooilich**
+- wanted — **ooilæch**
+- warm — **mäern**
+- was / were - the past form with ios — **thé-atáea ios atáea**
+- was / were — the past form with ios — **atáea**
+- wash — **glaoh**
+- washing — **Glaoh-Glaoh**
+- wasn't — **atáea'thte**
+- watch — **Laiyin**
+- water — **Wíc**
+- water-green — **Lhanc wíc-e**
+- way — **Eg**
+- way, such-way — **eg**
+- way, such-way — **S’eg’in**
+- way up — **afArch**
+- we (revealed 1.10.2: the existential’s default donor) — **mith**
+- wealds — **Sálthê**
+- welcome — **saílturn**
+- were (past, general) — **chís eibh eibh**
+- were (past, general) — **eibh**
+- wet — **wíach**
+- what — **thas**
+- whatever — **Aoa-thas't**
+- what-mysterious-that-and-ever-and-totally — **thaioss't'ya**
+- what-mysterious-that-ever — **thiosas't**
+- when — **thüs**
+- when (secondary clauses) — **yüs**
+- when (secondary clauses) — **yüsnÿ**
+- where — **thurn**
+- whether — **thyann**
+- which — **thés**
+- which (secondary clauses) — **yés**
+- white — **isfar**
+- who — **thé**
+- who (no-cleft frame) — **thé**
+- who (no-cleft frame) — **ythénÿ**
+- whom (fronting) — **tháxya**
+- whom (oblique) — **thénu**
+- whose — **thénu mé**
+- why — **thœ**
+- wide — **breách**
+- wife — **Ynupthy**
+- will-do — **iëát**
+- will-not-give — **ïegæn't**
+- wind — **Rúa**
+- wing — **Sciw**
+- wipe — **glatærn**
+- wise — **Craoif**
+- with — **mé**
+- with — **mé-saige**
+- within [all-in] — **duilín**
+- woe-tide — **Mee**
+- woman — **Uonain**
+- womb-kin / blood-sibling — **Sídílë**
+- women — **Uoinainê**
+- woods — **Thruxú**
+- word — **Uœrd**
+- words (plural) — **Œurdê**
+- World — **Hthom**
+- World — **Hthom’t**
+- World — **Hth’-…-’om**
+- worm — **Ghłúrm**
+- worse (less-good) — **múlchtma**
+- worth, value — **Eœd**
+- wound — **Síuln**
+- wounds — **Síulnê**
+- wrenching — **Sclostaíría**
+- write — **scéaler**
+- ye — **[no word]**
+- year — **Oraï**
+- years (plural) — **Oraiê**
+- yellow — **Guiïn**
+- yes — **bháya**
+- yes (clipped bháya) — **bha**
+- you — **mæ**
+- youngest-sídia — **e mÿel Frælr Sídia-teos**
+- your — **mao**
+- yours — **maios**
+- yourself — **sê-maos**
+- zero — **ssíns**
+- zero — **ssíns e Frælithi’ya**
+
+---
+# Part III — Structure notes from the ledger pass
+
+Patterns that emerged or were confirmed while coining the 837. Each is stated from the coinages themselves, not imposed on them.
+
+## Numerals — the gh- pair rule
+
+The lexicon's ruling of 2026-07-23 (aint 1 · ghaint 2 · raí 3 · ghraí 4, with gh- marking the even member and matching the year-stem pairs Slár 9/Ghslár 10, Îæth 27/Ghîæth 28, Ínhe 43/Ghínhe 44, Raíwil 49/Ghraíwil 50) is confirmed by this pass: **îfy** 11 / **ghîfy** 12 were coined as a pair under the stated rule that every number 1–60 pairs with its prior odd or subsequent even number. Also from this pass: **thrhaithíl** 216,000 and **thíghráied** 12,960,000, alongside **miłió**.
+
+## Reduplication
+
+Exact doubling, for actions that consist in their own repetition:
+
+- **Blaotzúl-blaotzúl** applause (cf. Blaotzúlæn, to applaud)
+- **Scratean-scratean** record
+- **Senthith-senthith** sense (variant beside Senthithaí)
+- **Chuffchœm-chuffchœm** shortcoming
+- **Mëtmët** amount · **sumsumæn** sweep · **Tintin** rumble · **mÿmomÿ** several · **lósëlós** obvious
+
+## The indefinite paradigm — yel- / uao- / æœ-
+
+A three-way any / some / no series, with **-łíc** for persons and the **ios** frame for things:
+
+| | any- | some- | no- |
+|---|---|---|---|
+| body | **yełíc** | **uaołíc** | **æœłíc** |
+| thing | **ios yelthas** | **ios uaothas** | **þiníya** |
+| one | **nÿel** | — | — |
+
+Adverbial extensions: **yelthurn** anywhere · **yelmá** anyway · **yelëg** any direction · **uaothüsýa** sometime.
+
+**þiníya** stands outside the paradigm — the predicted form would be built on æœ- and the ios frame. Left as coined; flagged as the one irregular member.
+
+## The ios frame
+
+**ios thas** (that + what) = thing · **ios thüs** (that + when) = then. These make *ios yelthas* and *ios uaothas* regular derivations rather than one-offs.
+
+## The ley frame — Lén, Glaosc-
+
+**Lén** is the ley. **Glaosc-** is the automaton (Glaoscá). The compounds are not about air or ground but about **iron running on a line that was already there** — the dark rails in the starblack sky are the primary sense, the terrestrial ones the borrowing:
+
+- **Glaoscêlintilény** aircraft (automatic-ley-liner)
+- **Glaoscêlintiługy** airliner
+- **glaosclíntách** railside
+- **Łége** route
+- **Glaoscléÿ** phone
+
+## The sei- / sein- cluster
+
+Six coinages for re-/back- verbs share an onset: **seinutscu** recall · **seïldhu** recollect · **seifandræ** respond · **Seinhœmaí** result · **seïnaigg** retract · **seiffrathí** withdraw. Outside it: **erinæn** remember · **sininithíáchæ** repeat · **Faníucæí** reply · **Lebatscúne** respect. Undecided whether this is a morpheme or a coincidence of ear.
+
+## Deliberate homonyms
+
+Four pairs share one form by decision, not accident:
+
+- **góïyth** — akin / similar
+- **yiusétæn** — put / set (*put* was recoined from údúsétæn to merge them)
+- **Laíaí** — sight / vision
+- **sy** — such / thus
+
+## The -e postposition
+
+Hyphen-hung, placed after its topic: **Saíny Wil-e** (Waker All-of) · **scónách waíl-e** (always already) · **Thexa Ür-e** (urtext) · **Steam niyail-e** (unison) · ***Scale* *truck*-e** (truck) · **sógjæn uÿth-e** (surpass) · **uain Beyrceg nibísïl-e a'ithæ'nn** (another beerkeg, please).
+
+## Directional pairs
+
+**Afyáëg** sunrise / **Felyáëg** sunset — a shared *-yáëg* with af- and fel- as the directional elements, now productive.
+
+## Kinship
+
+**Sídia** — sibling, ungendered; entered at *sister*, with the explicit ruling that there are no gendered sibling titles. It is the only kin term on the 837-word sheet, so nothing else needs to agree with it.
+
+## Loanwords accepted
+
+**Strauss** ostrich · **Saffîr** sapphire · **Fótca** vodka · **Stigma** tattoo · **Thelefigjíon** television · **üranyum** uranium · **uloominíäm** aluminium · ***Scale* *truck*-e** truck · **óc∆éy •** okay (with the ∆ up-trill).
+
+## Gaps left open
+
+- **shall** — entered `[n/a]`; no lexeme, future handled morphologically.
+- **þiníya** — outside the indefinite paradigm, as above.
+- **Angúl** ring — built on *angulus* rather than the row's *anulus*; *angulus* is the **Chœin** (angle) row. Kept as coined.

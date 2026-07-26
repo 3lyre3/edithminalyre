@@ -8,6 +8,12 @@ Writes:  "Danæam Lexicon Lookup.html", "Danæam Grammar Lookup.html", "index.ht
 To expand: add entries to the JSON files (same shape as existing ones),
 then run:  python3 build_lookups.py
 No dependencies beyond the Python standard library.
+
+Dressed in the cloth of edithminalyre.com — EB Garamond & Cormorant, the
+void/ember/amber palette, fog, grain, cursor-glow, and the shared theme
+(localStorage 'theme', data-theme on <html>) so night follows the reader
+between the site and the codex. /site.js is loaded for the drifting wisp;
+everything degrades gracefully when opened from a bare folder.
 """
 import json, html, datetime, pathlib
 
@@ -26,6 +32,8 @@ FAMILIES = {
  "questions": ["scér","scén","scé'ya","scé'thte","glas-","glés-","tha"],
  "imperative": ["Air","Ai'","Ai'lith!","Ai'æ'lith!","Air'ith'lith!","Air'í'lith!","Air'ía'lith!","Ai'en'lith!","auytha"],
  "year series": ["Slár","Ghslár","Ül","Ghül","Sfeith","Ghsfeith","Îæth","Ghîæth","Ínhe","Ghínhe","Raíwil","Ghraíwil","Heatth","Gheatth","As"],
+ "cardinals": ["aint","Ghaint","Raí","ghraí","ainteith","îfy","ghîfy","Yfu","Ghyfu"],
+ "indefinites": ["yełíc","uaołíc","æœłíc","ios yelthas","ios uaothas","þiníya","nÿel","yelthurn","yelmá","yelëg","uaothüsýa"],
 }
 for e in lexicon:
     fams = [k for k, v in FAMILIES.items() if e["form"] in v]
@@ -47,95 +55,312 @@ RINGS = [
     {"person","people"},
 ]
 
+FONTS = """<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;1,300;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="shortcut icon" href="/favicon.ico">"""
+
+# Set theme before paint — same key and attribute as site.js.
+THEME_BOOT = """(function(){
+  var h=document.documentElement,s=null;
+  try{s=localStorage.getItem('theme');}catch(e){}
+  var d=window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if(s){h.setAttribute('data-theme',s);}else if(!d){h.setAttribute('data-theme','day');}
+})();"""
+
+TOGGLE_BTN = """<button class="theme-toggle" id="codexTheme" aria-label="Toggle theme">
+<svg class="sun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+<svg class="moon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>"""
+
 CSS = r"""
+/* ── tokens — carried whole from the house stylesheet ─────────── */
 :root{
- --bg0:#16121F; --bg1:#1B1626; --panel:#241D36; --panel2:#2A2340; --line:#3A3054;
- --ink:#EEE8DC; --dim:#A79DB6; --faint:#7A6F8C; --gold:#E8C664; --gold2:#EBCF78;
- --lav:#B6A6E0; --good:#9AD1A0; --warn:#E0A56B; --seal:#C77BB0;
+  --void:#050506; --abyss:#0a0a0c; --deep:#0e0e11; --ink:#131316; --smoke:#1a1a1e;
+  --ash:#2a2a2e; --stone:#505058; --bone:#808088; --pale:#a8a8b2; --silver:#c8c8d0;
+  --ivory:#e8e8ec; --white:#f8f8fa;
+  --ember:#8b4513; --rust:#a05020; --amber:#c07830; --gold:#d89840; --honey:#e8b860;
+  --violet:#9a89bd;
+  --bg-primary:var(--void); --bg-secondary:var(--deep); --bg-card:var(--abyss);
+  --text-primary:var(--pale); --text-secondary:var(--bone); --text-muted:var(--stone);
+  --text-heading:var(--ivory); --accent:var(--amber); --accent-dim:var(--rust);
+  --border:var(--smoke); --border-light:var(--ink);
+  --glow-color:rgba(200,120,48,0.06); --glow-secondary:rgba(100,80,120,0.04);
+  --grain-opacity:0.035; --fog-opacity:0.4;
+  --font-body:'EB Garamond',Georgia,serif; --font-display:'Cormorant',Georgia,serif;
+  --theme-transition:background-color .4s ease,color .4s ease,border-color .4s ease;
 }
-body.light{
- --bg0:#FCF9F1; --bg1:#F5F0E6; --panel:#FFFFFF; --panel2:#EDE5D4; --line:#E0D7C5;
- --ink:#251F2E; --dim:#6B5F80; --faint:#8A7F9C; --gold:#8A6D1A; --gold2:#7A5F14;
- --lav:#5A4D8A; --good:#2E7D46; --warn:#9C5A1E; --seal:#8E4A7E;
+[data-theme="day"]{
+  --void:#faf9f7; --abyss:#f5f4f2; --deep:#efeeec; --ink:#e8e7e5; --smoke:#dddcd9;
+  --ash:#c8c7c4; --stone:#8a8987; --bone:#6a6968; --pale:#4a4948; --silver:#3a3938;
+  --ivory:#2a2928; --white:#1a1918;
+  --ember:#a05830; --rust:#8b4820; --amber:#9a5828; --gold:#805020; --honey:#704818;
+  --violet:#5f5183;
+  --glow-color:rgba(160,88,48,0.08); --glow-secondary:rgba(80,60,100,0.04);
+  --grain-opacity:0.02; --fog-opacity:0.15;
 }
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg0);color:var(--ink);
- font:16px/1.55 "Iowan Old Style",Georgia,"Times New Roman",serif;
- -webkit-font-smoothing:antialiased}
-.sans{font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-header{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg0) 92%,transparent);
- backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:.7rem 1rem .6rem}
-.hrow{display:flex;gap:.7rem;align-items:center;flex-wrap:wrap;max-width:1100px;margin:0 auto}
-h1{font-size:1.12rem;margin:0;letter-spacing:.02em}
-h1 .æ{color:var(--gold)}
-.sub{color:var(--faint);font-size:.78rem;max-width:1100px;margin:.15rem auto 0}
-.searchbox{flex:1;min-width:230px;display:flex;align-items:center;background:var(--panel);
- border:1px solid var(--line);border-radius:10px;padding:.45rem .7rem;gap:.5rem}
-.searchbox:focus-within{border-color:var(--gold);box-shadow:0 0 0 2px color-mix(in srgb,var(--gold) 30%,transparent)}
-.searchbox input{flex:1;background:none;border:0;outline:0;color:var(--ink);font:inherit;font-size:1.02rem}
-.searchbox input::placeholder{color:var(--faint)}
-.kbd{color:var(--faint);border:1px solid var(--line);border-radius:5px;padding:0 .35rem;font-size:.72rem}
+[data-theme="day"] body{background:#ece6d6}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;background:var(--bg-primary)}
+body{font-family:var(--font-body);font-size:18px;line-height:1.7;color:var(--text-primary);
+  background:var(--bg-primary);min-height:100vh;overflow-x:hidden;position:relative;
+  transition:var(--theme-transition)}
+/* ── atmosphere: glow, fog, grain, cursor, wisp ───────────────── */
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:
+  radial-gradient(ellipse 120% 60% at 50% -20%,var(--glow-color) 0%,transparent 60%),
+  radial-gradient(ellipse 100% 50% at 50% 120%,var(--glow-secondary) 0%,transparent 50%),
+  radial-gradient(ellipse 50% 70% at 50% 40%,var(--glow-color) 0%,transparent 70%);
+  transition:var(--theme-transition)}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;
+  opacity:var(--fog-opacity);background:
+  radial-gradient(ellipse 80% 40% at 20% 80%,rgba(20,20,25,.8) 0%,transparent 50%),
+  radial-gradient(ellipse 60% 50% at 80% 20%,rgba(15,15,20,.6) 0%,transparent 40%),
+  radial-gradient(ellipse 100% 30% at 50% 100%,rgba(10,10,15,.9) 0%,transparent 30%);
+  animation:fogDrift 30s ease-in-out infinite alternate;transition:opacity .4s ease}
+[data-theme="day"] body::after{background:
+  radial-gradient(ellipse 80% 40% at 20% 80%,rgba(200,190,170,.3) 0%,transparent 50%),
+  radial-gradient(ellipse 60% 50% at 80% 20%,rgba(180,170,150,.2) 0%,transparent 40%)}
+@keyframes fogDrift{0%{transform:translateX(-2%) translateY(0);opacity:var(--fog-opacity)}
+  50%{opacity:calc(var(--fog-opacity)*1.2)}
+  100%{transform:translateX(2%) translateY(-1%);opacity:calc(var(--fog-opacity)*.9)}}
+.grain{position:fixed;top:-50%;left:-50%;width:200%;height:200%;pointer-events:none;
+  z-index:1000;opacity:var(--grain-opacity);
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  animation:grainShift .5s steps(10) infinite;transition:opacity .4s ease}
+@keyframes grainShift{0%,100%{transform:translate(0,0)}10%{transform:translate(-2%,-2%)}
+  20%{transform:translate(2%,2%)}30%{transform:translate(-1%,2%)}40%{transform:translate(2%,-1%)}
+  50%{transform:translate(-2%,1%)}60%{transform:translate(1%,-2%)}70%{transform:translate(-1%,-1%)}
+  80%{transform:translate(2%,1%)}90%{transform:translate(-2%,2%)}}
+.cursor-glow{position:fixed;width:400px;height:400px;border-radius:50%;pointer-events:none;
+  z-index:5;background:radial-gradient(circle,var(--glow-color) 0%,transparent 70%);
+  transform:translate(-50%,-50%);transition:opacity .3s ease;opacity:0}
+body:hover .cursor-glow{opacity:1}
+.wisp{position:fixed;top:0;left:0;font-family:var(--font-display);font-size:22px;
+  color:var(--accent);opacity:.55;text-shadow:0 0 16px var(--accent),0 0 32px var(--glow-color);
+  pointer-events:none;z-index:5;will-change:transform;transition:opacity 1.6s ease}
+.wisp.dim{opacity:.18}
+@media (prefers-reduced-motion:reduce){
+  .wisp{display:none}
+  body::after,.grain{animation:none}
+}
+/* ── theme toggle — the house circle ──────────────────────────── */
+.theme-toggle{position:fixed;top:24px;right:24px;width:44px;height:44px;
+  border:1px solid var(--border);border-radius:50%;background:var(--bg-secondary);
+  cursor:pointer;z-index:1001;display:flex;align-items:center;justify-content:center;
+  transition:all .3s ease;opacity:.7}
+.theme-toggle:hover{opacity:1;border-color:var(--accent);transform:scale(1.05)}
+.theme-toggle svg{width:20px;height:20px;fill:var(--text-secondary);transition:fill .3s ease}
+.theme-toggle:hover svg{fill:var(--accent)}
+.theme-toggle .sun{display:block}.theme-toggle .moon{display:none}
+[data-theme="day"] .theme-toggle .sun{display:none}
+[data-theme="day"] .theme-toggle .moon{display:block}
+/* ── the way back ─────────────────────────────────────────────── */
+.back{display:inline-flex;align-items:center;gap:.6rem;font-family:var(--font-display);
+  font-size:.88rem;letter-spacing:.1em;color:var(--text-muted);background:none;
+  text-decoration:none;transition:color .3s ease,gap .4s ease}
+.back::before{content:'←';color:var(--accent-dim);transition:transform .3s ease;
+  text-shadow:0 0 12px var(--accent-dim)}
+.back:hover{color:var(--text-primary);gap:1rem}
+.back:hover::before{transform:translateX(-4px)}
+/* ── lookup chrome ────────────────────────────────────────────── */
+header.lookup{position:sticky;top:0;z-index:50;
+  background:color-mix(in srgb,var(--bg-primary) 88%,transparent);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--border);
+  padding:.8rem 1.2rem .7rem;transition:var(--theme-transition)}
+.hrow{display:flex;gap:1rem;align-items:baseline;flex-wrap:wrap;max-width:1100px;margin:0 auto}
+.hrow .back{font-size:.78rem;margin-right:.2rem}
+h1.lk{font-family:var(--font-display);font-weight:300;font-style:italic;font-size:1.5rem;
+  letter-spacing:.04em;color:var(--text-heading);margin:0;
+  text-shadow:0 0 60px var(--glow-color)}
+h1.lk .ae{color:var(--accent)}
+h1.lk .sub{font-size:.95rem;color:var(--text-muted);font-style:italic;letter-spacing:.02em}
+.searchbox{flex:1;min-width:240px;display:flex;align-items:baseline;gap:.5rem;
+  border-bottom:1px solid var(--border);padding:.3rem .1rem;transition:border-color .3s ease}
+.searchbox:focus-within{border-color:var(--accent)}
+.searchbox .sig{color:var(--accent-dim);font-family:var(--font-display)}
+.searchbox input{flex:1;background:none;border:0;outline:0;color:var(--text-primary);
+  font-family:var(--font-body);font-size:1.05rem}
+.searchbox input::placeholder{color:var(--text-muted);font-style:italic}
+.kbd{color:var(--text-muted);border:1px solid var(--border);border-radius:4px;
+  padding:0 .35rem;font-size:.68rem;font-family:var(--font-display)}
 button{cursor:pointer;font:inherit}
-.iconbtn{background:var(--panel);border:1px solid var(--line);color:var(--dim);border-radius:9px;
- padding:.42rem .6rem;font-size:.85rem}
-.iconbtn:hover{border-color:var(--gold);color:var(--gold)}
-main{max-width:1100px;margin:0 auto;padding:1rem}
-.count{color:var(--faint);font-size:.8rem;min-width:5.5ch;text-align:right}
-.tier{margin:1.4rem 0 .6rem;display:flex;align-items:baseline;gap:.6rem;border-bottom:1px solid var(--line);padding-bottom:.3rem}
-.tier h2{font-size:.95rem;margin:0;color:var(--gold);letter-spacing:.04em;text-transform:uppercase}
-.tier .n{color:var(--faint);font-size:.78rem}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:.7rem}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:.75rem .9rem .8rem;
- position:relative;transition:border-color .15s}
-.card:hover{border-color:color-mix(in srgb,var(--gold) 55%,var(--line))}
-.form{font-size:1.35rem;font-weight:700;letter-spacing:.01em;cursor:copy;display:inline-block}
-.form:hover{color:var(--gold2)}
-.form .copied{position:absolute;font-size:.68rem;color:var(--good);margin-left:.5rem;top:.4rem}
-.gloss{color:var(--gold);font-size:1.02rem;margin-top:.1rem}
-.meta{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.45rem}
-.badge{font-size:.68rem;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--line);
- border-radius:99px;padding:.1rem .5rem;color:var(--dim);background:var(--panel2)}
-.badge.canon{border-color:color-mix(in srgb,var(--good) 45%,var(--line));color:var(--good)}
-.badge.working{border-color:color-mix(in srgb,var(--warn) 50%,var(--line));color:var(--warn)}
-.badge.sealed{border-color:color-mix(in srgb,var(--seal) 50%,var(--line));color:var(--seal)}
-.notes{color:var(--dim);font-size:.86rem;margin-top:.45rem}
+.count{color:var(--text-muted);font-size:.8rem;font-family:var(--font-display);
+  letter-spacing:.08em;min-width:6ch;text-align:right}
+.navlink{font-family:var(--font-display);font-size:.85rem;letter-spacing:.12em;
+  text-transform:lowercase;color:var(--text-secondary);background:none;border:0;
+  position:relative;padding:0}
+.navlink::after{content:'';position:absolute;bottom:-2px;left:0;width:0;height:1px;
+  background:var(--accent);transition:width .4s cubic-bezier(.16,1,.3,1);
+  box-shadow:0 0 8px var(--accent)}
+.navlink:hover{color:var(--text-heading)}
+.navlink:hover::after{width:100%}
+main{position:relative;z-index:10;max-width:1100px;margin:0 auto;padding:1.4rem 1.2rem 2rem;
+  animation:contentEmerge 1.2s cubic-bezier(.16,1,.3,1)}
+@keyframes contentEmerge{0%{opacity:0;transform:translateY(24px);filter:blur(4px)}
+  60%{filter:blur(0)}100%{opacity:1;transform:translateY(0)}}
+/* ── tiers — the house section-head ───────────────────────────── */
+.tier{margin:2.2rem 0 1.1rem;display:flex;align-items:center;gap:1.2rem}
+.tier h2{font-family:var(--font-display);font-size:.85rem;font-weight:400;
+  letter-spacing:.2em;text-transform:lowercase;color:var(--accent);margin:0;
+  display:flex;align-items:center;gap:1.2rem}
+.tier h2::before{content:'';width:6px;height:6px;background:var(--accent-dim);
+  border-radius:50%;opacity:.7;box-shadow:0 0 10px var(--accent-dim)}
+.tier .n{color:var(--text-muted);font-size:.75rem;font-family:var(--font-display);
+  letter-spacing:.08em}
+.tier .rule{flex:1;height:1px;background:linear-gradient(90deg,var(--ash),transparent 80%)}
+/* ── the entries ──────────────────────────────────────────────── */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:.8rem}
+.card{background:var(--bg-card);border:1px solid var(--border);padding:.9rem 1rem 1rem;
+  position:relative;transition:border-color .3s ease,transform .3s ease}
+.card:hover{border-color:color-mix(in srgb,var(--accent) 40%,var(--border));
+  transform:translateX(3px)}
+.form{font-family:var(--font-display);font-weight:500;font-size:1.4rem;line-height:1.25;
+  letter-spacing:.01em;color:var(--text-heading);cursor:copy;display:inline-block}
+.form:hover{color:var(--honey)}
+.form .copied{position:absolute;font-size:.65rem;color:var(--gold);margin-left:.5rem;
+  top:.5rem;font-family:var(--font-display);letter-spacing:.1em}
+.gloss{color:var(--accent);font-size:1.02rem;margin-top:.1rem}
+.pron{color:var(--text-muted);font-style:italic;font-size:.85rem;margin-top:.15rem}
+.meta{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.5rem;align-items:center}
+.badge{font-family:var(--font-display);font-size:.66rem;letter-spacing:.14em;
+  text-transform:lowercase;border:1px solid var(--border);padding:.08rem .5rem;
+  color:var(--text-muted);background:none}
+.badge.canon{border-color:color-mix(in srgb,var(--gold) 45%,var(--border));color:var(--gold)}
+.badge.active{border-color:color-mix(in srgb,var(--honey) 40%,var(--border));color:var(--honey)}
+.badge.working{border-color:color-mix(in srgb,var(--rust) 55%,var(--border));color:var(--rust)}
+.badge.coined{border-color:color-mix(in srgb,var(--amber) 55%,var(--border));color:var(--amber);
+  text-shadow:0 0 12px var(--glow-color)}
+.badge.sealed{border-color:color-mix(in srgb,var(--violet) 50%,var(--border));color:var(--violet)}
+.notes{color:var(--text-secondary);font-size:.88rem;margin-top:.5rem;line-height:1.6}
 .notes.clamp{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.more{background:none;border:0;color:var(--lav);font-size:.76rem;padding:.1rem 0;text-align:left}
-.src{color:var(--faint);font-size:.7rem;margin-top:.5rem}
-.famrow{margin-top:.5rem;display:flex;flex-wrap:wrap;gap:.3rem;align-items:center}
-.famlabel{font-size:.7rem;color:var(--faint)}
-.chip{background:var(--panel2);border:1px solid var(--line);color:var(--lav);border-radius:99px;
- padding:.12rem .55rem;font-size:.78rem}
-.chip:hover{border-color:var(--gold);color:var(--gold)}
-.letteridx{position:sticky;top:64px;z-index:40;background:color-mix(in srgb,var(--bg0) 92%,transparent);
- backdrop-filter:blur(8px);padding:.35rem 0;display:flex;flex-wrap:wrap;gap:.15rem .3rem}
-.letteridx a{color:var(--dim);text-decoration:none;font-size:.78rem;padding:.1rem .3rem;border-radius:6px}
-.letteridx a:hover{color:var(--gold);background:var(--panel)}
-.letterhdr{margin:1.2rem 0 .5rem;color:var(--gold);font-size:1.05rem;border-bottom:1px solid var(--line);
- padding-bottom:.2rem;scroll-margin-top:120px}
-.empty{color:var(--faint);text-align:center;padding:3rem 1rem;font-style:italic}
-.tabs{display:flex;gap:.4rem;margin:.8rem 0 0}
-.tab{background:var(--panel);border:1px solid var(--line);color:var(--dim);border-radius:9px 9px 0 0;
- padding:.4rem .9rem;font-size:.85rem}
-.tab[aria-selected="true"]{color:var(--gold);border-bottom-color:var(--bg0);background:var(--bg1)}
-.secfilt{display:flex;flex-wrap:wrap;gap:.3rem;margin:.7rem 0}
-table.mini{border-collapse:collapse;margin:.5rem 0;font-size:.85rem}
-table.mini th,table.mini td{border:1px solid var(--line);padding:.25rem .55rem;text-align:left}
-table.mini th{background:var(--panel2);color:var(--gold);font-weight:600}
-.converter{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:1rem;margin:1rem 0}
-.converter h3{margin:.1rem 0 .6rem;color:var(--gold);font-size:1rem}
-.converter input{background:var(--bg1);border:1px solid var(--line);border-radius:8px;color:var(--ink);
- padding:.45rem .7rem;font:inherit;width:12rem}
-.converter .out{margin-top:.6rem;font-size:1.15rem;min-height:1.6rem}
-.converter .calc{color:var(--faint);font-size:.8rem;margin-top:.2rem}
-.quick{margin-top:.6rem;display:flex;flex-wrap:wrap;gap:.3rem;align-items:center}
-footer{max-width:1100px;margin:2rem auto;padding:1rem;color:var(--faint);font-size:.75rem;
- border-top:1px solid var(--line)}
-@media (max-width:640px){ .form{font-size:1.2rem} h1{font-size:1rem} .letteridx{top:110px} }
+.notes p{margin-bottom:.7em}.notes p:last-child{margin-bottom:0}
+.more{background:none;border:0;color:var(--text-muted);font-family:var(--font-display);
+  font-size:.72rem;letter-spacing:.12em;text-transform:lowercase;padding:.15rem 0;
+  text-align:left;transition:color .3s ease}
+.more:hover{color:var(--accent)}
+.src{color:var(--text-muted);font-size:.72rem;margin-top:.55rem;font-style:italic;opacity:.8}
+.famrow{margin-top:.55rem;display:flex;flex-wrap:wrap;gap:.35rem;align-items:center}
+.famlabel{font-family:var(--font-display);font-size:.68rem;letter-spacing:.14em;
+  text-transform:lowercase;color:var(--text-muted)}
+.chip{background:none;border:1px solid var(--border);color:var(--text-secondary);
+  padding:.1rem .55rem;font-family:var(--font-display);font-size:.75rem;
+  letter-spacing:.06em;transition:color .3s ease,border-color .3s ease}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+/* ── the twelve-language ledger ───────────────────────────────── */
+.ledger{display:none;margin-top:.55rem;padding:.55rem .7rem;border-left:2px solid var(--accent-dim);
+  background:linear-gradient(135deg,var(--bg-card),var(--bg-secondary));
+  font-size:.8rem;line-height:1.75;color:var(--text-secondary)}
+.ledger.open{display:block}
+.ledger b{font-family:var(--font-display);font-weight:500;font-size:.72rem;
+  letter-spacing:.1em;color:var(--text-muted)}
+.ledger .lsep{color:var(--ash);margin:0 .35rem}
+/* ── letter index ─────────────────────────────────────────────── */
+.letteridx{position:sticky;top:66px;z-index:40;
+  background:color-mix(in srgb,var(--bg-primary) 88%,transparent);
+  backdrop-filter:blur(8px);padding:.4rem 0;display:flex;flex-wrap:wrap;gap:.1rem .25rem}
+.letteridx a{color:var(--text-muted);text-decoration:none;font-family:var(--font-display);
+  font-size:.82rem;letter-spacing:.06em;padding:.1rem .35rem;transition:color .25s ease}
+.letteridx a:hover{color:var(--accent)}
+.letterhdr{margin:1.6rem 0 .7rem;font-family:var(--font-display);font-weight:400;
+  font-size:1.15rem;color:var(--accent);border-bottom:1px solid var(--border);
+  padding-bottom:.25rem;scroll-margin-top:130px;letter-spacing:.08em}
+.empty{color:var(--text-muted);text-align:center;padding:3.5rem 1rem;font-style:italic}
+/* ── tabs & filters ───────────────────────────────────────────── */
+.tabs{display:flex;gap:1.6rem;margin:.6rem 0 0}
+.tab{background:none;border:0;font-family:var(--font-display);font-size:.85rem;
+  letter-spacing:.14em;text-transform:lowercase;color:var(--text-secondary);
+  padding:.2rem 0;position:relative}
+.tab::after{content:'';position:absolute;bottom:-2px;left:0;width:0;height:1px;
+  background:var(--accent);transition:width .4s cubic-bezier(.16,1,.3,1)}
+.tab[aria-selected="true"]{color:var(--accent)}
+.tab[aria-selected="true"]::after{width:100%}
+.secfilt{display:flex;flex-wrap:wrap;gap:.35rem;margin:.9rem 0}
+table.mini{border-collapse:collapse;margin:.6rem 0;font-size:.84rem}
+table.mini th,table.mini td{border:1px solid var(--border);padding:.28rem .6rem;text-align:left}
+table.mini th{font-family:var(--font-display);font-weight:500;letter-spacing:.1em;
+  text-transform:lowercase;color:var(--accent);background:var(--bg-secondary)}
+/* ── the year converter ───────────────────────────────────────── */
+.converter{border:1px solid var(--border);background:var(--bg-card);padding:1.1rem 1.2rem;
+  margin:1.1rem 0;position:relative}
+.converter::after{content:'';position:absolute;top:-1px;left:0;width:60px;height:1px;
+  background:var(--accent);opacity:.5}
+.converter h3{font-family:var(--font-display);font-weight:400;font-size:.85rem;
+  letter-spacing:.2em;text-transform:lowercase;color:var(--accent);margin:0 0 .8rem}
+.converter label{font-family:var(--font-display);font-size:.85rem;letter-spacing:.06em;
+  color:var(--text-secondary)}
+.converter input{background:none;border:0;border-bottom:1px solid var(--border);
+  color:var(--text-primary);padding:.3rem .2rem;font-family:var(--font-body);font-size:1rem;
+  width:11rem;outline:0;transition:border-color .3s ease}
+.converter input:focus{border-color:var(--accent)}
+.converter .out{margin-top:.7rem;font-size:1.2rem;min-height:1.6rem;font-family:var(--font-display)}
+.converter .calc{color:var(--text-muted);font-size:.78rem;margin-top:.2rem;font-style:italic}
+.quick{margin-top:.7rem;display:flex;flex-wrap:wrap;gap:.35rem;align-items:center}
+.quick .ql{font-family:var(--font-display);font-size:.7rem;letter-spacing:.14em;
+  text-transform:lowercase;color:var(--text-muted)}
+/* ── footer — the house mark ──────────────────────────────────── */
+footer{position:relative;z-index:10;max-width:1100px;margin:3rem auto 0;padding:0 1.2rem 3rem;
+  color:var(--text-muted);font-size:.8rem;text-align:center}
+footer .mark{margin-top:2.5rem;padding-top:2rem;font-family:var(--font-display);
+  font-size:.72rem;letter-spacing:.25em;color:var(--ash);position:relative}
+footer .mark::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:30px;height:1px;background:var(--border)}
+footer .counts{font-style:italic;line-height:1.8}
+/* ── selection & scrollbar — the house hand ───────────────────── */
+::selection{background:var(--accent-dim);color:var(--void)}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg-primary)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--ash)}
+@media (max-width:640px){
+  body{font-size:17px}
+  .form{font-size:1.25rem}
+  h1.lk{font-size:1.25rem}
+  .letteridx{top:104px}
+  .theme-toggle{top:16px;right:16px;width:38px;height:38px}
+  main{padding:1rem .9rem 2rem}
+}
 """
 
-# ---- shared JS: folding, tokenising, rings ----
+HUB_CSS = r"""
+main.hub{max-width:700px;margin:0 auto;padding:100px 32px 60px}
+.eyebrow{font-family:var(--font-display);font-size:.78rem;letter-spacing:.32em;
+  text-transform:uppercase;color:var(--text-muted);margin:2.6rem 0 1rem}
+h1.hub{font-family:var(--font-display);font-size:2.6rem;font-weight:300;font-style:italic;
+  letter-spacing:.04em;color:var(--text-heading);margin-bottom:.5rem;position:relative;
+  text-shadow:0 0 60px var(--glow-color),0 0 120px var(--glow-color)}
+h1.hub::after{content:'';position:absolute;bottom:-8px;left:0;width:40px;height:1px;
+  background:linear-gradient(90deg,var(--accent),transparent);opacity:.6}
+h1.hub .ae{color:var(--accent)}
+.subtitle{font-family:var(--font-display);font-style:italic;color:var(--text-secondary);
+  font-size:1.15rem;margin:1.4rem 0 0;letter-spacing:.02em}
+.statline{font-family:var(--font-display);font-size:.88rem;letter-spacing:.1em;
+  color:var(--text-muted);margin:2.4rem 0 0}
+.rooms{margin-top:3rem}
+.room{margin-bottom:2.2rem;padding-left:0;position:relative;opacity:0;
+  animation:itemReveal .8s ease-out forwards;transition:transform .3s ease}
+.room:hover{transform:translateX(6px)}
+.room:nth-child(1){animation-delay:.1s}.room:nth-child(2){animation-delay:.18s}
+.room:nth-child(3){animation-delay:.26s}
+@keyframes itemReveal{from{opacity:0;transform:translateY(12px) translateX(-8px);filter:blur(2px)}
+  to{opacity:1;transform:translateY(0) translateX(0);filter:blur(0)}}
+.room a.door{font-size:1.15rem;color:var(--silver);text-decoration:none;
+  background-image:linear-gradient(var(--accent),var(--accent));background-size:0% 1px;
+  background-position:0 100%;background-repeat:no-repeat;
+  transition:background-size .5s cubic-bezier(.16,1,.3,1),color .3s ease}
+.room a.door:hover{color:var(--white);background-size:100% 1px}
+.room .desc{color:var(--text-secondary);font-size:.95rem;margin-top:.45rem;line-height:1.7}
+.room .desc code{font-family:var(--font-display);color:var(--text-muted);font-style:italic}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--ash),transparent);
+  margin:3.4rem 0;position:relative}
+.divider::after{content:'';position:absolute;left:50%;top:-3px;width:6px;height:6px;
+  background:var(--accent-dim);border-radius:50%;transform:translateX(-50%);opacity:.6;
+  box-shadow:0 0 12px var(--accent-dim)}
+.expand{color:var(--text-secondary);font-size:.92rem;line-height:1.75}
+"""
+
+# ---- shared JS: folding, tokenising, rings, theme ----
 JS_CORE = r"""
 const FOLD_EXTRA = {'æ':'ae','Æ':'ae','œ':'oe','Œ':'oe','ł':'l','Ł':'l','þ':'th','Þ':'th','ð':'dh','Ð':'dh'};
 function fold(s){
@@ -185,26 +410,41 @@ function qWordsOf(v){
 }
 function copyText(t, el){
   navigator.clipboard.writeText(t).then(()=>{
-    const s=document.createElement('span'); s.className='copied sans'; s.textContent='copied';
+    const s=document.createElement('span'); s.className='copied'; s.textContent='copied';
     el.appendChild(s); setTimeout(()=>s.remove(), 900);
   });
 }
 document.addEventListener('click', e=>{
   const f = e.target.closest('.form');
-  if(f) copyText(f.dataset.copy || f.textContent.trim(), f.parentElement);
+  if(f && f.dataset.copy) copyText(f.dataset.copy, f.parentElement);
   const m = e.target.closest('.more');
   if(m){ const n = m.previousElementSibling; n.classList.toggle('clamp');
          m.textContent = n.classList.contains('clamp') ? 'more…' : 'less'; }
+  const lb = e.target.closest('.ledgerbtn');
+  if(lb){ const l = lb.parentElement.parentElement.querySelector('.ledger');
+          if(l){ l.classList.toggle('open');
+                 lb.textContent = l.classList.contains('open') ? 'ledger −' : 'ledger ·'; } }
 });
-function setTheme(mode){
-  document.body.classList.toggle('light', mode==='light');
-  try{ localStorage.setItem('dan-theme', mode); }catch(e){}
-}
+// theme — same key and attribute as the rest of the house
 (function(){
-  let t='dark'; try{ t = localStorage.getItem('dan-theme')||'dark'; }catch(e){}
-  setTheme(t);
+  const btn = document.getElementById('codexTheme');
+  if(btn) btn.addEventListener('click', ()=>{
+    const h = document.documentElement;
+    const next = h.getAttribute('data-theme')==='day' ? 'night' : 'day';
+    h.setAttribute('data-theme', next);
+    try{ localStorage.setItem('theme', next); }catch(e){}
+  });
 })();
 function esc(s){ const d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
+function ledgerHTML(led){
+  if(!led) return '';
+  const parts = led.split('; ').map(seg=>{
+    const i = seg.indexOf(' ');
+    if(i<0) return `<span>${esc(seg)}</span>`;
+    return `<span><b>${esc(seg.slice(0,i))}</b> ${esc(seg.slice(i+1))}</span>`;
+  });
+  return parts.join('<span class="lsep">·</span>');
+}
 """
 
 JS_LEXICON = r"""
@@ -227,27 +467,35 @@ document.addEventListener('keydown', e=>{
 q.addEventListener('input', run);
 function cardHTML(e){
   const badges = [];
-  if(e.type) badges.push(`<span class="badge sans">${esc(e.type)}</span>`);
-  if(e.category) badges.push(`<span class="badge sans">${esc(e.category)}</span>`);
+  if(e.type) badges.push(`<span class="badge">${esc(e.type)}</span>`);
+  if(e.category) badges.push(`<span class="badge">${esc(e.category)}</span>`);
   const st = (e.status||'').toLowerCase();
-  if(st.includes('canon')||st.includes('active')) badges.push(`<span class="badge canon sans">${esc(e.status)}</span>`);
-  else if(st) badges.push(`<span class="badge working sans">${esc(e.status)}</span>`);
-  const fams = (e.families||[]).map(f=>`<button class="chip sans fam" data-fam="${esc(f)}">${esc(f)}</button>`).join('');
-  const parents = (e.parents||[]).map(p=>`<button class="chip sans parent" data-p="${esc(p)}">→ ${esc(p)}</button>`).join('');
-  const notes = e.notes ? `<div class="notes clamp">${esc(e.notes)}</div>${e.notes.length>180?'<button class="more sans">more…</button>':''}` : '';
+  if(st){
+    const cls = st.includes('canon') ? 'canon' : st.includes('active') ? 'active'
+              : st.includes('coined') ? 'coined' : 'working';
+    badges.push(`<span class="badge ${cls}">${esc(e.status)}</span>`);
+  }
+  if(e.ledger) badges.push(`<button class="badge ledgerbtn">ledger ·</button>`);
+  const fams = (e.families||[]).map(f=>`<button class="chip fam" data-fam="${esc(f)}">${esc(f)}</button>`).join('');
+  const parents = (e.parents||[]).map(p=>`<button class="chip parent" data-p="${esc(p)}">→ ${esc(p)}</button>`).join('');
+  const notes = e.notes ? `<div class="notes clamp">${esc(e.notes)}</div>${e.notes.length>180?'<button class="more">more…</button>':''}` : '';
+  const pron = e.pron ? `<div class="pron">pron. “${esc(e.pron)}”</div>` : '';
+  const ledger = e.ledger ? `<div class="ledger">${ledgerHTML(e.ledger)}</div>` : '';
   return `<div class="card">
     <span class="form" data-copy="${esc(e.form)}">${esc(e.form)}</span>
     <div class="gloss">${esc(e.gloss)}</div>
+    ${pron}
     <div class="meta">${badges.join('')}</div>
     ${notes}
-    ${fams?`<div class="famrow"><span class="famlabel sans">kin</span>${fams}</div>`:''}
-    ${parents?`<div class="famrow"><span class="famlabel sans">under</span>${parents}</div>`:''}
-    <div class="src sans">${esc(e.source||'')}</div>
+    ${ledger}
+    ${fams?`<div class="famrow"><span class="famlabel">kin</span>${fams}</div>`:''}
+    ${parents?`<div class="famrow"><span class="famlabel">under</span>${parents}</div>`:''}
+    <div class="src">${esc(e.source||'')}</div>
   </div>`;
 }
 function tierHTML(title, list){
   if(!list.length) return '';
-  return `<div class="tier"><h2>${title}</h2><span class="n sans">${list.length}</span></div>
+  return `<div class="tier"><h2>${title}</h2><span class="n">${list.length}</span><span class="rule"></span></div>
           <div class="grid">${list.map(cardHTML).join('')}</div>`;
 }
 function run(){
@@ -264,10 +512,10 @@ function run(){
     if(qWords.every(vs => vs.some(x => e._n.has(x)))){ t3.push(e); }
   }
   count.textContent = (t1.length+tx.length+t2.length+t3.length)+' found';
-  const h = tierHTML('English matches', t1) +
-            tierHTML('Cross-references', tx) +
-            tierHTML('Danæam-form matches', t2) +
-            tierHTML('Mentioned in notes', t3);
+  const h = tierHTML('english matches', t1) +
+            tierHTML('cross-references', tx) +
+            tierHTML('danæam-form matches', t2) +
+            tierHTML('mentioned in notes', t3);
   out.innerHTML = h || '<div class="empty">nothing under that name — yet</div>';
 }
 function browse(){
@@ -280,7 +528,7 @@ function browse(){
   }
   const letters = [...byL.keys()].sort();
   const idx = letters.map(L=>`<a href="#L${L}">${L}</a>`).join('');
-  let h = `<div class="letteridx sans">${idx}</div>`;
+  let h = `<div class="letteridx">${idx}</div>`;
   for(const L of letters){
     const list = byL.get(L).sort((a,b)=>a._f.localeCompare(b._f));
     h += `<div class="letterhdr" id="L${L}">${L}</div><div class="grid">${list.map(cardHTML).join('')}</div>`;
@@ -296,34 +544,6 @@ document.addEventListener('click', e=>{
 run();
 """
 
-def lexicon_page():
-    data_json = json.dumps(lexicon, ensure_ascii=False)
-    rings_json = json.dumps([sorted(r) for r in RINGS], ensure_ascii=False)
-    return f"""<!DOCTYPE html>
-<html lang="en"><head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Danæam — Lexicon Lookup</title>
-<!-- generated {TODAY} by build_lookups.py · sources: reference-116, All-Coinages concordance, session 2026-07-21 -->
-<style>{CSS}</style>
-</head><body>
-<header>
- <div class="hrow">
-  <h1>Dan<span class="æ">æ</span>am <span class="sub" style="display:inline">· lexicon lookup</span></h1>
-  <div class="searchbox"><span>⚲</span>
-   <input id="q" type="search" placeholder="English word, or Danæam form…  ( / )" autocomplete="off" spellcheck="false">
-  </div>
-  <span class="count sans" id="count"></span>
-  <button class="iconbtn sans" onclick="location.href='Danæam Grammar Lookup.html'">grammar →</button>
-  <button class="iconbtn sans" id="theme" onclick="setTheme(document.body.classList.contains('light')?'dark':'light')">◐</button>
- </div>
-</header>
-<main id="results"></main>
-<footer class="sans">{len(lexicon)} entries · whole-word English matching (type <i>is</i> for the whole be-family; “incident” will not intrude) · click any form to copy it · generated {TODAY} — expand lexicon.json, re-run build_lookups.py</footer>
-<script>{JS_CORE.replace('__RINGS__', rings_json)}</script>
-<script>{JS_LEXICON.replace('__DATA__', data_json)}</script>
-</body></html>"""
-
 JS_GRAMMAR = r"""
 const RULES = __RULES__;
 const EXAMPLES = __EXAMPLES__;
@@ -338,7 +558,7 @@ const count = document.getElementById('count');
 const filtRow = document.getElementById('secfilt');
 let activeSec = null, tab = 'rules';
 const SECTIONS = [...new Set(RULES.map(e=>e.section))];
-filtRow.innerHTML = SECTIONS.map(s=>`<button class="chip sans sec" data-s="${esc(s)}">${esc(s)}</button>`).join('');
+filtRow.innerHTML = SECTIONS.map(s=>`<button class="chip sec" data-s="${esc(s)}">${esc(s)}</button>`).join('');
 q.focus();
 document.addEventListener('keydown', e=>{
   if(e.key==='/' && document.activeElement!==q){ e.preventDefault(); q.focus(); q.select(); }
@@ -356,21 +576,28 @@ function syncTabs(){
 document.addEventListener('click', e=>{
   const s = e.target.closest('.sec');
   if(s){ activeSec = activeSec===s.dataset.s ? null : s.dataset.s;
-    document.querySelectorAll('.sec').forEach(b=>b.style.borderColor = b.dataset.s===activeSec ? 'var(--gold)' : '');
+    document.querySelectorAll('.sec').forEach(b=>b.style.borderColor = b.dataset.s===activeSec ? 'var(--accent)' : '');
     run(); }
 });
 function miniTable(rows){
   if(!rows || !rows.length) return '';
   const head = rows[0].map(c=>`<th>${esc(c)}</th>`).join('');
   const body = rows.slice(1).map(r=>`<tr>${r.map(c=>`<td>${esc(c)}</td>`).join('')}</tr>`).join('');
-  return `<table class="mini sans"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table>`;
+  return `<table class="mini"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table>`;
+}
+// long record-prose breathes: paragraph at (i)(ii)(iii) seams — display only
+function paraHTML(body){
+  const parts = body.split(/\s(?=\((?:i|ii|iii|iv|v|vi|vii|viii|ix|x|xi|xii)\)\s)/);
+  if(parts.length < 2) return esc(body);
+  return parts.map(p=>`<p>${esc(p)}</p>`).join('');
 }
 function ruleCard(e){
-  const seal = e.anchor==='s9' ? '<span class="badge sealed sans">sealed room</span>'
-             : e.anchor==='s12' ? '<span class="badge working sans">emerging</span>' : '';
-  const body = e.body ? `<div class="notes ${e.body.length>260?'clamp':''}">${esc(e.body)}</div>${e.body.length>260?'<button class="more sans">more…</button>':''}` : '';
+  const seal = e.anchor==='s9' ? '<span class="badge sealed">sealed room</span>'
+             : e.anchor==='s12' ? '<span class="badge working">emerging</span>'
+             : e.anchor==='ledger' ? '<span class="badge coined">ledger pass</span>' : '';
+  const body = e.body ? `<div class="notes ${e.body.length>260?'clamp':''}">${paraHTML(e.body)}</div>${e.body.length>260?'<button class="more">more…</button>':''}` : '';
   return `<div class="card">
-    <div style="font-size:.72rem;color:var(--faint)" class="sans">${esc(e.section)}</div>
+    <div class="src" style="margin:0 0 .2rem">${esc(e.section)}</div>
     <div class="form" style="cursor:default;font-size:1.12rem">${esc(e.title)}</div>
     <div class="meta">${seal}</div>
     ${body}${miniTable(e.table)}
@@ -381,7 +608,7 @@ function exCard(e){
     <div class="form" style="cursor:default;font-size:1.05rem">${esc(e.dan)}</div>
     <div class="notes" style="font-style:italic">${esc(e.literal)}</div>
     <div class="gloss" style="font-size:.95rem">${esc(e.english)}</div>
-    <div class="meta"><span class="badge sans">${esc(e.type)}</span></div>
+    <div class="meta"><span class="badge">${esc(e.type)}</span></div>
   </div>`;
 }
 function run(){
@@ -391,9 +618,8 @@ function run(){
     const hits = !v ? EXAMPLES : EXAMPLES.filter(e=>
       fold(e.dan).includes(v) || fold(e.literal).includes(v) || fold(e.english).includes(v));
     count.textContent = hits.length + ' examples';
-    out.innerHTML = `<div class="grid">${hits.map(exCard).join('')}</div>` ||
-      '<div class="empty">no example answers to that</div>';
-    if(!hits.length) out.innerHTML = '<div class="empty">no example answers to that</div>';
+    out.innerHTML = hits.length ? `<div class="grid">${hits.map(exCard).join('')}</div>`
+      : '<div class="empty">no example answers to that</div>';
     return;
   }
   let pool = RULES;
@@ -404,7 +630,7 @@ function run(){
     for(const e of pool){ if(!groups.has(e.section)) groups.set(e.section,[]); groups.get(e.section).push(e); }
     let h='';
     for(const [sec, list] of groups)
-      h += `<div class="tier"><h2>${esc(sec)}</h2><span class="n sans">${list.length}</span></div><div class="grid">${list.map(ruleCard).join('')}</div>`;
+      h += `<div class="tier"><h2>${esc(sec)}</h2><span class="n">${list.length}</span><span class="rule"></span></div><div class="grid">${list.map(ruleCard).join('')}</div>`;
     out.innerHTML = h; return;
   }
   const t1=[], t2=[];
@@ -415,8 +641,8 @@ function run(){
   }
   count.textContent = (t1.length+t2.length)+' rules';
   out.innerHTML =
-    (t1.length?`<div class="tier"><h2>By name</h2><span class="n sans">${t1.length}</span></div><div class="grid">${t1.map(ruleCard).join('')}</div>`:'') +
-    (t2.length?`<div class="tier"><h2>In the text</h2><span class="n sans">${t2.length}</span></div><div class="grid">${t2.map(ruleCard).join('')}</div>`:'');
+    (t1.length?`<div class="tier"><h2>by name</h2><span class="n">${t1.length}</span><span class="rule"></span></div><div class="grid">${t1.map(ruleCard).join('')}</div>`:'') +
+    (t2.length?`<div class="tier"><h2>in the text</h2><span class="n">${t2.length}</span><span class="rule"></span></div><div class="grid">${t2.map(ruleCard).join('')}</div>`:'');
   if(!t1.length && !t2.length) out.innerHTML = '<div class="empty">no rule answers to that — perhaps a sealed room</div>';
 }
 // ---- year-name converter (base 2+30) ----
@@ -429,7 +655,7 @@ function convYear(){
   const a = Math.floor(y/60), b = y%60;
   const miss = [];
   if(!(a in STEMS)) miss.push(a); if(!(b in STEMS)) miss.push(b);
-  if(miss.length){ o.innerHTML = `<span style="color:var(--warn)">stem${miss.length>1?'s':''} awaiting the maker: ${miss.join(', ')}</span>`;
+  if(miss.length){ o.innerHTML = `<span style="color:var(--rust)">stem${miss.length>1?'s':''} awaiting the maker: ${miss.join(', ')}</span>`;
     document.getElementById('ycalc').textContent = `${y} = ${a}×60 + ${b}`; return; }
   const A = STEMS[a], B = STEMS[b];
   const Bbare = B.charAt(0).toLowerCase()+B.slice(1);
@@ -442,7 +668,7 @@ function convName(){
   const parts = v.split(/[-–—\s]+/).filter(Boolean);
   if(parts.length!==2){ o.textContent = 'two places, hyphen-joined: e.g. Ghínhe-îæth'; return; }
   const a = REV[fold(parts[0])], b = REV[fold(parts[1])];
-  if(a==null || b==null){ o.innerHTML = '<span style="color:var(--warn)">form not in the attested stems</span>'; return; }
+  if(a==null || b==null){ o.innerHTML = '<span style="color:var(--rust)">form not in the attested stems</span>'; return; }
   o.innerHTML = `<b>${a*60+b}</b>`;
   document.getElementById('ncalc').textContent = `${a}.${b} → ${a}×60 + ${b} = ${a*60+b}`;
 }
@@ -455,31 +681,78 @@ document.addEventListener('click', e=>{
 syncTabs(); run();
 """
 
-def grammar_page():
-    rules_json = json.dumps(grammar, ensure_ascii=False)
-    ex_json = json.dumps(examples, ensure_ascii=False)
-    rings_json = json.dumps([sorted(r) for r in RINGS], ensure_ascii=False)
+def page_top(title, desc):
     return f"""<!DOCTYPE html>
 <html lang="en"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Danæam — Grammar Lookup</title>
-<!-- generated {TODAY} by build_lookups.py · sources: reference-116, LDS record, session 2026-07-21 -->
+<meta name="description" content="{html.escape(desc)}">
+<meta name="author" content="Edith Mina Lyre">
+<title>{html.escape(title)}</title>
+<!-- generated {TODAY} by build_lookups.py · sources: reference-116, All-Coinages concordance,
+     LDS record, session 2026-07-21, Comprehensive Lexicon ledger pass 2026-07-27 -->
+{FONTS}
+<script>{THEME_BOOT}</script>
 <style>{CSS}</style>
 </head><body>
-<header>
+<div class="grain"></div>
+<div class="cursor-glow" id="glow"></div>
+{TOGGLE_BTN}"""
+
+PAGE_END = """<script src="/site.js" defer></script>
+</body></html>"""
+
+def lexicon_page():
+    data_json = json.dumps(lexicon, ensure_ascii=False)
+    rings_json = json.dumps([sorted(r) for r in RINGS], ensure_ascii=False)
+    n_coined = sum(1 for e in lexicon if e.get("status") == "coined")
+    return page_top("Danæam — Lexicon Lookup",
+                    "Every sealed word of Danæam, the language of the Síonæyais — "
+                    "searchable lexicon with pronunciations and the twelve-language ledger.") + f"""
+<header class="lookup">
  <div class="hrow">
-  <h1>Dan<span class="æ">æ</span>am <span class="sub" style="display:inline">· grammar lookup</span></h1>
-  <div class="searchbox"><span>⚲</span>
-   <input id="q" type="search" placeholder="rule, term, or example…  ( / )" autocomplete="off" spellcheck="false">
+  <a href="/" class="back">Edith Mina Lyre</a>
+  <h1 class="lk">Dan<span class="ae">æ</span>am <span class="sub">· lexicon</span></h1>
+  <div class="searchbox"><span class="sig">⚲</span>
+   <input id="q" type="search" placeholder="an English word, or a Danæam form…" autocomplete="off" spellcheck="false">
+   <span class="kbd">/</span>
   </div>
-  <span class="count sans" id="count"></span>
-  <button class="iconbtn sans" onclick="location.href='Danæam Lexicon Lookup.html'">lexicon →</button>
-  <button class="iconbtn sans" id="theme" onclick="setTheme(document.body.classList.contains('light')?'dark':'light')">◐</button>
+  <span class="count" id="count"></span>
+  <button class="navlink" onclick="location.href='Danæam Grammar Lookup.html'">grammar →</button>
+ </div>
+</header>
+<main id="results"></main>
+<footer>
+ <div class="counts">{len(lexicon)} entries, {n_coined} of them from the 837-word ledger pass ·
+ whole-word English matching (type <i>is</i> for the whole be-family; “incident” will not intrude) ·
+ click any form to copy it · coined entries carry pronunciation and the twelve-language ledger</div>
+ <div class="mark">NOTHING IS CANON UNTIL SEALED · ELM RULES ; THE KEEPER KEEPS</div>
+</footer>
+<script>{JS_CORE.replace('__RINGS__', rings_json)}</script>
+<script>{JS_LEXICON.replace('__DATA__', data_json)}</script>
+{PAGE_END}"""
+
+def grammar_page():
+    rules_json = json.dumps(grammar, ensure_ascii=False)
+    ex_json = json.dumps(examples, ensure_ascii=False)
+    rings_json = json.dumps([sorted(r) for r in RINGS], ensure_ascii=False)
+    return page_top("Danæam — Grammar Lookup",
+                    "The rules, conventions and worked examples of Danæam — sealed rooms, "
+                    "emerging gaps, the ledger pass, and the base-2+30 year-name converter.") + f"""
+<header class="lookup">
+ <div class="hrow">
+  <a href="/" class="back">Edith Mina Lyre</a>
+  <h1 class="lk">Dan<span class="ae">æ</span>am <span class="sub">· grammar</span></h1>
+  <div class="searchbox"><span class="sig">⚲</span>
+   <input id="q" type="search" placeholder="a rule, a term, an example…" autocomplete="off" spellcheck="false">
+   <span class="kbd">/</span>
+  </div>
+  <span class="count" id="count"></span>
+  <button class="navlink" onclick="location.href='Danæam Lexicon Lookup.html'">lexicon →</button>
  </div>
  <div class="hrow">
-  <div class="tabs sans">
-   <button class="tab" id="tabRules" aria-selected="true">rules & conventions</button>
+  <div class="tabs">
+   <button class="tab" id="tabRules" aria-selected="true">rules &amp; conventions</button>
    <button class="tab" id="tabEx" aria-selected="false">worked examples ({len(examples)})</button>
   </div>
  </div>
@@ -488,14 +761,14 @@ def grammar_page():
  <div class="secfilt" id="secfilt"></div>
  <div id="convwrap">
  <div class="converter">
-  <h3>Year-name converter · base 2+30</h3>
-  <div class="sans" style="display:flex;gap:1rem;flex-wrap:wrap">
+  <h3>year-name converter · base 2+30</h3>
+  <div style="display:flex;gap:1.6rem;flex-wrap:wrap">
    <label>I.T. year <input id="yin" type="number" placeholder="e.g. 2983" style="width:8rem"></label>
-   <label>Danæam name <input id="nin" type="text" placeholder="e.g. Ghínhe-îæth" style="width:12rem"></label>
+   <label>Danæam name <input id="nin" type="text" placeholder="e.g. Ghínhe-îæth"></label>
   </div>
-  <div class="out sans"><span id="yout"></span> <span id="nout"></span></div>
-  <div class="calc sans"><span id="ycalc"></span> <span id="ncalc"></span></div>
-  <div class="quick sans"><span style="color:var(--faint);font-size:.75rem">canon:</span>
+  <div class="out"><span id="yout"></span> <span id="nout"></span></div>
+  <div class="calc"><span id="ycalc"></span> <span id="ncalc"></span></div>
+  <div class="quick"><span class="ql">canon :</span>
    <button class="chip qk" data-y="2667">2667 · Changing outlawed</button>
    <button class="chip qk" data-y="2961">2961 · the Oath's end</button>
    <button class="chip qk" data-y="2983">2983 · Bródlainn riots</button>
@@ -506,49 +779,86 @@ def grammar_page():
  </div>
  <div id="results"></div>
 </main>
-<footer class="sans">{len(grammar)} rules & conventions · {len(examples)} worked examples · sealed rooms and emerging gaps are badged · year converter reads only attested stems — unmade stems report themselves · generated {TODAY}</footer>
+<footer>
+ <div class="counts">{len(grammar)} rules &amp; conventions · {len(examples)} worked examples ·
+ sealed rooms, emerging gaps and the ledger pass are badged ·
+ the year converter reads only attested stems — unmade stems report themselves</div>
+ <div class="mark">NOTHING IS CANON UNTIL SEALED · ELM RULES ; THE KEEPER KEEPS</div>
+</footer>
 <script>{JS_CORE.replace('__RINGS__', rings_json)}</script>
 <script>{JS_GRAMMAR.replace('__RULES__', rules_json).replace('__EXAMPLES__', ex_json)}</script>
-</body></html>"""
+{PAGE_END}"""
 
 def index_page():
+    n_coined = sum(1 for e in lexicon if e.get("status") == "coined")
     return f"""<!DOCTYPE html>
 <html lang="en"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Danæam — Lookup Index</title>
-<style>{CSS}</style>
+<meta name="description" content="The Danæam codex — lexicon and grammar of the language of the Síonæyais, by Edith Mina Lyre.">
+<meta name="author" content="Edith Mina Lyre">
+<title>Danæam — Codex</title>
+<!-- generated {TODAY} by build_lookups.py -->
+{FONTS}
+<script>{THEME_BOOT}</script>
+<style>{CSS}{HUB_CSS}</style>
 </head><body>
-<header><div class="hrow"><h1>Dan<span class="æ">æ</span>am <span class="sub" style="display:inline">· lookups</span></h1>
-<button class="iconbtn sans" onclick="setTheme(document.body.classList.contains('light')?'dark':'light')">◐</button></div></header>
-<main>
- <div class="grid" style="margin-top:1rem">
-  <div class="card">
-   <div class="form" style="cursor:default">Lexicon lookup</div>
-   <div class="notes">{len(lexicon)} entries — every coinage, compound, morpheme and year-stem. Whole-word English search: type <i>is</i>, get the be-family, and nothing that merely contains “is”. Click any form to copy it.</div>
-   <div class="meta"><button class="chip" onclick="location.href='Danæam Lexicon Lookup.html'">open →</button></div>
+<div class="grain"></div>
+<div class="cursor-glow" id="glow"></div>
+{TOGGLE_BTN}
+<main class="hub">
+ <a href="/" class="back">Edith Mina Lyre</a>
+ <p class="eyebrow">499.999 · The Codex</p>
+ <h1 class="hub">Dan<span class="ae">æ</span>am</h1>
+ <p class="subtitle">the language of the Síonæyais — as built by Elm, and kept.</p>
+ <p class="statline">{len(lexicon)} headwords · {len(grammar)} rules &amp; conventions · {len(examples)} worked examples</p>
+ <div class="rooms">
+  <div class="room">
+   <a class="door" href="Danæam Lexicon Lookup.html">the lexicon</a>
+   <div class="desc">{len(lexicon)} entries — every coinage, compound, morpheme and year-stem,
+    {n_coined} of them fresh from the 837-word ledger pass with pronunciations and the
+    twelve-language comparative ledger. Whole-word English search: type <i>is</i> and receive
+    the be-family, and nothing that merely contains “is”. Click any form to copy it.</div>
   </div>
-  <div class="card">
-   <div class="form" style="cursor:default">Grammar lookup</div>
-   <div class="notes">{len(grammar)} rules & conventions + {len(examples)} worked examples + the year-name converter (base 2+30). Sealed rooms and emerging gaps are badged as such.</div>
-   <div class="meta"><button class="chip" onclick="location.href='Danæam Grammar Lookup.html'">open →</button></div>
+  <div class="room">
+   <a class="door" href="Danæam Grammar Lookup.html">the grammar</a>
+   <div class="desc">{len(grammar)} rules &amp; conventions, {len(examples)} worked examples,
+    the year-name converter (base 2+30), and the ledger pass's structure notes — reduplication,
+    the indefinite paradigm, the ley frame, deliberate homonyms. Sealed rooms and emerging gaps
+    are badged as such.</div>
   </div>
-  <div class="card">
-   <div class="form" style="cursor:default">Expanding the corpus</div>
-   <div class="notes">Add entries to <span class="badge">lexicon.json</span> or <span class="badge">grammar.json</span> (same shape as the existing ones), then run <span class="badge">python3 build_lookups.py</span>. Both pages regenerate whole. Nothing is canon until sealed: Elm rules; the keeper keeps.</div>
+  <div class="room">
+   <span style="font-family:var(--font-display);font-style:italic;color:var(--text-secondary)">expanding the corpus</span>
+   <div class="desc expand">Add entries to <code>lexicon.json</code> or <code>grammar.json</code>
+    (the shape of any existing entry), then run <code>python3 build_lookups.py</code> —
+    both pages regenerate whole.</div>
   </div>
  </div>
+ <div class="divider"></div>
+ <footer style="max-width:none;padding:0;margin:0">
+  <div class="counts">generated {TODAY} · sources: reference-116, All-Coinages concordance,
+   LDS record, session 2026-07-21, Comprehensive Lexicon ledger pass 2026-07-27</div>
+  <div class="mark">NOTHING IS CANON UNTIL SEALED · ELM RULES ; THE KEEPER KEEPS</div>
+ </footer>
 </main>
-<footer class="sans">generated {TODAY} · sources: reference-116, All-Coinages concordance, LDS record, session 2026-07-21</footer>
-<script>{JS_CORE.replace('__RINGS__','[]')}</script>
-</body></html>"""
+<script>
+document.getElementById('codexTheme').addEventListener('click', ()=>{{
+  const h = document.documentElement;
+  const next = h.getAttribute('data-theme')==='day' ? 'night' : 'day';
+  h.setAttribute('data-theme', next);
+  try{{ localStorage.setItem('theme', next); }}catch(e){{}}
+}});
+</script>
+{PAGE_END}"""
 
 def main():
     out_dir = HERE
+    n_coined = sum(1 for e in lexicon if e.get("status") == "coined")
     (out_dir / "Danæam Lexicon Lookup.html").write_text(lexicon_page(), encoding="utf-8")
     (out_dir / "Danæam Grammar Lookup.html").write_text(grammar_page(), encoding="utf-8")
     (out_dir / "index.html").write_text(index_page(), encoding="utf-8")
-    print("built:",
+    print(f"built: lexicon {len(lexicon)} ({n_coined} coined) · grammar {len(grammar)} · examples {len(examples)}")
+    print("sizes:",
           (out_dir / "Danæam Lexicon Lookup.html").stat().st_size,
           (out_dir / "Danæam Grammar Lookup.html").stat().st_size,
           (out_dir / "index.html").stat().st_size)

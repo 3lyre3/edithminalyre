@@ -1,0 +1,82 @@
+lexicon.json entries at start: 1085
+Part I blocks parsed: 1922
+
+— textual repairs —
+   RESTORE 'aodruýscain': pron ← "ow-dru'ih-sheh'in" (recovered from the níbísy row)
+   DROP   'aodruýscain: another' — fragment of the níbísy row (clean aodruýscain block exists)
+   MOVE   'Blaotzúl-blaotzúl': pron-slot commentary → notes: 'compare: Blaotzúlæn (to applaud'
+   REPAIR "brízłœách (breehz-lyeuh'ayk" → form='brízłœách' gloss='jealous' pron="breehz-lyeuh'ayk"
+          (repaired: inline pron lost its closing paren in the dump)
+   REPAIR 'eleven: îfy' → form='îfy' gloss='eleven' pron='eye-vee'
+          (repaired: ghîfy's row reads «alt. pron. “eye-vee”; also eleven: îfy»; Part III seals the pair îfy 11 / ghîfy 12; the fragment's «variant of ghîfy» note dies)
+   DROP   'every number 1-60 pairs with its prior odd' — fragment of the Ghyfu row (the pair-rule, not a word)
+   MOVE   'Ffáx': pron-slot commentary → notes: 'same as: Fakes'
+   MOVE   'Glaoscêlintilény': pron-slot commentary → notes: 'Automaton: Glaoscá; of-Liner: e-Lintiy; Ley: Lén; y: -er = Automatic-ley-liner: Glaoscêlintilény'
+   RESTORE 'níbísy': pron 'níbísy: an alternative: not this beer but another beer (aoa sís Beyr ax Beyr níbísy-e' (swallowed commentary) → 'nee-beess-eeh'; commentary → notes
+   DROP   'one more: another beerkeg, please' — fragment of the níbísy row (phrase gloss, not a headword)
+   REPAIR 'or* Cłepësceán' → form='Cłepësceán' gloss='jackalope (variant)' pron="clyehp-eh-sheh'uhn"
+          (repaired: «or* Cłepësceán» is the host row's italicised English connective swallowed into the bold; Charóiscindeaí's row reads «alt. pron. “clyehp-eh-sheh'uhn”; also or* Cłepësceán»)
+   DROP   'sequentially more: another few beers' — fragment of the níbísy row (phrase gloss, not a headword)
+   DROP   'subsequent even number, so pairs are coined together)' — fragment of the Ghyfu row (rule tail, not a word)
+   RESTORE 'uain nibísïl-e': pron ← "wayn nihb-ess-ee'il-eh" (recovered from the níbísy row)
+   DROP   'uain nibísïl-e: another' — fragment of the níbísy row (clean uain nibísïl-e block exists)
+   MOVE   'uferghëa': pron-slot commentary → notes: 'adjectivised verb: made-afraid'
+   MOVE   'wantœ': pron-slot commentary → notes: 'Pronunciation: same as "wonder" with the usual dropped r and a drawlier e; past tense: wantoëa'
+   RECONSTRUCT + ['Yfu'] (attested in host-row commentary)
+   UNPROMOTED (commentary-attested only, for the maker): ['Beyr', 'Ceg', 'Beyrceg']
+
+coined blocks: 828
+carried blocks: 1088  (fold-blocks: 32 = 21 ledger-folds + 11 pron-only enrichments)
+pron-only enrichments: ['afSaín', 'aoyth', '…aoyth rhié-færs', 'chair', 'côs', 'Férás', 'lich', 'Ooraithr', 'slaff', 'Ufín', 'ufsae']
+folds matched: 32
+   ✓ afSaín  (md: 'waking' → json: 'waking')
+   ✓ aoœr  (md: 'neither-nor' → json: 'neither-nor')
+   ✓ aoyth  (md: 'like' → json: 'like')
+   ✓ …aoyth rhié-færs  (md: 'like' → json: 'like')
+   ✓ bha  (md: 'is' → json: 'is')
+   ✓ bha  (md: 'yes (clipped bháya)' → json: 'yes (clipped bháya)')
+   ✓ Chain  (md: 'kind, sort' → json: 'kind, sort')
+   ✓ chair  (md: 'rain' → json: 'rain')
+   ✓ côs  (md: 'sleep' → json: 'sleep')
+   ✓ dúiri  (md: 'unto' → json: 'unto')
+   ✓ Férás  (md: 'boy (casual: sexual tops and/or dominants)' → json: 'boy (casual: sexual tops and/or dominants)')
+   ✓ Fís  (md: 'blood' → json: 'blood')
+   ✓ gilæn't  (md: 'never-gave; not-eternally-regives' → json: 'never-gave; not-eternally-regives')
+   ✓ lich  (md: 'smell' → json: 'smell')
+   ✓ minú  (md: 'detail-sized' → json: 'detail-sized')
+   ✓ mÿel  (md: 'more-than-any' → json: 'more-than-any')
+   ✓ niri  (md: 'just, merely' → json: 'just, merely')
+   ✓ O  (md: 'the “all” modifier (list-opener)' → json: 'the “all” modifier (list-opener)')
+   ✓ Ooraithr  (md: 'killed-being' → json: 'killed-being')
+   ✓ sain  (md: 'good' → json: 'good')
+   ✓ Sap  (md: 'stone' → json: 'stone')
+   ✓ Sárghu  (md: 'seek' → json: 'seek')
+   ✓ sê  (md: 'self (reflexive)' → json: 'self (reflexive)')
+   ✓ Sídia  (md: 'sibling' → json: 'sibling')
+   ✓ Sídia  (md: '—' → json: '—')
+   ✓ slaff  (md: 'cut' → json: 'cut')
+   ✓ stil  (md: 'still (phase)' → json: 'still (phase)')
+   ✓ sy  (md: 'so-then' → json: 'so-then')
+   ✓ sy  (md: 'so-then — the equation-standard’s leg' → json: 'so-then — the equation-standard’s leg')
+   ✓ Ufín  (md: 'enemy' → json: 'enemy')
+   ✓ ufsae  (md: 'insane' → json: 'insane')
+   ✓ wythil  (md: 'despite' → json: 'despite')
+unique ledger-fold forms: 18 (expect 18; pron-only enrichments ride beside, uncounted)
+coined without pron: 31 ["'thte-aoa", "a'ithæ'nn", 'Aólúæn', 'baüythách', 'Beth', 'Bitiths', 'Blaotzúl-blaotzúl', 'Cairy']
+coined without ledger: 13 ["'thte-aoa", "a'ithæ'nn", 'aodruýscain', 'baüythách', 'Bitiths', 'Cłepësceán', 'îfy', 'ohæn']
+merged total: 1085 + 829 = 1914 (expect 1914)
+   beacon ✓ Méstár — dear
+   beacon ✓ æœłíc — nobody  [ee'euhl-lyeehk]
+   beacon ✓ îfy — eleven  [eye-vee]
+   beacon ✓ ghîfy — twelve  [stheye-vee]
+   beacon ✓ Yfu — fifteen  [Ih-vah]
+   beacon ✓ Ghyfu — sixteen  [Sthih-vuh]
+   beacon ✓ níbísy — another  [nee-beess-eeh]
+   beacon ✓ brízłœách — jealous  [breehz-lyeuh'ayk]
+   beacon ✓ þiníya — nothing  [Thihn-eeh-yuh]
+   beacon ✓ óc∆éy • — okay  [Oak- ay]
+   beacon ✓ Strauss — ostrich  [Straowss]
+   beacon ✓ aartanfu — suspend  [Uh'ar-duhn-vuh]
+   Sídia entries carrying ledger: 2
+
+SEALED: lexicon.json written — 1914 entries (1085 carried + 829 coined; 32 fold-enrichments on 18 forms; 0 recorded gaps kept out: [])
