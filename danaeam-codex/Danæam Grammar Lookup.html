@@ -525,7 +525,7 @@ function convName(){
   const parts = v.split(/[-–—\s]+/).filter(Boolean);
   if(parts.length!==2){ o.textContent = 'two places, hyphen-joined: e.g. Ghínhe-îæth'; return; }
   const a = REV[fold(parts[0])], b = REV[fold(parts[1])];
-  if(a==null || b==null){ o.innerHTML = '<span style="color:var(--rust)">ooghea`thte</span>'; return; }
+  if(a==null || b==null){ o.innerHTML = '<span style="color:var(--rust)">aoa ooghea</span>'; return; }
   o.innerHTML = `<b>${a*60+b}</b>`;
   document.getElementById('ncalc').textContent = `${a}.${b} → ${a}×60 + ${b} = ${a*60+b}`;
 }
