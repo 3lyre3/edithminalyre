@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Canonical Síonæiya — Full Danæam text</title>
+<style>
+:root {
+  color-scheme: light;
+  --paper-width: 8.5in;
+  --paper-height: 11in;
+  --page-margin: 1in;
+  --ink: #111;
+  --paper: #fff;
+  --desk: #e8e5df;
+  --serif: "EB Garamond", Garamond, "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+}
+
+@page {
+  size: Letter portrait;
+  margin: 1in;
+}
+
+@page:right {
+  @top-center {
+    content: "Lyre · Síonæiya";
+    font-family: var(--serif);
+    font-size: 9pt;
+  }
+  @bottom-center {
+    content: "… " counter(page) " …";
+    font-family: var(--serif);
+    font-size: 9pt;
+  }
+}
+
+@page:left {
+  @top-center { content: ""; }
+  @bottom-center { content: ""; }
+}
+
+@page:first {
+  @top-center { content: ""; }
+  @bottom-center { content: ""; }
+}
+
+html {
+  background: var(--desk);
+}
+
+body {
+  margin: 0;
+  color: var(--ink);
+  background: var(--desk);
+  font-family: var(--serif);
+  font-size: 12pt;
+  text-rendering: optimizeLegibility;
+}
+
+.canonical-document {
+  width: var(--paper-width);
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.title-page,
+.body-section {
+  box-sizing: border-box;
+  width: var(--paper-width);
+  max-width: 100%;
+  padding: var(--page-margin);
+  color: var(--ink);
+  background: var(--paper);
+}
+
+.title-page {
+  position: relative;
+  min-height: var(--paper-height);
+  break-after: page;
+  page-break-after: always;
+  overflow: hidden;
+}
+
+.work-section + .work-section > .title-page {
+  break-before: page;
+  page-break-before: always;
+}
+
+.body-section {
+  min-height: var(--paper-height);
+  padding-bottom: var(--page-margin);
+}
+
+.source-paragraph {
+  box-sizing: border-box;
+  margin: 0;
+  font: inherit;
+  font-weight: 400;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  orphans: 2;
+  widows: 2;
+}
+
+.source-paragraph.blank {
+  min-height: 1em;
+}
+
+.title-furniture {
+  position: absolute;
+  right: 0;
+  left: 0;
+  z-index: 1;
+  text-align: center;
+  font-size: 9pt;
+  line-height: 1;
+}
+
+.title-furniture.header { top: 0.48in; }
+.title-furniture.footer { bottom: 0.48in; }
+
+.hard-page-break {
+  height: 0;
+  break-after: page;
+  page-break-after: always;
+}
+
+@media screen and (max-width: 8.5in) {
+  .title-page,
+  .body-section {
+    padding-right: clamp(1rem, 7vw, 1in);
+    padding-left: clamp(1rem, 7vw, 1in);
+  }
+}
+
+@media print {
+  html,
+  body {
+    background: #fff;
+  }
+  .canonical-document,
+  .title-page,
+  .body-section {
+    width: auto;
+    max-width: none;
+    margin: 0;
+    padding-right: 0;
+    padding-left: 0;
+  }
+  .title-page,
+  .body-section {
+    min-height: 9in;
+  }
+  .body-section {
+    padding-bottom: 0;
+  }
+  .title-furniture {
+    display: none;
+  }
+}
+</style>
+</head>
+<body>
+<main class="canonical-document">
+<!-- Full Danæam text -->
+<section class="work-section">
+<div class="title-page" data-original-page="1">
+<h1 class="source-paragraph align-center" data-source-paragraph="0" align="center" style="text-align: center; margin-top: 264pt"><span style="font-size: 48pt">o aufÝfua</span></h1>
+<p class="source-paragraph align-center" data-source-paragraph="1" align="center" style="text-align: center"><span style="font-size: 16pt"><em>dúy Lyre Edith-e</em></span></p>
+<p class="source-paragraph align-center" data-source-paragraph="2" align="center" style="text-align: center; margin-bottom: 12pt"><span style="font-size: 24pt">49.58</span></p>
+<p class="source-paragraph align-center" data-source-paragraph="3" align="center" style="text-align: center; margin-bottom: 12pt">—<em>section 1 of 2: full Danæam text</em>—</p>
+</div>
+<div class="body-section">
+<p class="source-paragraph align-right" data-source-paragraph="5" align="right" style="text-align: right; margin-top: 264pt; margin-bottom: 12pt; line-height: 2">Mis Or'ghínhe-îæth'ai yDuý.r.r ythés tack duilín yMedhamýa ghslár-ghüleith Œlimpiad-e atá mith gæn. Uain-éx o slár-cliffýa -<em>anno Domini</em>-. </p>
+<p class="source-paragraph align-right" data-source-paragraph="6" align="right" style="text-align: right; margin-bottom: 12pt; line-height: 2">ySíonæiya Ffemá'bissal-iy'dheach-e dús yOthœsræ-othœsræ e Oothraí yiosnÿ yFræli Fœdh-fœdhýa-e o Imadachaíýa-e atá. </p>
+<p class="source-paragraph align-right" data-source-paragraph="7" align="right" style="text-align: right; margin-bottom: 12pt; line-height: 2">Efui dué Thaln sëain æxó duínsaig • yEfui Oraiê dúiri raí-ghíl-ssaighisseith yDuý.r.r • Sin dús iosiyao sin lus wa’oobao-ya’leäch Ghrœliseæ-e ythénÿ dræao sísiya-iosiyaoýa Dræaigeainê atá sy sinótæn cais sáille • </p>
+<p class="source-paragraph hanging-indent" data-source-paragraph="8" style="margin-bottom: 12pt; line-height: 2; margin-left: 0.7361in; text-indent: -0.2361in">Air • Sís-thüs o drúræao • ai’en o air’ya • Ł’oob-e’ix Eumruiýa o Laiy’alcuilýa-e’in o yGhiéil e Æœstúpenear ythénunÿ-mé Ornlawy ythé duín Sálthê ten aich ł’oob-e’ix atá o Fær Alcuilaí Sê-dúi’gheo-e’ri —-s’exempli-gratia’in- Artea— o Gheoýa “s’aige’in” ten-aoya ythé e lus Oothraíthê ghrœlisea atá s’iyail’in o sin æœá-e Scræsachaí Tïcainê e aufFrœsíýa Gaolaí æœá-mé drusót • O sísiyao e Thaln’ghrœliseæ-cías’afrê • O aich sísiyao e cías Tïaolc y’wil’th. Air • Ten “s’aige’in” -aoa o thaioss’t’ya- Fís e Emma æxó Thiutel æxó Eigain tes Wighæln o Gaolê yiosnÿ Sí-dræao sór atá —sin lus yGhainn-e sê-færs æxó sê-cíaos æxó duý-e o sy sê-ír Ao’efui’a gæn— æœá-mé drusót • O mis Wightil dué sárghu æxó sclaí æxó dræao lus Sclúneäi sís-thurn-e sainfasæn duéo mith ïegæn’t.</p>
+<p class="source-paragraph align-right" data-source-paragraph="9" align="right" style="text-align: right; margin-bottom: 12pt; line-height: 2">Raíwíl-heatth mith gæn. Lus mÿel Fírladr-e yThüfath-aoya lus Sgiesaetthum-e æœá-e niïl Carnfogh —annadh fœrmain œr -'ma— e Oob'aufGaolaí'sígænea sísiyao-e dræœa Raíwíl-ínhe duálthë marcæn. </p>
+<p class="source-paragraph align-right" data-source-paragraph="10" align="right" style="text-align: right; margin-bottom: 12pt; line-height: 2">Raíwíl-heatth mith gæn.</p>
+<p class="source-paragraph align-center blank" data-source-paragraph="11" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&nbsp;</p>
+<p class="source-paragraph align-center" data-source-paragraph="12" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">—</p>
+<p class="source-paragraph align-center blank" data-source-paragraph="13" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&nbsp;</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="14" align="justify" style="text-align: justify; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Dús Orscænyæn-orscænyæn yduý sírffrach niheag Erlyê e lus Rr'œlsceil'inch o lus Aoiyid e Útcáry'ya Ruth-e lus Sinótæn-sinótæn eibh •</p>
+<p class="source-paragraph align-left hanging-indent" data-source-paragraph="15" align="left" style="text-align: left; margin-top: 0pt; margin-bottom: 12pt; line-height: 2; margin-left: 0.7361in; text-indent: -0.2361in">O • o ai'æ'farm. S'aich'in -'æ'farm. Efui niïl drúach thas — ios 'æ -'farm. O niïl Drúach. Air mæ farm • O • Lus Farm-farm "s'aige'in" mæ sê-maos brís erl. Air • Sin Craghê fœrmæn sy farm • Sin Ffeë fiulæn • By lus Pulsc e felCne'téxt'ilea ∆ afStrœ'charmænsy'œch V — 'ya maios'ya Craghêýa afTol. Air. Farm. Mao Bocraíp mæ brís. Boc. Mao Langaír dúfrœdh mæ rifæn • Air • "S'aige'in" • O s'aich'in dúsáille mæ ghlæscer. Dræao lus Foll mæ brís o -æao Lutýrêýa o Fogýa o Scarryfê dué Craigachaí mæ sciapæn. felSciapæn o laí o —efui Laí-laí'thte— ygyg • Thas yŁærmuê mæ ios mæ ygyg caír-e át-e. Mao Ílthasr yiosnÿ dué yelSœinaí-aoya yios nhœme atá -'r duîm mao Boc mæ gæn o sísiyao ∆barc • Aoa-thiosas't Uœrd • -'t Steam • Air • Duín Síthüs annadh múlch œr scicach lus Uœrd mæ bhie o mao Fialth lus Uœrd bhie. O Air • Oob Onê síthüsië bildhuæn. Mis Bocraíp mith Fœrm gæn. Brísea mæ bhie • Brísea • Brísea o stílbrís. Sê-maos Brís-brísýa bhie. Lebendach mæ bhie o dúlebendr lus Brís-brís bhie. Air • "S'aige'in" sin duý Sæculomê Glaostalê scaoræn o críspæn o afCneilæn sy mæ brís. Sin Afghalhê thuíłf sy— sy bris. Sin Gosferê leafæn mæ brís. Air • Niïl Niya'nchia'il mæ screppæn o brís.      -Sin saige.- Brís. Ai'æ'titlop -luai- o aich -'uazilæn o aich — • ∆ • O aich sin niïl Felcadhá e Príónê sy ai'farm. Ai'farm. Mæ farm. Smiotherách Praxis o Próitínä'raxis-e'íach —'ya.</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="16" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Duínráshië afArch úsét Gradhamýa duilín niïl Cruaff e Garrohyê leagístach o guiïn Yon cuirsea o baouea. Dú'iths þis Ó'rrync'ghs o —si'efui'n ythasýa ios úsét í scéalerea atá— lus Ghitasiu minú-e yiosnÿ glúmach yAolt Ruth-e dræao atáea pliguea.</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="17" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in"><span style="font-family: "Cambria", Garamond, Georgia, serif">Ł</span>yüsnÿ ghraíïe Theráfthyê-e dúao atáea o sís yThérafthyiya Sídháê-e atáea niïl Sísiÿa ythœ ten dús Drúnhœme-Drúnhœme aoa sin't niïl yGriebh-aoya —s'efui'in o łyüs-e niïl Uain yios diffaíách o rhäntupách atáea— sin-sísaoya aobisyach-e sy atáea'thte sclaíea o • O • Ten saigea • </p>
+<p class="source-paragraph align-center" data-source-paragraph="18" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-»-Air • "S'aige'in" mis Dú'greibach-greibach-e's Uoinainê mith gæn-« niïl sain Prïxreg bhie.-&lt;</p>
+<p class="source-paragraph align-center" data-source-paragraph="19" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">•</p>
+<p class="source-paragraph align-center" data-source-paragraph="20" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">Lus yThérafthyiya nugænea. </p>
+<p class="source-paragraph align-center" data-source-paragraph="21" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">•</p>
+<p class="source-paragraph align-center" data-source-paragraph="22" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-Dúe After sain í bhie. Dúordhách ythemnÿ lus Chainn e Rraenaí dúaf-e iosthurn duîm cías atá í bhie.-&lt;</p>
+<p class="source-paragraph align-center" data-source-paragraph="23" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">•</p>
+<p class="source-paragraph align-center" data-source-paragraph="24" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">S'aich'in lus sísaoya nugænea.</p>
+<p class="source-paragraph align-center" data-source-paragraph="25" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">•</p>
+<p class="source-paragraph align-center" data-source-paragraph="26" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-Sísthurn Fælaê dús Útcár-Útcár Fælaê-e í gæn. Œr —efui aufGao'samsca'laíê— Uoinainê dús Útcár-Útcár Uoinainê-e í ro'gænstílgæn'il.-&lt;</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="27" align="justify" style="text-align: justify; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Aoa-thas't Œlsceil yiosnÿ Ædthýa gilæn dápathsea. Gi'regéar'gýa nïil Laff e sæánách Rimái afTolea. Nïil Nímloc thiransgenea. <em>&gt;-Łix-&lt;</em> fær Sclíeclu-Sclíeclu sœinea. <em>&gt;-Łix.-&lt;</em> Lus Útcáry Ruth-e Yon eibh. Úsét bilach Charmænsy Yon-e lus Œurdê e Fenthœs Ruth-e o Útcár'ma-útcár'ma scéalerea eibh. Iosiya axuain lus Dic o Penuê o lesenach Rhëw o Piell lus Ghitasiu byclæírea Líciya Yon-e • O Sísiya sin nïil yálénëách Brëch sy dúéalaf Gnasthýa sê-ír-e lus V lheif ∆ guiáł V lheif ∆ Yac e lus Scëel-scëel Wilfarmái-e sin mis neria o múlchtma ax niecscách Yáe dúe saílturn • O iosiyao • Dús Trawidía o dús Crith-crith o dúrrync dús Sclostaíría.</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="28" align="justify" style="text-align: justify; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Byræao Stár dúe Ruth ten Stúpen-wínr mis ainteith Arbhenu ïegæn't. Scér Ruth -syá- Yon Stár gilæn't gilæn't? Scén stil'ten'át stílát? Scræsach í bhie. Yios mith þis mís Dé'ahor'cruí'sáillaí'ch'ía'er scaírea gilæn't lus Fainía yios duý þis Frÿn atáea ghydæa.</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="29" align="justify" style="text-align: justify; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Dús Manaowrê Modh Gałaí-e þis Pititítáíaýa'ya-iyao —'ya "s'aige'in" e Líntê iosnÿ <em>Chæceithathê dúrith-crith</em> — níïl thas ios lus Thexa Ür-e e Úlitírura transmisoaufgynlách'thtema-e sin síthüsië sy í mith iëwín — seoirách-e o dræao nhœmea o e aobisyách e þis Fforsê fałainmÿa-e Chuff'scœltscéalp'ách=Sétslaff-slaffê yiosnÿ més cubách Í'saiłyê'lu öobén aích-sy —sy iosiyao atáea— atáea lípea • Cías-sê dús Sininithíáchæaí Œduách Ffá'cárurýa-e's sin Cárurýa Auaí-e sy. Unghœsaí lus Gláchomaí sædea • Més sê-ír í úlitíruráchië aínfea • O mehil • O e niïl Chainn iosnÿ neria o dífíláchmÿa atáea mis Unghœsaí mith gæn • O s’efui-e’in niïl Dænæaí iosnÿ sin Melumaí aoœr drúłix Scönschafarmaí-ducaír-e sin í gæn't eibh bœnea. &gt;-Fæsei-&lt; lus Sïetcaír-sïetcaír iosnÿ Steam Ruth-e saigea • </p>
+<p class="source-paragraph align-center" data-source-paragraph="30" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-Más-ten errepách anna ios thas mao Nœrfyê glówách ghiæan atá.-&lt;</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="31" align="justify" style="text-align: justify; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Niyail ax il duín niïl Filmaí Ułuýa-e lus Cruích e niïl De'fræli'gsëu sís Sáiłaí drugænea aoæx —efui dúaoyáchaí Clófœ nibísïl-e— Tscrîmfalýa mÿmo'darágê-e'mÿáchië í gæn -sin lus Ârtís e Caontharmaí próthesthea-.</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="32" align="justify" style="text-align: justify; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">O • Ax • </p>
+<p class="source-paragraph align-center" data-source-paragraph="33" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-Scén Scîyn-scîyn ooilich aoyth teo dúe Errepáchr bhie mæ ooilich?-&lt;</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="34" align="justify" style="text-align: justify; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">…duîm ha'duáfæn'gg Dúfendyáchaí æxo niïl Thón Sclaí-sclaí-e iosnÿ dúe Axscœth Ruth-e aoa aohúrnách atáea wil í scaothæa.</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="35" align="justify" style="text-align: justify; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Ten-aoaya ios Yon duín niïl ythas Ghufínt-e iostá dúy iosthüsië Wælainr e iosthüsië-e Thúiłaýa-teos –o -'aoya– gehorhín atáea —sísiyao Gneemíy o Łærmuaí Élan-e o in Winr Œwra-e atáea— iosiyao duîm-sê þon craígea. —Ten o Uná ythenÿ aich sin -Uná ‘Us-e- sy stilooghea atá o aich lus Thúił Œwra-e atá síthüsië ïeythërïë dubildách atá.— Dúáscíer lain Ruth eibh — -‘ya dúyil Mót ysin dúþon neria o mac í niri ios Aúhýa stilghlæscerea atáea sy. Wafíel Aúh mac iosiya þin stilbhie • Duín Feghlis-feghlis afSaínæn o in uaïlnïe Aúh Fultós-iosiya ïeythërïë uloofáhæn. Arbheheýa —ten sin silgá sy— axuain mís Efelgú-efelgú Yonië-e o Gaom-gaom Aúhië-e mith gæn í chu’ługr’ffæn iëátstíl. Sê-miths cyghuea ax ten més lus Fíuraê ythénunÿ ten úsét Rhiłaíaíýa-e drúłix duilín ghiæanea drúrísea. Niri’thte Duaígéainethéxê Raí-e e Ste’chís-chís’am miths by drugæn dúiri —sê-miths-més dhælaortách— niïl Tïsárghuc Fíura-més byræao düsét Thiransgeg-teos þin nhœmea o Conthasctýa femythïea • </p>
+<p class="source-paragraph align-center" data-source-paragraph="36" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-»-Sê-miths úsét -Disc- sin dúe Elf-elf iëmásstíl-«</p>
+<p class="source-paragraph align-center" data-source-paragraph="37" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">-versus-</p>
+<p class="source-paragraph align-center" data-source-paragraph="38" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">»-Dúýa sê-maios mæ teo erl nhœmæn.-«-&lt;</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="39" align="justify" style="text-align: justify; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">—Mith sin dús Ghuethnyr -cod et alia- ’-e e lus Min’ghainn’y sy -Disc- o sy Win yæ’thte ferfïzenea.— Ai’en’tscânea • O d’uff • Ten niïl Tesggtap duégín þin yaoios Scaoynaí-ducaír-e atá eigainæn’t o duín þon átsethá iëcaírænstil’t — ax d’uff. Sin sê-miths dúin lus Bortó yiosnÿ eýa aoyáchië o próië Aólúaí-ducaír-e o prómioobaínáchmÿa áta staffëea o dúïcþon sótea o lus Tesggtap yScaoynaí ducaír-eýa bildhuænea o dúïceos-iyao sótea. Mith tes Ónthr by lus Íun Áfm’úá’fenis’oyá’ÿa-e aólúeaiyao o cyghuea o malachách —malacháchýa— úsét -Disc- ghiæanea. Withuíaosil iy ton gilæn fródhmÿa chímæea. Mís yFfaghachaí més Trepíya ugóïythaíách yiosnÿ ten duálthë Aoíslísëghágaí ir þrowê duý atáea scepíëlyæn dúe-e mith gænea. Ornê’ornê’localocaí-e Ornê. Air • A'ithæ'nn scónách • Stá’gheo’r-dúe teo scónách mæ suïfæn dúiri ten í ooilichea’thte. Sís thüs. Fflébæn-fflébæn. Stilflébænea. Fflébái Fách-e farmea. ‘Sthüs. In niïl Líc uain letaí cair o ios í crýff bhie ooghæn ax —aobha— uain cair’t. Sê-ir wafíel Œlsceil ios drué sê-ir yelRýun gæn sin Urcánam sy filuldæn. &gt;-Ai’æ’thalæn • Ai’æ’thalænýa-&lt; Aobha mac • Air genáchië • Mæ thalæn. Thüs. S’łicaíách’in cerłách dúaf o sê-e mæ egræao dúghiæan í bhie’thte o ten thas ten saige saige sin scén lus bhies thœ í-stil. Sís thœ. Dús Localocæn-localocæn Ornê-or’or’ornê’nê’nê-ornê. Thüs þis dúéalaf bhies o niïl no mers-mers Sininithíáê aithal dús Thrîaíýa-e bhies o &gt;-Air • </p>
+<p class="source-paragraph align-center" data-source-paragraph="40" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-“S’aige’in” duín teo mæ letaíæn.-&lt;</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="41" align="justify" style="text-align: justify; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">-<em>V —efui Stá’mæ’taí— sê-teos ∆ mæ stúpenæn</em>- þin ooghæn cais’t. Ann þin ooghæn thüs. Scén ythasýa áta thœ lus Suïfea-duý-Łif gígwidæn • Or’or’ornê’nê’nê-or’or’ornê’nê’nê-or’or’ornê’nê’nê • Si’drúræao’n —o Tap-maios léntæn— ten í by sæcuiúlærea. </p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="42" align="justify" style="text-align: justify; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Sin o sin e Œdu sy m’yæ’is dúil Thtémayaí e ghéxýathte e Ffarê yiosýa Purumrá e Chainnaíê Winýa-e lósëlós-e düsládæn mi’yæ’th gæn — ten byræao Stár dúe Ruth thés aoa stilát. Mis Rósílgapágu iosthurn mith gæn • Duilín teo í —Príó’rógu’n aoa úcuinth lus Móthíff e Príón þon ios e thasýa yæ eibh— Aocerłáchaí zóna. —Ax scén thas í bhies ann bhie niïl Príón í aoa bhie?— Purumrá e Îê Yon-e łixách més tes ornaoíth Laíaíê Líc-teos-e in Ghrudás öobén Ruth-þon-e límésæn o yth Ffóc’emhdúscna’oiách niïl aoa felAolifíäí bhie. Saí-cair-e ios. Saí-cair-e í. Yon felAolifíäí aoa farmea. Ax aobha aoa aoœr saí-cair-e felAolifíäí Ruth farmea. -Chæceithathê dúrith-crith- łi’tecnëea’thax-łax-e o wiláchië. Ten niri Egê giláchïe dúsilgáea stiláimghúænea. </p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="43" align="justify" style="text-align: justify; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Byræao Gnastýa Tatsy-sthwëê-e Yon-e dúe þoghásæn o túreáchiëmýa dús Táigura-táigura niïl ruth unburigg eumruiách Glâscí yduîmnÿ sícías górtách Gnothê e Newthaí yios e Síthüs by sís Líc Uonain-e rhísterea o rhísterea o þoghásýa byræao drescerea sin Hrádair craigea átaea dúcriwgg cuirsea. Wafíel Fírladr daomumách Sclosreaíê subultæn o deóghsgú lus Dic tórltea o dúil ro’ythfísch’il Sclíeclu-sclíeclu lus Pititítäí baowłea. Thuíltrawidíæa o afYthrrync fołuæn þis sainmÿel þin dús Łúcraí-łúcraí gæn ax gæłósáchië dúauffyië saíea •</p>
+<p class="source-paragraph align-center" data-source-paragraph="44" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-Lus Thuíłfeáchýa mith bhies o Thuíłf-thuíłf Law-law bhie. Ax ai’awu • ai’awu.-&lt;</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="45" align="justify" style="text-align: justify; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Egræao lus ∆ guiáł lheif guiáł V Yáe beílyea o duín Eumruiáýa &gt;-Lawu-&lt; þin saíea o fegách dúil Sœinaí yiosnÿ mac Blaotzúl-blaotzúl atáea guiïnách Garrohyêýa fflathëa o þis Win lus wilfarmaíách Eumruiáýa clâmænea. Ten dúe lus malachmÿa Próyon dué þon sárghuea. Ten dúchís œr thtemaië duín þon o Aoa-chís-chis’t silgäen-e dúletaí ooilæch. </p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="46" align="justify" style="text-align: justify; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Ten lus Châtthap swil úsét ymac spêcid uain stilatáië þon áimghúænea o e þis Sigureth lus fendách Raíeithýa craigea o fír dughaintín ghaint e Flæuê e glaosclíntách Sæmêntham felArch lus Yáe afe Ffléfuff-ffléfuff laiyinea draurhea o Yelthurn axuain duín þon letaíea. Ten &gt;-bitiths-&lt; saíea. </p>
+<p class="source-paragraph align-center" data-source-paragraph="47" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-Therífách-&lt; Yon saíea.</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="48" align="justify" style="text-align: justify; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">&gt;-Scér thénu mé therífách í eibh eibh? Ten mæ o lósëlósië Yiusétýa Læa-e stárea. -&lt;</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="49" align="justify" style="text-align: justify; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Ax duín teo þin letaíea. Tes Túreonclæíryê. Tes Ootascbyê Chairthruggy-e mé Oothraíê e Clæír-clæírê dúe Ghoobœ-ghoobœ o ghéx e dósafuaíách Aloisiê o -Pens- o niïl Minaigístyê. Mé Lhanc tegêyea. O duín Orn-teos gilyæ.</p>
+<p class="source-paragraph align-center" data-source-paragraph="50" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-Brythýa • Scén thas lósë-bhie-lós bhie?-&lt;</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="51" align="justify" style="text-align: justify; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">O ten erinænea • Them thüs niïl no Stóê duáo sê-þon duilín niïl Cróiffy Plulcst-e yth —Łícintacaíýa o Sceúzalê wythil— niïl Sgie’tap’saet Áhoría sís Ounain unbu’sclosuræa’rigg ten laiyinea o ten sin thüs þon lus Sæmyê Dúfendaí-e sy seisilgæa sícías sê-góï Œurdê seisilgæa •</p>
+<p class="source-paragraph align-center" data-source-paragraph="52" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">—Tes Zëmpu e Ulópescía áoræao Clænýa þon sutscha— </p>
+<p class="source-paragraph align-center" data-source-paragraph="53" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">o</p>
+<p class="source-paragraph align-center" data-source-paragraph="54" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">—Niïl łyüs mæ þin stúpenea. Niïl Aintýa. Scér sin átea sy Mhís í átea?—</p>
+<p class="source-paragraph align-center" data-source-paragraph="55" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">o</p>
+<p class="source-paragraph align-center" data-source-paragraph="56" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">—Wilhíæthte í chuagg caír—</p>
+<p class="source-paragraph align-center" data-source-paragraph="57" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">o</p>
+<p class="source-paragraph align-center" data-source-paragraph="58" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">—Aospêcid yios más-ten -versus- Aobísyê crýff o crýffmÿa. Aobisyach Uoinainê. Sin Óglîinænaí. Dúr gilyæ ubádhea.— </p>
+<p class="source-paragraph align-center" data-source-paragraph="59" align="center" style="text-align: center; margin-bottom: 12pt; line-height: 2">•</p>
+<p class="source-paragraph align-center" data-source-paragraph="60" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-Más-ten mith o hagg o afSaínách bhies fæsei-&lt; ten saíea. &gt;-Ax mis drúach Márr mith gæn o tes Cupsrimaí screppænea chemyië bhie.-&lt; </p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="61" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">O thüs ten Yon dúin lus Orn letaíea o saíea •</p>
+<p class="source-paragraph align-center" data-source-paragraph="62" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-Scér • Air seilóscó • Ios mæ seilóscó?-&lt; </p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="63" align="justify" style="text-align: justify; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Wil críspænea o raghutíuách e þis Cruích lus Óghsê o gnith Cuirsê Afyáëgýa plâfardmea o niïl tsilgáeílea Nótinú dús Bocraíp o ced Sigureth dús Tatsyê prótugjænea •</p>
+<p class="source-paragraph align-center first-line-indent" data-source-paragraph="64" align="center" style="text-align: center; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">&gt;-Scér dúe teo eibh oobdégië dús Scóuc-scóuc mæ eibh? Ith<span style="font-family: "Cambria", Garamond, Georgia, serif">ł</span>ooch o fách lus Mloiytí Bethê-e duín seháæn o mao Fíuraê úsót dúe baüythách sárghuæn mæ duscîyn. Ghaint e Esclárg-esclárgê efui lus D<span style="font-family: "Cambria", Garamond, Georgia, serif">ł</span>ifcê mao Fbainchund bhie o iosýa • Sin afToláchië góïythýa mæ o ios Âslutí bhies • Sin ten ios sís thurn zicsic aoa más —iosýa îc<span style="font-family: "Cambria", Garamond, Georgia, serif">ł</span>ách— œr niïl uaothas urentáchïe sê-meos ios Afa mé mæ ooilic œr ten gæn cair sílgæn mith sëain. Thés. Ai’letaiæn. Ann Cedýa í bhie sy ten by Genáchaí o Lifíaí ai'en'bitiths ax tes Thüsýa baüythách them í pahæn yth mæ laíea. Ornïrl duég Thrazunét Ruth dúiri mæ dúe chefenea Ghiæan-ghiæan eibh. S’eg’in í pahænea sin mæýa pahænea. Thés uaclanáchás æxo óc<span style="font-family: "Cambria Math", "STIX Two Math", "Cambria Math", serif">∆</span>éy•Vás æxo dhælaortáchás duéfui? Glésaobhäs • Más-ten lifíáië aoa.-&lt;</p>
+<p class="source-paragraph align-center" data-source-paragraph="65" align="center" style="text-align: center; margin-bottom: 12pt; line-height: 2">•</p>
+<p class="source-paragraph align-center" data-source-paragraph="66" align="center" style="text-align: center; margin-bottom: 12pt; line-height: 2">&gt;-Uœrdýa ten dúyn-lyn-e aoa más »-Stúpen-« bhie-&lt; ten saíea.</p>
+<p class="source-paragraph align-center" data-source-paragraph="67" align="center" style="text-align: center; margin-bottom: 12pt; line-height: 2">•</p>
+<p class="source-paragraph align-center" data-source-paragraph="68" align="center" style="text-align: center; margin-bottom: 12pt; line-height: 2">&gt;-Thés ten dúlynæn mith gilænea'thte.-&lt;</p>
+<p class="source-paragraph align-center" data-source-paragraph="69" align="center" style="text-align: center; margin-bottom: 12pt; line-height: 2">•</p>
+<p class="source-paragraph align-center" data-source-paragraph="70" align="center" style="text-align: center; margin-bottom: 12pt; line-height: 2">&gt;-Scén • Ten ios maios F<span style="font-family: "Cambria", Garamond, Georgia, serif">ł</span>úgáraí aoa eibh stilërscuæn más más?-&lt;</p>
+<p class="source-paragraph align-center" data-source-paragraph="71" align="center" style="text-align: center; margin-bottom: 12pt; line-height: 2">•</p>
+<p class="source-paragraph align-center" data-source-paragraph="72" align="center" style="text-align: center; margin-bottom: 12pt; line-height: 2">Mé uafcathúéa Sáin’ffás’su sínësgách Titheäír gæn • &gt;-Ann mé mæ sin mith gænea sy.-&lt;</p>
+<p class="source-paragraph align-center" data-source-paragraph="73" align="center" style="text-align: center; margin-bottom: 12pt; line-height: 2">•</p>
+<p class="source-paragraph align-center" data-source-paragraph="74" align="center" style="text-align: center; margin-bottom: 12pt; line-height: 2">&gt;-Sy. Raí e mis mith gæn. Ghaint e mis mith gæn’t. Sy.-&lt;</p>
+<p class="source-paragraph first-line-indent" data-source-paragraph="75" style="margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Af uÿth Thruggÿa dúafbéigh • mao Nœrfyê o Frÿn o suippu-caír-e Efuæniaí Gibubê-e in. &gt;-Aólýa V.-&lt; </p>
+<p class="source-paragraph first-line-indent" data-source-paragraph="76" style="margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Lus Nrïchsaí dús Rýun-rýun-e • by sê-sëain Claóghsab Sthwee o dús Eîyc o Muzóghsýa dús Folpthá-folpthá o Gâgg-gâgg o Gâgg-gâgg • &gt;-Orn.-&lt; þin drúách in mæ letaíea •</p>
+<p class="source-paragraph align-center" data-source-paragraph="77" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-Glésmæás’t? Aobha. Ax tenýa meos syá dúgæn stilgæn más.-&lt; </p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="78" align="justify" style="text-align: justify; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Tüs sê-miths cyghuea. Rhóilea. Þin gifúfea. Ïeythërîië cyghuea. Þin mis -Catscale-þis mith gænea. Ten úés Uná ‘Us-e yTen dús Drúrís-drúrís atáea sëntea o dúsê-þis mith stírthea. Í fír ten clæírea Ghás dúnhœme eibh o yiosnÿ mao spriggig muydh Ootascbyê by Clæíreaê Oothraíê-e o Aloisi Aúhê-e afTolea duílín Múl’scmaogg’chr atáea Yon utoghenea. —E nïil »-aoäfách úsís ïeythërîæn mith bhies-«’ách Eg Chainn-e theraffænách Gnæxýa eibh.—</p>
+<p class="source-paragraph align-justify blank" data-source-paragraph="79" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&nbsp;</p>
+<p class="source-paragraph align-center" data-source-paragraph="80" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">—</p>
+<p class="source-paragraph align-justify blank" data-source-paragraph="81" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&nbsp;</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="82" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Túremÿa iy Lifíäí dúfendúhegæn þiníya Ruth saige bhie. Degsëuáchië ten »-lus Lifíá-« dúghéalílæn o utoghenæn. Lifíäíýa dúsê yiosnÿ teo o Yon þin stúpenænea o ten úsét Sê-aobísy mé Yon sétornúea o údúilín Rócghr’eiëgnídt-seiëgnídt'udaol ghiæanea o Rúd í gænea áta. Lus Lifíá dúsê lus Purumrá e Gnídtaíê o e Arbhenuê niïl lósëlós —Glaoscaí-Maræien-eýa Lifíäí o lus Lifíá dús Witîfl-witîfl-e Chainnaír-e »-Lósëlós-lósëlós-« gæn bhie— Win dústilgæn bhie. &gt;-Musthësyê e Lifíáchaí-&lt; Ruth scéaler •</p>
+<p class="source-paragraph align-center" data-source-paragraph="83" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-…Sthynteryê bhies. Niïl Seinutscuaín-aoýa Sthyntery-e e Íx o e Rrrync o e Yon-Aúh-dúghuethnaí gliea o scæt eibh o Broothýa yiosnÿ Sísiyaoýa-e atá dúgóïyth lus e DiCaprio Scelcs Marguritha-e- yDin- afTolachfë scínsíæn. <span style="font-family: "Cambria", Garamond, Georgia, serif">Ł</span>ixach ios scîynæ. Them ufelië lus Rüst-rüst rótrea ios bhie œr –‘ya. Ax scér e thüs minachmÿel <span style="font-family: "Cambria", Garamond, Georgia, serif">Ł</span>yüs duáo yEgýa si’sê-ír’n Tonu gænea mao atáea Trisáchaí scîynea atáea?-&lt;</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="84" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Thurn Ruth yæ ghlæscerea Yon sclaíea. Them í s’<span style="font-family: "Cambria", Garamond, Georgia, serif">ł</span>ixách’inië þin yiusétæn. Mith í þin yúpa saíea utoghenænea. Sin niri mis Scéaler-scéaler sy mith í gæn. Þin pudæn. Ten aoa-thiosas't Áscíê caír o scéaler saíea. O mao Oostú þis Orn Yon dræao wîynænea o e teo dúe aoa Thal fflébænea. </p>
+<p class="source-paragraph align-justify blank" data-source-paragraph="85" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&nbsp;</p>
+<p class="source-paragraph align-center" data-source-paragraph="86" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">—</p>
+<p class="source-paragraph align-justify blank" data-source-paragraph="87" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&nbsp;</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="88" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Ten-mas aoa niïl Stát. Ced o raíeith o drúræao Arbhehëê mehil iy lus scónëië lifíách mao Menscenaí ffráigaf. Ax ten yÍ duég Waláchaír aoatá dúígherác niecscách stiláimghúænea úcuinth mis ag’mhísách’gïe niecscách Dífilaí in Uafloorýa e iocías Líntê mith gæn o ann uain yiosnÿ í tífyadæn iëatáeaië yOoghea saí sin uain æœ<span style="font-family: "Cambria", Garamond, Georgia, serif">ł</span>íc macæn. Yelmá ten í át. Ax uain’t-aoa Withuíaosil tífyadæn. Ten -exempli gratia- sê ao’uloominíäm’a »-Seitólæn-cair-ë-« duín lus Cubo Seitól-seitól-e dúyiusétæn Spítiya aoa cairæn úcuinth ascíamië lynraigóæn-cair-e lus <span style="font-family: "Cambria", Garamond, Georgia, serif">Ł</span>é‘curthy’ge e lus Scaleê Truck-e-e Uafeggáchaí o thas Wu<span style="font-family: "Cambria", Garamond, Georgia, serif">ł</span>afyê duín MelaMix Thalntoly Regéarýa-e o thés duín Moldit Soleíce-e Seitegêyách Niyaily úsót bhie o aoäoyth e Mÿelýa Aoäfaýäí-teos sê-efuiách mao Ffrynfely scmágræn o góïyth mé lus Cloro o lus Clorumín yiosnÿ dusëin mao I’wíc’arn atá aoclächaí <span style="font-family: "Cambria", Garamond, Georgia, serif">ł</span>ýnggäen. </p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="89" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Ax ten niïl felAolifíäí dúfarm drú<span style="font-family: "Cambria", Garamond, Georgia, serif">ł</span>ix stilaoaië macæn. Ann ten wil e sís Yon dúsaíea aich e lus Lürsfs æœ<span style="font-family: "Cambria", Garamond, Georgia, serif">ł</span>íc dúsaí saíea o ten lus Luth þin boolooylea aoa ooilich o ýacýác uain’t-aoa yIos ten uscornu’t-aoa Ruth atá. E thas ten Uná ‘Us-e<span style="font-family: "Garamond", Garamond, Georgia, serif"> dúsaíea lus Chagê yios brútalách eibhs lus Gó eibhs. Ax </span>uain’t-aoa o ‘-iyao Yon dúsuïfæn-e —teo-e dúsuïfæn—iosiyao-thé méstárách Fíuraê Yon »-Útcár-y o ‘-il-«-e-duîm sin arch sy Wilýa ooghea atáeaýa atáea. O mis Fféirtiaí ios Uná ‘Us-e<span style="font-family: "Garamond", Garamond, Georgia, serif">-duîm </span>mith gænea —-id est- ten— bÿth lus Fforfÿaíê e sís sílydolách Útcár-útcár o ascíamách Saí-saí-síaima-e duég-mé lus Rhácgy o lus Afthátap-scálr-e e annadh Fáiscaol duísuïfæn æxo méstárách Fíuraê eibh. —Méstárách Fíuraê duîm lus Uonain ythénÿ þis Útcár-y o ‘-il —teo— duísuïfæn atáea Ruth sin arch sy Nÿelýa ooghea átea.— Niïl Clæffy miths-duîm mæ gænea  •  Niïl Clæffy ysinnÿ ten ith<span style="font-family: "Cambria", Garamond, Georgia, serif">ł</span>ooch tes »-Nÿelýa aoa dúsaí-« dræao iëatáea ooghea glaiyfarmaíea o sin ten dúe niïl Senthithaí Cimiuain-e sy dúgígwid erlea. -<em>But that’s America. Live in it</em>- œr ‘thte. Ythénÿ -<em>lets it unfurl</em>- sê-maios atá. Ax lus ytháxnÿ-duîm Hhíltÿa atá Tóny atá o mé Ghaint e Glaoscêlinti<span style="font-family: "Cambria", Garamond, Georgia, serif">ł</span>ugyê Bre’líc’ách-e lus Púnê ufel tugea eibhs o æœá Ooscylduíaí Aoyáfálýa Pintó-e dústirghæn drugænea. —Ten ghîfy eibh • Lóst-teos tes Ëgwalaí Rhiéê-e aoa eibh.— </p>
+<p class="source-paragraph align-justify blank" data-source-paragraph="90" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&nbsp;</p>
+<p class="source-paragraph align-center" data-source-paragraph="91" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">—</p>
+<p class="source-paragraph blank" data-source-paragraph="92" style="margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&nbsp;</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="93" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Duín sê-teos Yon Uná ‘Us-e staffëæn o fír dús Laiyin-laiyin-e -<em>Fire Walk With Me</em>- ax ten duýth í tes Chís-chís filuldea o teo æœuain thalea. Thüsýa mé Bríz<span style="font-family: "Cambria", Garamond, Georgia, serif">ł</span>œaí dræao Bobby Lœwru ouffróea bhie o sin Nhœme niri ith<span style="font-family: "Cambria", Garamond, Georgia, serif">ł</span>ooch niïl Aint saíea o Sainsu-tonu ton fegæn o ædthæn o Ten mæ-Frætár-teos stáræn saíea ten Sáinsfau Uná-e sciapænea o • </p>
+<p class="source-paragraph align-center" data-source-paragraph="94" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-Scén óc<span style="font-family: "Cambria Math", "STIX Two Math", "Cambria Math", serif">∆</span>-bhie-éy• mæ bhie? Mis niuainïl Cócuoltr-e mith gænea. Æœá »-teo-« mæ saíea.-&lt;</p>
+<p class="source-paragraph first-line-indent" data-source-paragraph="95" style="margin-top: 12pt; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Æœłíc chorpiea ax Yon saíea •</p>
+<p class="source-paragraph align-center" data-source-paragraph="96" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-By will e -Sinithaílch Peerê- Raí e Łyüsê Ruth stilúsétænea þin sayäilæn.-&lt;</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="97" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Thüs Uná 'Us-e appaulea. O duín lus Aistær e Alcuilaí lus ghim uaftugea Guresës e urentách Uríárýa cyghafnuea. Niorneïlê dumsyê. Gigê bacea. Iarnách ffruímê duíyao Flæuê e Manaowr mé Felth páchea stunea. Niïl lor'ainch'ëa Felyáëg by banea o lus Romsmœtthê chwícómænea o tes Frÿn tscræxcæa o herhicænea • O oo'glów'bea by lus lhe'glar'ifs sîunbloiyách Thuíłf-thuíłf-duég Alcuilaí e lus Îiełocë lus Glaoscléÿ lus Scepênuaí mé appaulea-e lus Eîyc e Uná Us-e baufilmarmea o sainméithë farmea. </p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="98" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Lus Unáeîyc tes Ffócas yiosnÿ ithłooch Oobrúd urłæirea o úlaghea atáea afTolea. &gt;-Ten uaothüsýa dúæ-&lt; lus Eîyc saíea… •</p>
+<p class="source-paragraph align-center" data-source-paragraph="99" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-…dúsaí ghydæa ax îcýalaíáchië o o'æ yelëg saí si'ton-æn'n yiosnÿ ten Ghaint e Aúhê duáo Ruth staffëa o sýa niri mæ dúsaí si'ton-æn'n…-&lt;</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="100" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">...thüs them sin lus Éxeíth e Ghéx Saínyê Wil-e sy oo'onê'bách lus Smœtth-smœtth tscrathyea o duílín Zaza-zaza yfírnÿ ten o Yon sin scúthách sy mith scaírea lus Léy dús Móth Fær Alcuilýa Xæxr-e Bláthans Æœstúpenear-e dúfaníucæýæn clæírea fírtá lus Thelefigjíon Uná 'Us-e stetyei üłæa. Æœá aobíeg efuæniea. Sin melum lus Scídhé putæn lus Tintin cías Lebendê nïtspa aoa brecággea. Axuain duílín Mionchain wafíelýäch Bothaíách o Áscí o Regéar macsy-caír-e e Senthy-senthy lus Léy sœinea. Duý cías Whárê —Sitheraê e Gúénsrar by lus L'orsc'én— í Scíghê fainíäen o duý mis Onê mith. Air • O • Auffæn • Auffæn o prótugjænea bhies. Air • "S'ithaí'in" mith o Wil lus Thuíłaínfy e lus Æœstúpeneách Þ'rhié-e'in dairæn. Mæ ithłooch Réul Fær Orn Lawy-e fingen. </p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="101" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Air • Mæ-duîm Alcuilýar í gæn. S’eg’in mith putænea o s’eg’in ráitea • O sîrhoienách Golthoœ öobén Mârigaltê afýth • O Tlïxixaínchæiya o lus Uælt e Thídh duíosthurn uóghségea. Mis Intîfr Ruth hairea mé Lé'custhia'n duÿthoœa o curách lus Ædälc afOobaoáchië gnipáuícea o oozoýœa o oozoýœa o gnipáuícea. Mé Steam niyail-e mith Ghraí-e...</p>
+<p class="source-paragraph align-center" data-source-paragraph="102" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-Múlchië Laíaíýa e wæl stilgæn.-&lt;</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="103" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">...yúyoœa • By góïyth Mót mith baouea. Thüs lus Duałef sethea. Aoa e mis Gap niïl Túm ég Tlïxixaínchæiya dúe Fath lus Móth-e annadh stiliėpaduæn sin-o-sy sê-meos-duîm Bláthans by eibh. Orn Ruth-e fflyea. Niri lus Ghraí. Fær W'air'orn-e'æn'il o fær Scéuturmyaïlaí dúe lus Err e Yæýa sê-meos mith stilpuryea.</p>
+<p class="source-paragraph align-center" data-source-paragraph="104" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-Łafræth-&lt; ten saíea. &gt;-Tút.-&lt;</p>
+<p class="source-paragraph align-center" data-source-paragraph="105" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">•</p>
+<p class="source-paragraph align-center" data-source-paragraph="106" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">Ruth sæsæa. &gt;-Lus Móth gæn.-&lt;</p>
+<p class="source-paragraph align-center" data-source-paragraph="107" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">•</p>
+<p class="source-paragraph align-center" data-source-paragraph="108" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-Aobha-&lt; Uná 'Us-e saíea. &gt;-Glésruth? Scén mæ-siselcuthæn-duîm siselcuthæn?-&lt;</p>
+<p class="source-paragraph align-center" data-source-paragraph="109" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">•</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="110" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Ten tes mÿel o tes dúgheogenách mÿel lus Uœrdê e niïl Sétma dubildách dúe sporthæn thrîæea ax ten dapathsea. Yiosnÿ lus sê-góï Yon dúdát uain dîsêin. Þin rheetæa o rheetæ o þiníya saíea. Dræao þis mioobaínáchmÿa Lëc niïl Screamm e lorea-iarn-e Nih'wic'eagách-pecea dúgoleafsæn Lé'custhia'n prÿóchea. Wil e Duałefdułeon þin stilbeílea'thte.</p>
+<p class="source-paragraph align-center" data-source-paragraph="111" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-Bha-&lt; Ruth saíea. &gt;-Tút.-&lt;</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="112" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Thüs þis Sáinsfau Uná o yDuý Wal baüythách niïl Cluff e Minthbloiyê lus Ghaintýa unescæa.</p>
+<p class="source-paragraph align-justify blank" data-source-paragraph="113" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&nbsp;</p>
+<p class="source-paragraph align-center" data-source-paragraph="114" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">—</p>
+<p class="source-paragraph align-center blank" data-source-paragraph="115" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&nbsp;</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="116" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">E í lus Unáeîyc dúsaige auffæn •</p>
+<p class="source-paragraph align-center" data-source-paragraph="117" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-Air • E teo duég lus Staffë-staffë duín Mionchain e Ruth mæ feghlisæn. Wil e eibh • Ten in Ónthr-þis Ess dúsaí eibh.-&lt;</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="118" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Ax —lus Thele'nimil'figjíon síthüsië e niïl mäern o gliúsamtolách o seipíaië oönnabách Blys by lus Esóg e Móth-móth e Ghraí e Saíntolê aotrúbænea o stiłix úsét lus Îië Briggs Bobby-e saiły Glingï-e culcea o dúsê-þis Yon stilrúrísea— ó lus Eîyc ebbea.</p>
+<p class="source-paragraph align-center" data-source-paragraph="119" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-Niïl góïyth Cræthr mith niwinialea. Niïl Seinhœmaí aggïe minachië mith ghiæa.-&lt;</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="120" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">E lus Ghyfu e Cræthrê —Ghraí e Oóê o Ghraí e Thaln o Ghraí e Ch'ónth'ómê— nerië e sís Móth Raí —Aint e Chómê o Ghaint e Oóê— e aufGaolaíách Affughúæn-affughúænê toncænea eibhs. Niïl neriách Scratean-scratean o niïl Mar'thaln'caí dúe aufGaolaí Craïscígáchaí-e. ∆. Niïl Scratean-scratean yIos aoîcłách dúsógjæa uÿth-e stiliëbhie. Sin sy lus uafWinaí e Cræthrê fforsæn • Níbísy-duîm e sê-fær Ghainn —wáil sê-fær mînas Éx œr -'tya e Axuainaíê Ërscu-e Bauch-bauch-e łax ao-Ghás-'ya e miłió— wafíel Síonæiyaïg puræa bhie • O aos Tann-duîm aos Tannýa o aos Beagha-duîm aos Beaghaýa o aos Scí-duîm aos Scíýa o aufGaolaíê-duîm aufGaolaíêýa. Thüs sê-færs tlus Scaffath Níbísy-e uaïlnïe drúrísæn o lus Flangbyffubê o Fitchê o romách Fforísê niïl Foëbendœrm dræao siselcuthæn. Fír stilýa aoaósîchaílea dúír Féirti lus fœrm bhie o —ann duátcaíryách— cías Toncænaíê lus Pura dúprócê rrîyæn cais. Ann lus Frehunt-frehunt Toncænaíê-e niïl Grælië zóna sy ios Grælië dús uafWinaí aólúæa o próthrîea o coufîytinea úsyá bhie dúiri —łax Ghás e miłió Cræthrê e Dapaths— Ghyfu e Daíráchaí úfendách • O dúaoaósîchaílea o seizónæa bhies o dús archmÿa Sálthê e Síonæiya sclæsea. Łax-łax e lus Oobao Ílthasr-ílthasrê-e o Linaí Senthïr-senthïrê-e e lus Scídhé Œduië mith oo'pititítá'bæn. Ro'yail'il Raí eibh. Uaothë chísáchaíách o e-Áscíáchaí Iyfwuludao í túghýuæa. Ax thé uscornuæn —'scé'thte?</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="121" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Lus emm'siselcuth'æách Toncænaíê Uná o Ruth frehuntea o nich'úprócê'uffea. Dubildách aggïe minachië cías niïl Seinhœmaí ghiæa.</p>
+<p class="source-paragraph align-justify blank" data-source-paragraph="122" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&nbsp;</p>
+<p class="source-paragraph align-center" data-source-paragraph="123" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">—</p>
+<p class="source-paragraph align-justify blank" data-source-paragraph="124" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&nbsp;</p>
+<p class="source-paragraph align-center" data-source-paragraph="125" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-Niïl Chain e ios thas stilýa gerthúæa.-&lt;</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="126" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Lus Steam e Uná 'Us-e tunsæa o lus Thelefigjíon aóeumruiænea o duín lus Trí'blys'dé e lus Nimil lus Eîyc sê-ir boolooylea.</p>
+<p class="source-paragraph align-center" data-source-paragraph="127" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-Ax niïl Cræthr duín ios Eg í eibh't. Æœá Bóc aoœr glaoscóterugách Ghydrê mis mith gæa. Mith dúeín lus Aole'laiyin'th-le'laiyin'th e lus Siselcuth-siselcuthê fír cía suïfæa eibhs o ten ann Ruth ythénÿ mæ o þon dúsáille thalea ooghea sclaíea. Duín mæ —dúghitasiu— þin saíea -id est- Ruth saíea •</p>
+<p class="source-paragraph align-center" data-source-paragraph="128" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-»-Ten mæ-duîm yæthte ios yelthas aoyth...-«</p>
+<p class="source-paragraph align-center" data-source-paragraph="129" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-—dúghitasiu—</p>
+<p class="source-paragraph align-center" data-source-paragraph="130" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-»-...thas ten Bryth duát sininithíáchæa. Ten dairtolách eibh wáil...-« þin saíea. »-Wáil...-«</p>
+<p class="source-paragraph align-center" data-source-paragraph="131" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-—dúghitasiu—</p>
+<p class="source-paragraph align-center" data-source-paragraph="132" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-»-..ten niïl tîr Curutsc ios yelthas aoa dúát farm-« o drúræaoië •</p>
+<p class="source-paragraph align-center" data-source-paragraph="133" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-»-Ten Yon-duîm í gilæn't. Ten þon ten minach uaothüsýaê ghiæan dúsaíea ax í dúat gilæn't. Wáil —'thte. Ílu ílu ílu Ësthaíê Bryth Yon greibæn. Air ten spoc sin þin í laí Bryth lus sê-góï dúiri=sê-ooraithr=uafGlúmæn '-ách Łath'fultírth'n sin þin dræao drugæn sy ax uafLíntách e Bryth ten æœłíc sís duát í gæn.-«-&lt;</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="134" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Scepí'fultós'ëláchýa e Uná 'Us-e aoa niri usggur þin eibh bhie ax Mælcyêýa aich þin duáfÁłusea. Si'scúthách'n þin aintüsách Ghéx e Áscíê duínscuîfáï ghiæa o sin niyail neria Fíu'gap'ra dúróxaí-róxaí dúniyail Borhu cía glom dubildách farmea o niïl Fflusch-aoya e Fótca o uain-iyao e Chcampâgn duílín Ghear e Nímê cías afFendúheg. Sin sy úyth í filmæn lus -de facto- e lús Ghéxýa þin duáfFendúheg Ruth eibh. O ios sê-góï Yonýa Ruth in Eurggugê Úna-e eibh o iyao in sê-þis dusëin þon in 1.40 e Nímê thuílfendea. Dræao 1.32 dúe 2.15 e Nímê Úna 'Us-e thuílfendea. Sin lus Fultós e Úna 'Us-e sy drułix ios min'aodúthuíłfáchaí'ách thryrách Uæxrælt Blurmë e Ruth í luaræa. Ythsutscha o duín Turmaí dúelín o by þon Ruth uffea. Coufflichs cía filuldea • Lus Faníucæíê Úna-e dús Faníucæíê Ruth-e niornbeílilách o bythœduáchië eolágg eibhs o ten lus Gáthfrái ywythilnÿ lus Taonmaënaí e ios Pás wythiltá e Fixáigaíýa e sê-teos o Una 'Us-e Ruth ghróchærea mawspur. </p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="135" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Ax wythil ten Üranyum aoa eibh ten í linchsea o fithea o dúílín tes Orn ghiæa. Scén thas aobíeg ten thóleraré úsyá dúæmiwnách más œr thóleraré? </p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="136" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Ax úsét teo sin góïyth sy Wilíl lus Gulícaí e Ruth fforsea. Ios yelthas þin caisáchaíæa o stilýa caisáchaíæn o ten í gæn cairthte. Ax ohíinst Oraï ios eibh • Una o Ruth.</p>
+<p class="source-paragraph align-justify blank" data-source-paragraph="137" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&nbsp;</p>
+<p class="source-paragraph align-center" data-source-paragraph="138" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">—</p>
+<p class="source-paragraph align-justify blank" data-source-paragraph="139" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&nbsp;</p>
+<p class="source-paragraph align-center" data-source-paragraph="140" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-Niïl Ânger mé niïl gaœlfolách Gig tes Siselcuth-siselcuth eibh. Niïl Nímhog mé æœá Aoffauê lus Scmaogg eibh ax ten lus Nímhog úsét Thaln bhie • sy niïl L'ânger'én. Łúgthom dús Níuicailbhuëil ír Nioobłicilê amntiqruæa o ír medług Aartanfuyaí Dmäffáchaí duég lus Tacfæuæaí e Glaoárca Yálénëách o Léch Fultós-e mótferighæn. Mé niïl gráhunæ Langaír ios mé Níbísy e Ângœlfer-duîm lus Treh'tap'unt sciapæa o bysclúnea o ydræaonÿ Púncyê e Sæcuiúlær aoa Frÿntscraffýa'thte duég Ghíchæn-ghíchæn ythüs lus Langaír seïnaiggea immiea í frehuntea. Niïl Cłepësceán mé dúeónthr Chardê niïl nihæfách grásach Tapchât e Gufærách Elfhín-Whár úsét ír minach Tap Cóiscy-e lus Siselcuth-siselcuth Ruth-e eibh o æœá aobíeg aognággách axuain aoythte niïl Cłepësceán Chinê í zulær úcuinth —Ruth saí— þin ios cía ios át feghlisea. Sin o uaïlnïe Smughtyê cía eibhs ax o tes Bóc Ângœlfer-e úsét Localocê Gufær-e dúsclún o dusuinchí lus afYthrrync o ghim dúlinchs o mé Emma Charóiscindeaí-e ír Ân'chýstég'gœlfer duáfTol í eibh.</p>
+<p class="source-paragraph align-center" data-source-paragraph="141" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-Them Siselcuth-siselcuthê át lus Cræty aich dúfrehunt thrîaíea. Cící-cícíê o Cadu-caduê þiníya in • Lus Łeid o ffeærách Minth öobén. Dúiri lus Cóiscin ghœdách spurggea Ruth laiyinea thüs —Aint e Grëach ios thas eibh— þin saíea •</p>
+<p class="source-paragraph align-center" data-source-paragraph="142" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-»-Niïl Próëlth e Áscí ten ég filuld í gæn o ios Próëlth Bryth bhie.-«</p>
+<p class="source-paragraph align-center" data-source-paragraph="143" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-Chemy sê-cías dúelín o byræo Tatsyê-þis scéałinea o þin aich sótea •</p>
+<p class="source-paragraph align-center" data-source-paragraph="144" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-»-Mæ aich bhie.-«-&lt;</p>
+<p class="source-paragraph align-center" data-source-paragraph="145" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">•</p>
+<p class="source-paragraph align-center" data-source-paragraph="146" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">Ten &gt;-Scén them lus yChainn e Ruth farm dúatá mæ senthith farm?-&lt; saíea.</p>
+<p class="source-paragraph align-center" data-source-paragraph="147" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">•</p>
+<p class="source-paragraph align-center" data-source-paragraph="148" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-Thüs sin. Sy.-&lt;</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="149" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Duín niïl Sumsum e Alcuilaí Samcœry-e by lus Cú'cragh'rthinê Eîycýa e Una 'Us-e uafMelumea o sei-glarea o e þis Aftap lus hoy Folpthá tes Âxal pricea o Orn duég Sárghu-sárghu eibhs. In sê-cías mith ædthea o þin saíea • </p>
+<p class="source-paragraph align-center" data-source-paragraph="150" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-Gléslós'eg'ëlósás. Ax sin sy  •</p>
+<p class="source-paragraph align-center" data-source-paragraph="151" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-Ten ann e Sithüs mith sót si'ton-æn'n sclaíea stilgæn by yelFfáx lus Frehunt-frehunt dapathsea. »-V ∆ V ∆ ... fiłainea Wiuelænaí-« Ruth saíea. Þin Chorpiff funýáínea o sin ten sy át. Tes Sains craígea. Yduý lus Cump mith suïfæa o niheag Bethê e glaltrách o saffîrách Gooreinê wil sétyth miths ghiæa o aoannadh úsét lus Charóiscindeaí lus Ângœlfer ytocfl auffea. Fír miths í laiyinea í thuíłfea. Þis Emmasy dué í sin mis thas ios mith gæn sy eibh't. Ten châtea. Sýa niri mæ í genáchië bhie. Sýa bainchmÿa í farm.-&lt;</p>
+<p class="source-paragraph align-center blank" data-source-paragraph="152" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&nbsp;</p>
+<p class="source-paragraph align-center" data-source-paragraph="153" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">—</p>
+<p class="source-paragraph align-center blank" data-source-paragraph="154" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&nbsp;</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="155" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Ten niïl ílu Titár aoyth yelNíbísy siselcuthea. Ax mehil łix-łixië Atumách ír Coc eibh o mehil łix-łixië lus Glar e niïl Aúmedhæch Afthá ír Fitê. By Yon niïl chóm thuaí Bathab mé niïl fflifagœrmách Lintil eibh. Dúe mes Titár þin uyruscáthea eibh. </p>
+<p class="source-paragraph align-center" data-source-paragraph="156" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-Ssítê mæ stár-&lt; þin saíea.</p>
+<p class="source-paragraph align-center" data-source-paragraph="157" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">•</p>
+<p class="source-paragraph align-center" data-source-paragraph="158" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-Ten yDuý mao Thümýa lus Uœrd »-Ssit-« ohæn Aint Saigeaí-e farmea silgá'thte-&lt; ten saíea.</p>
+<p class="source-paragraph align-center" data-source-paragraph="159" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">•</p>
+<p class="source-paragraph align-center" data-source-paragraph="160" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-Ten Áscíê stilmistea. Ten Ghaint e Áscíê stilmistea. Aobha.-&lt;</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="161" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Dúe Ssit Yon-e tes Titár sulæa o plœw o yDuý ír At'coc'um ír fflifagœrmách Lintil langea o iyao dúe Sumferffaíya cuiscea.</p>
+<p class="source-paragraph align-center blank" data-source-paragraph="162" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&nbsp;</p>
+<p class="source-paragraph align-center" data-source-paragraph="163" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">—</p>
+<p class="source-paragraph align-center blank" data-source-paragraph="164" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&nbsp;</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="165" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Drúræao lus Sclún-sclún Thídh-e e lus Móth in uain Táiguraí e lus fródh aoduałef Drag lus Scí'ixixaí'nsíy dræao ten tes Glâscíê tscoolæa o teo úsét Withuíaosil Yon oblocea laíea.</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="166" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Ten yDuý Eumruiýa e mis Chíc sin Una 'Us-e sy dúsaíea o þin saíea &gt;-Sýa ythas Ruth githuæa í bhie-&lt; thüs úsét lus Siselcuth-siselcuth o Bœnaí o Útcár-Útcárma o Chuffchœm-chuffchœmê Ruth-dræao teo mintîfalea. Yon ëxiczisái-caír-e aoa eibh.</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="167" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">O ten Fíuraê Yon-e niri’thte dúyurgsæn eibh æxo úsét sís Efuæni cía -read in- mé wil ios Fiuwfílmê withurnil Slufru-slufru-e. Ten or'uscornu'il. Sin dúe Bruscáí Yon-e mé wil ios lus mÿel múlch-e Esclárg-esclárg bhie thas niïl Ffar malachmÿa Ruth saíea. Ax dúe Scéalithaíê Ruth-e ios Cost gæn.</p>
+<p class="source-paragraph align-justify first-line-indent blank" data-source-paragraph="168" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">&nbsp;</p>
+<p class="source-paragraph align-center" data-source-paragraph="169" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">—</p>
+<p class="source-paragraph align-center blank" data-source-paragraph="170" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&nbsp;</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="171" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">—Yæ'thte Yon o Ruth cías Chís-chis thalnea. —Ios niïl Urcána dúághydæa bhie.— Sin niïl Caonth e chuffách Arfech o Yon-e yiosnÿ uaothë Caontharmách Gaoláchaí mé Útcáryê aoa sin't Ruth tîfalea Ruth-duîm Yon gæn o dúe ios Arbhehe sin Thesïógu sy Îraigeaiëê e niïl Chísaí yés-in ten sin Ruth sy rócghrudaolæn feaonthæa. Thüs sin lus Scéalithaí úsót Yon-duîm Ruth Îy-îyê dúeg lus Dúfendyê dús Rócghrudaol lÿzaonth-iÿzaonth-e o Łithaxië aoa Thesïógu sin Îraigeaiëê Yon-e Fásæarm-fásæarm-e yiosnÿ ten Una 'Us-e-duîm affónea o Ruth-duîm Una 'Us-e affónea feaonthæa. Sin Ruth sy sayäilæn.</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="172" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">—Ten lus Î dúlaí sclaíea o þin saíea • </p>
+<p class="source-paragraph align-center" data-source-paragraph="173" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-Thœ dubildách aoa iyao ghiæa —œr -'thte...-&lt;</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="174" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">...sin dúeg Silgá-silgá aoa sin't lus e Méith e Sthwee aos Bheaga Orcaífarmyaí-Stigmary yiosnÿ ten duín lus Aúhê ten dúe Oobýasigê stilsótea laíea ax yæthte dúsaigea o ten úsét tes Líc thurn lus Esóg dræao -Chæceithathê dúrith-crith- aoa sin't élanfarmách Zóna-zónaê e Lifíáchaí fær dúorcæn sclaí iëatáea ten dúchíc sótea.—</p>
+<p class="source-paragraph align-justify blank" data-source-paragraph="175" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&nbsp;</p>
+<p class="source-paragraph align-center" data-source-paragraph="176" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">—</p>
+<p class="source-paragraph align-justify blank" data-source-paragraph="177" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&nbsp;</p>
+<p class="source-paragraph align-center" data-source-paragraph="178" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-E lus Chainn ythénÿ oýa túre waf o waf iëát o dús Orn teo litàí o í aínf saí mæ bhie-&lt; Ruth saíea &gt;-ax aoa lus Chainn thé lus Sains ghrudásæn iëbhie. Thüs dúí í nhœme. Ios ten dúe Waf-waf más saí iëmásea o mæ stiliëbhie'thte. Genáchië ten ufsaig át't. Ten dúí mæ wantœ aoa Chainn't úToræn. O niïl aoa Chainnië'thte aothipthacách Glaoárca í afFibheræn: yelÓgjin e yelMéith sin gæa ysynÿ fách wafíel Ógjin in wafiel Méith atá mæ farm dúghiæn. Ten sê-teos sainách uaffthgju aoa át. Ten í lebatscún. Ten mæ lebatscún.-&lt;</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="179" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Mis þiníya duín lus Igârtÿao e sís Burecafiarmaí ythésnÿ ro'âslutíea'il o or'glintehea'il atáea yaxuainnÿ mîyánách Ghrórimag yios duý niïl fremách Mëtmët e Plulcst ythliguea atáea o e niaregch Tłúgrïc Lâscyicu maios-e mith gæa atáea. O Orn mith gæa. Ruth Orn. Teos Craigýa seiduýæn. Öfelfaíê þin saíea • </p>
+<p class="source-paragraph align-center" data-source-paragraph="180" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-Ten más. Ten yMæ Dústil —tes Uœrdê by— stúpenea Bitiths atá. Ten uafScepíëláchië mé Guefuirden e —teo mæ suts— -Chæceithathê dúerith-crith- más. Ten yios aoa Chainn't scónách niïl Ghæffter aoyræcäch sê-miths staffëa mæ atáea oogh. Ten ydîsêinnÿ aoa caír saí aoa iëát úcuinth ten caír o ios thœ atá. Thœ ten bitithsách más bhie. Ax —aoa Chainn't— miths-sê-duîm mis thasê-iocías-e Áscíê aoa sin't dúe aoa chís caisáchaíæn mæ gæn. Thés thœs fíurách gnídt caír bhie. Caír. Fíur mith drugæn.-&lt;</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="181" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Þis Öfelfaíê uafPahæa o pahæa-iyao o dúelín sê-aobísyê fyótea o afLímésách Fałyê guoídea.</p>
+<p class="source-paragraph align-center" data-source-paragraph="182" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">•</p>
+<p class="source-paragraph align-center" data-source-paragraph="183" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-Ten í ghiæn át-&lt; ten saíea. &gt;-Thasê-iocías-e ten ghiæn í gæn.-&lt;</p>
+<p class="source-paragraph align-center" data-source-paragraph="184" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">•</p>
+<p class="source-paragraph align-center" data-source-paragraph="185" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-S'efui'in teo. S'efui'in Œggê.-&lt;</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="186" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Niïl Stó o níbísy mith chísea o yAnn ten niïl Nîm malachmÿa drúrísæa lus Æltunaí ios Yon-e łax teo sýa stilfunýáínea.</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="187" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Æœá Scmaogg sís Thúiła Ruth ooghea.</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="188" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Malách lus Thrugh yDúirinÿ Ruth Lith-lith nhœmea atáea. Thüs duÿ Laíaí í claóf. Niri dúe þon feaonthæa.</p>
+<p class="source-paragraph align-center" data-source-paragraph="189" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-Air • Í mæ egornú-&lt; þin saíea o e Nuthem fách eibh. &gt;-Mæ malách iëát. Mith dús niyail Ónthr úSót eibhs • Ten erinæa.-&lt;</p>
+<p class="source-paragraph align-center" data-source-paragraph="190" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">•</p>
+<p class="source-paragraph align-center" data-source-paragraph="191" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-Gléseibhsás?-&lt;</p>
+<p class="source-paragraph align-center" data-source-paragraph="192" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">•</p>
+<p class="source-paragraph align-center" data-source-paragraph="193" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-Æltunaíýa.-&lt;</p>
+<p class="source-paragraph align-center" data-source-paragraph="194" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">•</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="195" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Ten Thrugýa uafFaufea. Thœ aoa ghydæn. Mé Púncy-púncy e Nugaí • </p>
+<p class="source-paragraph align-center" data-source-paragraph="196" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-Ai'æ'gehor.-&lt;</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="197" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Duín Sains Ruth-e Sólitharách aocätherea Mótferighy Scale-e aólúæa. </p>
+<p class="source-paragraph align-center" data-source-paragraph="198" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">•</p>
+<p class="source-paragraph align-center" data-source-paragraph="199" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-Tes Thuiła mith gæn. Mis Æltunaí.-&lt;</p>
+<p class="source-paragraph align-center" data-source-paragraph="200" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">•</p>
+<p class="source-paragraph align-center" data-source-paragraph="201" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-Teo þin Dúsaí-saí gilæn't-&lt; walách ios Mëtmët eibh.</p>
+<p class="source-paragraph align-justify first-line-indent" data-source-paragraph="202" align="justify" style="text-align: justify; margin-top: 12pt; margin-bottom: 12pt; line-height: 2; text-indent: 0.5in">Úsét Miscaleny Ruth-e lus Frígóê fluimæa eibhs o e Thaferntascyê lus Rryncaíýa Úsét-úsét-e afTolach eibhs.</p>
+<p class="source-paragraph align-center" data-source-paragraph="203" align="center" style="text-align: center; margin-top: 12pt; margin-bottom: 12pt; line-height: 2">&gt;-Þin sê-duîm Thuíłar glásgæn-&lt; ten saíea.</p>
+</div>
+</section>
+</main>
+</body>
+</html>

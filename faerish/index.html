@@ -1,1 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="alternate" type="text/plain" href="/llms.txt" title="LLM Context">
+    <link rel="alternate" type="text/plain" href="/agents.txt" title="Agent Instructions">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Faerish — Danæam, the language of Síonæiya. Four canonical documents: the complete Canonical Síonæiya, the full Danæam text, the literal gloss, and the translation.">
+    <meta property="og:title" content="Faerish &mdash; Dan&aelig;am &ndash; Edith Mina Lyre">
+    <meta property="og:description" content="The language of Síonæiya. Four canonical documents: the complete text, the full Danæam, the literal gloss, and the translation.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://edithminalyre.com/images/author.jpg">
+    <meta property="og:url" content="https://edithminalyre.com/faerish/">
+    <link rel="canonical" href="https://edithminalyre.com/faerish/">
+    <link rel="alternate" hreflang="en-AU" href="https://edithminalyre.com/faerish/">
+    <link rel="alternate" hreflang="x-default" href="https://edithminalyre.com/faerish/">
+    <meta name="author" content="Edith Mina Lyre">
+    <meta name="keywords" content="Danæam, Faerish, Síonæiya, Síonæyais, constructed language, conlang, Faerieland, Edith Mina Lyre">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="alternate" type="application/rss+xml" title="Edith Mina Lyre RSS Feed" href="/feed.xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;1,300;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+    <title>Faerish &mdash; Dan&aelig;am &ndash; Edith Mina Lyre</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        /* ── FAERISH ANTECHAMBER — a small foyer of four doors ── */
+        .faerish-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.9rem, 4.6vw, 3.2rem);
+            font-weight: 300;
+            font-style: italic;
+            letter-spacing: 0.005em;
+            line-height: 1.06;
+            color: var(--text-heading);
+            margin: 0 0 1rem;
+            text-shadow: 0 0 60px var(--glow-color), 0 0 140px var(--glow-color);
+        }
+        .faerish-subtitle {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+    </style>
+</head>
+<body class="foyer">
+    <div class="grain"></div>
+    <div class="cursor-glow" id="glow"></div>
 
+    <div class="wisp" id="wisp" aria-hidden="true">✶</div>
+
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg class="sun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+        <svg class="moon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+    </button>
+
+    <main>
+
+        <a href="../index.html" class="back">Edith Mina Lyre</a>
+
+        <header class="masthead">
+            <p class="eyebrow">Faerish</p>
+            <h1 class="faerish-title">Danæam</h1>
+            <p class="faerish-subtitle">&ldquo;The language of Síonæiya.&rdquo;</p>
+        </header>
+
+        <section class="bay">
+            <div class="section-head">
+                <span class="mark" aria-hidden="true">᚛</span>
+                <span class="label">canon</span>
+                <span class="rule" aria-hidden="true"></span>
+            </div>
+            <div class="doors">
+
+                <a class="door" href="and.html">
+                    <span class="glyph" aria-hidden="true">᚛</span>
+                    <span class="door-title">and</span>
+                    <span class="door-gloss">the complete text</span>
+                </a>
+
+                <a class="door" href="aufyfua.html">
+                    <span class="glyph" aria-hidden="true">✶</span>
+                    <span class="door-title">aufÝfua</span>
+                    <span class="door-gloss">section one</span>
+                </a>
+
+                <a class="door" href="reconciliation.html">
+                    <span class="glyph" aria-hidden="true">⁝</span>
+                    <span class="door-title">Reconciliation</span>
+                    <span class="door-gloss">section two</span>
+                </a>
+
+                <a class="door" href="faerieland.html">
+                    <span class="glyph" aria-hidden="true">≈</span>
+                    <span class="door-title">Faerieland</span>
+                    <span class="door-gloss">section three</span>
+                </a>
+
+            </div>
+        </section>
+
+    </main>
+
+    <script src="../site.js"></script>
+</body>
+</html>
