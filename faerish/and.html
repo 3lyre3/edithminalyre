@@ -3,16 +3,25 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Canonical Síonæiya</title>
+<meta name="robots" content="noindex">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;1,300;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+    <title>and — Canonical Síonæiya</title>
+    <link rel="stylesheet" href="../style.css">
 <style>
 :root {
-  color-scheme: light;
+  color-scheme: light dark;
   --paper-width: 8.5in;
   --paper-height: 11in;
   --page-margin: 1in;
-  --ink: #111;
-  --paper: #fff;
-  --desk: #e8e5df;
+  --doc-ink: var(--text-primary);
+  --doc-paper: var(--bg-card);
+  --doc-desk: var(--bg-primary);
   --serif: "EB Garamond", Garamond, "Iowan Old Style", "Palatino Linotype", Georgia, serif;
 }
 
@@ -45,13 +54,13 @@
 }
 
 html {
-  background: var(--desk);
+  background: var(--doc-desk);
 }
 
 body {
   margin: 0;
-  color: var(--ink);
-  background: var(--desk);
+  color: var(--doc-ink);
+  background: var(--doc-desk);
   font-family: var(--serif);
   font-size: 12pt;
   text-rendering: optimizeLegibility;
@@ -69,8 +78,8 @@ body {
   width: var(--paper-width);
   max-width: 100%;
   padding: var(--page-margin);
-  color: var(--ink);
-  background: var(--paper);
+  color: var(--doc-ink);
+  background: var(--doc-paper);
 }
 
 .title-page {
@@ -159,12 +168,92 @@ body {
   }
 }
 </style>
+<style>
+/* ── site dress — typeset leaves on the void ── */
+.title-page, .body-section { border: 1px solid var(--border); transition: var(--theme-transition); }
+.work-section { margin-bottom: 2.6rem; }
+.work-section:last-of-type { margin-bottom: 0; }
+.title-furniture { color: var(--text-muted); }
+.title-page[id] { scroll-margin-top: 1.5rem; }
+
+.doc-head, .doc-foot {
+  box-sizing: border-box;
+  width: var(--paper-width);
+  max-width: 100%;
+  margin: 0 auto;
+  padding-right: var(--page-margin);
+  padding-left: var(--page-margin);
+}
+@media screen and (max-width: 8.5in) {
+  .doc-head, .doc-foot {
+    padding-right: clamp(1rem, 7vw, 1in);
+    padding-left: clamp(1rem, 7vw, 1in);
+  }
+}
+.doc-head { padding-top: 2.4rem; padding-bottom: 1.8rem; }
+.doc-head .back { margin-bottom: 1.5rem; }
+.doc-nav, .doc-contents { font-family: var(--font-display); }
+.doc-nav { font-size: 0.9rem; letter-spacing: 0.1em; }
+.doc-nav a, .doc-contents a { color: var(--text-muted); text-decoration: none; transition: color 0.3s ease; }
+.doc-nav a:hover, .doc-contents a:hover { color: var(--accent); }
+.doc-nav a::after, .doc-contents a::after, .doc-foot a::after { display: none; }
+.doc-nav .here { color: var(--accent); font-style: italic; }
+.doc-nav .sep, .doc-contents .sep { color: var(--stone); margin: 0 0.55em; }
+.doc-contents { margin-top: 0.9rem; font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; }
+
+.doc-foot {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: baseline;
+  gap: 1rem;
+  padding-top: 2.6rem;
+  padding-bottom: 3.6rem;
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+}
+.doc-foot a { color: var(--text-muted); text-decoration: none; transition: color 0.3s ease; }
+.doc-foot a:hover { color: var(--text-primary); }
+.doc-foot .arrow { color: var(--accent-dim); text-shadow: 0 0 12px var(--accent-dim); }
+.doc-foot .prev { grid-column: 1; justify-self: start; }
+.doc-foot .menu { grid-column: 2; justify-self: center; font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; }
+.doc-foot .menu:hover { color: var(--accent); }
+.doc-foot .next { grid-column: 3; justify-self: end; }
+
+@media print {
+  .grain, .cursor-glow, .theme-toggle, .doc-head, .doc-foot { display: none !important; }
+  html, body, .canonical-document, .title-page, .body-section {
+    color: #111 !important;
+    background: #fff !important;
+    border: none !important;
+  }
+}
+</style>
 </head>
 <body>
+    <div class="grain"></div>
+    <div class="cursor-glow" id="glow"></div>
+
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg class="sun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+        <svg class="moon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+    </button>
+
+    <header class="doc-head">
+        <a href="index.html" class="back">Danæam</a>
+        <nav class="doc-nav" aria-label="Canon"><span class="here">and</span><span class="sep">·</span><a href="aufyfua.html">aufÝfua</a><span class="sep">·</span><a href="reconciliation.html">Reconciliation</a><span class="sep">·</span><a href="faerieland.html">Faerieland</a></nav>
+            <nav class="doc-contents" aria-label="Sections"><a href="#aufyfua">§ aufÝfua</a><span class="sep">·</span><a href="#reconciliation">§ Reconciliation</a><span class="sep">·</span><a href="#faerieland">§ Faerieland</a></nav>
+    </header>
+
 <main class="canonical-document">
 <!-- Full Danæam text -->
 <section class="work-section">
-<div class="title-page" data-original-page="1">
+<div class="title-page" id="aufyfua" data-original-page="1">
 <h1 class="source-paragraph align-center" data-source-paragraph="0" align="center" style="text-align: center; margin-top: 264pt"><span style="font-size: 48pt">o aufÝfua</span></h1>
 <p class="source-paragraph align-center" data-source-paragraph="1" align="center" style="text-align: center"><span style="font-size: 16pt"><em>dúy Lyre Edith-e</em></span></p>
 <p class="source-paragraph align-center" data-source-paragraph="2" align="center" style="text-align: center; margin-bottom: 12pt"><span style="font-size: 24pt">49.58</span></p>
@@ -375,7 +464,7 @@ body {
 
 <!-- Literal gloss -->
 <section class="work-section">
-<div class="title-page" data-original-page="27">
+<div class="title-page" id="reconciliation" data-original-page="27">
 <div class="title-furniture header" aria-hidden="true">Lyre · Síonæiya</div>
 <div class="title-furniture footer" aria-hidden="true">… 27 …</div>
 <h1 class="source-paragraph align-center" data-source-paragraph="207" align="center" style="text-align: center; margin-top: 264pt"><span style="font-size: 48pt">and Reconciliation </span></h1>
@@ -588,7 +677,7 @@ body {
 
 <!-- Translation -->
 <section class="work-section">
-<div class="title-page" data-original-page="53">
+<div class="title-page" id="faerieland" data-original-page="53">
 <div class="title-furniture header" aria-hidden="true">Lyre · Síonæiya</div>
 <div class="title-furniture footer" aria-hidden="true">… 53 …</div>
 <h1 class="source-paragraph align-center" data-source-paragraph="420" align="center" style="text-align: center; margin-top: 264pt"><span style="font-size: 48pt">Faerieland</span></h1>
@@ -690,5 +779,11 @@ body {
 </div>
 </section>
 </main>
+
+    <footer class="doc-foot">
+        <a class="menu" href="index.html">Danæam</a>
+    </footer>
+
+    <script src="../site.js"></script>
 </body>
 </html>
