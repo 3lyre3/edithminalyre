@@ -1,4 +1,4 @@
-# Edith 
+# Edith Mina Lyre
 Portfolio Site
 
 
