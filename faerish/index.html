@@ -47,14 +47,63 @@
             color: var(--text-secondary);
             margin: 0;
         }
+
+        /* ── THE EPISTLE — Amaldéu's letter, set before the masthead ── */
+        /* Shapes carried from the source: EB Garamond body, a left salutation,
+           a centred "O glás •", a flush-left opening turn, then justified,
+           double-leaded, first-line-indented body, closing to two Danæam
+           lines (right, then centre) and a centred signature. */
+        .epistle {
+            font-family: "EB Garamond", var(--font-body, serif);
+            max-width: 40rem;
+            margin: 0 auto 4.5rem;
+            color: var(--text-primary, var(--text-heading));
+            font-size: 1.06rem;
+            line-height: 1.5;
+        }
+        .epistle .salutation {
+            margin: 0 0 0.2rem;
+            text-align: left;
+        }
+        .epistle .salutation .mstar { white-space: nowrap; }
+        .epistle .glas {
+            margin: 0 0 1.6rem;
+            text-align: center;
+        }
+        .epistle .opening {
+            margin: 0 0 0.1rem;
+            text-align: left;
+            text-indent: 0;
+        }
+        .epistle .body {
+            margin: 0;
+            text-align: justify;
+            text-indent: 2.25em;
+            line-height: 2;   /* double-spaced, as in source */
+        }
+        .epistle .closer-fae {
+            margin: 1.4rem 0 0;
+            text-align: right;
+            line-height: 2;
+        }
+        .epistle .closer-star {
+            margin: 0 0 0.2rem;
+            text-align: center;
+        }
+        .epistle .signature {
+            margin: 0;
+            text-align: center;
+        }
+        @media (max-width: 640px) {
+            .epistle { font-size: 1rem; }
+            .epistle .body, .epistle .closer-fae { line-height: 1.9; }
+        }
     </style>
 </head>
 <body class="foyer">
     <div class="grain"></div>
     <div class="cursor-glow" id="glow"></div>
-
     <div class="wisp" id="wisp" aria-hidden="true">✶</div>
-
     <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
         <svg class="sun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <circle cx="12" cy="12" r="5"/>
@@ -64,17 +113,28 @@
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
         </svg>
     </button>
-
     <main>
-
         <a href="../index.html" class="back">Edith Mina Lyre</a>
-
+        <section class="epistle" aria-label="and — the complete text">
+            <p class="salutation">E <span class="mstar">&mdash;m&eacute;st&aacute;rm&yuml;a&mdash;</span>,</p>
+            <p class="glas"><em>O gl&aacute;s</em> &bull;</p>
+            <p class="opening">and when back before the earthland the waves flew think you to their ancienter boundaries they fled? And your advance ran clean to nor farther than fairness&rsquo; line?</p>
+            <p class="body">Look: Of floods there were two. Avarice ours. Wrath yours.</p>
+            <p class="body">Of the uplands no mass greater than afPun&oacute;ny&rsquo;s-cum-Hungary&rsquo;s there lay. And from-neath afPun&oacute;ny Peak Faerie rose and rose and the valleylands and lowlands and trenchlands to us fell.&nbsp; And now by the Flood of Wrath were <em>your</em> children to nurseries of <em>our make</em> and <em>our wringing</em> born. And so wrong choices were made of eld.</p>
+            <p class="body">What-so-ever might the police generals argue, I know, as you will intuit: Such uplings so born to what &mdash;of our Faerie&mdash; remains are <em>our children.</em> As into each clip of taken ground so-born are our estranged <em>your children.</em> And to us, for our children, the whole responsibility belongs. So far as any &mdash;as my clade of waves; ours of littlenesses; even ours of mounds&mdash; are the Uplings <em>Faerielanders</em>.</p>
+            <p class="body">Yet be convinced. By Bryth ufCastucy were these testimonies penned. &lsquo;Woman&rsquo; by title, fae authored this furling of the Upling day-to-day so, with a good but soft-attentioned Waver friend, as to share the transpirings of faer fraught tenure in Mionchain. Born a Br&oacute;dlainny, the riots of 49.43 and faer graduation from U&aelig;lniyta&iacute; L&oacute;dla-e preceded ufCastucy&rsquo;s relocation to Mionchain. Near six-and-dozen years fae fashioned faerself a Mionchainy and, moreover, stalwart of the Mionchainish Upling Community. UfCastucy took the Sacred Negative as faer pronoun &mdash;also: animal feminine&mdash; after that same &lsquo;she&rsquo; and &lsquo;he&rsquo; pattern you wear yourselves.</p>
+            <p class="body">For <em>people</em> our Faerish gives only the &lsquo;fae&rsquo; &mdash; yet for animals of semen and the Radiant Creative we give <em>ton</em> (he) and for animals of the ova and Sacred Negative <em>&thorn;in</em> (she). And <em>tons</em> and <em>tones</em>. And <em>&thorn;is</em> and <em>&thorn;on</em>.</p>
+            <p class="body">When fae of waves of Bryth ufCastucy&rsquo;s old acquaintance &mdash;a one &Acirc;hern Amald&eacute;u-e (myself); and this on April of the new Sgiesatthium&mdash; and faerself met, I made not heads nor heads of what sentence-like word-massings the Upling was siccing on me. Instead, dear &Acirc;hern to spare, Bryth sicced faer story on a feltsheet.</p>
+            <p class="body">Lovelymost E, never but &mdash;taste aside&mdash; to compliment your preferences, I give Bryth&rsquo;s letter to me, reseasoned to your Anglophone appetite. (Only the dearer for its abhorrence.)</p>
+            <p class="closer-fae"><em>Sc&eacute;n ten s&iacute;s Fi&#322;ain- sp&ecirc;cid&aelig;n-fi&#322;ain-du&icirc;m thas Su&iuml;fea-du&yacute;-&#321;if du&aacute;t m&aacute;s sp&ecirc;cid&aelig;n?</em></p>
+            <p class="closer-star"><em>Sy-du&icirc;m tes St&aacute;r</em> &bull;</p>
+            <p class="signature">&mdash;Amald&eacute;u-maios</p>
+        </section>
         <header class="masthead">
             <p class="eyebrow">Faerish</p>
             <h1 class="faerish-title">Danæam</h1>
             <p class="faerish-subtitle">&ldquo;The language of Síonæiya.&rdquo;</p>
         </header>
-
         <section class="bay">
             <div class="section-head">
                 <span class="mark" aria-hidden="true">᚛</span>
@@ -82,34 +142,28 @@
                 <span class="rule" aria-hidden="true"></span>
             </div>
             <div class="doors">
-
                 <a class="door" href="and.html">
                     <span class="glyph" aria-hidden="true">᚛</span>
                     <span class="door-title">and</span>
                     <span class="door-gloss">the complete text</span>
                 </a>
-
                 <a class="door" href="aufyfua.html">
                     <span class="glyph" aria-hidden="true">✶</span>
                     <span class="door-title">aufÝfua</span>
                     <span class="door-gloss">section one</span>
                 </a>
-
                 <a class="door" href="reconciliation.html">
                     <span class="glyph" aria-hidden="true">⁝</span>
                     <span class="door-title">Reconciliation</span>
                     <span class="door-gloss">section two</span>
                 </a>
-
                 <a class="door" href="faerieland.html">
                     <span class="glyph" aria-hidden="true">≈</span>
                     <span class="door-title">Faerieland</span>
                     <span class="door-gloss">section three</span>
                 </a>
-
             </div>
         </section>
-
         <section class="bay">
             <div class="section-head">
                 <span class="mark" aria-hidden="true">᚜</span>
@@ -117,30 +171,24 @@
                 <span class="rule" aria-hidden="true"></span>
             </div>
             <div class="doors">
-
                 <a class="door" href="guideworde.html">
                     <span class="glyph" aria-hidden="true">⇄</span>
                     <span class="door-title">Guideworde</span>
                     <span class="door-gloss">parts two &amp; three</span>
                 </a>
-
                 <a class="door" href="not-non-rules.html">
                     <span class="glyph" aria-hidden="true">¬</span>
                     <span class="door-title">Not Non-Rules</span>
                     <span class="door-gloss">part one</span>
                 </a>
-
                 <a class="door" href="storywarders.html">
                     <span class="glyph" aria-hidden="true">⁂</span>
                     <span class="door-title">Storywarders</span>
                     <span class="door-gloss">parts four &amp; five</span>
                 </a>
-
             </div>
         </section>
-
     </main>
-
     <script src="../site.js"></script>
 </body>
 </html>
