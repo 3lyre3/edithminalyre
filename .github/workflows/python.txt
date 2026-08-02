@@ -1,3 +1,6 @@
+Deprecated. Recorded:
+
+````
 name: Run Python Script
 
 on:
@@ -27,3 +30,4 @@ jobs:
 
       - name: Execute Python script
         run: python3 danaeam-codex/build_lookups.py # Replace with your script's filename 
+````
