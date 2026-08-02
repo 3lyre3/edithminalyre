@@ -1,4 +1,5 @@
-# Edith Mina Lyre — Portfolio Site
+# Edith 
+Portfolio Site
 
 
 ## Structure
