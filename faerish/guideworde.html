@@ -1,0 +1,2371 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;1,300;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+    <title>Guideworde — Danæam</title>
+    <link rel="stylesheet" href="../style.css">
+<style>
+:root {
+  color-scheme: light dark;
+  --paper-width: 8.5in;
+  --paper-height: 11in;
+  --page-margin: 1in;
+  --doc-ink: var(--text-primary);
+  --doc-paper: var(--bg-card);
+  --doc-desk: var(--bg-primary);
+  --serif: "EB Garamond", Garamond, "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+}
+
+@page {
+  size: Letter portrait;
+  margin: 1in;
+}
+
+@page:right {
+  @top-center {
+    content: "Lyre · Síonæiya";
+    font-family: var(--serif);
+    font-size: 9pt;
+  }
+  @bottom-center {
+    content: "… " counter(page) " …";
+    font-family: var(--serif);
+    font-size: 9pt;
+  }
+}
+
+@page:left {
+  @top-center { content: ""; }
+  @bottom-center { content: ""; }
+}
+
+@page:first {
+  @top-center { content: ""; }
+  @bottom-center { content: ""; }
+}
+
+html {
+  background: var(--doc-desk);
+}
+
+body {
+  margin: 0;
+  color: var(--doc-ink);
+  background: var(--doc-desk);
+  font-family: var(--serif);
+  font-size: 12pt;
+  text-rendering: optimizeLegibility;
+}
+
+.canonical-document {
+  width: var(--paper-width);
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.title-page,
+.body-section {
+  box-sizing: border-box;
+  width: var(--paper-width);
+  max-width: 100%;
+  padding: var(--page-margin);
+  color: var(--doc-ink);
+  background: var(--doc-paper);
+}
+
+.title-page {
+  position: relative;
+  min-height: var(--paper-height);
+  break-after: page;
+  page-break-after: always;
+  overflow: hidden;
+}
+
+.work-section + .work-section > .title-page {
+  break-before: page;
+  page-break-before: always;
+}
+
+.body-section {
+  min-height: var(--paper-height);
+  padding-bottom: var(--page-margin);
+}
+
+.source-paragraph {
+  box-sizing: border-box;
+  margin: 0;
+  font: inherit;
+  font-weight: 400;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  orphans: 2;
+  widows: 2;
+}
+
+.source-paragraph.blank {
+  min-height: 1em;
+}
+
+.title-furniture {
+  position: absolute;
+  right: 0;
+  left: 0;
+  z-index: 1;
+  text-align: center;
+  font-size: 9pt;
+  line-height: 1;
+}
+
+.title-furniture.header { top: 0.48in; }
+.title-furniture.footer { bottom: 0.48in; }
+
+.hard-page-break {
+  height: 0;
+  break-after: page;
+  page-break-after: always;
+}
+
+@media screen and (max-width: 8.5in) {
+  .title-page,
+  .body-section {
+    padding-right: clamp(1rem, 7vw, 1in);
+    padding-left: clamp(1rem, 7vw, 1in);
+  }
+}
+
+@media print {
+  html,
+  body {
+    background: #fff;
+  }
+  .canonical-document,
+  .title-page,
+  .body-section {
+    width: auto;
+    max-width: none;
+    margin: 0;
+    padding-right: 0;
+    padding-left: 0;
+  }
+  .title-page,
+  .body-section {
+    min-height: 9in;
+  }
+  .body-section {
+    padding-bottom: 0;
+  }
+  .title-furniture {
+    display: none;
+  }
+}
+</style>
+<style>
+/* ── site dress — typeset leaves on the void ── */
+.title-page, .body-section { border: 1px solid var(--border); transition: var(--theme-transition); }
+.work-section { margin-bottom: 2.6rem; }
+.work-section:last-of-type { margin-bottom: 0; }
+.title-furniture { color: var(--text-muted); }
+.title-page[id] { scroll-margin-top: 1.5rem; }
+
+.doc-head, .doc-foot {
+  box-sizing: border-box;
+  width: var(--paper-width);
+  max-width: 100%;
+  margin: 0 auto;
+  padding-right: var(--page-margin);
+  padding-left: var(--page-margin);
+}
+@media screen and (max-width: 8.5in) {
+  .doc-head, .doc-foot {
+    padding-right: clamp(1rem, 7vw, 1in);
+    padding-left: clamp(1rem, 7vw, 1in);
+  }
+}
+.doc-head { padding-top: 2.4rem; padding-bottom: 1.8rem; }
+.doc-head .back { margin-bottom: 1.5rem; }
+.doc-nav, .doc-contents { font-family: var(--font-display); }
+.doc-nav { font-size: 0.9rem; letter-spacing: 0.1em; }
+.doc-nav a, .doc-contents a { color: var(--text-muted); text-decoration: none; transition: color 0.3s ease; }
+.doc-nav a:hover, .doc-contents a:hover { color: var(--accent); }
+.doc-nav a::after, .doc-contents a::after, .doc-foot a::after { display: none; }
+.doc-nav .here { color: var(--accent); font-style: italic; }
+.doc-nav .sep, .doc-contents .sep { color: var(--stone); margin: 0 0.55em; }
+.doc-contents { margin-top: 0.9rem; font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; }
+
+.doc-foot {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: baseline;
+  gap: 1rem;
+  padding-top: 2.6rem;
+  padding-bottom: 3.6rem;
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+}
+.doc-foot a { color: var(--text-muted); text-decoration: none; transition: color 0.3s ease; }
+.doc-foot a:hover { color: var(--text-primary); }
+.doc-foot .arrow { color: var(--accent-dim); text-shadow: 0 0 12px var(--accent-dim); }
+.doc-foot .prev { grid-column: 1; justify-self: start; }
+.doc-foot .menu { grid-column: 2; justify-self: center; font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; }
+.doc-foot .menu:hover { color: var(--accent); }
+.doc-foot .next { grid-column: 3; justify-self: end; }
+
+@media print {
+  .grain, .cursor-glow, .theme-toggle, .doc-head, .doc-foot { display: none !important; }
+  html, body, .canonical-document, .title-page, .body-section {
+    color: #111 !important;
+    background: #fff !important;
+    border: none !important;
+  }
+}
+</style>
+<style>
+/* ── condensed reference register ── */
+.ref-body { font-size: 12pt; }
+.ref-body p { margin: 0.8em 0; line-height: 1.55; }
+.ref-body h2 { font-size: 11pt; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; margin: 2.4em 0 0.9em; }
+.ref-body h3 { font-size: 15pt; font-style: italic; font-weight: 500; margin: 2.2em 0 0.7em; }
+.ref-body ul { margin: 0.8em 0; padding-left: 1.15em; }
+.ref-body li { margin: 0.5em 0; line-height: 1.55; }
+.ref-body strong { font-weight: 500; }
+.ref-body hr.part-seam { border: 0; border-top: 1px solid var(--border); width: 38%; margin: 3.6em auto; }
+</style>
+</head>
+<body>
+    <div class="grain"></div>
+    <div class="cursor-glow" id="glow"></div>
+
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg class="sun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+        <svg class="moon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+    </button>
+
+    <header class="doc-head">
+        <a href="index.html" class="back">Danæam</a>
+        <nav class="doc-nav" aria-label="Condensed"><span class="here">Guideworde</span><span class="sep">·</span><a href="not-non-rules.html">Not Non-Rules</a><span class="sep">·</span><a href="storywarders.html">Storywarders</a></nav>
+    </header>
+
+<main class="canonical-document">
+<div class="work-section">
+<div class="title-page">
+<div class="title-furniture header" aria-hidden="true">Lyre · Síonæiya</div>
+<h1 class="source-paragraph align-center" align="center" style="text-align: center; margin-top: 264pt"><span style="font-size: 48pt">Guideworde</span></h1>
+</div>
+<div class="body-section ref-body">
+<h2>22 · Lexicon</h2>
+<p>A–Z by Danæam form, diacritics folded for ordering, leading clitic marks ignored. Format: form · part of speech · gloss · note. → = cross-reference to the parent entry. ⟨working⟩ = not yet canon.</p>
+<h3>Symbols</h3>
+<ul>
+<li><strong>=</strong> <em>mark</em> — the chain-linker · verbless predication: X=Y=Z, terms set equal down the line</li>
+<li><strong>∆</strong> <em>mark (vocable)</em> — up-trill — “ooh” · stands where the closing • would in the smooshed first-person shifter O X ∆; a segmental vocable, not sentence-tune</li>
+<li><strong>[no word]</strong> — ye</li>
+</ul>
+<h3>A</h3>
+<ul>
+<li><strong>Acusthia</strong> <em>n.</em> — stick</li>
+<li><strong>-æao</strong> <em>prep.</em> — 'rom (from) · 'o -æao Lutýrêýa' — and from the muckinesses. Cf. dræao 'from'. ⟨working⟩</li>
+<li><strong>Ædth</strong> <em>n.</em> — smile · 'lus Ædthýa gilæn dápathsea' — the smile that eternally-regave failed.</li>
+<li><strong>Ælth</strong> <em>n.</em> — elder · Crao’ælth’if</li>
+<li><strong>-æn</strong> — hope → <em>elfæn</em></li>
+<li><strong>æœá</strong> <em>det.</em> — no, none · attested Æœá Cuthrá 'no blame'; æœá-e 'of-no, without' — Ten æœá-e Fía más</li>
+<li><strong>Æœá Cuthrá</strong> — no, none → <em>æœá</em></li>
+<li><strong>Æœá-e Fía fæ is</strong> — is (3sg present, attested) → <em>is</em></li>
+<li><strong>æœá-e Gree</strong> — humour → <em>Gree</em></li>
+<li><strong>Æœstúpenear</strong> — un-raped-being ⟨working⟩</li>
+<li><strong>æouain</strong> <em>quantifier (compositional)</em> — none · the object-no welded to the prop-one; æouain e Frælithi’ya “none of the children”</li>
+<li><strong>æouain e Frælithi’ya</strong> — none → <em>æouain</em></li>
+<li><strong>Ærmuch</strong> <em>adj.</em> — exhausted · inferred bare adjective — only Ærmuchaí directly attested</li>
+<li><strong>ærmuch</strong> <em>adj.</em> — tired · beside threïg 'tired' — nuance unruled</li>
+<li><strong>Ærmuchaí</strong> <em>noun (abstract)</em> — exhaustion · Ærmuchaí e Síulnê 'exhaustion of wounds'</li>
+<li><strong>Ærmuchaí e Síulnê</strong> — exhaustion → <em>Ærmuchaí</em></li>
+<li><strong>aern</strong> <em>adj.</em> — hot · deliberate ae</li>
+<li><strong>æxó</strong> <em>conj.</em> — and/or · before the last and/or between every pair</li>
+<li><strong>af-</strong> <em>prefix</em> — up 🔥 · orientational-affect prefix; the Noun’s capital survives mid-word: afŁamis</li>
+<li><strong>afArch</strong> <em>adv.</em> — way up</li>
+<li><strong>afCneilæn</strong> <em>v.</em> — grind up · af- hosted.</li>
+<li><strong>afDibb</strong> — split</li>
+<li><strong>Afghalhê</strong> <em>noun (plural)</em> — mountains · 'Sin Afghalhê thuíłf' — as mountains die.</li>
+<li><strong>afŁamis</strong> — up → <em>af-</em></li>
+<li><strong>afSaín</strong> <em>author form</em> — waking</li>
+<li><strong>afSaín (gerund: afSaín-Saín)</strong> — waking</li>
+<li><strong>afSaín-Saín</strong> <em>author form</em> — waking (gerund)</li>
+<li><strong>afSehá</strong> — stand</li>
+<li><strong>afStrœ'charmænsy'œch</strong> <em>noun (tmesis compound)</em> — dried-up skin · afStrœ'…'œch hosting charmænsy. The ∆/V passage.</li>
+<li><strong>afStrœch</strong> <em>participle</em> — dried-up · base of afStrœ'charmænsy'œch.</li>
+<li><strong>After</strong> <em>n.</em> — Upland · English-shaped coinage (deliberate loan; quoted-speech register). 'Dúe After sain í bhie' — for Upland great it is.</li>
+<li><strong>Afthá</strong> — sky</li>
+<li><strong>afTol</strong> <em>v.</em> — fill · '-'ya maios'ya Craghêýa afTol' — the cracks fill.</li>
+<li><strong>afTolach</strong> — full</li>
+<li><strong>afTolea</strong> <em>verb (past)</em> — filled · afTol 'fill' + -ea ⟨working⟩</li>
+<li><strong>afYthrrync</strong> <em>author form</em> — neck (formal)</li>
+<li><strong>afYthrrync / Frÿn (formal/informal)</strong> — neck</li>
+<li><strong>Áhoría</strong> <em>n.</em> — audience · Inside Dé'ahor'cruí'sáillaí'ch'ía'er.</li>
+<li><strong>Ai'ai!</strong> — kin for the delight-word</li>
+<li><strong>aich</strong> <em>conj.</em> — also · the chain-word; aich sin 'also as'</li>
+<li><strong>aich</strong> <em>part.</em> — also / likewise · the chain-connective</li>
+<li><strong>aich sin</strong> — as, so → <em>sin</em></li>
+<li><strong>áille</strong> <em>v.</em> — speak ⟨working⟩</li>
+<li><strong>aint</strong> <em>num.</em> — one · pairs with Ghaint 2 and ainteith 'first'; a counting cardinal, not a year-stem; mis ainteith Arbhenu 'our first event'</li>
+<li><strong>ainteith</strong> <em>ordinal</em> — first · the -eith ordinal on aint 'one'</li>
+<li><strong>Air</strong> <em>imperative particle</em> — notice! · opens the compliance-announcement; a confluence: Achtung· aire· audio alert· auytha — “it seemed the proper way”</li>
+<li><strong>Ai’</strong> <em>reduced Air</em> — notice! (fragments) · Ai’lith!; the r survives as liaison only before i-initial nested pronouns</li>
+<li><strong>Ai’ai!</strong> <em>author form</em> — delight-word</li>
+<li><strong>Ai’lith!</strong> — run · notice! (fragments) → <em>Ai’, lith, lith | Ai’</em></li>
+<li><strong>Alcuilaí</strong> <em>n.</em> — radiance · honorific style: Fær Alcuilaí “Fær Radiance”</li>
+<li><strong>Alcuilýa</strong> — the Light ⟨working⟩</li>
+<li><strong>Amár</strong> — ocean</li>
+<li><strong>amár</strong> <em>n.</em> — ocean · attested as tmesis-guest, cap-suspended</li>
+<li><strong>ann</strong> <em>conj.</em> — if · questioned: scé’ann</li>
+<li><strong>Annadh</strong> <em>conj.</em> — either · whether · built on ann; annadh fœrmain œr –'ma 'whether formal or otherwise'; cf. thyann 'whether'</li>
+<li><strong>ao</strong> — no → <em>aobha</em></li>
+<li><strong>ao / aoa</strong> <em>negator</em> — not · Aoa thurn’t “whereabouts” (double neg.)</li>
+<li><strong>aoa</strong> <em>negator</em> — not · Aoa thurn’t “whereabouts” (double neg.)</li>
+<li><strong>aoa niri’thte</strong> — “justn’t”, just about → <em>niri’thte</em></li>
+<li><strong>aoa sin't</strong> <em>compound preposition</em> — about · Belongs to the aoa-thas't / aoa-thiosas't 're:what-ever' family.</li>
+<li><strong>aoa sin’t</strong> — not so → <em>sin’t</em></li>
+<li><strong>Aoa thurn’t</strong> — not → <em>ao / aoa</em></li>
+<li><strong>Aoa-thas't</strong> <em>pron.</em> — whatever · 'Aoa-thas't Uœrd' — whatever word. The aoa-refusal + thas't.</li>
+<li><strong>aoæx</strong> <em>conj.</em> — either-or-neither · “one or the other or neither” — the disjunction with a refusal built in; patterns as æxó</li>
+<li><strong>Aoaya</strong> — along ⟨working⟩</li>
+<li><strong>aobha</strong> <em>answer word</em> — no · ao “not” + bha “is” = “not-is”</li>
+<li><strong>Aobísy</strong> — other</li>
+<li><strong>aobisyach</strong> <em>adj.</em> — other · 'sin-sísaoya aobisyach-e' — as other-of. ⟨working⟩</li>
+<li><strong>Aoffau</strong> — leg</li>
+<li><strong>aoíth</strong> <em>prep.</em> — before (temporal) · aoíth dulagá “before embarking”</li>
+<li><strong>aoíth dulagá</strong> — before (temporal) → <em>aoíth</em></li>
+<li><strong>Aoiyid</strong> <em>n.</em> — abdomen · 'lus Aoiyid e Ruth-e Útcáry'ya' — the abdomen of Red's accuser.</li>
+<li><strong>Aól</strong> <em>n.</em> — Object-of-Giving’s-Force — “entry” · the eternal past’s frame-noun</li>
+<li><strong>Aolt</strong> <em>n.</em> — article (written) · yAolt Ruth-e 'the article of Red'</li>
+<li><strong>aomeal</strong> <em>p-modifier</em> — straight · kin in shape to the aoa-family — unruled</li>
+<li><strong>aoœr</strong> <em>conj.</em> — neither-nor · completes the æxó / aoæx set; patterning with its set — flexible. Not from attraction: Œr ’thte was a clipped fragment, “Or not.”</li>
+<li><strong>aoyth</strong> <em>preposition</em> — like · pron. “ow-eeɦ”; …aoyth rhié-færs “like his father” — the vacancy-blocker: no like-adjective need exist; aoíth “before” its near-sister by a letter</li>
+<li><strong>…aoyth rhié-færs</strong> — like → <em>aoyth</em></li>
+<li><strong>ar'eg'ch</strong> — far away ⟨working⟩</li>
+<li><strong>Arbhenu</strong> <em>n.</em> — event · 'mis ainteith Arbhenu' — our first event.</li>
+<li><strong>arch</strong> <em>adj.</em> — far · ro’arch’il “too-far”</li>
+<li><strong>Aríc</strong> <em>author form</em> — sand</li>
+<li><strong>Aríc (verb: dúaríc)</strong> — sand</li>
+<li><strong>-as</strong> <em>suffix</em> — echo suffix (vowel-harmonising) · laí→laías, gæe→gæeäs, Ghusci→Ghuscias</li>
+<li><strong>As</strong> <em>numeral (noun)</em> — eight · In As “at Eight”</li>
+<li><strong>át</strong> <em>pro-verb</em> — did · answers for any verb; wears the negator’s face — etymology withheld</li>
+<li><strong>atá</strong> <em>v. (be)</em> — is / are — the form that accompanies ios · ios ærmuch atá fæ</li>
+<li><strong>atáea</strong> <em>v. (be)</em> — was / were — the past form with ios · thé-atáea ios atáea</li>
+<li><strong>atáea'thte</strong> <em>verb (past fused negative)</em> — wasn't · atáea + -'thte — past-tense negation fusion now attested. ⟨working⟩</li>
+<li><strong>Atruens</strong> <em>n.</em> — incident · Ten fær e Atruens’ya saíea ‘I told him about the incident’; plural Atruensê</li>
+<li><strong>Atruensê</strong> — incident → <em>Atruens</em></li>
+<li><strong>Au</strong> — ear</li>
+<li><strong>auff</strong> — hear</li>
+<li><strong>aufFrœsíýa</strong> — changelings ⟨working⟩</li>
+<li><strong>aufGao'samsca'laíê</strong> — aufGaolaí communities → <em>Samsca</em> ⟨working⟩</li>
+<li><strong>Aúh</strong> — day</li>
+<li><strong>auytha</strong> <em>v.</em> — overheard</li>
+<li><strong>ax</strong> <em>conj.</em> — but · one word, contrast and correction alike; the tetrad’s ’ma stays a clitic — but is its own creature; between every pair</li>
+<li><strong>ax</strong> <em>coordinator</em> — but; but-especially · n−1 pattern ('O cruel ax fair'); extended to the selective-emphatic office: Mith ax ten'ya; mis neria o múlchtma ax niecscách Yáe</li>
+<li><strong>Axuain</strong> <em>conj.</em> — but-for; except-for; all but · 'Iosiya axuain lus Dic o Penuê o lesenach Rhëw o Piell lus Ghitasiu byclæírea Líciya Yon-e' — that but-for the dick and breasts and pubic triangle and face, the quote enclothed Night's body.</li>
+</ul>
+<h3>B</h3>
+<ul>
+<li><strong>Bailc</strong> — milk → <em>Bailch</em></li>
+<li><strong>Bailch</strong> <em>n.</em> — milk · base Bailc; lenited after e “of”</li>
+<li><strong>bainch</strong> — bad</li>
+<li><strong>baouea</strong> <em>participle (-ea)</em> — bowed</li>
+<li><strong>Barc</strong> <em>verb/noun</em> — scream · ∆barc — up-trilled scream.</li>
+<li><strong>bauch</strong> — round</li>
+<li><strong>Bausy</strong> — cloud</li>
+<li><strong>Bengsy</strong> — belly</li>
+<li><strong>Berolth</strong> <em>noun (proper)</em> — Berlin · Ten duín Berolth tes-mé Maghr eibh ‘I was in Berlin as a soldier’</li>
+<li><strong>bha</strong> <em>v. (be)</em> — is · found inside aobha / bháya</li>
+<li><strong>bha</strong> <em>part.</em> — yes (clipped bháya) · the trailing affirmer in doubled emphasis: fith’ya bha</li>
+<li><strong>bháya</strong> <em>answer word</em> — yes · bha “is” + ’ya = “is-positively”</li>
+<li><strong>bhie</strong> <em>v. (be)</em> — are · flow-form of bhies: 'mæ bhie' — you are. ⟨working⟩</li>
+<li><strong>bhies</strong> <em>v. (be)</em> — are / be (present, general)</li>
+<li><strong>Bicá</strong> — knee</li>
+<li><strong>bilach</strong> <em>adj.</em> — bare · 'Úsét bilach Charmænsy Yon-e' — on bare skin of-Night.</li>
+<li><strong>bildhuæn</strong> <em>v.</em> — gather · 'Oob Onê síthüsië bildhuæn' — under feet nowily gather.</li>
+<li><strong>Bis</strong> <em>n.</em> — Grief · sís Tïc e Bis “This House of Grief”</li>
+<li><strong>bloi</strong> <em>author form</em> — flower (verb)</li>
+<li><strong>Bloiy</strong> <em>author form</em> — flower</li>
+<li><strong>Bloiy (verb: bloi)</strong> — flower</li>
+<li><strong>blys</strong> — black</li>
+<li><strong>Blys yon</strong> — night-black</li>
+<li><strong>Bóc</strong> — mouth · mao Boc mæ gæn 'your mouth you give'; Bocraíp 'lips' compounds on it</li>
+<li><strong>Bocraíp</strong> <em>noun (plural)</em> — lips · compounds on Boc 'mouth'.</li>
+<li><strong>Bœgh</strong> — road</li>
+<li><strong>Borhu</strong> <em>n.</em> — table · the worth-relative</li>
+<li><strong>Both</strong> <em>n.</em> — city</li>
+<li><strong>breách</strong> — wide</li>
+<li><strong>Brëch</strong> <em>n.</em> — bridge · 'yálénëách Brëch' — a solar bridge.</li>
+<li><strong>brís</strong> <em>v.</em> — break · Brísea 'broken'; Brís-brís 'the breaking'; stílbrís 'still-breaking'.</li>
+<li><strong>Brís-brís</strong> — the breaking → <em>brís</em></li>
+<li><strong>Brísea</strong> <em>participle (-ea)</em> — broken · 'Brísea mæ bhie • Brísea • Brísea o stílbrís.'</li>
+<li><strong>by</strong> <em>prep.</em> — through / using / across · grubby loan</li>
+<li><strong>by</strong> <em>part.</em> — via, as-a-process; [to] of purpose · côs by '[to] sleep', gáns by 'useless via'</li>
+<li><strong>by ghiæan</strong> — get, become → <em>ghiæan</em></li>
+<li><strong>byclæírea</strong> <em>participle/adjective</em> — enclothed · by- 'wrapped-in/provided-with' + clæírea.</li>
+<li><strong>byffub</strong> — rub</li>
+<li><strong>Byræao</strong> <em>prep.</em> — through-from; out of · 'Byræao Stár dúe Ruth' — out of love for Red.</li>
+</ul>
+<h3>C</h3>
+<ul>
+<li><strong>Cafi</strong> <em>n.</em> — coffee · loanword</li>
+<li><strong>Cafi œr Sî</strong> — or → <em>œr</em></li>
+<li><strong>Cain</strong> — kind, sort → <em>Chain</em></li>
+<li><strong>caír</strong> <em>verb (modal)</em> — can · 'ygyg caír-e o át-e' — eke can-of and do-of. át attested in use. ⟨working⟩</li>
+<li><strong>Cais</strong> — must ⟨working⟩</li>
+<li><strong>Cáithoor</strong> <em>n.</em> — general · state-form Cáithoorhr takes the object slot, not the bare noun</li>
+<li><strong>Cáithoorhr</strong> <em>n. (state)</em> — general-being · Cáithoor + -r; Mith fær-dúe Cáithoorhr oothíthea 'we appointed him as general'</li>
+<li><strong>Carnfogh</strong> <em>n.</em> — execution · æœá-e niïl Carnfogh — without an execution.</li>
+<li><strong>cáru</strong> <em>author form</em> — scratch</li>
+<li><strong>cáru (noun: Cárur)</strong> — scratch</li>
+<li><strong>Cárur</strong> <em>author form</em> — scratch (noun)</li>
+<li><strong>ced</strong> <em>ordinal adjective</em> — second · nests its noun: C’achér’ed</li>
+<li><strong>chæn</strong> <em>v.</em> — spend</li>
+<li><strong>Chain</strong> <em>n.</em> — kind, sort · base Cain; lenited</li>
+<li><strong>Chain e Bailch</strong> — of (genitive / connective) → <em>e</em></li>
+<li><strong>Chainn</strong> <em>n.</em> — sort; kind · 'lus Chainn e Rraenaí dúaf-e iosthurn' — the sort of division upward-of there. ⟨working⟩</li>
+<li><strong>Chair</strong> <em>n.</em> — rain · Chair í gæn “it rains” — dummy-donor frame</li>
+<li><strong>chair</strong> <em>v.</em> — rain · seated via its reduplication Noun Chair-Chair “Rain” — the pattern’s sixth member</li>
+<li><strong>chair (noun: Chair-chair)</strong> — rain</li>
+<li><strong>Chair í gæn</strong> — rain → <em>Chair</em></li>
+<li><strong>Chair-Chair</strong> — rain → <em>chair</em></li>
+<li><strong>Chair-Chair e Emma</strong> — blood → <em>Emma</em></li>
+<li><strong>Chardea</strong> <em>adj.</em> — horned · Chard-ea, the -ea participle on a horn-stem; Chardea Ixixaí 'horned singularity: a unicorn, not the technological one'</li>
+<li><strong>Charmænsy</strong> — skin · standalone; also inside the tmesis afStrœ'charmænsy'œch 'dried-up skin'</li>
+<li><strong>chímæ</strong> <em>v.</em> — bought (≈ spent) · ← chæn “spend”</li>
+<li><strong>Chin</strong> — egg</li>
+<li><strong>chís</strong> <em>v.</em> — chat · → gerund Chís-Chís</li>
+<li><strong>chís eibh eibh</strong> — were (past, general) → <em>eibh</em></li>
+<li><strong>Chís-Chís</strong> <em>noun (gerund)</em> — chatting, the chatting · gerund by rendering-past reduplication of the verb chís</li>
+<li><strong>chorpi</strong> <em>author form</em> — laugh</li>
+<li><strong>chorpi (noun: Chorpiff)</strong> — laugh</li>
+<li><strong>Chorpiff</strong> <em>author form</em> — laugh (noun)</li>
+<li><strong>chraff</strong> — bite</li>
+<li><strong>Chúat</strong> — (leniting pair) · conditioning withheld</li>
+<li><strong>cía</strong> <em>pron.</em> — they</li>
+<li><strong>Cíaos</strong> — theirs ⟨working⟩</li>
+<li><strong>cías</strong> <em>poss.</em> — their; them (as sê-base) · possessive of cía</li>
+<li><strong>cías-sê</strong> <em>pronoun (reflexive/reciprocal)</em> — each-other; (with mé) all-alone, plural · the sê-family’s fifth member; the bases are the object series — “faer, us, and them” : sê-fær “faer-self”, miths-sê “us-self”, cías-sê “them-self”</li>
+<li><strong>clæírea</strong> <em>participle/adjective</em> — clothed</li>
+<li><strong>cliff</strong> <em>num.</em> — five · counting table: 0 ssíns · 2 ssai · 5 cliff · 6 éx · 8 As · 1000 thíthíl; digit-mode: slár-cliffýa = 95; year-series pair unruled</li>
+<li><strong>Côs</strong> <em>v.</em> — sleep · attested inside its reduplication (farewell attestation)</li>
+<li><strong>côs</strong> <em>v.</em> — sleep · Or’threïg’il côs by “not-tired-enough to sleep”</li>
+<li><strong>côs (noun: Côs-côs)</strong> — sleep</li>
+<li><strong>côs by</strong> — via, as-a-process; [to] of purpose → <em>by</em></li>
+<li><strong>Côs-Côs</strong> <em>noun (gerund)</em> — sleep(ing) · gerund by reduplication; the farewell attestation fal · Côs · Côs-Côs</li>
+<li><strong>Craghê</strong> <em>noun (plural)</em> — cracks · 'Sin Craghê fœrmæn sy farm' — as cracks form, so build.</li>
+<li><strong>craif</strong> <em>adj.</em> — hungry · pays the hard-c toll inside the degree circumfix: or’raif’il “not hungry enough”</li>
+<li><strong>craig</strong> <em>v.</em> — take (present) · seated with the resumptive-í frame</li>
+<li><strong>craig</strong> — hold/take</li>
+<li><strong>Craigachaí</strong> <em>n.</em> — purchase (grip) · for purchase = for gripping.</li>
+<li><strong>craigea</strong> <em>v.</em> — took · past of craig</li>
+<li><strong>Craimh</strong> <em>n.</em> — hunger · gæn mé X Craimh “X is hungry” (es-gibt × tá-ocras-orm)</li>
+<li><strong>craithië</strong> <em>adv.</em> — hungrily · craith- an inferred hunger-root, unattested bare</li>
+<li><strong>Craoif</strong> <em>adj.</em> — wise · tmesis host: Crao’ælth’if</li>
+<li><strong>críspæn</strong> <em>v.</em> — scuff</li>
+<li><strong>crith</strong> <em>verb/noun</em> — jitter · reduplicated Crith-crith 'the jittering'</li>
+<li><strong>Crith-crith</strong> — the jittering → <em>crith</em> ⟨working⟩</li>
+<li><strong>Cruaff</strong> <em>n.</em> — clutch · 'niïl Cruaff e Garrohyê' — a clutch of tentacles.</li>
+<li><strong>Cruích</strong> <em>n.</em> — face · pairs with Piell 'face' — fork or register split, open</li>
+<li><strong>Cthug</strong> <em>n.</em> — club · Ten sy Cthug sin lus Acusthia lynœa ‘I used the stick as a club’ — standing canon, not freshly coined</li>
+<li><strong>Cúat</strong> — (leniting pair) · conditioning withheld</li>
+<li><strong>Cúat / Chúat</strong> — (leniting pair) · conditioning withheld</li>
+<li><strong>cuirsea</strong> <em>participle (-ea)</em> — arched · Yon cuirsea o baouea — Night arched and bowed.</li>
+<li><strong>C’achér’ed</strong> — drawer · second → <em>ced, tachér, tachér | ced</em></li>
+</ul>
+<h3>D</h3>
+<ul>
+<li><strong>Daírá</strong> — animal</li>
+<li><strong>dant</strong> — fall</li>
+<li><strong>dapaths</strong> <em>v.</em> — fail · Past dápathsea attested.</li>
+<li><strong>Dé'ahor'cruí'sáillaí'ch'ía'er</strong> <em>monster tmesis</em> — toward-facing-audience-speaking-being · Dé'…'er ('toward-facing-being') wrapped around ahor(ía)-cruí(ch)-sáillaí-ch-ía. 'mís Dé'ahor'cruí'sáillaí'ch'ía'er' — our facing-the-audience speech. ⟨working⟩</li>
+<li><strong>Dic</strong> <em>n.</em> — dick · Register: clinical-blunt.</li>
+<li><strong>diffaíách</strong> <em>adj.</em> — different</li>
+<li><strong>Dræaig</strong> — abduct ⟨working⟩</li>
+<li><strong>Dræaigeainê</strong> — abductees ⟨working⟩</li>
+<li><strong>dræao</strong> <em>prep.</em> — from · fæ dræao nhœme 'fæ from comes'; second office: the passive agent (Dræao lus Ufín 'from the enemy') — the will, against by's channel; pron. 'Dree-ow'</li>
+<li><strong>Dræao lus Ufín</strong> — from · enemy → <em>Ufín, dræao, dræao | Ufín</em></li>
+<li><strong>dræœa</strong> <em>prep.</em> — from · dræœa Raíwíl-ínhe duálthë; variant of dræao? — fork-noted ⟨working⟩</li>
+<li><strong>Draurh</strong> — smoke</li>
+<li><strong>drú</strong> <em>p-modifier</em> — direct</li>
+<li><strong>Drúnhœme-Drúnhœme</strong> <em>verbal noun (reduplicated)</em> — the Coming-Forward · The assault-disclosure; 'ten dús Drúnhœme-Drúnhœme aoa sin't niïl yGriebh-aoya' — I toward the Coming-Forward about an assault. ⟨working⟩</li>
+<li><strong>drúræao</strong> <em>prep.</em> — subsequent from [direct from] · the posterior country; kin drúsót</li>
+<li><strong>du</strong> <em>root</em> — to / toward / -ward · in dúirá “leftward”</li>
+<li><strong>duáf</strong> <em>prepositions</em> — upward · variant dúaf; dúaf-e 'upward-of'</li>
+<li><strong>duáf / ufel / dúy / uÿth</strong> <em>prepositions</em> — upward / downward / to-through / to-over · the local table filled</li>
+<li><strong>duálthë</strong> <em>noun/adverb</em> — today · 'dræœa Raíwíl-ínhe duálthë' — from 2983 to today.</li>
+<li><strong>duáo</strong> <em>prep.</em> — ago · du-family, past-pointing; 'here two hours ago' = duáo + measure; completes dúiri · drúræao · duílín; variant spelling dúao (ghraíïe Theráfthyê-e dúao atáea 'it was four therapists ago')</li>
+<li><strong>dúaríc</strong> <em>author form</em> — sand (verb)</li>
+<li><strong>dúe</strong> <em>preposition (du-family)</em> — to-of / for · three offices: purposive linker (dúe fith), infinitive-subject flag (dúe sê), benefactive (dúe Piell); the recipient stays duîm's (Ten duîm Piell í gæn); also 'for / out of' (Byræao Stár dúe Ruth 'out of love for Red'); cf. dué</li>
+<li><strong>dúe / dué</strong> <em>linker</em> — to-of — purposive before the infinitive · 'hungry enough to-of eat'; the accent wanders (dúe/dué) — lemma unfixed, gentle fork</li>
+<li><strong>dúe fith</strong> — to-of / for → <em>dúe</em></li>
+<li><strong>dúe Piell</strong> — to-of / for → <em>dúe</em></li>
+<li><strong>dúe sê</strong> — to-of / for → <em>dúe</em></li>
+<li><strong>dúe silgá</strong> — think → <em>silgá</em></li>
+<li><strong>dúéalaf</strong> <em>prep.</em> — up-inside-of · 'dúéalaf Gnasthýa sê-ír-e' — up-inside-of the nest itself.</li>
+<li><strong>dúfrœdh</strong> <em>adv.</em> — lengthwise · dú- directional.</li>
+<li><strong>dúïl</strong> <em>directional</em> — toward-a(n) · du + niïl; indefinite partner of dús</li>
+<li><strong>dúïl Háfaí sót</strong> — tie</li>
+<li><strong>duílín</strong> <em>prep.</em> — within [all-in] · the all-word welded into the in-word; tack duílín yMedhamýa 'smackbang within the middle'</li>
+<li><strong>Duílúch Fæ’du’ærs fæ</strong> — get, become → <em>ghiæan</em></li>
+<li><strong>duîm</strong> <em>prep.</em> — to, with · duîm thénu mæ</li>
+<li><strong>duîm</strong> <em>prep.</em> — to-with (recipient / instrument) · tmetic; Duîm-fær niïl Rîbha fæ gæn 'to-with-fær a book fæ gave'; -'r duîm mao Boc</li>
+<li><strong>duîm thénu mæ</strong> — to, with → <em>duîm</em></li>
+<li><strong>duín</strong> <em>prep.</em> — in (to-at) · the toward-family grows: du, dús, duîm, dúïl, dúe — now duín</li>
+<li><strong>duín Ærmuchaí tugea</strong> — bring → <em>tug</em></li>
+<li><strong>duín tes-mé Matthsyr</strong> — teacher → <em>Matthsy</em></li>
+<li><strong>Duínráshië</strong> <em>adv.</em> — reversely (in reverse) · 'Duínráshië afArch úsét Gradhamýa' — reversely way-up on stage.</li>
+<li><strong>Duínsaig</strong> — to vote ⟨working⟩</li>
+<li><strong>dúirá</strong> <em>adv.</em> — leftward · du + irá</li>
+<li><strong>dúiri</strong> <em>prep.</em> — unto · ‹ du + niri — in the epithet Sê-dúi’gheo-e’ri “Self-Unto-God-of”; and the temporal office — “until is also dúiri” : the anterior country whole</li>
+<li><strong>duíxeis</strong> <em>directional</em> — rightward · pairs dúirá “leftward”</li>
+<li><strong>duł</strong> — fly</li>
+<li><strong>dulagá</strong> <em>verb / gerund</em> — embark(ing)</li>
+<li><strong>dúlebendr</strong> <em>adverbial</em> — toward-being-alive · 'being-alive': dú- + Lebendach + -r.</li>
+<li><strong>Dúordh</strong> <em>n.</em> — tidiness</li>
+<li><strong>Dúordhách</strong> <em>adj.</em> — tidy</li>
+<li><strong>dúrrync</strong> <em>adv.</em> — back; backward · 'o dúrrync dús Sclostaíría' — and backward toward the wrenching.</li>
+<li><strong>dús</strong> <em>prep.</em> — to-the (toward + definite) · the article lives inside; prospective: dús Fith-Fith e bhie “to-the Eating of is” = “going to eat”</li>
+<li><strong>dús Fith-Fith e bhie</strong> — to-the (toward + definite) → <em>dús</em></li>
+<li><strong>dúsáille</strong> <em>verb (infinitive)</em> — to-speak · áille 'speak'; 'dúsáille mæ ghlæscer' — to-speak you learn. ⟨working⟩</li>
+<li><strong>dúy</strong> <em>prepositions</em> — to-through · sin duý Sæculomê 'as through centuries'; cf. yduý 'in', Dúy 'Hell'</li>
+</ul>
+<h3>E</h3>
+<ul>
+<li><strong>-e</strong> — as per the topic of — the for-its-part replica → <em>s’efui-e’in</em></li>
+<li><strong>e</strong> <em>part.</em> — of (genitive / connective) · Chain e Bailch “kind of milk”</li>
+<li><strong>e mÿel Ældhr</strong> <em>author form</em> — Sídia-teos eldest-sídia</li>
+<li><strong>e mÿel Ældhr Sídia-teos</strong> — eldest-sídia</li>
+<li><strong>e mÿel Frælr</strong> <em>author form</em> — Sídia-teos youngest-sídia</li>
+<li><strong>e mÿel Frælr Sídia-teos</strong> — youngest-sídia</li>
+<li><strong>eës</strong> <em>part.</em> — of-the · lus Sáinsu eës Hrádai “the task-set of-the crown”</li>
+<li><strong>Efui</strong> <em>n.</em> — topic · announces the office by name: Efui • Scean 'Topic!: Scean'; Efui niïl drúach thas — ios 'æ -'farm; Oath preamble Efui dué Thaln sëain æxó duínsaig</li>
+<li><strong>Eg</strong> <em>n.</em> — way · sís Eg / ios Eg; Eg'ya / Eg't; capitalised</li>
+<li><strong>eg</strong> <em>element (class awaiting)</em> — way, such-way · inside S’eg’in “such-way” — the topic-resumptive as-frame, no e-joint</li>
+<li><strong>egnui</strong> — thin</li>
+<li><strong>eibh</strong> <em>v. (be)</em> — were (past, general) · chís eibh eibh; NOT used with ios (there atáea is used)</li>
+<li><strong>Eigain</strong> — property ⟨working⟩</li>
+<li><strong>Eileth</strong> <em>n.</em> — rest, remainder · lus Eileth e mao Fía “the rest of your food”</li>
+<li><strong>-eith</strong> <em>suffix</em> — ordinal suffix (year series) · ghslár-ghüleith '10.18th'</li>
+<li><strong>elf</strong> <em>n.</em> — Hope · base of the derivation pair</li>
+<li><strong>elfæn</strong> <em>v.</em> — hope · elf + -æn — the verbalizer’s first explicit pair (shape-kin to gæn / gilæn noted, not claimed)</li>
+<li><strong>Elin</strong> <em>n.</em> — verve · hosts tmesis in El'huethnea'in 'served-with-verve, fused' (whether its -in tail kins Sin's family: light watch); suffixes in elinië</li>
+<li><strong>elinië</strong> <em>adv.</em> — vervely · Elin + -ië — noun-to-adverb</li>
+<li><strong>Elintïmma</strong> — lineage (&quot;the line of one's Rhié&quot;)</li>
+<li><strong>El’huethnea’in</strong> — verve → <em>Elin</em></li>
+<li><strong>Em'ruth'mæ</strong> — blood-red</li>
+<li><strong>Emma</strong> <em>n.</em> — blood · a Noun in a name’s clothing — never an exemplar-name: Chair-Chair e Emma “Rain of blood”</li>
+<li><strong>Emmasy</strong> — heart</li>
+<li><strong>Em’ruth’mæ</strong> <em>author form</em> — blood-red</li>
+<li><strong>Eœd</strong> <em>n.</em> — worth, value · niïl Eœd e cliff Lyrê</li>
+<li><strong>Erl</strong> <em>v.</em> — let · 'mæ sê-maos brís erl' — let the building break you.</li>
+<li><strong>Erly</strong> <em>n.</em> — letter (of script) · pl. Erlyê.</li>
+<li><strong>Eumruiýa</strong> — the Darkness ⟨working⟩</li>
+<li><strong>éx</strong> <em>num.</em> — six · éx Nímhogê 'six dogs'; digit-mode: uain-éx = 16; year-series pair unruled</li>
+<li><strong>éx Nímhogê</strong> — six → <em>éx</em></li>
+</ul>
+<h3>F</h3>
+<ul>
+<li><strong>fæ</strong> <em>pron.</em> — fæ (3rd person: she / he / they) · the fæ 3rd person; resumes persons in the dislocation tier — the fæ-frame, twin to resumptive í</li>
+<li><strong>fæ dræao nhœme</strong> — from → <em>dræao</em></li>
+<li><strong>fælaê</strong> <em>n.</em> — fae-gender-havers; fey (collective) · 'Sísthurn Fælaê dús Útcár-Útcár Fælaê-e í gæn' — here fey accuse fey.</li>
+<li><strong>fær</strong> <em>poss.</em> — her / his · possessive of fæ</li>
+<li><strong>fær</strong> <em>pron.</em> — fær (object form of fæ, as attested after iy) · hosts the comparative complex Fæ'hín-iy'ær; bare — the capital belongs to the Noun-complex's left edge; faer tags the close of a quote (&gt;-Łix-&lt; fær Sclíeclu-Sclíeclu sœinea)</li>
+<li><strong>Fær Alcuilaí</strong> — radiance → <em>Alcuilaí</em></li>
+<li><strong>Fæ’hín-iy’ær</strong> — man · fær (object form of fæ, as attested after iy) → <em>fær, hín, hín | fær</em></li>
+<li><strong>Fainía</strong> <em>n.</em> — catch (noun)</li>
+<li><strong>fal</strong> <em>adj.</em> — beautiful · tmesis: the’fal’m; near-synonym Lain</li>
+<li><strong>Fally</strong> — leaf</li>
+<li><strong>fan</strong> <em>author form</em> — fruit (verb)</li>
+<li><strong>Fan-fan</strong> <em>author form</em> — fruit</li>
+<li><strong>Fan-fan (verb: fan)</strong> — fruit</li>
+<li><strong>farm</strong> <em>v.</em> — make · build · farmea 'made'; Farm-farm 'the building'</li>
+<li><strong>Farm-farm</strong> <em>noun (gerund)</em> — making · reduplication of farm; capital-then-lowercase (cf. the Fith-Fith / Fith-fith watch)</li>
+<li><strong>farmea</strong> — make → <em>farm</em></li>
+<li><strong>fel-</strong> <em>prefix</em> — down 🥀 · twin of af-; felTi’amár’th; segmental kin to the trills ∆/V</li>
+<li><strong>Felcadhá</strong> <em>n.</em> — cascade · 'niïl Felcadhá e Príónê' — a cascade of prions.</li>
+<li><strong>felCne'téxt'ilea</strong> <em>noun (tmesis compound)</em> — ground-down tissue · felCne'…'ilea hosting Téxt.</li>
+<li><strong>felCneilea</strong> <em>participle</em> — ground-down · fel- hosted; cf. felCne'téxt'ilea.</li>
+<li><strong>felTi’amár’th</strong> — down → <em>fel-</em></li>
+<li><strong>Fenthœs</strong> <em>n.</em> — defence · 'lus Œurdê e Fenthœs Ruth-e' — the words of Red's defence.</li>
+<li><strong>Férás</strong> <em>n.</em> — boy (casual: sexual tops and/or dominants) · pron. “Fay-raiss”; an agender culture — gendered sub- and minority cultures notwithstanding</li>
+<li><strong>férás-ufsae</strong> <em>adjective (compound)</em> — boy-crazy · the compound road’s exemplar ratified; the Noun stands small inside the adjective-complex</li>
+<li><strong>Ffearhsy</strong> <em>n.</em> — horse · lit. “horser — one who horses (around)”; niïl Ffearhsy attested (order-canon exemplars)</li>
+<li><strong>Ffee</strong> — tooth · plural Ffeë (Ffeë fiulæn 'teeth chip')</li>
+<li><strong>Ffemá'bissal-iy'dheach</strong> <em>noun (tmesis compound)</em> — Appellate court · Ffemá'…'dheach hosting bissal-iy. 'ySíonæiya Ffemá'bissal-iy'dheach-e' — the Faerieland Appellate Court.</li>
+<li><strong>fhaołith</strong> — rotten</li>
+<li><strong>Fhós</strong> <em>n.</em> — bitch · coined in the niïl-position (Niïl Fhós); cf. mhís, where the softened shape is the lemma</li>
+<li><strong>Fía</strong> <em>n.</em> — food</li>
+<li><strong>Fialth</strong> <em>n.</em> — charge · the word is your charge.</li>
+<li><strong>fiïl</strong> <em>adj.</em> — loyal</li>
+<li><strong>film</strong> <em>v.</em> — turn · grubby loan — a reel turns</li>
+<li><strong>Fírladr</strong> <em>n.</em> — length · 'Lus mÿel Fírladr-e' — the most length = the longest. ⟨working⟩</li>
+<li><strong>Fís</strong> — blood ⟨working⟩</li>
+<li><strong>Fit</strong> — feather</li>
+<li><strong>fith</strong> <em>v.</em> — eat, eating</li>
+<li><strong>fith</strong> <em>v.</em> — (gloss ungiven) · the emphasis-paradigm’s exemplar verb</li>
+<li><strong>fithea</strong> — hungrily → <em>craithië</em></li>
+<li><strong>Fith’t</strong> — negative → <em>’t</em></li>
+<li><strong>Fith’ya</strong> — positive answer / tag → <em>’ya</em></li>
+<li><strong>fiulæn</strong> <em>v.</em> — chip · Ffeë fiulæn — teeth chip.</li>
+<li><strong>fix</strong> — squeeze</li>
+<li><strong>Flang</strong> — meat/flesh</li>
+<li><strong>fœdh</strong> <em>v.</em> — steal, stole · reduplicated verbal noun Fœdh-fœdhýa-e 'the-stealing-of'</li>
+<li><strong>Fœdh-fœdhýa</strong> <em>verbal noun (reduplicated + -ýa)</em> — the stealing-of · 'yFræli Fœdh-fœdhýa-e' — the stealing of children.</li>
+<li><strong>Fœrm</strong> <em>noun/verb</em> — form / shape · 'Mis Bocraíp mith Fœrm gæn' — our lips we shape give.</li>
+<li><strong>fœrmæn</strong> <em>v.</em> — form (verb) · 'Sin Craghê fœrmæn' — as cracks form.</li>
+<li><strong>Fœrmain</strong> <em>adj.</em> — formal · 'annadh fœrmain œr –'ma' — whether formal or otherwise.</li>
+<li><strong>Fog</strong> <em>n.</em> — sod · 'o Fogýa' — and the-sod-of.</li>
+<li><strong>Foll</strong> <em>n.</em> — pit · 'Dræao lus Foll mæ brís' — from the pit you break.</li>
+<li><strong>Fræli</strong> <em>n.</em> — child · irregular plural Frælithi (ssai e Frælithi'ya 'two of the children'); yFræli Fœdh-fœdhýa-e 'the stealing of children'</li>
+<li><strong>Frælithi</strong> <em>noun (irreg. pl.)</em> — children · an irregular plural; pluralization isn’t uniformly -ê after all</li>
+<li><strong>fródh</strong> — long</li>
+<li><strong>Frœ</strong> — nearabouts → <em>Frœ’thte</em></li>
+<li><strong>Frœli-tóff</strong> — chosen-child</li>
+<li><strong>Frœ’thte</strong> <em>adv.</em> — nearabouts · bare Frœ unruled</li>
+<li><strong>Frÿn</strong> <em>author form</em> — neck (informal); throat · informal; yios duý þis Frÿn atáea ghydæa 'that in her throat was meant'</li>
+<li><strong>fyót</strong> — float</li>
+</ul>
+<h3>G</h3>
+<ul>
+<li><strong>gæe</strong> — gave · echo suffix (vowel-harmonising) → <em>-as, gæea, gæea | -as</em></li>
+<li><strong>gæea</strong> <em>v.</em> — gave · base gæe “give”</li>
+<li><strong>gæeäs</strong> — echo suffix (vowel-harmonising) → <em>-as</em></li>
+<li><strong>gæn</strong> <em>v.</em> — gives · the existential “there is”</li>
+<li><strong>gæn mé X Craimh</strong> — hunger → <em>Craimh</em></li>
+<li><strong>gænyin</strong> <em>verb (existential)</em> — gives, temporally bound · temporary possession/tenure</li>
+<li><strong>Gæn’ma</strong> — on the contrary → <em>’ma</em></li>
+<li><strong>Gæsy</strong> — giver</li>
+<li><strong>gáns</strong> <em>adj.</em> — useless</li>
+<li><strong>gáns by</strong> — via, as-a-process; [to] of purpose → <em>by</em></li>
+<li><strong>Gaol e bissal-by</strong> — court-kin</li>
+<li><strong>Gaolaí ythé dúy Lawu rihea</strong> — dream-kin</li>
+<li><strong>Gaolaí ythé e Fís mainea atá</strong> — debt-kin</li>
+<li><strong>Gaolaí ythé e Win-łixach atá</strong> — name-kin</li>
+<li><strong>Garrohyê</strong> <em>noun (plural)</em> — tentacles · elastic and yellow.</li>
+<li><strong>Ghainn</strong> — clade ⟨working⟩</li>
+<li><strong>Ghaint</strong> <em>num.</em> — two · gh- pair of aint; small cardinals so far 1 Aint · 2 Ghaint · 3 Raí · 4 Ghraí; 5 and 6 unmade</li>
+<li><strong>ghéalíl</strong> <em>author form</em> — right / correct</li>
+<li><strong>Gheatth</strong> <em>year-stem</em> — 58 · year-series numeral· base 2+30 (base-60 pair-stem). Pair: Heatth 57 (odd, bare) / Gheatth 58 (even, lenited). Year names: A-B = A×60 + B, hyphen-joined, second element bare. This form: even· lenited.</li>
+<li><strong>Gheinn</strong> — moon</li>
+<li><strong>Gheo</strong> <em>n.</em> — god · O • o mao-mé Gheor mæ drúsót 'may you go forth with your god-being'; O mao-mé mæ ∆ Gheo aobh 'God be with you'; state-form Gheor</li>
+<li><strong>Gheor</strong> — god → <em>Gheo</em></li>
+<li><strong>Ghiadhán</strong> — mountain</li>
+<li><strong>ghiæan</strong> <em>v.</em> — get, become · formerly *ghæian; the become-copula (Duílúch Fæ'du'ærs fæ ghiæan); by ghiæan 'get over'; the frame of the becoming-gift and of the passive-with-agent; pron. 'sthɦih-ee-ah-neh-eh'</li>
+<li><strong>Ghîæth</strong> <em>year-stem</em> — 28 · year-series numeral· base 2+30 (base-60 pair-stem). Pair: Îæth 27 (odd, bare) / Ghîæth 28 (even, lenited). Year names: A-B = A×60 + B, hyphen-joined, second element bare. This form: even· lenited.</li>
+<li><strong>ghim</strong> — dry</li>
+<li><strong>Ghínhe</strong> <em>year-stem</em> — 44 · year-series numeral· base 2+30 (base-60 pair-stem). Pair: Ínhe 43 (odd, bare) / Ghínhe 44 (even, lenited). Year names: A-B = A×60 + B, hyphen-joined, second element bare. This form: even· lenited.</li>
+<li><strong>Ghitasiu-minú</strong> <em>n.</em> — detail-sized quote (pull quote) · lus Ghitasiu minú-e yiosnÿ glúmach yAolt Ruth-e 'the pull-quote of Red's famous article'</li>
+<li><strong>ghlæscer</strong> <em>v.</em> — learn · 'dúsáille mæ ghlæscer' — to-speak you learn.</li>
+<li><strong>Ghłúrm</strong> — worm</li>
+<li><strong>ghraí</strong> — four · raí = 3 (odd), ghraí = 4 (even) — gh- marks the even member, matching the year-stems</li>
+<li><strong>Ghraíïe</strong> <em>adv.</em> — fourily; in fours · root Ghraí = 4; the adverb is text-attested</li>
+<li><strong>Ghraíwil</strong> <em>year-stem</em> — 50 · year-series numeral· base 2+30 (base-60 pair-stem). Pair: Raíwil 49 (odd, bare) / Ghraíwil 50 (even, lenited). Year names: A-B = A×60 + B, hyphen-joined, second element bare. This form: even· lenited.</li>
+<li><strong>Ghrœlisea</strong> — descended ⟨working⟩</li>
+<li><strong>Ghrœliseæ</strong> — descendants ⟨working⟩</li>
+<li><strong>Ghrudás</strong> — play</li>
+<li><strong>Ghsfeith</strong> <em>year-stem</em> — 20 · year-series numeral· base 2+30 (base-60 pair-stem). Pair: Sfeith 21 (odd, bare) / Ghsfeith 20 (even, lenited). Year names: A-B = A×60 + B, hyphen-joined, second element bare. This form: even· lenited.</li>
+<li><strong>Ghslár</strong> <em>year-stem</em> — 10 · year-series numeral· base 2+30 (base-60 pair-stem). Pair: Slár 9 (odd, bare) / Ghslár 10 (even, lenited). Year names: A-B = A×60 + B, hyphen-joined, second element bare. This form: even· lenited.</li>
+<li><strong>ghuethn</strong> <em>v.</em> — serve · past ghuethnea; toll-paid huethnea when tmesis-embedded (gh a hard-consonant payer)</li>
+<li><strong>ghuethnea</strong> — serve → <em>ghuethn</em></li>
+<li><strong>Ghül</strong> <em>year-stem</em> — 18 · year-series numeral· base 2+30 (base-60 pair-stem). Pair: Ül 17 (odd, bare) / Ghül 18 (even, lenited). Year names: A-B = A×60 + B, hyphen-joined, second element bare. This form: even· lenited.</li>
+<li><strong>Ghusci</strong> <em>n.</em> — ghost · base Gusci; lenited after niïl</li>
+<li><strong>Ghuscias</strong> — echo suffix (vowel-harmonising) → <em>-as</em></li>
+<li><strong>ghydæa</strong> <em>verb (past/participle)</em> — meant · 'lus Fainía yios duý þis Frÿn atáea ghydæa' — the catch that in her throat was meant.</li>
+<li><strong>gifúf</strong> — vomit</li>
+<li><strong>Gig</strong> <em>n.</em> — jaw · Inside tmesis Gi'regéar'gýa — the jaw-region.</li>
+<li><strong>Gil</strong> <em>n.</em> — Object-of-Negative-Giving’s-Force — “gift” (feminine) · the eternal future’s frame-noun</li>
+<li><strong>Gil</strong> — the unreturnable gift</li>
+<li><strong>gilæn</strong> <em>verb (existential)</em> — eternally regives · permanent possession — the gift given again and again, forever; etymology g'[w]il'æn: wil 'all' tmesized into gæn, the hard w paid, welded solid; negative gilæn't 'never-gave', doubled for emphasis (gilæn't gilæn't)</li>
+<li><strong>gilæn't</strong> — never-gave; not-eternally-regives → <em>gilæn</em> ⟨working⟩</li>
+<li><strong>gla</strong> — questioning-echo marker → <em>gla-</em></li>
+<li><strong>gla-</strong> <em>prefix</em> — questioning-echo marker · Glascér = gla + scér</li>
+<li><strong>glaoh</strong> — wash</li>
+<li><strong>Glaoh-Glaoh</strong> <em>gerund (noun)</em> — washing · gerund by reduplication</li>
+<li><strong>Glaohao</strong> — fat/grease</li>
+<li><strong>Glaoscál</strong> <em>n.</em> — automobile · native word; the source of the loan “Scale”</li>
+<li><strong>Glaostalê</strong> <em>noun (plural)</em> — crystals · scour and scuff and grind up through centuries.</li>
+<li><strong>Glar afthæ</strong> — sky-blue</li>
+<li><strong>glás</strong> — the one-word herald → <em>glés-</em></li>
+<li><strong>Glascér</strong> — questioning-echo marker → <em>gla-</em></li>
+<li><strong>glatærn</strong> — wipe</li>
+<li><strong>glés-</strong> <em>prefix</em> — the one-word herald · a special glás: warns that the single word about to be spoken is all that’s getting said; never outside one-word echoes</li>
+<li><strong>Glésdanæams</strong> — Danæam (reduced/form of address?) ⟨working⟩</li>
+<li><strong>glúmach</strong> <em>adj.</em> — famous</li>
+<li><strong>Gna'frœli'sth</strong> — nest-child</li>
+<li><strong>Gnast</strong> <em>n.</em> — nest · Gnasthýa 'nest-of': 'dúéalaf Gnasthýa sê-ír-e' — up-inside-of the nest itself. ⟨working⟩</li>
+<li><strong>Gna’frœli’sth</strong> <em>author form</em> — nest-child</li>
+<li><strong>gneíth</strong> — sew</li>
+<li><strong>gnith</strong> — narrow</li>
+<li><strong>Goo</strong> — grass</li>
+<li><strong>Gosferê</strong> <em>noun (plural)</em> — geysers · 'Sin Gosferê leafæn' — as geysers melt.</li>
+<li><strong>Gradhamýa</strong> <em>n.</em> — stage</li>
+<li><strong>Grainê</strong> <em>n.</em> — grave(s) · attested after ssai; number-after-numeral watched</li>
+<li><strong>grásach</strong> — thick</li>
+<li><strong>Grëach</strong> <em>adj.</em> — humorous · Gree → Grëach — the double vowel contracts to ë before -ach, not bare *Greeach; Grëach Hín “a humoured man”</li>
+<li><strong>Grëach Hín</strong> — humorous → <em>Grëach</em></li>
+<li><strong>Grëachaí</strong> <em>n.</em> — humorousness · Gree → Grëach → Grëachaí</li>
+<li><strong>Gree</strong> <em>n.</em> — humour · the three quality roads: Hín e Gree · lus Gree e lus Hín · æœá-e Gree</li>
+<li><strong>greib</strong> <em>v.</em> — believe · 'mis Dú'greibach-greibach-e's Uoinainê mith gæn' — our toward-the-believing-of women we give.</li>
+<li><strong>greibach-greibach</strong> — the believing → <em>greib</em></li>
+<li><strong>Griebh</strong> <em>n.</em> — assault · 'aoa sin't niïl yGriebh-aoya' — about an assault (the disclosure).</li>
+<li><strong>guiáł</strong> <em>noun/adjective</em> — gold</li>
+<li><strong>Guiïn</strong> — yellow · leagístach o guiïn 'elastic and yellow'</li>
+<li><strong>Guiïn yáë</strong> — sun-yellow</li>
+<li><strong>Gusci</strong> — ghost → <em>Ghusci</em></li>
+<li><strong>g’[w]il’æn</strong> — eternally regives → <em>gilæn</em></li>
+</ul>
+<h3>H</h3>
+<ul>
+<li><strong>hafn</strong> <em>author form</em> — burn</li>
+<li><strong>hafn (noun: Hafnó)</strong> — burn</li>
+<li><strong>Hafnó</strong> <em>author form</em> — burn (noun)</li>
+<li><strong>Heatth</strong> <em>year-stem</em> — 57 · year-series numeral· base 2+30 (base-60 pair-stem). Pair: Heatth 57 (odd, bare) / Gheatth 58 (even, lenited). Year names: A-B = A×60 + B, hyphen-joined, second element bare. This form: odd· bare stem.</li>
+<li><strong>Him</strong> — ice</li>
+<li><strong>hín</strong> <em>n.</em> — man · the head Noun, guesting inside the standard-pronoun: Fæ’hín-iy’ær “a man … than fær”</li>
+<li><strong>Hín e Gree</strong> — humour → <em>Gree</em></li>
+<li><strong>hín-iy</strong> — than → <em>iy</em></li>
+<li><strong>holdh</strong> <em>adj.</em> — tall · holdhmÿa “taller” — the tetrad as degree, “positively contrary”</li>
+<li><strong>holdhmÿa</strong> — tall · comparative - “positively contrary” → <em>holdh, holdh | mÿa, mÿa</em></li>
+<li><strong>Holdhmÿa iy tens</strong> — than → <em>iy</em></li>
+<li><strong>hoy</strong> — cold</li>
+<li><strong>Hrádai</strong> <em>n.</em> — crown</li>
+<li><strong>Hthom</strong> <em>n.</em> — World · splits Hth’—…—’om — swallows whole propositions; Hthom’t “worldn’t”</li>
+<li><strong>Hthom’t</strong> — World → <em>Hthom</em></li>
+<li><strong>Hth’-…-’om</strong> — World → <em>Hthom</em></li>
+<li><strong>huethnea</strong> — serve → <em>ghuethn</em></li>
+<li><strong>huffach</strong> — short</li>
+</ul>
+<h3>I</h3>
+<ul>
+<li><strong>í</strong> <em>pron.</em> — it · 3sg; heads the resumptive-í emphasis frame; Scræsach í bhie 'tricky it is'</li>
+<li><strong>í-sê</strong> <em>pronoun (reflexive)</em> — itself · the sê-tetrad</li>
+<li><strong>Îæth</strong> <em>year-stem</em> — 27 · year-series numeral· base 2+30 (base-60 pair-stem). Pair: Îæth 27 (odd, bare) / Ghîæth 28 (even, lenited). Year names: A-B = A×60 + B, hyphen-joined, second element bare. This form: odd· bare stem.</li>
+<li><strong>Iarnachyathaí</strong> <em>n.</em> — technology · bracketed Iarn-ach-ya[th]-aí</li>
+<li><strong>Iarnbha</strong> <em>n.</em> — blacksmith · iron-smith</li>
+<li><strong>-ië</strong> — just, merely (“just-by”) → <em>nirïë</em></li>
+<li><strong>ië</strong> <em>suffix</em> — future morph · detachable; prefixes in tmetic relatives (’Ië’…) and on the copula (iëao); suffixes to Nouns as measure-adverbial “by-X”: mêdhië, nirïë — the Noun decapitalises on departure</li>
+<li><strong>Iëao As í iëátea</strong> — the perfect former → <em>stíl-</em></li>
+<li><strong>iëát</strong> <em>verb-form</em> — will-do · the ië- future face on át</li>
+<li><strong>ïegæn't</strong> <em>verb (fused negative, future)</em> — will-not-give · 'mis ainteith Arbhenu ïegæn't' — will not give our first event. ⟨working⟩</li>
+<li><strong>iësulæn</strong> — dig → <em>sulæn</em></li>
+<li><strong>Iíuu!</strong> — delight-word</li>
+<li><strong>il</strong> — a, an (indefinite) · than → <em>iy, niïl, niïl | iy</em></li>
+<li><strong>Ílthasr</strong> <em>noun (-r being)</em> — receptacle-being · 'Mao Ílthasr yiosnÿ dué yelSœinaí-aoya' — your receptacle for any-sound.</li>
+<li><strong>ílu</strong> — small</li>
+<li><strong>Imadachaí</strong> <em>n.</em> — substitution · of upland children; with Fœdh-fœdhýa 'the stealing-of'.</li>
+<li><strong>immi</strong> — suck</li>
+<li><strong>in</strong> <em>prep.</em> — at (temporal) · In As “at Eight”</li>
+<li><strong>’in  →  ’n</strong> — as per the taking-note of - topic marker → <em>S’air’n</em></li>
+<li><strong>In As</strong> — eight · at (temporal) → <em>As, As | in, in</em></li>
+<li><strong>Ínhe</strong> <em>year-stem</em> — 43 · year-series numeral· base 2+30 (base-60 pair-stem). Pair: Ínhe 43 (odd, bare) / Ghínhe 44 (even, lenited). Year names: A-B = A×60 + B, hyphen-joined, second element bare. This form: odd· bare stem.</li>
+<li><strong>Insaig</strong> — vote ⟨working⟩</li>
+<li><strong>Insaig-insaig</strong> — voting → <em>Insaig</em></li>
+<li><strong>iocías</strong> <em>dem. pl.</em> — those · compositional, not a new root — ios ‘that’ + cías ‘their/them’, “that-them”; replaces lus as the partitive whole-marker in this scenario</li>
+<li><strong>ios</strong> <em>dem./compl.</em> — that; the frozen cleft “[it is] that” · demonstrative, relative complementiser, AND the question-cleft — mysteriously bound to thas, elsewhere by resonance; ios thurn “there”. Dropped in echoes — even thas loses it there. Compounds with cías as iocías ‘those’.</li>
+<li><strong>ios ærmuch atá fæ</strong> — is / are - the form that accompanies ios → <em>atá</em></li>
+<li><strong>ios thurn</strong> — that; the frozen cleft “[it is] that” → <em>ios</em></li>
+<li><strong>ios-thurn</strong> — there</li>
+<li><strong>iosaoya</strong> <em>text-deictic</em> — farther along (the yet-to-be-said) · cataphoric far</li>
+<li><strong>iosiya</strong> <em>text-deictic</em> — farther (direction-unspecified)</li>
+<li><strong>iosiyao</strong> <em>text-deictic</em> — farther back (the earlier-said; “the former”) · the six-cell text-deixis paradigm : sís/ios × back (-iyao) / along (-aoya) / plain (-iya); “along” is cataphoric — the about-to-be-said. Chunk-order in the direction pair mirrored (observed, not decomposed)</li>
+<li><strong>iostá</strong> <em>cleft-closer</em> — UNCLEFTING-that · etymologically ios + atá — but only etymologically : grammaticalised as the declefter, for occasions that can’t otherwise be cleanly declefted; gloss “the de-clefting that”; closes what y-…nÿ opened; doctrined the manual de-clefter — deployed against ambiguity</li>
+<li><strong>iosthurn</strong> <em>adv.</em> — there · Cf. sísthurn 'here'. ⟨working⟩</li>
+<li><strong>ír</strong> <em>poss.</em> — its · beside fær 'his/her' — an animate/inanimate possessive split, light fork</li>
+<li><strong>irá</strong> <em>noun (direction)</em> — left · partner attested: íxeis “right(-side)”, duíxeis “rightward”</li>
+<li><strong>Íra</strong> — leftside</li>
+<li><strong>írsifarach</strong> <em>adj.</em> — silvery · list form; the text reads sírffrach — fork, unruled</li>
+<li><strong>is</strong> <em>v. (be)</em> — is (3sg present, attested) · Æœá-e Fía fæ is; beside bhies (present, general) — division or free variation — open</li>
+<li><strong>Isc</strong> <em>n.</em> — fish</li>
+<li><strong>isfar</strong> — white</li>
+<li><strong>Isfar óghs-e</strong> — bone-white</li>
+<li><strong>Íxeis</strong> — rightside</li>
+<li><strong>íxeis</strong> <em>n.</em> — right(-side) · closes irá’s missing partner</li>
+<li><strong>ixixaí</strong> <em>n.</em> — unicorn; literally “singularity” · tmesis-attested: Ia’ixixaí’rnach, Ch’ixixaí’ardea; the -aí shimmer apparent</li>
+<li><strong>Ixixaíyon</strong> <em>n.</em> — nightmare · literally “unicorn-of-the-night” — ixixaí + yon</li>
+<li><strong>ixyff</strong> — freeze</li>
+<li><strong>iy</strong> <em>part.</em> — than · replaces earlier il (which remains 'multiple'); stands free in predication (Holdhmÿa iy tens); hangs by the tmeter inside tmesis (hín-iy)</li>
+<li><strong>iy mæ silgá</strong> — think → <em>silgá</em></li>
+<li><strong>-iya</strong> <em>suffix</em> — one-who / that-which (per the nearest sísiya or íosiya) · Agentive-relativising: Thérafthyiya 'therapist', Líciya 'body-one'. Her note kept verbatim.</li>
+<li><strong>Iyao</strong> — back ⟨working⟩</li>
+<li><strong>Iyitê</strong> — guts</li>
+</ul>
+<h3>L</h3>
+<ul>
+<li><strong>Ł'oob-e'ix</strong> — before / exactly under-of ⟨working⟩</li>
+<li><strong>Łærmuê</strong> <em>noun (plural)</em> — the noises · 'Thas yŁærmuê mæ ygyg' — what noises you eke.</li>
+<li><strong>Laff</strong> <em>n.</em> — slacking · 'Gi'regéar'gýa niïl Laff e sæánách Rimái afTolea' — the jaw-region a slacking of negative space filled. ⟨working⟩</li>
+<li><strong>laí</strong> <em>v.</em> — see, saw</li>
+<li><strong>laí</strong> — see · FORK: laí 'see' vs laí 'say' (saí 'say' canon) — unruled</li>
+<li><strong>laías</strong> — echo suffix (vowel-harmonising) → <em>-as</em></li>
+<li><strong>Lain</strong> <em>adj.</em> — beautiful · Or’lain’il / Ro’lain’il; near-synonym fal</li>
+<li><strong>Laiyin</strong> — watch ⟨working⟩</li>
+<li><strong>Łamis</strong> <em>n.</em> — saliva · the Ł-family grows</li>
+<li><strong>Langaí</strong> — tongue</li>
+<li><strong>Langaír</strong> <em>n.</em> — language(s) · capitalised Noun; stack use 'tongue' (Mao Langaír dúfrœdh mæ rifæn — your tongue lengthwise you tear); minimal pair with Langaí 'tongue' — register choice or fork, unruled</li>
+<li><strong>łathn</strong> <em>v.</em> — kill · the plain-repetition attestation: Fær mæ łathn! Łathn!</li>
+<li><strong>Lawubœegh</strong> — dream-road</li>
+<li><strong>leafæn</strong> <em>v.</em> — melt</li>
+<li><strong>leagístach</strong> <em>adj.</em> — elastic</li>
+<li><strong>Lebendach</strong> <em>adj.</em> — alive</li>
+<li><strong>leff</strong> — live</li>
+<li><strong>Łeidhœrþ</strong> <em>author form</em> — hunt (noun)</li>
+<li><strong>łeit</strong> <em>author form</em> — hunt</li>
+<li><strong>łeit (noun: Łeidhœrþ)</strong> — hunt</li>
+<li><strong>lesenach</strong> <em>adj.</em> — pubic · 'lesenach Rhëw' — the pubic triangle.</li>
+<li><strong>Lethr</strong> <em>n.</em> — hobbit, halfling</li>
+<li><strong>Le’sídia’th</strong> <em>author form</em> — half-sídia</li>
+<li><strong>lhanc</strong> — green</li>
+<li><strong>Lhanc wíc-e</strong> — water-green</li>
+<li><strong>lheifs</strong> <em>adj.</em> — grey · Text form lheif: 'lus V lheif ∆ guiáł V lheif ∆ Yac' — the …grey… !gold! …grey… strobe.</li>
+<li><strong>Líc</strong> <em>n.</em> — body · Possessed: Líciya 'body-one/-of' — 'byclæírea Líciya Yon-e' — enclothed Night's body.</li>
+<li><strong>lich</strong> <em>author form</em> — smell</li>
+<li><strong>lich (noun: Lich-lich)</strong> — smell</li>
+<li><strong>Lich-lich</strong> <em>author form</em> — smell (noun)</li>
+<li><strong>Łif</strong> <em>n.</em> — Hell · the Ł-onset family beside łathn, Łítarthír</li>
+<li><strong>linchs</strong> <em>v.</em> — drinks</li>
+<li><strong>linchs</strong> — drink</li>
+<li><strong>Linchsy</strong> — liver</li>
+<li><strong>Łítarthír</strong> — Australia</li>
+<li><strong>lith</strong> <em>v.</em> — run · Ai’lith!</li>
+<li><strong>Łiuafth</strong> <em>n.</em> — heaven · ułiuafth “Heavensward” — small inside the u-complex, the swallowed-word law</li>
+<li><strong>Líuu!</strong> <em>author form</em> — delight-word</li>
+<li><strong>łix</strong> <em>p-modifier</em> — exact · rides the cleft before iostá</li>
+<li><strong>łixach</strong> <em>author form</em> — right / correct</li>
+<li><strong>łixach / ghéalíl</strong> — right/correct</li>
+<li><strong>-luai-</strong> <em>interjection</em> — aiee! · tmesis guest of pure cry: Ai'æ'titlop -luai-. ⟨working⟩</li>
+<li><strong>Lueffu</strong> — ashes</li>
+<li><strong>Łúgr</strong> — fire</li>
+<li><strong>Łúgrchain</strong> <em>n.</em> — fireman · mith Łúgrchainr-mé “we firemanbeing-with” — the mé-apposition road</li>
+<li><strong>Lund</strong> <em>n.</em> — pound · Niïl Lund e Shar “a pound of sugar”</li>
+<li><strong>lus</strong> <em>article</em> — the (definite)</li>
+<li><strong>lus Sáinsu eës Hrádai</strong> — of-the → <em>eës</em></li>
+<li><strong>lus Yüain s'ráshea'in</strong> — returned echo</li>
+<li><strong>lus Yüain s’ráshea’in</strong> <em>author form</em> — returned echo</li>
+<li><strong>luth</strong> — fight</li>
+<li><strong>Lutýrê</strong> <em>noun (plural)</em> — muckinesses · the muck.</li>
+<li><strong>lyn</strong> <em>v.</em> — use · past lynœa ‘used’ — spelled with œ rather than plain -ea, possibly a vowel-harmony variant, unconfirmed</li>
+<li><strong>lynœa</strong> — use → <em>lyn</em></li>
+<li><strong>Lyr</strong> <em>n.</em> — pound (currency) · beside Lund, the weight-pound — “currency and weight pounds have different names”</li>
+<li><strong>Łyüsnÿ</strong> <em>temporal adverb</em> — the-that-when(-that); the-then-when · Opens the therapy flashback. Case form łyüs-e 'the-that-when-of'.</li>
+</ul>
+<h3>M</h3>
+<ul>
+<li><strong>’ma</strong> <em>clitic</em> — on the contrary · INVARIANT; Gæn’ma, Sin’ma</li>
+<li><strong>mac</strong> <em>v.</em> — like · ten mac “I like”</li>
+<li><strong>mæ</strong> <em>pron.</em> — you</li>
+<li><strong>mælcen</strong> <em>v.</em> — bought (≈ traded) · ← maræien “trade”</li>
+<li><strong>mæos</strong> — absolute-possessive former → <em>-os</em></li>
+<li><strong>mäern</strong> — warm</li>
+<li><strong>Magh</strong> <em>n.</em> — soldier · beside its state-form Maghr</li>
+<li><strong>Maghr</strong> <em>n. (state)</em> — soldier-being, soldierhood · Magh + the -r state-former — essive roles join become-states under one nominalizer</li>
+<li><strong>Maíælrhië</strong> — grandparent (&quot;elder-Rhié&quot;)</li>
+<li><strong>Mainyin</strong> — bond-for-a-season</li>
+<li><strong>maios</strong> <em>pronoun (possessive)</em> — yours · '-'ya maios'ya' — yours. Cf. Mao 'your', sê-maos 'yourself'. ⟨working⟩</li>
+<li><strong>Malach</strong> <em>adj.</em> — late</li>
+<li><strong>mao</strong> <em>poss.</em> — your · 2nd-person possessive (cf. fær, cías)</li>
+<li><strong>maræien</strong> <em>v.</em> — trade</li>
+<li><strong>marcæn</strong> <em>v.</em> — to mark · 'lus Sgiesaetthum-e … marcæn' — marks the Sgiesaetthum.</li>
+<li><strong>más</strong> <em>v. (be)</em> — am (1sg present) · Más-ten ærmuch· Más nhœme ten</li>
+<li><strong>Más nhœme ten</strong> — am (1sg present) → <em>más</em></li>
+<li><strong>Más-ten ærmuch</strong> — I · am (1sg present) → <em>más, ten, ten | más</em></li>
+<li><strong>Math</strong> <em>n.</em> — mat</li>
+<li><strong>Matthsy</strong> <em>n.</em> — teacher · Matthsyr “teacher-being” — the functive: duín tes-mé Matthsyr “as a teacher”</li>
+<li><strong>mé</strong> <em>prep.</em> — with · thénu mé “whose”; too small to host tmesis — guests hyphen-dangle: mé-saige</li>
+<li><strong>mé-saige</strong> — with → <em>mé</em></li>
+<li><strong>Medham</strong> <em>n.</em> — middle · Medhamýa 'the middle-of': the 618th Olympiad's.</li>
+<li><strong>Mêdhe</strong> <em>n.</em> — metre · measure-adverbial mêdhië “by-a-metre” (-ië suffixed; lowercase as adverb)</li>
+<li><strong>mêdhië</strong> — metre → <em>Mêdhe</em></li>
+<li><strong>Mee</strong> <em>geas-marker</em> — woe-tide · tiers Me’æ’e (2sg), Me’en’e (1sg); converts O •-optative to imperative</li>
+<li><strong>Meilstory</strong> <em>n.</em> — diving suit · loan-flavoured, among the grubby walkers-in</li>
+<li><strong>Meos</strong> <em>pron.</em> — ours · predicate possessive</li>
+<li><strong>metałie</strong> <em>preposition (trailing)</em> — inclusive-of · Wilhíæ yScéan metałie</li>
+<li><strong>Mhís</strong> <em>quantifier</em> — lots / much · the h is native; distinct from mis 'our'</li>
+<li><strong>minach</strong> — near</li>
+<li><strong>minú</strong> <em>adj.</em> — detail-sized · Inside Ghitasiu-minú 'the detail-sized quote / pull-quote'. ⟨working⟩</li>
+<li><strong>Mis</strong> <em>poss.</em> — our · article in existentials; never tmeses there; variant mís</li>
+<li><strong>Mis ssai Grainê</strong> — two → <em>ssai</em></li>
+<li><strong>mith</strong> <em>pron.</em> — we (the existential’s default donor) · also substituted for I / you in neutral questions</li>
+<li><strong>Mith ax ten’ya</strong> — but; but-especially → <em>ax</em></li>
+<li><strong>Mith fær-dúe</strong> — general-being → <em>Cáithoorhr</em></li>
+<li><strong>mith Łúgrchainr-mé</strong> — fireman → <em>Łúgrchain</em></li>
+<li><strong>miths</strong> <em>pron.</em> — us · 1pl object; the sê-base of miths-sê</li>
+<li><strong>miths-sê</strong> <em>pronoun (reflexive/reciprocal)</em> — ourselves (us-self) · the sê-family; base miths “us” — “faer, us, and them”</li>
+<li><strong>Miúrroo</strong> — louse</li>
+<li><strong>Moldit</strong> — lake</li>
+<li><strong>mordach</strong> <em>adj.</em> — big · sin mordach sy fær “as big as her”; extends toward ‘enormous’ in mordachië ‘enormously’ and mordachaí ‘enormity’</li>
+<li><strong>mordachaí</strong> <em>noun (abstract)</em> — enormity · mordach + -aí; alternate frame mordachaí-by 'with enormity'</li>
+<li><strong>mordachaí-by</strong> — enormity → <em>mordachaí</em></li>
+<li><strong>mordachië</strong> <em>adv.</em> — enormously · mordach + -ië; wrapped by the or…il attenuator in or’mordachië’il—’t ‘not-insufficiently-enormously’</li>
+<li><strong>múlch</strong> — good · annadh múlch œr scicach 'whether good or shit'; múlchtma 'worse (less-good)' — -tma unanalysed, open</li>
+<li><strong>múlchtma</strong> <em>adj.</em> — worse (less-good) · 'less-good'; -tma unanalysed — open</li>
+<li><strong>muydh</strong> — big</li>
+<li><strong>mÿa</strong> <em>clitic</em> — comparative — “positively contrary” · weld of 'ma + 'ya, replacing the sequence; holdhmÿa 'taller'</li>
+<li><strong>myach</strong> — heavy</li>
+<li><strong>mÿel</strong> <em>superl.</em> — more-than-any · with variant definite articles; partitive e placements; Lus mÿel Fírladr-e … marcæn 'marks the most length = the longest'</li>
+<li><strong>mÿel / niyel</strong> <em>superl.</em> — more-than-any / fewer-than-any · with variant definite articles; partitive e placements</li>
+<li><strong>Myth</strong> <em>n.</em> — nose</li>
+</ul>
+<h3>N</h3>
+<ul>
+<li><strong>neria</strong> — new · mis neria o múlchtma ax niecscách Yáe 'our new and worse but necessary sun'</li>
+<li><strong>nhirma</strong> — swim</li>
+<li><strong>nhœme</strong> <em>v.</em> — come, coming</li>
+<li><strong>nhœme</strong> — come · yios nhœme atá 'that comes is'</li>
+<li><strong>Nhœme’thte</strong> — negative → <em>’thte</em></li>
+<li><strong>ni</strong> — a, an (indefinite) · single, singular → <em>niyail, niïl, niïl | niyail</em></li>
+<li><strong>niecscách</strong> <em>adj.</em> — necessary · 'múlchtma ax niecscách Yáe' — a worse but necessary sun.</li>
+<li><strong>Nif</strong> <em>n.</em> — nose · Myth re-glossed 'snout' — both live, divided</li>
+<li><strong>niheag</strong> <em>adj.</em> — tiny · sírffrach niheag Erlyê — silver tiny letters.</li>
+<li><strong>niïl</strong> <em>article</em> — a, an (indefinite) · compound: ni “fewer-than” + il “multiple”</li>
+<li><strong>niïl Ffearhsy</strong> — horse → <em>Ffearhsy</em></li>
+<li><strong>Niïl Fhós</strong> — bitch → <em>Fhós</em></li>
+<li><strong>Niïl Lund e Shar</strong> — pound → <em>Lund</em></li>
+<li><strong>niïl Pat sulænea</strong> — hole → <em>Pat</em></li>
+<li><strong>Nímhog</strong> <em>n.</em> — dog · lenited after niïl → <em>niïl Nímhog</em></li>
+<li><strong>Nímhogê</strong> <em>n.</em> — dog(s) · after éx; lemma unresolved</li>
+<li><strong>Nímloc</strong> <em>n.</em> — minute (of time) · 'Niïl Nímloc thiransgenea' — a minute passed.</li>
+<li><strong>niri</strong> <em>adv. stem</em> — just, merely · bare stem of nirïë (niri + -ië)</li>
+<li><strong>nirïë</strong> <em>adv.</em> — just, merely (“just-by”) · niri + -ië; the i-i seam writes ï (cf. niïl ‹ ni + il); opens the clefted-P frame; capitalised only sentence-initially</li>
+<li><strong>Nirïë yinÿ … iostá</strong> — moment → <em>Ornbeíl</em></li>
+<li><strong>niri’thte</strong> <em>adv.</em> — “justn’t”, just about · aoa niri’thte “just about”</li>
+<li><strong>niuain</strong> <em>quantifier (compositional)</em> — fewer-than-one · ni + uain; niuain e Frælithi’ya</li>
+<li><strong>niuain e Frælithi’ya</strong> — fewer-than-one → <em>niuain</em></li>
+<li><strong>Niya'nchia'il</strong> <em>noun phrase</em> — single inch · 'Niïl Niya'nchia'il mæ screppæn o brís' — a single inch you shrink and break.</li>
+<li><strong>niyail</strong> <em>quant.</em> — single, singular · ni “fewer-than” + yail “many”</li>
+<li><strong>niyel</strong> <em>superl.</em> — fewer-than-any · with variant definite articles; partitive e placements</li>
+<li><strong>no</strong> — few</li>
+<li><strong>nugænea</strong> <em>verb (past/participle)</em> — nodded · decomposition nu- + gænea ('a little give')? — plausible, unconfirmed</li>
+</ul>
+<h3>O</h3>
+<ul>
+<li><strong>O</strong> <em>part.</em> — the “all” modifier (list-opener) · opens a coordination as a menu: O Cafi œr Sî 'Coffee or Tea' — options offered, both exist, soft both-at-once; only with o / œr / ax, never æxó / aoæx; distinct from the optative O, which wears the •</li>
+<li><strong>o</strong> <em>conj.</em> — and · before the last and/or between every pair</li>
+<li><strong>O Cafi œr Sî</strong> — the “all” modifier (list-opener) → <em>O</em></li>
+<li><strong>Ó'rrync'ghs</strong> <em>noun (tmesis compound)</em> — spine · Ó'…'ghs hosting rrync. 'Dú'iths þis Ó'rrync'ghs' — toward us her spine.</li>
+<li><strong>Œlimpiad</strong> <em>noun (borrowed)</em> — Olympiad · 'ghslár-ghüleith Œlimpiad-e' — the 10.18th Olympiad.</li>
+<li><strong>Œlsceil</strong> <em>n.</em> — muscle · Rr'œlsceil'inch — the back muscles (tmesis).</li>
+<li><strong>œr</strong> <em>conj.</em> — or · Cafi œr Sî — between every pair</li>
+<li><strong>Œr ’thte</strong> — neither-nor → <em>aoœr</em></li>
+<li><strong>Œurdê</strong> <em>n.</em> — words (plural) · Cf. Uœrd 'word'. 'lus Œurdê e Fenthœs Ruth-e' — the words of Red's defence. ⟨working⟩</li>
+<li><strong>ofer</strong> — throw</li>
+<li><strong>On</strong> — foot</li>
+<li><strong>Onê</strong> <em>noun (plural)</em> — feet · 'Oob Onê' — under feet. ⟨working⟩</li>
+<li><strong>Oó</strong> — river</li>
+<li><strong>Oob</strong> <em>prep.</em> — under · tmesis host: oo…b</li>
+<li><strong>Oob lus Phailé</strong> — bed → <em>Phailé</em></li>
+<li><strong>Oobâ</strong> <em>author form</em> — tail</li>
+<li><strong>Oobao</strong> — other (otherly) ⟨working⟩</li>
+<li><strong>Oobrrhync</strong> <em>author form</em> — tail</li>
+<li><strong>Oobrrhync / Oobâ</strong> — tail</li>
+<li><strong>Oobsíg</strong> <em>n.</em> — prison · Base of Oobsígænea 'imprisoned'; tmesis host Oob'…'sígænea.</li>
+<li><strong>Oobsígænea</strong> <em>participle (-ea)</em> — imprisoned · Text form Oob'aufGaolaí'sígænea — 'incar'aufGaolaí'cerated': the host ingests the whole clade-name.</li>
+<li><strong>oogh</strong> — know</li>
+<li><strong>ooilæch</strong> <em>v.</em> — wanted · past of ooilich</li>
+<li><strong>ooilich</strong> <em>v.</em> — want · past ooilæch</li>
+<li><strong>ooraith</strong> <em>v.</em> — kill · sê fæ ooraith “himself he killed”; base of Ooraithr</li>
+<li><strong>Ooraithr</strong> <em>n.</em> — killed-being · Ooraith 'kill' + -r, patient-flavoured; pron. 'Oo*raiɦ-rr'</li>
+<li><strong>Oostú</strong> — spit</li>
+<li><strong>oothíth</strong> <em>v.</em> — appoint · past oothíthea; takes the fær-dúe + -r-state-noun become-frame, same structure as ghiæan</li>
+<li><strong>oothíthea</strong> — appoint → <em>oothíth</em></li>
+<li><strong>Oothraí</strong> <em>n.</em> — Changing (the practice) · 'yOthœsræ-othœsræ e Oothraí' — the outlawing of Changing. Oothraíthê = the Changed (people).</li>
+<li><strong>Oothraíthê</strong> — Changed (the Changed) ⟨working⟩</li>
+<li><strong>Or…il</strong> <em>circumfix</em> — not X enough · insufficiency degree; attaches by tmesis-seams and charges the standard toll — soft l rides free (Or’lain’il), hard c pays (or’raif’il) (order-canon turn)</li>
+<li><strong>Oraï</strong> — year</li>
+<li><strong>Oraiê</strong> — years (plural) ⟨working⟩</li>
+<li><strong>Orn</strong> <em>author form</em> — eye; also plural Orn</li>
+<li><strong>Orn (also plural: Orn)</strong> — eye</li>
+<li><strong>Ornbeíl</strong> <em>n.</em> — moment · Nirïë yinÿ … iostá Ornbeíl “just at that moment” — its iostá now doctrined: the manual de-clefter, closing the cleft explicitly</li>
+<li><strong>Ornlawy</strong> — avatar ⟨working⟩</li>
+<li><strong>Orscænyæn</strong> <em>v.</em> — to spider (letters) · Orscænyæn-orscænyæn 'the spidering' — silver letters across Night's back.</li>
+<li><strong>Orscænyæn-orscænyæn</strong> — the spidering → <em>Orscænyæn</em></li>
+<li><strong>Or’lain’il</strong> — not X enough → <em>Or…il</em></li>
+<li><strong>or’mordachië’il-’t</strong> — enormously → <em>mordachië</em></li>
+<li><strong>or’raif’il</strong> — not X enough · hungry → <em>Or…il, Or…il | craif, craif</em></li>
+<li><strong>Or’threïg’il</strong> — tired → <em>threïg</em></li>
+<li><strong>Or’threïg’il côs by</strong> — sleep → <em>côs</em></li>
+<li><strong>-os</strong> <em>suffix</em> — absolute-possessive former · teos “mine”, mæos “yours” (mao→mæ at the seam); the kin-frame’s anatomy re-read</li>
+<li><strong>Othœsræ-othœsræ</strong> <em>verbal noun (reduplicated)</em> — outlawing · of Changing, 2667 I.T. Reduplication: X-X = the X-ing.</li>
+</ul>
+<h3>P</h3>
+<ul>
+<li><strong>Pách</strong> — turn (noun)</li>
+<li><strong>pahæn</strong> — turn (verb)</li>
+<li><strong>páłea</strong> — old</li>
+<li><strong>parcuil</strong> — stab/pierce</li>
+<li><strong>Pat</strong> <em>n.</em> — hole · niïl Pat sulænea “a hole dug”</li>
+<li><strong>Pauth</strong> <em>author form</em> — hit (noun)</li>
+<li><strong>pauth (noun: Pauth)</strong> — hit</li>
+<li><strong>peeriy</strong> — sharp</li>
+<li><strong>Penu</strong> — breast</li>
+<li><strong>Penuê</strong> <em>noun (plural)</em> — breasts ⟨working⟩</li>
+<li><strong>Phailé</strong> <em>n.</em> — bed · Oob lus Phailé “under the bed”</li>
+<li><strong>Piell</strong> <em>noun (name)</em> — — (Bill’s face) · the exemplar-name (Ten dúe Piell í átea); also attested 'face' — pairs with Cruích 'face': fork or register split, open</li>
+<li><strong>pligu</strong> <em>v.</em> — fold · participle pliguea 'folded'</li>
+<li><strong>Praxis</strong> <em>n.</em> — praxis · hosted as 'raxis in Próitínä'raxis-e'íach.</li>
+<li><strong>Príónê</strong> <em>noun (plural)</em> — prions · Red's house style, in Danæam at last.</li>
+<li><strong>Prïxreg</strong> <em>n.</em> — principle · English-shaped loan. 'niïl sain Prïxreg bhie' — a great principle is.</li>
+<li><strong>Próitínäíach</strong> <em>adjective (tmesis host)</em> — proteinaceous · Text form Próitínä'raxis-e'íach — 'proteinaceous-praxis': derivation ingests its twin.</li>
+<li><strong>Pulsc</strong> <em>n.</em> — dust · Pulsc yiæn 'dust lies'; lus Pulsc e felCne'téxt'ilea 'the dust of ground-down tissue'</li>
+<li><strong>Pulsc yiæn</strong> — dust → <em>Pulsc</em></li>
+<li><strong>Pún</strong> <em>n.</em> — tower · guest inside S’i’pún’il’n</li>
+</ul>
+<h3>R</h3>
+<ul>
+<li><strong>-r</strong> <em>suffix</em> — state-noun former (“-being”) · Xæxr 'king-being' — become's complement; beside the du-dress</li>
+<li><strong>r</strong> — notice! (fragments) → <em>Ai’</em></li>
+<li><strong>Raí</strong> <em>num.</em> — three · odd member of Raí 3 / Ghraí 4</li>
+<li><strong>Raige</strong> — sea</li>
+<li><strong>Ráip</strong> — rope</li>
+<li><strong>Raíwil</strong> <em>year-stem</em> — 49 · year-series numeral· base 2+30 (base-60 pair-stem). Pair: Raíwil 49 (odd, bare) / Ghraíwil 50 (even, lenited). Year names: A-B = A×60 + B, hyphen-joined, second element bare. This form: odd· bare stem.</li>
+<li><strong>Ralxú</strong> <em>n.</em> — government · Yth ír Ralxú lus Both rüstea eibh ‘the city was ruined by its government’</li>
+<li><strong>Regéar</strong> <em>n.</em> — region · Gi'regéar'gýa = Gi- + regéar + -gýa, 'the jaw's region'.</li>
+<li><strong>rein</strong> — dirty → <em>reinach</em></li>
+<li><strong>reinach</strong> <em>adj.</em> — dirty · -ach shape apparent; base rein unminted — watched</li>
+<li><strong>rhäntupách</strong> <em>adj.</em> — relevant</li>
+<li><strong>Rhëw</strong> <em>n.</em> — triangle</li>
+<li><strong>Rhié</strong> <em>n.</em> — Parent · te'rhié'os 'parent-mine' (the te…'os kin-frame); context renders 'my mother'; pron. 'Hrjaiy'; familiar possessive rhié-færs 'parent-his' — the kin-noun lowercase</li>
+<li><strong>Rhié e Bailch</strong> — milk-Rhié</li>
+<li><strong>Rhié-Emma-mé-aoa</strong> — Rhié-by-oath (parent-in-law)</li>
+<li><strong>rhié-færs</strong> — Parent → <em>Rhié</em></li>
+<li><strong>Rhié-tóff</strong> — chosen-Rhié</li>
+<li><strong>Rîbha</strong> <em>n.</em> — book · Rîbha-e John “book-o’-John” — e hyphen-hung on the possessum before a named possessor</li>
+<li><strong>Rîbha-e John</strong> — book → <em>Rîbha</em></li>
+<li><strong>Rifæn</strong> <em>v.</em> — tear · 'Mao Langaír dúfrœdh mæ rifæn' — your tongue lengthwise you tear.</li>
+<li><strong>Rim</strong> <em>n.</em> — a space</li>
+<li><strong>Rimái</strong> <em>n.</em> — space (the space) · 'Laff e sæánách Rimái afTolea' — a slacking of negative space filled.</li>
+<li><strong>ríse</strong> — breathe</li>
+<li><strong>ro'gænstílgæn'il</strong> <em>verb (monster tmesis)</em> — not-insufficiently-had-and-still-gives · ro'…'il ('not insufficiently') wrapped around gæn-stíl-gæn; i.e. gives — and has had, and still gives — sufficiently..</li>
+<li><strong>Ro…il</strong> <em>circumfix</em> — too X · excess degree</li>
+<li><strong>ro’arch’il</strong> — far → <em>arch</em></li>
+<li><strong>Rraen</strong> — divide ⟨working⟩</li>
+<li><strong>Rraenaí</strong> <em>n.</em> — division ⟨working⟩</li>
+<li><strong>Rrinch</strong> <em>adj.</em> — back-related · host Rr'…'inch.</li>
+<li><strong>Rrync</strong> — back</li>
+<li><strong>Rúa</strong> — wind</li>
+<li><strong>rubh</strong> <em>v.</em> — touch</li>
+<li><strong>Ruimais</strong> <em>n.</em> — novel</li>
+<li><strong>rüst</strong> <em>v.</em> — ruin · past rüstea 'ruined'</li>
+<li><strong>rüstea</strong> — ruin → <em>rüst</em></li>
+<li><strong>Ruth</strong> <em>noun | author form</em> — red (noun) · Red's Danæam name; lus Aoiyid e Ruth-e Útcáry'ya</li>
+<li><strong>ruth (noun: Ruth)</strong> — red</li>
+</ul>
+<h3>S</h3>
+<ul>
+<li><strong>S'iyail'in</strong> — singly-so (niyail) ⟨working⟩</li>
+<li><strong>sæánách</strong> <em>adj.</em> — negative · 'sæánách Rimái' — negative space.</li>
+<li><strong>Sæculomê</strong> <em>noun (plural)</em> — centuries · 'sin duý Sæculomê' — as through centuries.</li>
+<li><strong>sæthw</strong> — flow</li>
+<li><strong>saí</strong> <em>v.</em> — speak · plain / present member of the pair; perfect: saige</li>
+<li><strong>saí</strong> <em>v.</em> — tell · past saíea ‘told’</li>
+<li><strong>saí</strong> — say</li>
+<li><strong>saíea</strong> — tell → <em>saí</em></li>
+<li><strong>saige</strong> <em>v.</em> — have spoken · perfect of saí; quotative: Saige fæ “fæ said”</li>
+<li><strong>Saige fæ</strong> — have spoken → <em>saige</em></li>
+<li><strong>sáillaí</strong> <em>verbal noun</em> — speaking · Of sáille 'speak'; inside Dé'ahor'cruí'sáillaí'ch'ía'er.</li>
+<li><strong>sáille</strong> <em>v.</em> — speak</li>
+<li><strong>saílturn</strong> <em>noun/verb</em> — welcome · 'Yáe dúe saílturn' — the sun to welcome.</li>
+<li><strong>sain</strong> <em>adj.</em> — good · sainmÿa 'better'. FORK: the stack list glosses Sain 'great' (niïl sain Prïxreg bhie 'a great principle is') against 'good' — unruled</li>
+<li><strong>Sainfasæn</strong> — benefit ⟨working⟩</li>
+<li><strong>Sáinsu</strong> <em>n.</em> — task-set, “hands”; hands (the body’s task-set — attested 1.10.2) · one’s tasks / handiwork</li>
+<li><strong>Saln</strong> <em>author form</em> — salt (noun)</li>
+<li><strong>Sálthê</strong> — wealds ⟨working⟩</li>
+<li><strong>Samsca</strong> <em>n.</em> — community · Attested in tmesis: aufGao'samsca'laíê — aufGaolaí communities.</li>
+<li><strong>Sap</strong> — stone</li>
+<li><strong>Sárghu</strong> — seek ⟨working⟩</li>
+<li><strong>scaírea</strong> <em>modal verb</em> — could · 'mís Dé'ahor'cruí'sáillaí'ch'ía'er scaírea gilæn't' — could never-give. ⟨working⟩</li>
+<li><strong>Scál</strong> <em>n.</em> — cat · Catscale “geas-car” (lore)</li>
+<li><strong>Scál</strong> <em>n.</em> — boat · Niïl Scál e thíthíl Tonnaê “a boat of a thousand tons”</li>
+<li><strong>Scale</strong> <em>n.</em> — car, automobile · grubby loan-loop: Danæam Glaoscál → clipped → reborrowed as pseudo-English “Scale”; the commonest word for a car</li>
+<li><strong>scaoræn</strong> <em>v.</em> — scour</li>
+<li><strong>Scarryfê</strong> <em>noun (plural)</em> — fangs · 'Scarryfê dué Craigachaí mæ sciapæn' — fangs for purchase you grab.</li>
+<li><strong>scéaler</strong> <em>v.</em> — write · scéalerea 'written'.</li>
+<li><strong>Scéan</strong> <em>noun (name)</em> — — (an exemplar-name) · vocative riders: Scéan-teos in intimacy; O mis Scéan mith dúe silgá gæn</li>
+<li><strong>Scëel-scëel</strong> <em>noun (reduplicated)</em> — ceiling</li>
+<li><strong>scén</strong> <em>interrog. particle</em> — question particle — NON-PAST (eclipsing) · Scén stil'ten'át stílát?</li>
+<li><strong>scér</strong> <em>interrog. particle</em> — question particle — PAST (leniting) · Scér Ruth — syá — Yon Stár gilæn't gilæn't?</li>
+<li><strong>scé’thte</strong> — negative → <em>’thte</em></li>
+<li><strong>scé’ya</strong> — positive answer / tag → <em>’ya</em></li>
+<li><strong>sciapæn</strong> <em>v.</em> — grab · felSciapæn 'grab-on'.</li>
+<li><strong>scicach</strong> <em>adj.</em> — shit (shitty) · 'annadh múlch œr scicach' — whether good or shit.</li>
+<li><strong>sciéłh</strong> — smooth</li>
+<li><strong>Scírsy</strong> — snake</li>
+<li><strong>Sciw</strong> — wing</li>
+<li><strong>sclaí</strong> <em>v.</em> — ask · Participle sclaíea: 'sy atáea'thte sclaíea' — so wasn't asked.</li>
+<li><strong>sclaíea</strong> — asked → <em>sclaí</em> ⟨working⟩</li>
+<li><strong>Sclaoímhú</strong> <em>n.</em> — corkscrew</li>
+<li><strong>Sclíeclu</strong> <em>v.</em> — conclude · Reduplicated: Sclíeclu-Sclíeclu 'the conclusion'.</li>
+<li><strong>Sclíeclu-Sclíeclu</strong> — the conclusion → <em>Sclíeclu</em> ⟨working⟩</li>
+<li><strong>Sclostaíría</strong> <em>n.</em> — wrenching · closing cadence: dús Trawidía o dús Crith-crith o dúrrync dús Sclostaíría</li>
+<li><strong>Sclún</strong> — close ⟨working⟩</li>
+<li><strong>Sclúnea</strong> — closed ⟨working⟩</li>
+<li><strong>Sclúneäi</strong> — closure ⟨working⟩</li>
+<li><strong>Scræsach</strong> <em>adj.</em> — tricky · Cf. Oath Scræsachaí Tïcainê 'without-trickery'. 'Scræsach í bhie' — tricky it is.</li>
+<li><strong>Scræsachaí</strong> — trickery ⟨working⟩</li>
+<li><strong>screppæn</strong> <em>v.</em> — shrink</li>
+<li><strong>sê</strong> <em>pron.</em> — self (reflexive) · logophoric — in reports, self bends back to the sayer; nearest kin Sî 'tea'. Naked sê = 1st ('myself'; never 3rd; generic 'the-self' in infinitives). Family: sê · í-sê · sê-fær · miths-sê · cías-sê — each antecedent its own compound, no exotic binding. Placement free; serves as the emphatic. cías-sê: alone (sg) / each-other (pl) — the alone-construction rides mé, 'ya on wil reassures</li>
+<li><strong>sê fæ ooraith</strong> — kill → <em>ooraith</em></li>
+<li><strong>Sê-dúi’gheo-e’ri</strong> — unto → <em>dúiri</em></li>
+<li><strong>sê-fær</strong> <em>pronoun (reflexive)</em> — færself (3rd) · the sê-tetrad; hyphen-compound, fær last (formerly fær-sê)</li>
+<li><strong>sê-maos</strong> <em>pronoun (reflexive)</em> — yourself · sê- reflexive + maos 'your'.</li>
+<li><strong>Sëain</strong> — own ⟨working⟩</li>
+<li><strong>Sëainyr</strong> — ownership ⟨working⟩</li>
+<li><strong>seegh</strong> — push</li>
+<li><strong>Seoir</strong> <em>n.</em> — key</li>
+<li><strong>Sfeith</strong> <em>year-stem</em> — 21 · year-series numeral· base 2+30 (base-60 pair-stem). Pair: Sfeith 21 (odd, bare) / Ghsfeith 20 (even, lenited). Year names: A-B = A×60 + B, hyphen-joined, second element bare. This form: odd· bare stem.</li>
+<li><strong>Sgiesaetthum</strong> — 120-year period ⟨working⟩</li>
+<li><strong>Shar</strong> <em>n.</em> — sugar</li>
+<li><strong>shrai</strong> <em>v.</em> — praise</li>
+<li><strong>shrai-shrai</strong> <em>gerund (noun)</em> — the praising · gerund by reduplication</li>
+<li><strong>Sî</strong> <em>n.</em> — tea</li>
+<li><strong>sícías</strong> <em>dem. pl.</em> — these · compositional, not a new root — sís ‘this’ + cías ‘their/them’, “this-them”; same replacement</li>
+<li><strong>Sídhá</strong> <em>n.</em> — sídhe · 'yThérafthyiya Sídháê-e' — the therapist sídhe-of.</li>
+<li><strong>Sídia</strong> <em>n.</em> — sibling · sídia-teos 'sibling-mine'; context renders sister or brother — the agender culture's word</li>
+<li><strong>Sídia</strong> <em>n.</em> — sibling · the familiar possessive sídia-teos 'sibling-mine'; the standard-NP of the comparative frame (iy lus Sídia ___); sister or brother by context</li>
+<li><strong>Sídia-afTo'emma'lach</strong> — shared-parent kin (full-blood sibling)</li>
+<li><strong>Sídia-afTo’emma’lach</strong> <em>author form</em> — shared-parent kin / full-blood sibling</li>
+<li><strong>Sídia-leth</strong> <em>author form</em> — half-sídia</li>
+<li><strong>Sídia-leth / Le'sídia'th</strong> — half-sídia</li>
+<li><strong>sídia-teos</strong> — sibling · - → <em>Sídia</em></li>
+<li><strong>Sídia-wal</strong> — sídia-by-oath</li>
+<li><strong>Sídia-wal</strong> — oath-sídia</li>
+<li><strong>Sídílë</strong> — womb-kin / blood-sibling</li>
+<li><strong>Síhr...</strong> — grief-family word</li>
+<li><strong>Siïlu</strong> — seed</li>
+<li><strong>silgá</strong> <em>v.</em> — think · iy mæ silgá “than you think”</li>
+<li><strong>Sin</strong> <em>part.</em> — so / “as was” · behaves adjectivally in the imperative frame; hosts ’ma; tmesis host for verbs: S’aige’in “as-said” (seam-merge)</li>
+<li><strong>sin</strong> <em>part.</em> — as, so · aich sin “also as”; the clefted so of the yinÿ…iostá frame</li>
+<li><strong>sin … sy …</strong> — so-then → <em>sy</em></li>
+<li><strong>- sin e Ulfœrth -</strong> — Revenge-journey / -expedition / -quest → <em>Ulfœrth</em></li>
+<li><strong>sin mordach sy fær</strong> — big → <em>mordach</em></li>
+<li><strong>sin…sy</strong> — so-then - the equation-standard’s leg → <em>sy</em></li>
+<li><strong>Sinithaíl</strong> — twin</li>
+<li><strong>Sinótæn</strong> — follows · reduplicated Sinótæn-sinótæn 'the following' ⟨working⟩</li>
+<li><strong>Sinótæn-sinótæn</strong> — the following → <em>Sinótæn</em></li>
+<li><strong>sinya</strong> <em>adv.</em> — muchly · sinya holdh “muchly tall”</li>
+<li><strong>sinya holdh</strong> — muchly → <em>sinya</em></li>
+<li><strong>Sin’ma</strong> — on the contrary → <em>’ma</em></li>
+<li><strong>sin’t</strong> <em>part.</em> — not so · sin + ’t; aoa sin’t “seems, so-abouts” — the double-negative disembodiment</li>
+<li><strong>Síonæiya</strong> <em>proper noun</em> — Faerieland (of Faerieland) · THE ENDONYM: Faerieland's name in Danæam — 'ySíonæiya Ffemá'bissal-iy'dheach-e' = the Faerieland Appellate Court. Cf. Síonæya / the Síonæyais.</li>
+<li><strong>sírffrach</strong> <em>adj.</em> — silvery? · text form; the list gives írsifarach — fork, unruled ⟨working⟩</li>
+<li><strong>sís</strong> <em>dem.</em> — this · sís thurn “here” (this-where). Compounds with cías as sícías ‘these’.</li>
+<li><strong>sís thurn</strong> — this → <em>sís</em></li>
+<li><strong>sís Tïc e Bis</strong> — House · Grief → <em>Bis, Tïc, Tïc | Bis</em></li>
+<li><strong>sís-thurn</strong> — here</li>
+<li><strong>sísaoya</strong> <em>text-deictic</em> — nearer along · cataphoric near; sin-sísaoya aobisyach-e sy atáea'thte sclaíea</li>
+<li><strong>sísiya</strong> <em>text-deictic</em> — nearer (direction-unspecified) · hosts -iya ('per the nearest sísiya and nearest íosiya'); Sísiyaoýa 'one who/that the same one was'</li>
+<li><strong>sísiyao</strong> <em>text-deictic</em> — nearer back (“the latter”)</li>
+<li><strong>Sísiyaoýa</strong> <em>relative noun</em> — one who/that the same one was · Oath: 'dræao sísiya-iosiyaoýa Dræaigeainê atá' — from the same-one-abductees are.</li>
+<li><strong>Sísthnaoya</strong> — hereby · oath opening Sís-thüs o drúræao 'this-when and subsequent-from' ⟨working⟩</li>
+<li><strong>Sísthurn</strong> <em>adv.</em> — here · variant of sís-thurn; the Oath reprise opens Sísthurn ⟨working⟩</li>
+<li><strong>Sithê</strong> — seas (plural) ⟨working⟩</li>
+<li><strong>Síthüs</strong> <em>noun/adverb</em> — now · 'Duín Síthüs' — of-in Now. síthüsië 'nowily'. Cf. Sís-thüs 'this-when' (Oath). ⟨working⟩</li>
+<li><strong>síthüsië</strong> <em>adverb (-ië)</em> — nowily · Síthüs + -ië. ⟨working⟩</li>
+<li><strong>Síuln</strong> <em>n.</em> — wound · inferred bare singular — only Síulnê directly attested</li>
+<li><strong>Síulnê</strong> <em>noun (pl.)</em> — wounds · a further plain -ê plural</li>
+<li><strong>slaff</strong> <em>author form</em> — cut</li>
+<li><strong>slaff (noun: Slaff-slaff)</strong> — cut</li>
+<li><strong>Slaff-slaff</strong> <em>author form</em> — cut (noun)</li>
+<li><strong>Slár</strong> <em>year-stem</em> — 9 · year-series stem, base 2+30: Slár 9 (odd, bare) / Ghslár 10 (even); digit-mode: slár-cliffýa = 95</li>
+<li><strong>Smiotherách</strong> <em>adj.</em> — infectious · Smiotherách Praxis — infectious praxis.</li>
+<li><strong>Snë</strong> — snow</li>
+<li><strong>Sœinaí</strong> <em>n.</em> — sound · yelSœinaí 'any sound'.</li>
+<li><strong>sœinea</strong> <em>v.</em> — sounded · 'fær Sclíeclu-Sclíeclu sœinea' — faer conclusion sounded.</li>
+<li><strong>Son</strong> <em>v.</em> — bleed · soniú; gerund Son-Son</li>
+<li><strong>Sór</strong> — owed ⟨working⟩</li>
+<li><strong>sót</strong> <em>v.</em> — go on · usót 'to go'; sót serves plain-go</li>
+<li><strong>sót</strong> — walk</li>
+<li><strong>ssai</strong> <em>num.</em> — two · Mis ssai Grainê “our two graves”</li>
+<li><strong>ssai e Frælithi’ya</strong> — child → <em>Fræli</em></li>
+<li><strong>ssíns</strong> <em>num.</em> — zero · ssíns e Frælithi’ya “zero of the children” — zero joins the numerals</li>
+<li><strong>ssíns e Frælithi’ya</strong> — zero → <em>ssíns</em></li>
+<li><strong>Stár</strong> <em>n.</em> — love · 'Byræao Stár dúe Ruth' — out of love for Red; 'Yon Stár gilæn't gilæn't'.</li>
+<li><strong>Stát</strong> <em>n.</em> — idiot · Stát mæ •</li>
+<li><strong>Státach</strong> <em>adj.</em> — stupid, idiotic · tmesis: Stá’fæ’tach</li>
+<li><strong>Státachaí</strong> <em>n.</em> — idiocy · Stát → Státach → Státachaí (the -aí abstract former); the epithet státachaí-færs 'His Idiocy'</li>
+<li><strong>státachaí-færs</strong> — idiocy → <em>Státachaí</em></li>
+<li><strong>Státr</strong> <em>n.</em> — idiot-being · beside Stát</li>
+<li><strong>Steam</strong> <em>n.</em> — voice · '-'t Steam' — 'ever voice. English-shaped Danæam.</li>
+<li><strong>Sthuinë</strong> <em>author form</em> — claw (noun)</li>
+<li><strong>stil</strong> <em>adv.</em> — still (phase) · pair of thúil; stílát 'still-do'; contraction stil'ten'át 'sti'I'll-do'</li>
+<li><strong>stil'ten'át</strong> <em>contraction</em> — sti'I'll-do · 'Scén stil'ten'át stílát?' — Q: sti'I'll-do still-do? ⟨working⟩</li>
+<li><strong>stíl-</strong> <em>prefix</em> — the perfect former · Ten stílsótea; the double pluperfect Ten úteo tes St’sót-sót’íl stílgænea; future perfect Iëao As í iëátea</li>
+<li><strong>stílát</strong> <em>v.</em> — still-do · stíl- continuative + át 'do'. 'Scén stil'ten'át stílát?'</li>
+<li><strong>stílbrís</strong> <em>verb (stíl-)</em> — still-breaking · stíl- continuative; cf. stílgænea 'had-given'.</li>
+<li><strong>Stílgænea</strong> — had-given (walk) ⟨working⟩</li>
+<li><strong>stírth</strong> <em>v.</em> — drive</li>
+<li><strong>Stúpen</strong> — rape ⟨working⟩</li>
+<li><strong>Stúpen-wínr</strong> — rape-name-being → <em>wínr</em> ⟨working⟩</li>
+<li><strong>suiné</strong> <em>author form</em> — claw</li>
+<li><strong>suiné (noun: Sthuinë)</strong> — claw</li>
+<li><strong>sulæn</strong> <em>v.</em> — dig · attested as iësulæn “will-dig” — the ië- future worn plainly</li>
+<li><strong>sulænea</strong> — dig → <em>sulæn</em></li>
+<li><strong>sulfhœ</strong> <em>v.</em> — blow · sulfhœa past — the nose-sentence</li>
+<li><strong>sulfhœa</strong> — blow → <em>sulfhœ</em></li>
+<li><strong>sy</strong> <em>part.</em> — so-then · the correlative hinge’s second half: sin … sy … = the-X-er, the-Y-er; nearest kin Syá, distinguished</li>
+<li><strong>sy</strong> <em>correlative particle</em> — so-then — the equation-standard’s leg · the sin…sy equative’s second leg; in practice the sy-phrase fronts to the object slot</li>
+<li><strong>Syá</strong> <em>answer word</em> — maybe; perhaps · 'thte + 'ya fused — say 'thte'ya ten times fast; also 'perhaps'</li>
+<li><strong>S’aige’in</strong> <em>frame</em> — “as-said” · reportative shield; Sin + saige with seam-merge — literally “as-has-been-said”</li>
+<li><strong>S’air’n</strong> <em>compound</em> — as per the taking-note of — topic marker · Sin-tmesis, second crown beside S’aige’in; note the ’in → ’n seam-elision</li>
+<li><strong>s’efui-e’in</strong> <em>compound (sin + efui + -e)</em> — as per the topic of — the for-its-part replica · placed after its topic; the hyphen-hung -e</li>
+<li><strong>S’eg’in</strong> — way, such-way → <em>eg</em></li>
+<li><strong>S’i’pún’il’n</strong> — tower → <em>Pún</em></li>
+<li><strong>s’ulfœrth-e’in</strong> — Revenge-journey / -expedition / -quest → <em>Ulfœrth</em></li>
+</ul>
+<h3>T</h3>
+<ul>
+<li><strong>t</strong> — drawer → <em>tachér</em></li>
+<li><strong>’t</strong> <em>clitic</em> — negative · post-CONSONANT; Fith’t, thurn’t</li>
+<li><strong>tachér</strong> <em>n.</em> — drawer · sheds its t when nested: C’achér’ed</li>
+<li><strong>tack</strong> <em>adv.</em> — dab / plonk (smackbang) · 'ythés tack duílín yMedhamýa' — which smackbang within the middle.</li>
+<li><strong>Tap</strong> — head</li>
+<li><strong>ten</strong> <em>pron.</em> — I · 1st person; Más-ten ærmuch 'I'm tired'</li>
+<li><strong>Ten æœá-e Fía más</strong> — no, none → <em>æœá</em></li>
+<li><strong>ten mac</strong> — like → <em>mac</em></li>
+<li><strong>Ten stílsótea</strong> — the perfect former → <em>stíl-</em></li>
+<li><strong>teo</strong> <em>pron.</em> — me · 1sg object — the object series completes: teo, fær, miths, cías</li>
+<li><strong>Teos</strong> <em>pron.</em> — mine · tmeses in predication: Te’sídia’os</li>
+<li><strong>Tes</strong> <em>poss.</em> — my</li>
+<li><strong>tes</strong> <em>poss.</em> — my · beside mis “our”, mao “your”; hyphen-joins mé in tes-mé ‘my-with’, possessed accompaniment</li>
+<li><strong>tes-mé</strong> — my → <em>tes</em></li>
+<li><strong>Téxt</strong> <em>n.</em> — tissue · hosted in felCne'téxt'ilea.</li>
+<li><strong>te’rhié’os</strong> — Parent → <em>Rhié</em></li>
+<li><strong>Te’sídia’os</strong> — Parent → <em>Rhié</em></li>
+<li><strong>thaioss't'ya</strong> <em>pron.</em> — what-mysterious-that-and-ever-and-totally · Revised Oath: 'Ten s'aige'in -aoa o thaioss't'ya- Fís e Emma …' — I as-said, re: what[ever]-totally, debt of blood … Variant family with thiosas't / aoa-thas't. ⟨working⟩</li>
+<li><strong>Thaln</strong> — land ⟨working⟩</li>
+<li><strong>Thalnafrê</strong> <em>n.</em> — the Uplands · Thaln 'land' + afrê 'in-the-uplands' — cf. Oath Thaln'ghrœliseæ-cías'afrê (their descendants in the uplands).</li>
+<li><strong>thas</strong> <em>interrog.</em> — what</li>
+<li><strong>tháxya</strong> <em>interrog.</em> — whom (fronting) · stands beside thénu — offices presumably distinct, held loosely</li>
+<li><strong>thé</strong> <em>interrog.</em> — who</li>
+<li><strong>thé</strong> <em>relativiser (apparent)</em> — who (no-cleft frame) · y-less relative — takes bhie, where ythénÿ takes atá (the y-law)</li>
+<li><strong>thé-atáea ios atáea</strong> — was / were - the past form with ios → <em>atáea</em></li>
+<li><strong>them</strong> <em>interrog.</em> — how · frame them…yail “how many”</li>
+<li><strong>them…yail</strong> — how → <em>them</em></li>
+<li><strong>thénu</strong> <em>interrog.</em> — whom (oblique) · used after prepositions; “whose” = thénu mé</li>
+<li><strong>thénu mé</strong> <em>phrase</em> — whose · lit. “whom-with” — oblique thénu + mé “with”</li>
+<li><strong>Theráfthyê-e</strong> <em>n.</em> — therapy · English-shaped loan, deliberate. Agent: Thérafthyiya 'therapist' (-iya).</li>
+<li><strong>Thérafthyiya</strong> — therapist → <em>Theráfthyê-e</em></li>
+<li><strong>thés</strong> <em>interrog.</em> — which</li>
+<li><strong>Theváre</strong> <em>v.</em> — devour · Theváre fæ — freely objectless</li>
+<li><strong>Theváre fæ</strong> — devour → <em>Theváre</em></li>
+<li><strong>Thilsc</strong> — fog</li>
+<li><strong>þin</strong> <em>ceremonial pron.</em> — she - the noncreation force · the spicy þ in full harness; oblique þis-e</li>
+<li><strong>þin / þis</strong> <em>ceremonial pron.</em> — she — the noncreation force · the spicy þ in full harness; oblique þis-e</li>
+<li><strong>thiosas't</strong> <em>pron.</em> — what-mysterious-that-ever · 'Aoa-thiosas't Uœrd' — whatever word. Variant family: thaioss't'ya / aoa-thas't. ⟨working⟩</li>
+<li><strong>thiransgenæn</strong> <em>v.</em> — pass (of time) · Past thiransgenea attested.</li>
+<li><strong>thiransgenea</strong> — passed → <em>thiransgenæn</em> ⟨working⟩</li>
+<li><strong>þis</strong> <em>ceremonial pron.</em> — she - the noncreation force · the spicy þ in full harness; oblique þis-e; Dú'iths þis Ó'rrync'ghs 'toward us her spine'</li>
+<li><strong>þis-e</strong> — she - the noncreation force → <em>þin / þis</em></li>
+<li><strong>thíthíl</strong> <em>num.</em> — thousand · its noun pluralises with -ê as any plural noun would</li>
+<li><strong>Thiutel</strong> — title ⟨working⟩</li>
+<li><strong>thœ</strong> <em>interrog.</em> — why</li>
+<li><strong>Thórim</strong> — tree</li>
+<li><strong>threïg</strong> <em>adj.</em> — tired · Or’threïg’il “not-tired-enough”</li>
+<li><strong>Thrugh</strong> <em>n.</em> — train · grubby loan — the train that goes thrugh</li>
+<li><strong>Thruxú</strong> — woods</li>
+<li><strong>’thte</strong> <em>clitic</em> — negative · post-VOWEL; Nhœme’thte, scé’thte</li>
+<li><strong>’thteya</strong> <em>clitic</em> — negative emphatic stamp (fuller form) · ’thte + -ya; as ’tya</li>
+<li><strong>’thte’ya</strong> — maybe → <em>Syá</em></li>
+<li><strong>Thuaí</strong> — earth (substance)</li>
+<li><strong>Thüfath</strong> <em>n.</em> — period · 'yThüfath-aoya lus Sgiesaetthum-e' — the period of the Sgiesaetthum.</li>
+<li><strong>thuíl</strong> <em>v./element</em> — finish (terminative) · four free orders: saige-thuíl· thuísaige· thu’aige’íl· thuíl saige</li>
+<li><strong>thúil</strong> <em>adv.</em> — no longer · the negative of stil; citation form (not lenited *túil)</li>
+<li><strong>thuíłf</strong> — die · Sin Afghalhê thuíłf 'as mountains die'</li>
+<li><strong>Thunúz</strong> — earth (planet)</li>
+<li><strong>thurn</strong> <em>interrog.</em> — where · INHERENTLY interrogative — has no non-question form</li>
+<li><strong>thurn’t</strong> — negative → <em>’t</em></li>
+<li><strong>thüs</strong> <em>interrog.</em> — when</li>
+<li><strong>thyann</strong> <em>conj.</em> — whether · cf. annadh — two whether-words co-attested</li>
+<li><strong>Tïaolc</strong> — family ⟨working⟩</li>
+<li><strong>Tïc</strong> <em>n.</em> — House · sís Tïc e Bis</li>
+<li><strong>Tïc by Úrsapê</strong> — brick → <em>Úrsap</em></li>
+<li><strong>Tïcain</strong> — host ⟨working⟩</li>
+<li><strong>Titár</strong> — bird</li>
+<li><strong>Tith</strong> <em>n.</em> — pain · splits Ti…th; Ti’amár’th — the ocean tmeted inside pain</li>
+<li><strong>titlop</strong> <em>v.</em> — topple · 'Ai'æ'titlop -luai-' — note-you-topple, aiee!</li>
+<li><strong>Ti’amár’th</strong> — pain → <em>Tith</em></li>
+<li><strong>Tlinc</strong> — star</li>
+<li><strong>Tóby</strong> — root</li>
+<li><strong>Ton</strong> <em>ceremonial pron.</em> — he - the creation force · outside the universal-fæ person system; oblique Tonu-e; declension watched</li>
+<li><strong>Ton / Tonu</strong> <em>ceremonial pron.</em> — he — the creation force · outside the universal-fæ person system; oblique Tonu-e; declension watched</li>
+<li><strong>Tonna</strong> <em>n.</em> — ton · counted Tonnaê</li>
+<li><strong>Tonnaê</strong> — ton → <em>Tonna</em></li>
+<li><strong>Tonu</strong> <em>ceremonial pron.</em> — he - the creation force · outside the universal-fæ person system; oblique Tonu-e; declension watched</li>
+<li><strong>Tonu-e</strong> — he - the creation force → <em>Ton / Tonu</em></li>
+<li><strong>too</strong> — dull</li>
+<li><strong>trawid</strong> <em>v.</em> — seize (as in to have a seizure) · Noun: Trawidía 'seizure'.</li>
+<li><strong>Trawidía</strong> — seizure → <em>trawid</em> ⟨working⟩</li>
+<li><strong>tug</strong> <em>v.</em> — bring · past tugea ‘brought’; duín Ærmuchaí tugea eibh ‘brought to exhaustion’ — cause as motion, a fourth metaphor beside gift and origin</li>
+<li><strong>tugea</strong> — bring → <em>tug</em></li>
+<li><strong>Turm</strong> — fear</li>
+<li><strong>tút</strong> — swell</li>
+<li><strong>’tya</strong> <em>clitic</em> — negative emphatic stamp — “NOT-X” glow · negator ’t + glow -ya; demands careful avoidance of added negators</li>
+</ul>
+<h3>U</h3>
+<ul>
+<li><strong>u-</strong> <em>prefix</em> — toward (= du-) · the du→u reform ('this will cause horrible confusion' — check every u-/du- sighting); on verbs it makes the infinitive: usót 'to go'</li>
+<li><strong>uain</strong> <em>prop-word</em> — “one” (stand-in body) · fills an elided head where the resonance wants a body, not a gap; lowercase, pronoun-class; digit-mode numeral (uain-éx o slár-cliffýa = 1695 AD)</li>
+<li><strong>uain’t-aoa</strong> <em>pron.</em> — someone (“about one”) · the double-negative device worn as a chain — and a pattern-seed for the quantifier compounds</li>
+<li><strong>uaothë</strong> — some</li>
+<li><strong>uazilæn</strong> <em>v.</em> — totter</li>
+<li><strong>úcuinth</strong> — because</li>
+<li><strong>ufel</strong> <em>prepositions</em> — downward · the local table filled</li>
+<li><strong>Ufín</strong> <em>n.</em> — enemy · pron. “Oofeenn”; Dræao lus Ufín “from the enemy” — the first agent-phrase</li>
+<li><strong>ufsae</strong> <em>adj.</em> — insane · pron. “Oofschye” — the ae deliberate, not æ: “a weird ae”, /aɪ/ as in rye</li>
+<li><strong>Ül</strong> <em>year-stem</em> — 17 · year-series numeral· base 2+30 (base-60 pair-stem). Pair: Ül 17 (odd, bare) / Ghül 18 (even, lenited). Year names: A-B = A×60 + B, hyphen-joined, second element bare. This form: odd· bare stem.</li>
+<li><strong>Ulfœrth</strong> <em>n.</em> — Revenge-journey / -expedition / -quest · topic-phrase exemplar: — sin e Ulfœrth — / s’ulfœrth-e’in</li>
+<li><strong>ułiuafth</strong> — heaven → <em>Łiuafth</em></li>
+<li><strong>Uœrd</strong> <em>n.</em> — word · 'lus Uœrd mæ bhie o mao Fialth lus Uœrd bhie' — you are the word and the word is your charge.</li>
+<li><strong>Uoinainê</strong> <em>noun (plural)</em> — women · 'believe women' line; also 'Uoinainê dús Útcár-Útcár Uoinainê-e í ro'gænstílgæn'il'.</li>
+<li><strong>Uonain</strong> — woman</li>
+<li><strong>Urgea</strong> <em>n.</em> — fence · Ythús Urgea mêdhië… “past the fence by a metre…”</li>
+<li><strong>Úrsap</strong> <em>n.</em> — brick · Tïc by Úrsapê “a house of bricks” — material takes by, not e</li>
+<li><strong>Úrsapfarmach</strong> — brick-made → <em>Úrsapfarmea</em></li>
+<li><strong>Úrsapfarmaí</strong> <em>noun (abstract)</em> — brickmakery, the trade of brickmaking · Úrsap + farm + -aí, no -ach stage (-ach skipped when it would be absurd)</li>
+<li><strong>Úrsapfarmea</strong> <em>adjective (past)</em> — brick-made · the sayable near-miss that shows why -ach was skipped for Úrsapfarmaí — Úrsapfarmach ‘brick-makey’ is not sayable; F2 resolved</li>
+<li><strong>usaln</strong> <em>author form</em> — salt (verb)</li>
+<li><strong>usaln (verb), Saln (noun)</strong> — salt</li>
+<li><strong>úsét</strong> <em>prep.</em> — on · úsét Gradhamýa 'on stage'; Úsét bilach Charmænsy Yon-e 'on bare skin Night-of'</li>
+<li><strong>úsétæn</strong> — sit</li>
+<li><strong>usót</strong> — go on · toward (= du-) → <em>sót, sót | u-, u-</em></li>
+<li><strong>Útcár'ma-Útcár'ma</strong> — counter-accusation → <em>Útcár</em></li>
+<li><strong>Útcár-Útcár</strong> — the accusing; accusation → <em>Útcár</em></li>
+<li><strong>Útcáry</strong> <em>n.</em> — accuser · 'Ruth-e Útcáry'ya' — Red's accuser: Night. ⟨working⟩</li>
+<li><strong>Útcáry'ya</strong> <em>noun phrase</em> — accuser-of (reordered) · order: lus Aoiyid e Útcáry'ya Ruth-e — the possessor follows ⟨working⟩</li>
+<li><strong>Úteo</strong> — to-me (ten + -eo?) ⟨working⟩</li>
+<li><strong>útugh</strong> — pull</li>
+<li><strong>uÿth</strong> <em>prepositions</em> — to-over · the local table filled</li>
+</ul>
+<h3>V</h3>
+<ul>
+<li><strong>Væx</strong> <em>n.</em> — king</li>
+</ul>
+<h3>W</h3>
+<ul>
+<li><strong>W'ain'al</strong> — bond-for-always</li>
+<li><strong>Wa'eo-mé'l-teos</strong> — god-sworn kin</li>
+<li><strong>Wa'oobao-ya'leäch</strong> — Otherbound ⟨working⟩</li>
+<li><strong>Wælainr</strong> — spouse (agender, oath-kin)</li>
+<li><strong>Waleäch</strong> — bound ⟨working⟩</li>
+<li><strong>Wa’eo-mé’l-teos</strong> <em>author form</em> — god-sworn kin</li>
+<li><strong>Whár</strong> — hair</li>
+<li><strong>whielïl</strong> — count</li>
+<li><strong>wíach</strong> — wet</li>
+<li><strong>Wíc</strong> <em>n.</em> — water · w is hard: pays the toll (’íc)</li>
+<li><strong>Wighæln</strong> — clan ⟨working⟩</li>
+<li><strong>Wightil</strong> — right ⟨working⟩</li>
+<li><strong>wil</strong> <em>quantifier</em> — all · wil’ya — the ’ya-stamped “all” that reassures: not feeling alone</li>
+<li><strong>Wilfarmái</strong> <em>n.</em> — factory · 'lus Scëel-scëel Wilfarmái-e' — the ceiling factory-of.</li>
+<li><strong>Wilhíæ</strong> <em>pronoun/quantifier</em> — everyone · wil-blood apparent</li>
+<li><strong>Wilhíæ yScéan</strong> — inclusive-of → <em>metałie</em></li>
+<li><strong>Wín</strong> — name · wínr 'name-being' as suffixoid: Stúpen-wínr 'rape-name-being'</li>
+<li><strong>wínr</strong> <em>suffixoid/noun</em> — name-being · 'Stúpen-wínr' — rape-name-being; of wín 'name'.</li>
+<li><strong>Wiunail</strong> <em>pronoun/quantifier</em> — everyone · beside Wilhíæ 'everybody' — both live</li>
+<li><strong>wythil</strong> <em>prep.</em> — despite · ‹ yth + wil, “all over/past” — the all-word welded over the past-word</li>
+<li><strong>W’ain’al</strong> <em>author form</em> — bond-for-always</li>
+</ul>
+<h3>X</h3>
+<ul>
+<li><strong>Xæxr</strong> — state-noun former (“-being”) → <em>-r</em></li>
+</ul>
+<h3>Y</h3>
+<ul>
+<li><strong>Y'wil'th</strong> — entire ⟨working⟩</li>
+<li><strong>y-</strong> <em>marker</em> — subordinate marker on proper nouns · yScéan; the y-law: y- summons the atá family</li>
+<li><strong>y-…</strong> <em>prefix</em> — marks th-elements in all SECONDARY subordinate clauses · yüs, yés</li>
+<li><strong>y-…nÿ</strong> <em>circumfix</em> — marks the th-element in the FIRST subordinate clause that contains a th-element · y-iosnÿ, yésnÿ</li>
+<li><strong>y-iosnÿ</strong> — marks the th-element in the FIRST subordinate clause that contains a th-element → <em>y-…nÿ</em></li>
+<li><strong>-ya</strong> — negative emphatic stamp - “NOT-X” glow · negative emphatic stamp (fuller form) → <em>’thteya, ’tya, ’tya | ’thteya</em></li>
+<li><strong>’ya</strong> <em>clitic</em> — positive answer / tag · INVARIANT; Fith’ya, scé’ya</li>
+<li><strong>Yac</strong> <em>n.</em> — strobe</li>
+<li><strong>Yáe</strong> — sun · cf. Yálénëách 'solar'</li>
+<li><strong>yail</strong> <em>quantifier</em> — many · discontinuous with them “how” → “how many”</li>
+<li><strong>Yálénëách</strong> <em>adj.</em> — solar · yál- (sun, cf. Yáe) + -ách</li>
+<li><strong>yduý</strong> <em>prep.</em> — in · 'yduý sírffrach niheag Erlyê' — in silver tiny letters. Cf. duý 'through'; Dúy 'Hell'. ⟨working⟩</li>
+<li><strong>yel-</strong> <em>prefix</em> — any · yelSœinaí 'any sound'.</li>
+<li><strong>yelSœinaí</strong> <em>noun phrase</em> — any sound · yel- 'any' + Sœinaí.</li>
+<li><strong>yés</strong> <em>subord. th-word</em> — which (secondary clauses) · primary yésnÿ as may arise; mischief-note: answering a which-question, a síog may say Yés flag-free — for the chaos</li>
+<li><strong>yésnÿ</strong> — marks the th-element in the FIRST subordinate clause that contains a th-element · which (secondary clauses) → <em>y-…nÿ, y-…nÿ | yés, yés</em></li>
+<li><strong>Yfrœli slaí Yonê-e</strong> — hundred-nights-child</li>
+<li><strong>Ygaol Tïc-mé walea</strong> <em>author form</em> — atá hearth-sworn kin</li>
+<li><strong>Ygaol Tïc-mé walea atá</strong> — hearth-sworn kin</li>
+<li><strong>yGhiéil</strong> — the Feminine Parent ⟨working⟩</li>
+<li><strong>ygyg</strong> <em>v.</em> — eke · eke out.</li>
+<li><strong>yiæn</strong> <em>v.</em> — lie (rest, of dust etc.)</li>
+<li><strong>yiæn</strong> — lie (position)</li>
+<li><strong>Ynupthy</strong> — husband</li>
+<li><strong>Ynupthy</strong> — wife</li>
+<li><strong>yon</strong> <em>element</em> — of the night · inside Ixixaíyon; class unruled; Night's Danæam name is Yon 'of the night'</li>
+<li><strong>yth</strong> <em>prep.</em> — past / over / beyond · welds with lus where the resonance serves: ythús</li>
+<li><strong>ythemnÿ</strong> <em>interrogative adverb</em> — how · 'Dúordhách ythemnÿ lus Chainn … atá í bhie' — tidy how the sort … is, it is. ⟨working⟩</li>
+<li><strong>ythénÿ</strong> — who (no-cleft frame) → <em>thé</em></li>
+<li><strong>ythés</strong> <em>relativisers</em> — (the cleft-paradigm’s pair to ythé/ythénÿ) · nonrestrictives ride clefts — the paradigm ythé/ythénÿ // ythés/ythésnÿ; ythés tack duílín 'which smackbang within'</li>
+<li><strong>ythés / ythésnÿ</strong> <em>relativisers</em> — (the cleft-paradigm’s pair to ythé/ythénÿ) · nonrestrictives ride clefts</li>
+<li><strong>ythésnÿ</strong> <em>relativisers</em> — (the cleft-paradigm’s pair to ythé/ythénÿ) · nonrestrictives ride clefts</li>
+<li><strong>ythús</strong> <em>prep.+art.</em> — past-the · weld of yth + lus, l paid at the gate, written solid; not kin to yüs 'when'</li>
+<li><strong>Ythús Urgea</strong> — fence → <em>Urgea</em></li>
+<li><strong>yüs</strong> <em>subord. th-word</em> — when (secondary clauses) · primary yüsnÿ; bare interrog. thüs untouched</li>
+<li><strong>yüsnÿ</strong> — when (secondary clauses) → <em>yüs</em></li>
+<li><strong>yúyoo</strong> — sing</li>
+<li><strong>Yüyü</strong> — bark</li>
+</ul>
+<hr class="part-seam">
+<p>Italic forms are phrase-built; &quot;/&quot; joins alternates.</p>
+<h3>A</h3>
+<ul>
+<li><strong>accelerate</strong> — luaræn</li>
+<li><strong>accent</strong> — Axscœth</li>
+<li><strong>account</strong> — Caonth</li>
+<li><strong>act</strong> — gnídt</li>
+<li><strong>admire</strong> — wantœ</li>
+<li><strong>admired</strong> — wantoëa</li>
+<li><strong>admit</strong> — femythïæn</li>
+<li><strong>adore</strong> — úToræn</li>
+<li><strong>aerial</strong> — ługfách</li>
+<li><strong>affect</strong> — Ffás</li>
+<li><strong>afraid</strong> — uferghëa</li>
+<li><strong>again</strong> — ïeythërîea</li>
+<li><strong>agree</strong> — utoghenæn</li>
+<li><strong>air</strong> — Ług</li>
+<li><strong>aircraft</strong> — Glaoscêlintilény</li>
+<li><strong>airliner</strong> — Glaoscêlintiługy</li>
+<li><strong>akin</strong> — góïyth</li>
+<li><strong>alarm</strong> — Saíny Wil-e</li>
+<li><strong>alcove</strong> — Clófœ</li>
+<li><strong>align</strong> — límés</li>
+<li><strong>all</strong> — Wil</li>
+<li><strong>almost</strong> — nichuff</li>
+<li><strong>aloft</strong> — afLímésách</li>
+<li><strong>alone</strong> — swil</li>
+<li><strong>alopecia</strong> — ulópescía</li>
+<li><strong>already</strong> — scónách</li>
+<li><strong>alternate</strong> — afOobaoách</li>
+<li><strong>aluminium</strong> — uloominíäm</li>
+<li><strong>always</strong> — wáil</li>
+<li><strong>amount</strong> — Mëtmët</li>
+<li><strong>analog</strong> — ooblógïch</li>
+<li><strong>and</strong> — O</li>
+<li><strong>angle</strong> — Chœin</li>
+<li><strong>another</strong> — níbísy / aodruýscain / uain nibísïl-e</li>
+<li><strong>any direction</strong> — yelëg</li>
+<li><strong>anybody</strong> — yełíc</li>
+<li><strong>anyone</strong> — nÿel</li>
+<li><strong>anything</strong> — ios yelthas</li>
+<li><strong>anyway</strong> — yelmá</li>
+<li><strong>anywhere</strong> — yelthurn</li>
+<li><strong>applaud</strong> — Blaotzúlæn</li>
+<li><strong>applause</strong> — Blaotzúl-blaotzúl</li>
+<li><strong>arcade</strong> — Archwái</li>
+<li><strong>archway</strong> — Thrucuirgh</li>
+<li><strong>area</strong> — Uríár</li>
+<li><strong>arm</strong> — Sáinsfau</li>
+<li><strong>around</strong> — <em>aoa 'thte</em> / <em>'thte-aoa</em> / baüythách</li>
+<li><strong>arrive</strong> — intîf</li>
+<li><strong>art</strong> — Élan</li>
+<li><strong>artifice</strong> — Élanfarmaí</li>
+<li><strong>assign</strong> — usládæn</li>
+<li><strong>assist</strong> — uíngæn</li>
+<li><strong>astonish</strong> — taonmaën</li>
+<li><strong>atmosphere</strong> — Łúgthom</li>
+<li><strong>attach</strong> — fixáigæn</li>
+<li><strong>attempt</strong> — Rrîyæn</li>
+<li><strong>attend</strong> — menscenæn</li>
+<li><strong>audible</strong> — dúauffy</li>
+<li><strong>audio</strong> — Auaí</li>
+<li><strong>automaton</strong> — Glaoscá</li>
+<li><strong>avail</strong> — lynraigóæn</li>
+<li><strong>awake</strong> — afSaínách</li>
+<li><strong>awful</strong> — Therífách</li>
+</ul>
+<h3>B</h3>
+<ul>
+<li><strong>babe</strong> — Frætár</li>
+<li><strong>backlash</strong> — Iyfwuludao</li>
+<li><strong>backness</strong> — Rryncaíýa</li>
+<li><strong>backseat</strong> — Rryncaíýa Úsét-úsét-e</li>
+<li><strong>bag</strong> — Tascy</li>
+<li><strong>bar</strong> — Bure</li>
+<li><strong>basin</strong> — Belfís</li>
+<li><strong>bat</strong> — Faz</li>
+<li><strong>battlement</strong> — Fforfÿaí</li>
+<li><strong>beak</strong> — Coc</li>
+<li><strong>bear</strong> — drugæn</li>
+<li><strong>beckon</strong> — fingen</li>
+<li><strong>beer</strong> — Beyr</li>
+<li><strong>beerkeg</strong> — Beyrceg</li>
+<li><strong>befall</strong> — dúdát</li>
+<li><strong>beg</strong> — Fflébæn</li>
+<li><strong>bend</strong> — léntæn</li>
+<li><strong>bet</strong> — spoc</li>
+<li><strong>beverage</strong> — Lichsyas</li>
+<li><strong>bike</strong> — Gháintól</li>
+<li><strong>bind</strong> — fîsen</li>
+<li><strong>bit</strong> — Beth</li>
+<li><strong>blast</strong> — Blurme</li>
+<li><strong>blemish</strong> — Misctíul</li>
+<li><strong>blend</strong> — mist</li>
+<li><strong>blink</strong> — Beíl</li>
+<li><strong>Block</strong> — Obloc</li>
+<li><strong>blue</strong> — glar</li>
+<li><strong>bluff</strong> — waf</li>
+<li><strong>blur</strong> — ffléfuff</li>
+<li><strong>board</strong> — Smœtth</li>
+<li><strong>bolt</strong> — Tórlt</li>
+<li><strong>bond</strong> — Witîfl</li>
+<li><strong>bone</strong> — Óghs</li>
+<li><strong>boot</strong> — Túreonclæíry</li>
+<li><strong>both</strong> — O</li>
+<li><strong>bottle</strong> — Fflusch</li>
+<li><strong>bounce</strong> — Chóp-chóp</li>
+<li><strong>box</strong> — Cubo</li>
+<li><strong>breath</strong> — Nuthem</li>
+<li><strong>breed</strong> — úprócê</li>
+<li><strong>brief</strong> — minách</li>
+<li><strong>brittle</strong> — Ffrugjách</li>
+<li><strong>broad</strong> — Brútalách</li>
+<li><strong>bug</strong> — Ssit</li>
+<li><strong>bulge</strong> — Ghoobœ</li>
+<li><strong>bulky</strong> — Spriggig</li>
+<li><strong>bunny</strong> — Cóiscin</li>
+<li><strong>burst</strong> — gaomæn</li>
+<li><strong>bury</strong> — rulfæn</li>
+<li><strong>buzz</strong> — zaza</li>
+</ul>
+<h3>C</h3>
+<ul>
+<li><strong>café</strong> — Cafiarmaí</li>
+<li><strong>cage</strong> — Cróiffy</li>
+<li><strong>call</strong> — Léy</li>
+<li><strong>canyon</strong> — Golthoo</li>
+<li><strong>capacity</strong> — Cupsrimaí</li>
+<li><strong>capital</strong> — Cupsédaí</li>
+<li><strong>cardboard</strong> — Churt</li>
+<li><strong>care</strong> — uscornu</li>
+<li><strong>carpark</strong> — Scale-rim</li>
+<li><strong>carve</strong> — Siselcuth</li>
+<li><strong>case</strong> — Ffáx</li>
+<li><strong>cave</strong> — Sfêl</li>
+<li><strong>cement</strong> — Sæmêntham</li>
+<li><strong>chain</strong> — Cäther</li>
+<li><strong>chair</strong> — Slufru</li>
+<li><strong>champagne</strong> — Chcampâgn</li>
+<li><strong>change</strong> — Scaoyn</li>
+<li><strong>chase</strong> — Yurgsæn</li>
+<li><strong>check</strong> — Tscoolæn</li>
+<li><strong>cheekbone</strong> — Muzóghs</li>
+<li><strong>cheer</strong> — Clâmæn</li>
+<li><strong>chemical</strong> — Cimiuain</li>
+<li><strong>chin</strong> — Eîyc</li>
+<li><strong>chloramine</strong> — Clorumín</li>
+<li><strong>chlorine</strong> — Cloro</li>
+<li><strong>choke</strong> — Ytocfl</li>
+<li><strong>choose</strong> — Niwinialæn</li>
+<li><strong>cigarette</strong> — Sigureth</li>
+<li><strong>citizen</strong> — Bothaíách</li>
+<li><strong>clack</strong> — Bac</li>
+<li><strong>claim</strong> — Sayäil</li>
+<li><strong>clamp</strong> — Suinchí</li>
+<li><strong>client</strong> — Glinte</li>
+<li><strong>climb</strong> — sœgafót</li>
+<li><strong>clockwork</strong> — Glaiyfarmaí</li>
+<li><strong>cod</strong> — Magy</li>
+<li><strong>collarbone</strong> — Claóghsab</li>
+<li><strong>colour</strong> — Lore</li>
+<li><strong>comfort</strong> — Dhælaort</li>
+<li><strong>comment</strong> — Nótinú</li>
+<li><strong>common</strong> — urentách</li>
+<li><strong>company</strong> — Scaffath</li>
+<li><strong>compare</strong> — óglîinæn</li>
+<li><strong>compendium</strong> — Cíltenthuct</li>
+<li><strong>complain</strong> — Cläch</li>
+<li><strong>concrete</strong> — Grëeth</li>
+<li><strong>concur</strong> — Ffáxcíassëæn</li>
+<li><strong>conflict</strong> — Conthasct</li>
+<li><strong>consent</strong> — Wiuelænaí</li>
+<li><strong>constant</strong> — Withüsêlïe</li>
+<li><strong>contact</strong> — Coufflichs</li>
+<li><strong>content</strong> — Byraigách</li>
+<li><strong>contest</strong> — Coufîytin</li>
+<li><strong>contort</strong> — Sclosreæn</li>
+<li><strong>contour</strong> — Baufilmarm</li>
+<li><strong>contradict</strong> — maæn</li>
+<li><strong>control</strong> — mótferighæn</li>
+<li><strong>convert</strong> — amntiqruæn</li>
+<li><strong>cornflower</strong> — Sîunbloiy</li>
+<li><strong>counter</strong> — Sétcaonthy</li>
+<li><strong>couple</strong> — Pury</li>
+<li><strong>course</strong> — Lürsfs</li>
+<li><strong>cover</strong> — Tegêy</li>
+<li><strong>crackle</strong> — Gnipáuíc</li>
+<li><strong>creak</strong> — Herhic</li>
+<li><strong>create</strong> — Toncæn</li>
+<li><strong>creature</strong> — Cræthr</li>
+<li><strong>critic</strong> — Ufsaigy</li>
+<li><strong>crowd</strong> — Mloiytí</li>
+<li><strong>crumple</strong> — Furcool</li>
+<li><strong>crush</strong> — Cuisc</li>
+<li><strong>crust</strong> — Screamm</li>
+<li><strong>cry</strong> — wîynæn</li>
+<li><strong>cuck</strong> — Cócuolt</li>
+<li><strong>cup</strong> — Thapê</li>
+<li><strong>current</strong> — Newth</li>
+<li><strong>curtain</strong> — Cúrthin</li>
+<li><strong>curve</strong> — Folpthá</li>
+<li><strong>customer</strong> — Mælcy</li>
+<li><strong>cutup</strong> — Sétslaff-slaff</li>
+<li><strong>cyborg</strong> — Iarnimff</li>
+<li><strong>cycle</strong> — tólæn</li>
+<li><strong>cylinder</strong> — Silinty</li>
+</ul>
+<h3>D</h3>
+<ul>
+<li><strong>damp</strong> — táic</li>
+<li><strong>dance</strong> — tunsæn</li>
+<li><strong>dangle</strong> — dúfelóch</li>
+<li><strong>dead</strong> — thuíłfeách</li>
+<li><strong>dear</strong> — Méstár</li>
+<li><strong>debt</strong> — Fís</li>
+<li><strong>declare</strong> — uafcláræn</li>
+<li><strong>deep</strong> — chóm</li>
+<li><strong>delight</strong> — Gliúsam</li>
+<li><strong>depart</strong> — drúrísæn</li>
+<li><strong>describe</strong> — lÿzaonth</li>
+<li><strong>detach</strong> — uafcathú</li>
+<li><strong>detail</strong> — Minú</li>
+<li><strong>device</strong> — Glâscí</li>
+<li><strong>devise</strong> — exilgha</li>
+<li><strong>diamond</strong> — Atum</li>
+<li><strong>discourse</strong> — Saí-saí-síaima-e</li>
+<li><strong>discover</strong> — Uloofáhæn</li>
+<li><strong>disease</strong> — Rógu</li>
+<li><strong>dispose</strong> — uafegg</li>
+<li><strong>disturb</strong> — trúbæn</li>
+<li><strong>divorce</strong> — ëgwal</li>
+<li><strong>document</strong> — Réal</li>
+<li><strong>door</strong> — Íun</li>
+<li><strong>double</strong> — duaínais</li>
+<li><strong>doubt</strong> — Emhdúscna</li>
+<li><strong>downstairs</strong> — Oobdég</li>
+<li><strong>draw</strong> — ghíchæn</li>
+<li><strong>dream</strong> — Law</li>
+<li><strong>drear</strong> — eumirda</li>
+<li><strong>dress</strong> — Clæír-clæír</li>
+<li><strong>drip</strong> — sthíff</li>
+<li><strong>drown</strong> — íthó</li>
+<li><strong>dungeon</strong> — Oobýasig</li>
+<li><strong>duration</strong> — Fath</li>
+</ul>
+<h3>E</h3>
+<ul>
+<li><strong>each</strong> — uaïlnïe</li>
+<li><strong>ebb</strong> — ebb</li>
+<li><strong>eel</strong> — Ânger</li>
+<li><strong>effect</strong> — Arbhehe</li>
+<li><strong>effort</strong> — Curutsc</li>
+<li><strong>ejaculate</strong> — sæcuiúlær</li>
+<li><strong>elect</strong> — uafwinæn</li>
+<li><strong>electric</strong> — unburigg</li>
+<li><strong>eleven</strong> — îfy</li>
+<li><strong>else</strong> — aobíeg</li>
+<li><strong>emerald</strong> — Mârigalt</li>
+<li><strong>emerge</strong> — gerthúæn</li>
+<li><strong>empty</strong> — fách</li>
+<li><strong>enclose</strong> — bysclúnea</li>
+<li><strong>end</strong> — fend</li>
+<li><strong>energy</strong> — Glaoárca</li>
+<li><strong>engine</strong> — Fál</li>
+<li><strong>enter</strong> — Aólúæn</li>
+<li><strong>escort</strong> — cómíthuræn</li>
+<li><strong>even</strong> — drúłix</li>
+<li><strong>even (an unexpected case)</strong> — ohæn</li>
+<li><strong>ever</strong> — yæ</li>
+<li><strong>every</strong> — wafíel</li>
+<li><strong>everybody</strong> — Wilíl</li>
+<li><strong>everything</strong> — Withuíaosil</li>
+<li><strong>everywhere</strong> — Withurnil</li>
+<li><strong>evidence</strong> — Thesïógu</li>
+<li><strong>ex</strong> — Thúiła</li>
+<li><strong>exaggerate</strong> — unmordachaíæn</li>
+<li><strong>example</strong> — Dæmóny</li>
+<li><strong>exception</strong> — Axuainaí</li>
+<li><strong>exhort</strong> — sprúigg</li>
+<li><strong>expect</strong> — spêcid</li>
+<li><strong>explain</strong> — esclárgæn</li>
+<li><strong>express</strong> — uaffthgju</li>
+<li><strong>extend</strong> — uafloor</li>
+<li><strong>extra</strong> — Mers-mers</li>
+<li><strong>extract</strong> — uaftug</li>
+</ul>
+<h3>F</h3>
+<ul>
+<li><strong>fact</strong> — Łithax</li>
+<li><strong>faction</strong> — Fáiscaol</li>
+<li><strong>fade</strong> — fluimæaæn</li>
+<li><strong>fan</strong> — Ghæffter</li>
+<li><strong>faraway</strong> — aregch</li>
+<li><strong>fascinate</strong> — ghróchær</li>
+<li><strong>fashion</strong> — Mót</li>
+<li><strong>fast</strong> — usggur</li>
+<li><strong>fault</strong> — Lóst</li>
+<li><strong>feasible</strong> — duátcaíryách</li>
+<li><strong>feed</strong> — fædu</li>
+<li><strong>feel</strong> — senthith</li>
+<li><strong>ferry</strong> — Oóscál</li>
+<li><strong>festival</strong> — Thídh</li>
+<li><strong>fiction</strong> — Scœltscéalp</li>
+<li><strong>field</strong> — Cump</li>
+<li><strong>fifteen</strong> — Yfu</li>
+<li><strong>figurehead</strong> — Afthátap-scálr-e</li>
+<li><strong>final</strong> — fendách</li>
+<li><strong>find</strong> — áimghúæn</li>
+<li><strong>fine</strong> — fałain</li>
+<li><strong>finger</strong> — Tatsy</li>
+<li><strong>fingernail</strong> — Sthwee</li>
+<li><strong>fingertip</strong> — Tatsy-sthwee-e</li>
+<li><strong>firsthand</strong> — ornaoíth</li>
+<li><strong>fixate</strong> — sétornú</li>
+<li><strong>flap</strong> — iw</li>
+<li><strong>flat</strong> — plâd</li>
+<li><strong>flick</strong> — fflyc</li>
+<li><strong>fling</strong> — arfech</li>
+<li><strong>flood</strong> — Thwiłúfía</li>
+<li><strong>flute</strong> — Gneemí</li>
+<li><strong>flutter</strong> — fflathe</li>
+<li><strong>focus</strong> — Ffócas</li>
+<li><strong>footpath</strong> — Eghlínt</li>
+<li><strong>forehead</strong> — Aftap</li>
+<li><strong>forest</strong> — Fforís</li>
+<li><strong>forget</strong> — Feghlis</li>
+<li><strong>forswear</strong> — (blank)</li>
+<li><strong>fortnight</strong> — Duaígéainethéx</li>
+<li><strong>forward</strong> — dúpró</li>
+<li><strong>fraught</strong> — úlaghea</li>
+<li><strong>free</strong> — fibher</li>
+<li><strong>fret</strong> — cící</li>
+<li><strong>friend</strong> — Fíura</li>
+<li><strong>front</strong> — Pró</li>
+<li><strong>fuck</strong> — suïfæn</li>
+<li><strong>fugue</strong> — duałef</li>
+<li><strong>fun</strong> — Rúd</li>
+<li><strong>function</strong> — Gláchomaí</li>
+<li><strong>funeral</strong> — Æltunaí</li>
+<li><strong>furl</strong> — cornff</li>
+<li><strong>furtive</strong> — fflifíách</li>
+</ul>
+<h3>G</h3>
+<ul>
+<li><strong>game</strong> — Crïúdha</li>
+<li><strong>garden</strong> — Gârty</li>
+<li><strong>gate</strong> — Bortó</li>
+<li><strong>gaze</strong> — nrïchs</li>
+<li><strong>generate</strong> — túghýuæn</li>
+<li><strong>genuine</strong> — genách</li>
+<li><strong>ginger</strong> — Gufær</li>
+<li><strong>glance</strong> — uafbéigh</li>
+<li><strong>glass</strong> — Scelcs</li>
+<li><strong>glom</strong> — glom</li>
+<li><strong>goose</strong> — Gúénsra</li>
+<li><strong>grace</strong> — þoghásýa</li>
+<li><strong>grasp</strong> — criwgg</li>
+<li><strong>grateful</strong> — uaclanách</li>
+<li><strong>great</strong> — sain</li>
+<li><strong>grin</strong> — glingï</li>
+<li><strong>groan</strong> — stun</li>
+<li><strong>group</strong> — Gap</li>
+<li><strong>grow</strong> — blós</li>
+<li><strong>guess</strong> — tifurc</li>
+<li><strong>guilt</strong> — Errepa</li>
+<li><strong>gullet</strong> — Ffrynfely</li>
+<li><strong>gulp</strong> — ghrag</li>
+<li><strong>gum</strong> — guoíd</li>
+<li><strong>gumboot</strong> — Wíáchonclæíry</li>
+<li><strong>gumtree</strong> — Ghrórimag</li>
+<li><strong>gun</strong> — Hhílty</li>
+<li><strong>guy</strong> — Tóny</li>
+</ul>
+<h3>H</h3>
+<ul>
+<li><strong>hack</strong> — Chuagg</li>
+<li><strong>hail</strong> — Hair</li>
+<li><strong>hairline</strong> — Linwhárt</li>
+<li><strong>half</strong> — gháilbu</li>
+<li><strong>hall</strong> — Ułu</li>
+<li><strong>hallway</strong> — Ułułegu</li>
+<li><strong>hand</strong> — Sáins</li>
+<li><strong>hang</strong> — prÿóch</li>
+<li><strong>happen</strong> — gígwid</li>
+<li><strong>hard</strong> — Túre</li>
+<li><strong>hardly</strong> — ornïrl</li>
+<li><strong>harm</strong> — dífilaí</li>
+<li><strong>heat</strong> — Guresës</li>
+<li><strong>heave</strong> — Chefen</li>
+<li><strong>heed</strong> — dair</li>
+<li><strong>help</strong> — afa</li>
+<li><strong>hers</strong> — þon</li>
+<li><strong>herself</strong> — sê-þis</li>
+<li><strong>high</strong> — hagg</li>
+<li><strong>hollow</strong> — cafsrau</li>
+<li><strong>home</strong> — Chíc</li>
+<li><strong>hope</strong> — Elf</li>
+<li><strong>horn</strong> — Chard</li>
+<li><strong>hotel</strong> — Pantoste</li>
+<li><strong>hour</strong> — Stó</li>
+<li><strong>human</strong> — Elfhín</li>
+<li><strong>hump</strong> — Cadu</li>
+<li><strong>hurt</strong> — tífyad</li>
+<li><strong>hydrogen</strong> — Níuicailbhuëil</li>
+<li><strong>hypnagogic</strong> — Zfuffíách</li>
+</ul>
+<h3>I</h3>
+<ul>
+<li><strong>idea</strong> — Scmaogg</li>
+<li><strong>ignore</strong> — egornú</li>
+<li><strong>image</strong> — Î</li>
+<li><strong>imagine</strong> — dîsêin</li>
+<li><strong>immediate</strong> — scónë</li>
+<li><strong>immune</strong> — æmiwnách</li>
+<li><strong>inflate</strong> — dmäffa</li>
+<li><strong>inform</strong> — fiłain</li>
+<li><strong>inhale</strong> — athnën</li>
+<li><strong>initial</strong> — ïíst</li>
+<li><strong>inner</strong> — degsëu</li>
+<li><strong>innocent</strong> — unghœsách</li>
+<li><strong>insect</strong> — Bathab</li>
+<li><strong>inside</strong> — dusëin</li>
+<li><strong>insist</strong> — ffagha</li>
+<li><strong>install</strong> — sïetcaír</li>
+<li><strong>instant</strong> — Niornbeílil</li>
+<li><strong>internal</strong> — degsëuách</li>
+<li><strong>interrupt</strong> — brecágge</li>
+<li><strong>interview</strong> — fiuwfílm</li>
+<li><strong>invent</strong> — affughúæn</li>
+<li><strong>invest</strong> — affughá</li>
+<li><strong>iron</strong> — Iarn</li>
+</ul>
+<h3>J</h3>
+<ul>
+<li><strong>jackalope</strong> — Charóiscindeaí <em>or</em> Cłepësceán</li>
+<li><strong>jacket</strong> — Thruggy</li>
+<li><strong>jealous</strong> — brízłœách</li>
+<li><strong>join</strong> — átsethá</li>
+<li><strong>jolt</strong> — baowł</li>
+<li><strong>juice</strong> — Sap</li>
+</ul>
+<h3>K</h3>
+<ul>
+<li><strong>keep</strong> — filuld</li>
+<li><strong>keg</strong> — Ceg</li>
+<li><strong>kick</strong> — spurgg</li>
+<li><strong>kiss</strong> — cyghu</li>
+<li><strong>kneel</strong> — cyëlua</li>
+<li><strong>knell</strong> — Thuíłaínfy</li>
+<li><strong>knockoff</strong> — Eurggug</li>
+<li><strong>knuckle</strong> — Gnifúi</li>
+</ul>
+<h3>L</h3>
+<ul>
+<li><strong>lace</strong> — scéałin</li>
+<li><strong>lack</strong> — Łax</li>
+<li><strong>landmark</strong> — Tharcaln</li>
+<li><strong>laptop</strong> — Tesggtap</li>
+<li><strong>last</strong> — ohíinst</li>
+<li><strong>latch</strong> — Locy</li>
+<li><strong>lay</strong> — zulær</li>
+<li><strong>lead</strong> — gehorhín</li>
+<li><strong>leer</strong> — gláornoï</li>
+<li><strong>level</strong> — fëłefuách</li>
+<li><strong>ley</strong> — Lén</li>
+<li><strong>lick</strong> — lang</li>
+<li><strong>lid</strong> — Lëc</li>
+<li><strong>life</strong> — Lebend</li>
+<li><strong>lifeform</strong> — Foëbendœrm</li>
+<li><strong>likely</strong> — Îcłách</li>
+<li><strong>lilac</strong> — Sîrhoien</li>
+<li><strong>limb</strong> — Darág</li>
+<li><strong>limit</strong> — Thipthac</li>
+<li><strong>limp</strong> — ghœdách</li>
+<li><strong>liner</strong> — Lintiy</li>
+<li><strong>literature</strong> — Úlitírura</li>
+<li><strong>little</strong> — Ithłooch</li>
+<li><strong>local</strong> — macsy</li>
+<li><strong>lock</strong> — Localoc</li>
+<li><strong>lockscreen</strong> — îiełocë</li>
+<li><strong>locomotive</strong> — Glaoscóterugy</li>
+<li><strong>look</strong> — letaí</li>
+<li><strong>lose</strong> — boolooyl</li>
+<li><strong>low</strong> — mioobaínách</li>
+<li><strong>lunge</strong> — üła</li>
+<li><strong>lupine</strong> — gaœlfolách</li>
+<li><strong>lurch</strong> — feüła</li>
+</ul>
+<h3>M</h3>
+<ul>
+<li><strong>made-afraid</strong> — uferghëa</li>
+<li><strong>magic</strong> — Gulícaí</li>
+<li><strong>mammal</strong> — Smughty</li>
+<li><strong>manage</strong> — wathreín</li>
+<li><strong>map</strong> — Curthy</li>
+<li><strong>march</strong> — dułeon</li>
+<li><strong>margarita</strong> — marguritha</li>
+<li><strong>mass</strong> — Mâx</li>
+<li><strong>massacre</strong> — Árbeíl</li>
+<li><strong>master</strong> — Musthës</li>
+<li><strong>match</strong> — sutscha</li>
+<li><strong>mate</strong> — frehunt</li>
+<li><strong>material</strong> — Cairy</li>
+<li><strong>matter</strong> — efuæni</li>
+<li><strong>may</strong> — úsyá</li>
+<li><strong>medicine</strong> — Aloisi</li>
+<li><strong>meditate</strong> — slísëghág</li>
+<li><strong>meet</strong> — staffë</li>
+<li><strong>mention</strong> — githua</li>
+<li><strong>mess</strong> — Cura</li>
+<li><strong>message</strong> — Sënty</li>
+<li><strong>midday</strong> — Aúmedhæ</li>
+<li><strong>million</strong> — miłió</li>
+<li><strong>mini</strong> — miny</li>
+<li><strong>miniature</strong> — mîyánách</li>
+<li><strong>minimum</strong> — Thtémayaí</li>
+<li><strong>mint</strong> — Minth</li>
+<li><strong>miracle</strong> — Daomum</li>
+<li><strong>mirror</strong> — Scepíël</li>
+<li><strong>misery</strong> — Trisáchaí</li>
+<li><strong>mission</strong> — Ióggu</li>
+<li><strong>mistake</strong> — Ërscu</li>
+<li><strong>mix</strong> — Misteaí</li>
+<li><strong>mock</strong> — chætha</li>
+<li><strong>moist</strong> — łuíct</li>
+<li><strong>monster</strong> — Tscrîmfal</li>
+<li><strong>month</strong> — Saíntol</li>
+<li><strong>moot</strong> — Móth</li>
+<li><strong>more</strong> — mehil</li>
+<li><strong>morning</strong> — Márr</li>
+<li><strong>moss</strong> — Mœs</li>
+<li><strong>most</strong> — mÿel</li>
+<li><strong>motif</strong> — Móthíff</li>
+<li><strong>mould</strong> — Miuggy</li>
+<li><strong>movie</strong> — Scepênuaí</li>
+<li><strong>muck</strong> — Lutý</li>
+<li><strong>mud</strong> — Łeid</li>
+<li><strong>mug</strong> — Crúich</li>
+<li><strong>mutual</strong> — sílydol</li>
+<li><strong>myself</strong> — Sê / Sê-teos</li>
+<li><strong>mystery</strong> — Gáthfrái</li>
+</ul>
+<h3>N</h3>
+<ul>
+<li><strong>narrate</strong> — Caontharmæn</li>
+<li><strong>native</strong> — Aohúrn</li>
+<li><strong>nature</strong> — Œdu</li>
+<li><strong>navigate</strong> — aghegót</li>
+<li><strong>need</strong> — Caisáchaíæn</li>
+<li><strong>neither</strong> — aoannadh / aoœr</li>
+<li><strong>neuropathy</strong> — Rósílgapágu</li>
+<li><strong>never</strong> — gilæn't</li>
+<li><strong>next</strong> — drúach</li>
+<li><strong>nobody</strong> — æœłíc</li>
+<li><strong>node</strong> — Gnoth</li>
+<li><strong>nor</strong> — aoœr</li>
+<li><strong>note</strong> — Miníst</li>
+<li><strong>notepad</strong> — Minaigísty</li>
+<li><strong>nothing</strong> — þiníya</li>
+</ul>
+<h3>O</h3>
+<ul>
+<li><strong>oblige</strong> — ooscylduí</li>
+<li><strong>observe</strong> — arrnclaín</li>
+<li><strong>obvious</strong> — lósëlós</li>
+<li><strong>occupy</strong> — ffráigaf</li>
+<li><strong>odds</strong> — Ësthaíê</li>
+<li><strong>offend</strong> — sthynter</li>
+<li><strong>offer</strong> — Tscân</li>
+<li><strong>offspring</strong> — Grælië</li>
+<li><strong>often</strong> — sæffa</li>
+<li><strong>okay</strong> — óc∆éy •</li>
+<li><strong>once</strong> — aintüsách</li>
+<li><strong>only</strong> — niri</li>
+<li><strong>ooze</strong> — Oozoýu</li>
+<li><strong>open</strong> — fegæn</li>
+<li><strong>option</strong> — Œgg</li>
+<li><strong>orb</strong> — Orhéb</li>
+<li><strong>order</strong> — Róxaí</li>
+<li><strong>ordinary</strong> — nihæfách</li>
+<li><strong>organ</strong> — Nioobłicil</li>
+<li><strong>ostrich</strong> — Strauss</li>
+<li><strong>outlaw</strong> — Othœsræaí</li>
+</ul>
+<h3>P</h3>
+<ul>
+<li><strong>pace</strong> — Pás</li>
+<li><strong>palm</strong> — Öfelfaí</li>
+<li><strong>paper</strong> — felth</li>
+<li><strong>parade</strong> — ráit</li>
+<li><strong>parasite</strong> — Scéuturmy</li>
+<li><strong>pariah</strong> — Rhácgy</li>
+<li><strong>partner</strong> — féirti</li>
+<li><strong>party</strong> — Feisr</li>
+<li><strong>passage</strong> — Esóg</li>
+<li><strong>paste</strong> — líp</li>
+<li><strong>pattern</strong> — Zëmpu</li>
+<li><strong>pause</strong> — Appaul</li>
+<li><strong>peace</strong> — Ghríntr</li>
+<li><strong>pen</strong> — Pen</li>
+<li><strong>penetrate</strong> — fłúgár</li>
+<li><strong>pentagon</strong> — Fflifagœrm</li>
+<li><strong>people</strong> — Áscíê</li>
+<li><strong>perform</strong> — pititítá</li>
+<li><strong>phone</strong> — Glaoscléÿ</li>
+<li><strong>phrase</strong> — Lóscó</li>
+<li><strong>physical</strong> — Łicaíách</li>
+<li><strong>pic</strong> — Îy-îy</li>
+<li><strong>pickup</strong> — Wułafy</li>
+<li><strong>pigeon</strong> — Úcsó</li>
+<li><strong>pillow</strong> — Púlff</li>
+<li><strong>pink</strong> — Oobrúd</li>
+<li><strong>pitch</strong> — Trídé</li>
+<li><strong>place</strong> — Ónthr</li>
+<li><strong>plan</strong> — Ubádh</li>
+<li><strong>plaster</strong> — Culc</li>
+<li><strong>plastic</strong> — Plulcst</li>
+<li><strong>plausible</strong> — sínësgách</li>
+<li><strong>plea</strong> — bœnaí</li>
+<li><strong>plead</strong> — bœn</li>
+<li><strong>please</strong> — mithæn / a'ithæ'nn</li>
+<li><strong>plus</strong> — ýacýác</li>
+<li><strong>pocket</strong> — Ootascby</li>
+<li><strong>point</strong> — Púncy</li>
+<li><strong>policy</strong> — Áscíáchaí</li>
+<li><strong>pop</strong> — Claóf</li>
+<li><strong>possible</strong> — cerłách</li>
+<li><strong>power</strong> — fultós</li>
+<li><strong>predicament</strong> — Clæffy</li>
+<li><strong>prehensile</strong> — gráhunæ</li>
+<li><strong>prescribe</strong> — dósafu</li>
+<li><strong>press</strong> — pric</li>
+<li><strong>pretend</strong> — ígherác</li>
+<li><strong>pretty</strong> — glœwtách</li>
+<li><strong>prior</strong> — aoyræcäch</li>
+<li><strong>private</strong> — niaintiálch</li>
+<li><strong>probable</strong> — îcýalaíách</li>
+<li><strong>problem</strong> — Fbainchund</li>
+<li><strong>produce</strong> — zóna</li>
+<li><strong>profile</strong> — Próëlth</li>
+<li><strong>prove</strong> — fásæarm</li>
+<li><strong>provide</strong> — afdaír</li>
+<li><strong>public</strong> — Ascíam</li>
+<li><strong>put</strong> — yiusétæn</li>
+</ul>
+<h3>Q</h3>
+<ul>
+<li><strong>quality</strong> — Cost</li>
+<li><strong>queue</strong> — Scuîfáin</li>
+<li><strong>quick</strong> — scúthách</li>
+</ul>
+<h3>R</h3>
+<ul>
+<li><strong>rabbit</strong> — Cóiscy</li>
+<li><strong>railside</strong> — glaosclíntách</li>
+<li><strong>rattle</strong> — Tscrathy</li>
+<li><strong>raw</strong> — górtách</li>
+<li><strong>ray</strong> — Réul</li>
+<li><strong>reach</strong> — Ëxiczisái</li>
+<li><strong>read</strong> — pud</li>
+<li><strong>real</strong> — Lifía</li>
+<li><strong>realm</strong> — Uælt</li>
+<li><strong>rear</strong> — Aoyáchaí</li>
+<li><strong>reason</strong> — Ffócoi</li>
+<li><strong>recall</strong> — seinutscu</li>
+<li><strong>receptacle</strong> — Íláty</li>
+<li><strong>recollect</strong> — seïldhu</li>
+<li><strong>record</strong> — Scratean-scratean</li>
+<li><strong>rectangle</strong> — Łœrmix</li>
+<li><strong>refer</strong> — ferfïzen</li>
+<li><strong>regard</strong> — gurden</li>
+<li><strong>reinforce</strong> — stirghæn</li>
+<li><strong>release</strong> — sclæs</li>
+<li><strong>reluctance</strong> — Trepíya</li>
+<li><strong>remember</strong> — erinæn</li>
+<li><strong>repeat</strong> — sininithíáchæ</li>
+<li><strong>reply</strong> — Faníucæí</li>
+<li><strong>represent</strong> — craïscíg</li>
+<li><strong>respect</strong> — Lebatscúne</li>
+<li><strong>respond</strong> — seifandræ</li>
+<li><strong>result</strong> — Seinhœmaí</li>
+<li><strong>retina</strong> — Niorneïl</li>
+<li><strong>retract</strong> — seïnaigg</li>
+<li><strong>revise</strong> — Tsilgáeíl</li>
+<li><strong>ride</strong> — rhaígæ</li>
+<li><strong>rim</strong> — Brooth</li>
+<li><strong>ring</strong> — Angúl</li>
+<li><strong>rivet</strong> — Sæmy</li>
+<li><strong>roam</strong> — ulterái</li>
+<li><strong>rocket</strong> — Súslaugg</li>
+<li><strong>rod</strong> — Gibub</li>
+<li><strong>rodent</strong> — Cræty</li>
+<li><strong>roleplay</strong> — rócghrudaol</li>
+<li><strong>roll</strong> — fołu</li>
+<li><strong>rooftop</strong> — Châtthap</li>
+<li><strong>room</strong> — Nimil</li>
+<li><strong>route</strong> — Łége</li>
+<li><strong>rumble</strong> — Tintin</li>
+</ul>
+<h3>S</h3>
+<ul>
+<li><strong>safe</strong> — Zicsic</li>
+<li><strong>sage</strong> — Saiły</li>
+<li><strong>sapphire</strong> — Saffîr</li>
+<li><strong>scan</strong> — Scóuc</li>
+<li><strong>scar</strong> — Orc</li>
+<li><strong>scarce</strong> — gæłós</li>
+<li><strong>screen</strong> — Îië</li>
+<li><strong>screenshot</strong> — Îraigeaië</li>
+<li><strong>seal</strong> — Drézic</li>
+<li><strong>search</strong> — sárghu</li>
+<li><strong>secret</strong> — Urcána</li>
+<li><strong>seem</strong> — scîyn</li>
+<li><strong>seep</strong> — sæd</li>
+<li><strong>sell</strong> — fendúheg</li>
+<li><strong>semi</strong> — chemy</li>
+<li><strong>send</strong> — affón</li>
+<li><strong>sense</strong> — Senthithaí / Senthith-senthith</li>
+<li><strong>sentence</strong> — Tscrîncy</li>
+<li><strong>sentient</strong> — senthyei</li>
+<li><strong>sequence</strong> — Purumrá</li>
+<li><strong>serious</strong> — tîr</li>
+<li><strong>set</strong> — yiusétæn</li>
+<li><strong>settle</strong> — seth</li>
+<li><strong>several</strong> — mÿmomÿ</li>
+<li><strong>sex</strong> — Gnæx</li>
+<li><strong>shadow</strong> — Sceúzal</li>
+<li><strong>shake</strong> — rhíster</li>
+<li><strong>shall</strong> — (blank)</li>
+<li><strong>share</strong> — Tîfal</li>
+<li><strong>sheet</strong> — Flæu</li>
+<li><strong>shift</strong> — aistær</li>
+<li><strong>shine</strong> — glów</li>
+<li><strong>shoot</strong> — scæt</li>
+<li><strong>shop</strong> — Thafern</li>
+<li><strong>shortcoming</strong> — Chuffchœm-chuffchœm</li>
+<li><strong>shoulder</strong> — Âxal</li>
+<li><strong>shout</strong> — scaotha</li>
+<li><strong>show</strong> — feaonthæn</li>
+<li><strong>shroud</strong> — Łícintac</li>
+<li><strong>shrug</strong> — Sæsa</li>
+<li><strong>shudder</strong> — rhóil</li>
+<li><strong>sibling</strong> — Sídia</li>
+<li><strong>sight</strong> — Laíaí</li>
+<li><strong>sightseeing</strong> — Laíaíýalaílaí</li>
+<li><strong>sign</strong> — Póintheau</li>
+<li><strong>silver</strong> — Raghutíu</li>
+<li><strong>similar</strong> — góïyth</li>
+<li><strong>simultaneous</strong> — ugóïythaíách</li>
+<li><strong>sinew</strong> — Nœrfy</li>
+<li><strong>singe</strong> — cyghafnu</li>
+<li><strong>sister</strong> — Sídia</li>
+<li><strong>sitting</strong> — Úsét-úsét-e</li>
+<li><strong>sixteen</strong> — Ghyfu</li>
+<li><strong>size</strong> — Méith</li>
+<li><strong>slack</strong> — Łaxaí</li>
+<li><strong>slip</strong> — tscrípst</li>
+<li><strong>sluggish</strong> — thryrách</li>
+<li><strong>snap</strong> — suippu</li>
+<li><strong>soak</strong> — chwícómæn</li>
+<li><strong>social</strong> — chísáchaíách</li>
+<li><strong>socket</strong> — Orn'pat'ách</li>
+<li><strong>soft</strong> — melum</li>
+<li><strong>solitary</strong> — sólitharách</li>
+<li><strong>solve</strong> — sólfu</li>
+<li><strong>somebody</strong> — uaołíc</li>
+<li><strong>something</strong> — ios uaothas</li>
+<li><strong>sometime</strong> — uaothüsýa</li>
+<li><strong>sorry</strong> — Ai'en'bitiths / Bitiths</li>
+<li><strong>soul</strong> — Sîchaí</li>
+<li><strong>sparkle</strong> — Scínsíy</li>
+<li><strong>special</strong> — Scepíëlách</li>
+<li><strong>species</strong> — Chainnaí</li>
+<li><strong>speculate</strong> — Scepíëlyæn</li>
+<li><strong>speed</strong> — Áłus</li>
+<li><strong>spread</strong> — subultæn</li>
+<li><strong>squeal</strong> — Tscræxca</li>
+<li><strong>staff</strong> — Âslutíê</li>
+<li><strong>stain</strong> — Ban</li>
+<li><strong>stare</strong> — rheetæ</li>
+<li><strong>start</strong> — funýáín</li>
+<li><strong>state</strong> — Rege</li>
+<li><strong>steady</strong> — stetyei</li>
+<li><strong>step</strong> — Padu</li>
+<li><strong>sting</strong> — Dumsy</li>
+<li><strong>stitch</strong> — Sporth</li>
+<li><strong>stonework</strong> — Sapfarmyaí</li>
+<li><strong>stop</strong> — Thal</li>
+<li><strong>story</strong> — Scéalithaí</li>
+<li><strong>strange</strong> — fremách</li>
+<li><strong>straw</strong> — Thwee</li>
+<li><strong>street</strong> — Cælæ</li>
+<li><strong>stretch</strong> — táigura</li>
+<li><strong>stripe</strong> — Frígó</li>
+<li><strong>stroke</strong> — Chagæn</li>
+<li><strong>strong</strong> — crýff</li>
+<li><strong>style</strong> — Ârtís</li>
+<li><strong>such</strong> — sy</li>
+<li><strong>sudden</strong> — Bruscách</li>
+<li><strong>suggest</strong> — próthesthæn</li>
+<li><strong>suite</strong> — Swýth</li>
+<li><strong>summon</strong> — prótugjæn</li>
+<li><strong>sunrise</strong> — Afyáëg</li>
+<li><strong>sunset</strong> — Felyáëg</li>
+<li><strong>support</strong> — Tacýac</li>
+<li><strong>sure</strong> — fæsei</li>
+<li><strong>surface</strong> — Âlathy</li>
+<li><strong>surpass</strong> — sógjæn uÿth-e</li>
+<li><strong>surprise</strong> — Uyruscáth</li>
+<li><strong>survive</strong> — uyrebendth</li>
+<li><strong>suspect</strong> — mawspur</li>
+<li><strong>suspend</strong> — aartanfu</li>
+<li><strong>sustain</strong> — tacfæuæn</li>
+<li><strong>swallow</strong> — łýngga</li>
+<li><strong>sweep</strong> — sumsumæn</li>
+<li><strong>symmetry</strong> — Sumferffaíya</li>
+</ul>
+<h3>T</h3>
+<ul>
+<li><strong>tabletop</strong> — Gnýorchubý</li>
+<li><strong>talk</strong> — chísæn</li>
+<li><strong>tap</strong> — gâgg</li>
+<li><strong>taste</strong> — scmágr</li>
+<li><strong>tattoo</strong> — Stigma</li>
+<li><strong>teal</strong> — glaltrách</li>
+<li><strong>technics</strong> — Tecnëê</li>
+<li><strong>television</strong> — Thelefigjíon</li>
+<li><strong>term</strong> — Dúfendy</li>
+<li><strong>terminal</strong> — Dúfendyách</li>
+<li><strong>terrain</strong> — Talíraí</li>
+<li><strong>terrify</strong> — theraffæn</li>
+<li><strong>test</strong> — Próthrî</li>
+<li><strong>text</strong> — Thexa</li>
+<li><strong>thank</strong> — gradyæ</li>
+<li><strong>thaw</strong> — goleafsæn</li>
+<li><strong>the number 12,960,000</strong> — thíghráied</li>
+<li><strong>the number 216,000</strong> — thrhaithíl</li>
+<li><strong>then</strong> — ios thüs</li>
+<li><strong>thing</strong> — ios thas</li>
+<li><strong>thorough</strong> — eolágg</li>
+<li><strong>though</strong> — wythil</li>
+<li><strong>thrash</strong> — drescer</li>
+<li><strong>threat</strong> — Ógjin</li>
+<li><strong>throes</strong> — þrowê</li>
+<li><strong>thus</strong> — sy</li>
+<li><strong>tilt</strong> — Clæn</li>
+<li><strong>tinge</strong> — urłæir</li>
+<li><strong>tip</strong> — pec</li>
+<li><strong>toe</strong> — túm</li>
+<li><strong>together</strong> — dubildách</li>
+<li><strong>tolerate</strong> — thóleraré</li>
+<li><strong>tome</strong> — Thóm</li>
+<li><strong>tone</strong> — Thón</li>
+<li><strong>top</strong> — Chât</li>
+<li><strong>toss</strong> — berff</li>
+<li><strong>townhouse</strong> — Gnitthïc</li>
+<li><strong>trace</strong> — Rýun</li>
+<li><strong>traction</strong> — Thrazunét</li>
+<li><strong>traffic</strong> — Samcœry</li>
+<li><strong>tram</strong> — Anbwen</li>
+<li><strong>transport</strong> — Ułuchaí</li>
+<li><strong>travel</strong> — uff</li>
+<li><strong>tread</strong> — putæn</li>
+<li><strong>tremor</strong> — Sithera</li>
+<li><strong>truck</strong> — <em>Scale</em> <em>truck</em>-e</li>
+<li><strong>trudge</strong> — drag</li>
+<li><strong>true</strong> — walách</li>
+<li><strong>trunk</strong> — Stöfy</li>
+<li><strong>try</strong> — Thrîaí</li>
+<li><strong>twelve</strong> — ghîfy</li>
+<li><strong>twice</strong> — aintghaintïe</li>
+<li><strong>twist</strong> — Cærnúa</li>
+<li><strong>type</strong> — Chain</li>
+</ul>
+<h3>U</h3>
+<ul>
+<li><strong>underneath</strong> — öobén</li>
+<li><strong>undulate</strong> — uodagarhn</li>
+<li><strong>unison</strong> — Steam niyail-e</li>
+<li><strong>until</strong> — dúiri</li>
+<li><strong>upright</strong> — deóghsgú</li>
+<li><strong>uranium</strong> — üranyum</li>
+<li><strong>urtext</strong> — Thexa Ür-e</li>
+<li><strong>usual</strong> — gnággách</li>
+<li><strong>uterus</strong> — Chýstég</li>
+</ul>
+<h3>V</h3>
+<ul>
+<li><strong>vanish</strong> — unescæn</li>
+<li><strong>vary</strong> — thâsæsæn</li>
+<li><strong>vehicle</strong> — Fály</li>
+<li><strong>very</strong> — aggïe</li>
+<li><strong>victim</strong> — Titheäí</li>
+<li><strong>violent</strong> — dífílách</li>
+<li><strong>viscous</strong> — píschilách</li>
+<li><strong>vision</strong> — Laíaí</li>
+<li><strong>visit</strong> — tïsárghuc</li>
+<li><strong>vodka</strong> — Fótca</li>
+</ul>
+<h3>W</h3>
+<ul>
+<li><strong>waker</strong> — Saíny</li>
+<li><strong>wall</strong> — Manaowr</li>
+<li><strong>war</strong> — Rhymos</li>
+<li><strong>wave</strong> — Fauf</li>
+<li><strong>weak</strong> — dænæei</li>
+<li><strong>weapon</strong> — Scönscha</li>
+<li><strong>week</strong> — Ffar</li>
+<li><strong>well</strong> — Yúpa</li>
+<li><strong>while</strong> — Fír</li>
+<li><strong>whisper</strong> — Súsúr</li>
+<li><strong>whit</strong> — ítspa</li>
+<li><strong>wild</strong> — Ffeærách</li>
+<li><strong>will</strong> — Spítiya</li>
+<li><strong>wilt</strong> — efelgú</li>
+<li><strong>window</strong> — Fenis</li>
+<li><strong>withdraw</strong> — seiffrathí</li>
+<li><strong>wood</strong> — Rom</li>
+<li><strong>work</strong> — ffors</li>
+<li><strong>worry</strong> — sýngjæn</li>
+<li><strong>wrap</strong> — ythligu</li>
+<li><strong>wrench</strong> — Sclostaíry</li>
+</ul>
+<h3>Y</h3>
+<ul>
+<li><strong>yank</strong> — plœw</li>
+<li><strong>yeah</strong> — Bha</li>
+<li><strong>yell</strong> — łúcraí</li>
+<li><strong>yet</strong> — stil</li>
+</ul>
+<h3>Z</h3>
+<ul>
+<li><strong>zone</strong> — Uæxrælt</li>
+</ul>
+</div>
+</div>
+</main>
+    <footer class="doc-foot">
+        <a class="menu" href="index.html">Danæam</a>
+        <a class="next" href="not-non-rules.html">Not Non-Rules <span class="arrow">→</span></a>
+    </footer>
+
+    <script src="../site.js"></script>
+</body>
+</html>

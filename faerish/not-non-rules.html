@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;1,300;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+    <title>Not Non-Rules — Danæam</title>
+    <link rel="stylesheet" href="../style.css">
+<style>
+:root {
+  color-scheme: light dark;
+  --paper-width: 8.5in;
+  --paper-height: 11in;
+  --page-margin: 1in;
+  --doc-ink: var(--text-primary);
+  --doc-paper: var(--bg-card);
+  --doc-desk: var(--bg-primary);
+  --serif: "EB Garamond", Garamond, "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+}
+
+@page {
+  size: Letter portrait;
+  margin: 1in;
+}
+
+@page:right {
+  @top-center {
+    content: "Lyre · Síonæiya";
+    font-family: var(--serif);
+    font-size: 9pt;
+  }
+  @bottom-center {
+    content: "… " counter(page) " …";
+    font-family: var(--serif);
+    font-size: 9pt;
+  }
+}
+
+@page:left {
+  @top-center { content: ""; }
+  @bottom-center { content: ""; }
+}
+
+@page:first {
+  @top-center { content: ""; }
+  @bottom-center { content: ""; }
+}
+
+html {
+  background: var(--doc-desk);
+}
+
+body {
+  margin: 0;
+  color: var(--doc-ink);
+  background: var(--doc-desk);
+  font-family: var(--serif);
+  font-size: 12pt;
+  text-rendering: optimizeLegibility;
+}
+
+.canonical-document {
+  width: var(--paper-width);
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.title-page,
+.body-section {
+  box-sizing: border-box;
+  width: var(--paper-width);
+  max-width: 100%;
+  padding: var(--page-margin);
+  color: var(--doc-ink);
+  background: var(--doc-paper);
+}
+
+.title-page {
+  position: relative;
+  min-height: var(--paper-height);
+  break-after: page;
+  page-break-after: always;
+  overflow: hidden;
+}
+
+.work-section + .work-section > .title-page {
+  break-before: page;
+  page-break-before: always;
+}
+
+.body-section {
+  min-height: var(--paper-height);
+  padding-bottom: var(--page-margin);
+}
+
+.source-paragraph {
+  box-sizing: border-box;
+  margin: 0;
+  font: inherit;
+  font-weight: 400;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  orphans: 2;
+  widows: 2;
+}
+
+.source-paragraph.blank {
+  min-height: 1em;
+}
+
+.title-furniture {
+  position: absolute;
+  right: 0;
+  left: 0;
+  z-index: 1;
+  text-align: center;
+  font-size: 9pt;
+  line-height: 1;
+}
+
+.title-furniture.header { top: 0.48in; }
+.title-furniture.footer { bottom: 0.48in; }
+
+.hard-page-break {
+  height: 0;
+  break-after: page;
+  page-break-after: always;
+}
+
+@media screen and (max-width: 8.5in) {
+  .title-page,
+  .body-section {
+    padding-right: clamp(1rem, 7vw, 1in);
+    padding-left: clamp(1rem, 7vw, 1in);
+  }
+}
+
+@media print {
+  html,
+  body {
+    background: #fff;
+  }
+  .canonical-document,
+  .title-page,
+  .body-section {
+    width: auto;
+    max-width: none;
+    margin: 0;
+    padding-right: 0;
+    padding-left: 0;
+  }
+  .title-page,
+  .body-section {
+    min-height: 9in;
+  }
+  .body-section {
+    padding-bottom: 0;
+  }
+  .title-furniture {
+    display: none;
+  }
+}
+</style>
+<style>
+/* ── site dress — typeset leaves on the void ── */
+.title-page, .body-section { border: 1px solid var(--border); transition: var(--theme-transition); }
+.work-section { margin-bottom: 2.6rem; }
+.work-section:last-of-type { margin-bottom: 0; }
+.title-furniture { color: var(--text-muted); }
+.title-page[id] { scroll-margin-top: 1.5rem; }
+
+.doc-head, .doc-foot {
+  box-sizing: border-box;
+  width: var(--paper-width);
+  max-width: 100%;
+  margin: 0 auto;
+  padding-right: var(--page-margin);
+  padding-left: var(--page-margin);
+}
+@media screen and (max-width: 8.5in) {
+  .doc-head, .doc-foot {
+    padding-right: clamp(1rem, 7vw, 1in);
+    padding-left: clamp(1rem, 7vw, 1in);
+  }
+}
+.doc-head { padding-top: 2.4rem; padding-bottom: 1.8rem; }
+.doc-head .back { margin-bottom: 1.5rem; }
+.doc-nav, .doc-contents { font-family: var(--font-display); }
+.doc-nav { font-size: 0.9rem; letter-spacing: 0.1em; }
+.doc-nav a, .doc-contents a { color: var(--text-muted); text-decoration: none; transition: color 0.3s ease; }
+.doc-nav a:hover, .doc-contents a:hover { color: var(--accent); }
+.doc-nav a::after, .doc-contents a::after, .doc-foot a::after { display: none; }
+.doc-nav .here { color: var(--accent); font-style: italic; }
+.doc-nav .sep, .doc-contents .sep { color: var(--stone); margin: 0 0.55em; }
+.doc-contents { margin-top: 0.9rem; font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; }
+
+.doc-foot {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: baseline;
+  gap: 1rem;
+  padding-top: 2.6rem;
+  padding-bottom: 3.6rem;
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+}
+.doc-foot a { color: var(--text-muted); text-decoration: none; transition: color 0.3s ease; }
+.doc-foot a:hover { color: var(--text-primary); }
+.doc-foot .arrow { color: var(--accent-dim); text-shadow: 0 0 12px var(--accent-dim); }
+.doc-foot .prev { grid-column: 1; justify-self: start; }
+.doc-foot .menu { grid-column: 2; justify-self: center; font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; }
+.doc-foot .menu:hover { color: var(--accent); }
+.doc-foot .next { grid-column: 3; justify-self: end; }
+
+@media print {
+  .grain, .cursor-glow, .theme-toggle, .doc-head, .doc-foot { display: none !important; }
+  html, body, .canonical-document, .title-page, .body-section {
+    color: #111 !important;
+    background: #fff !important;
+    border: none !important;
+  }
+}
+</style>
+<style>
+/* ── condensed reference register ── */
+.ref-body { font-size: 12pt; }
+.ref-body p { margin: 0.8em 0; line-height: 1.55; }
+.ref-body h2 { font-size: 11pt; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; margin: 2.4em 0 0.9em; }
+.ref-body h3 { font-size: 15pt; font-style: italic; font-weight: 500; margin: 2.2em 0 0.7em; }
+.ref-body ul { margin: 0.8em 0; padding-left: 1.15em; }
+.ref-body li { margin: 0.5em 0; line-height: 1.55; }
+.ref-body strong { font-weight: 500; }
+.ref-body hr.part-seam { border: 0; border-top: 1px solid var(--border); width: 38%; margin: 3.6em auto; }
+</style>
+</head>
+<body>
+    <div class="grain"></div>
+    <div class="cursor-glow" id="glow"></div>
+
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg class="sun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+        <svg class="moon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+    </button>
+
+    <header class="doc-head">
+        <a href="index.html" class="back">Danæam</a>
+        <nav class="doc-nav" aria-label="Condensed"><a href="guideworde.html">Guideworde</a><span class="sep">·</span><span class="here">Not Non-Rules</span><span class="sep">·</span><a href="storywarders.html">Storywarders</a></nav>
+    </header>
+
+<main class="canonical-document">
+<div class="work-section">
+<div class="title-page">
+<div class="title-furniture header" aria-hidden="true">Lyre · Síonæiya</div>
+<h1 class="source-paragraph align-center" align="center" style="text-align: center; margin-top: 264pt"><span style="font-size: 48pt">Not Non-Rules</span></h1>
+</div>
+<div class="body-section ref-body">
+<h2>1 · Orthography &amp; script</h2>
+<ul>
+<li>Letters in use: á â ä ë ê é ï î í ü ú û ł æ œ ô ö ó ý ŷ ÿ; rare þ; V as a letter-mark (the down-trill).</li>
+<li>Capitalisation: Nouns capitalised, everything else bare. A Noun that becomes a not-noun loses its capital (Mêdhe → mêdhië). Nested capitals drop word-internally; a fused Noun-complex capitalises at its left edge only (afŁamis keeps its mid-word capital as an af-/fel- exception).</li>
+<li>The seam writes ï: i meeting i across a morph boundary wears the diaeresis (niïl ‹ ni + il; nirïë ‹ niri + -ië).</li>
+<li>Quotation marks: &gt;– –&lt; top layer, »– –« nested lower layer. English &quot; &quot; appear only inside the imperative's self-quote (&quot;S'aige'in&quot;). faer may tag the close of a quote (&gt;-Łix-&lt; fær Sclíeclu-Sclíeclu sœinea).</li>
+<li>• (spaced either side) = combined exclamation-mark and colon; opens/closes imperatives, optatives, topic-markers.</li>
+<li>∆ = up-trill, V = down-trill. Offices: vocative (up-energy / down-energy; obligatoriness unruled); affect (∆ amused/sharp, V unkind/hushed); spatial ↑/↓ in running text; prose emphasis (V …hushed… beat, ∆ !struck! beat); ∆ also stands for the closing • in the first-person topic-smoosh. One vocable, several offices; typed twin of ∆ is A. Trills run parallel to the segments until sentence-end or the next • — the one exception to prosody-blindness; humans cannot join them. af-/fel- are the trills' dictionary prefixes (up/down).</li>
+<li>Hyphen = compound junction, toll-free. Apostrophe = tmesis seam, toll due (Ro'math-oo'seoir'b'il). Dash-hung clitic for whole propositions (or'raif'il—'t); seam-dress scales with guest size (presumed law).</li>
+<li>Imperative punctuation and the vocative trills are written; the fæ majority express them vocally.</li>
+</ul>
+<h2>2 · Mutations</h2>
+<ul>
+<li>Lenition follows scér, e &quot;of&quot;, niïl, and more (Cain→Chain, Bailc→Bailch, Gusci→Ghusci). Eclipsis follows scén. Same split as the two question particles.</li>
+<li>Pronouns and possessives are mutation-immune (e mao Fía, never *e mhao). Names after e stand unlenited (immunity, or J outside the alphabet — watch).</li>
+<li>Bare numerals take no mutation.</li>
+<li>thúil &quot;no longer&quot; is a citation form, not a lenition of *túil.</li>
+<li>Whether aoa lenites what it negates: unattested — open.</li>
+</ul>
+<h2>3 · Articles, determiners, definiteness</h2>
+<ul>
+<li>niïl = a/an (ni &quot;fewer-than&quot; + il &quot;multiple&quot;); lus = the.</li>
+<li>One article slot: lus / niïl / possessives compete for it (*sís lus; mhís e Wíc, never *lus mhís e Wíc). In existentials the possessive bleaches to an article (Mis Scale mith gæn &quot;there is a car&quot;).</li>
+<li>Definiteness is obligatory: proper noun, lus, or enclitic 'ya. Indefiniteness optional.</li>
+<li>Definite/demonstrative paradigm: Atruens'ya &quot;the incident&quot; (sg, enclitic) · ios Atruens &quot;that&quot; · sís Atruens &quot;this&quot; · sícías Atruensê &quot;these&quot; · iocías Atruensê &quot;those&quot; · Atruensê'ya &quot;the incidents&quot;. Demonstratives front the noun and pluralise with cías; the neutral definite rides after the noun, plurality marked on the noun. iocías/sícías are compositional (ios/sís + cías).</li>
+<li>Proper names are doorless (no article). Whether indefinites make poor topics: unruled.</li>
+<li>What du can swallow: the article fence alone.</li>
+</ul>
+<h2>4 · Pronouns &amp; reflexives</h2>
+<ul>
+<li>All bare, never capitalised. ten I · mæ you · fæ 3rd (she/he/they — the universal-fæ system) · í it · mith we · miths us · teo me · tes my · mao your · fær his/her (object form of fæ after iy) · mis our · cías their/them · ír its (an animate/inanimate split beside fær — light fork).</li>
+<li>Ceremonial force-pronouns outside the fæ-system: Ton/Tonu &quot;he — the creation force&quot; (oblique Tonu-e), þin/þis &quot;she — the noncreation force&quot; (oblique þis-e); declension conditioning unruled.</li>
+<li>sê, the reflexive: logophoric (in reports, self bends back to the sayer). Naked sê = 1st person &quot;myself&quot;; never 3rd; in infinitives, generic &quot;the-self&quot;. Compounds: sê-fær &quot;færself&quot; (fær last — an adjective, taking the in-lieu-of-tmesis position), sê-cías, miths-sê &quot;ourselves&quot;, í-sê. Each antecedent pairs with its own compound; no exotic binding conditions. Placement free; also serves as the emphatic. Reflexive placement free.</li>
+<li>cías-sê: dual duty — alone (sg) / each-other (pl); the alone-construction rides mé, and 'ya on wil reassures. Reciprocity is pronoun-side, never verb-forms; the reciprocal estate is claimed by the plural sê-forms.</li>
+<li>Clause-mates are disjoint. Otherwise anaphora is direction-free — any direction, domain, distance; no positional sanctuaries at seams; the liberty distributes across o untouched. No special anaphor exists — the pronoun-gender design guards something sneaky, undisclosed by design; the anaphor-ban protects it. One wall anaphora may not pierce: the coordinate island.</li>
+<li>Picture-Nouns: nothing leaks, no cage — the e-construction available, unrequired.</li>
+<li>Text-deixis: a six-cell compass, near/far × back/along/plain; the along-column is cataphoric (sísaoya &quot;nearer along&quot;, iosaoya &quot;farther along — the yet-to-be-said&quot;, sísiya &quot;nearer, direction-unspecified&quot;, etc.).</li>
+<li>Nonspecific office: mith, í, and a conditioned mæ-substitute. someone = uain't-aoa; some = uaothë.</li>
+<li>'ya stress / 'thte de-emphasis never change the core pronoun (no obviation). Pronoun emphasis is segmental, both directions. Pronoun-clefts free. Inclusory constructions: yes (mith ssai).</li>
+<li>Zero subjects licensed where be agrees — a licence, never a law. A dropped copula reads first person.</li>
+<li>Referentiality and genericness are unmarked.</li>
+</ul>
+<h2>5 · The verb &quot;to be&quot;</h2>
+<ul>
+<li>One verb, a full grid; two splits govern it: presence of the cleft ios, and number (-s).</li>
+<li>With ios — and inside y-marked subordinates — the form is obligatorily atá / atáea (pl. atás / atáes). The y-law: &quot;the y in yScéan summons the atá family&quot; — thé (y-less) takes bhie; ythénÿ, yiosnÿ, yScéan take atá. Behind it: existence earns subjecthood; nonexistence is denied it.</li>
+<li>Elsewhere: bhie(s) present · eibh(s) past · más(as) 1st person · iëao(s) future (iëao = ië- + ao, the morph prefixal, matching its tmetic face 'Ië'…). is: an attested be-face beside bhies (Æœá-e Fía fæ is — gentle fork). aobh: plausibly an optative be-form (held loosely).</li>
+<li>bhies has a triple life: plural; polite plural; courtesy-singular (&quot;they are a friend&quot;) — the last a mystery.</li>
+<li>Order canon: base OSV; first person SOV (&quot;SO not OS&quot;); colloquial 1st person makes the suis-je — be fronts and fuses: Más-ten (vS-O-V), adjectives hanging free. Ten ærmuch más &quot;I am tired&quot; · Más-ten ærmuch &quot;I'm tired&quot;. Más-ten is tonally casual, 1sg only. The overt copula is obligatory by convention but routinely dropped in tmetic fragment-sentences (Stá'fæ'tach &quot;the fæ is stupid&quot;).</li>
+<li>Complement order: 1st person Subject + Complement + be; all others Complement + Subject + be (Oob lus Math lus Seoir bhie &quot;under the mat the key is&quot;).</li>
+<li>Degree-complements: any adjective converts to a degree-word — forcing complement-hood — via Or…il &quot;not X enough&quot; and Ro…il &quot;too X&quot; (Or'lain'il / Ro'lain'il; litotes: or'raif'il—'t &quot;not inadequately hungry&quot; = extremely).</li>
+<li>Adverbial complements: statives take bare fronted PPs; only action sentences mark direction, with dús (toward-the) and dúïl (toward-a). Formal progressive: Ten dús Fith-Fith más &quot;I toward-the eating am&quot;; semicolloquial Fith-fith: ten fith — first person only (elsewhere it ambiguates).</li>
+<li>The participle sits before be in 1st person, after be in non-1st (person-conditioned or free — open).</li>
+<li>Bare subject-complement: the make/crown pattern Mith fær Væx farmea — one dress in both voices.</li>
+</ul>
+<h2>6 · The existential engine (gæn)</h2>
+<ul>
+<li>Nothing merely is: existence is continuous donation, es gibt taken literally. Frame: í [NP] gæn — &quot;it gives NP&quot; = there is NP; the dummy donor í serves when none volunteers.</li>
+<li>Possessive existentials: mis &quot;our&quot; / mao &quot;your&quot; as possessives-as-articles, giver mith (Mis Seoir oob mis Math mith gæn).</li>
+<li>The ours-deferral: when the possessum is genuinely ours in a we-give sentence, one first-person mark defers to second person — the giver flips to mæ, or the article to mao. What is truly ours must be handed to us by you; the community cannot self-certify possession. (In the bleached-article existential, mis certifies nothing, so the deferral is not in play.)</li>
+<li>Predication by existence: chained gæn-clauses assert identity — … gæn aich sin … gæn &quot;is also a&quot;.</li>
+<li>The gift test: an NP is what gæn can give — the engine doubles as the constituency-detector (tmesis words travel as Nouns). Second jurisdiction: resumability as the topic-licence — a topic is what í may say.</li>
+<li>Tenure: plain gæn undefined and common; gænyin temporally bound tenure; gilæn eternal regiving (g'[w]il'æn — wil &quot;all&quot; tmesized into gæn, the hard w paid, welded solid). mith gæn = inalienable; í gæn = alienated. gæn wears tense — the six-form chant; -ea past and ië- future productive across the family (gænea, ïegæn't).</li>
+<li>The naming-split: the unnamed is possessed from the front; the named is tagged from behind (Kettlina-mine); ours and theirs by the same pattern.</li>
+<li>Negative existential: æœá Frælithi'ya í gænyin — nonexistence denied subjecthood, the dummy í giving.</li>
+<li>Dates exist by donation: Raíwíl-heatth mith gæn &quot;it is 2997&quot;.</li>
+<li>States by frame: gæn mé X Craimh &quot;X is hungry&quot; (es-gibt × tá-ocras-orm).</li>
+<li>gæn vs mé-e (donation-ownership vs accompaniment-having): division presumed, unruled; tes-mé possession-as-accompaniment enriches the mé side.</li>
+</ul>
+<h2>7 · Negation, polarity &amp; comparison</h2>
+<ul>
+<li>Answer words: aobha &quot;no&quot; (ao &quot;not&quot; + bha &quot;is&quot;), bháya &quot;yes&quot; (bha + 'ya), Syá &quot;maybe&quot; ('thte + 'ya ground together by fast speech). The verb-echo + clitic answer is commoner.</li>
+<li>Polarity clitics: 'ya positive · 't negative post-consonant (Fith't, thurn't) · 'thte negative post-vowel (Nhœme'thte, scé'thte) · 'ma on-the-contrary (Gæn'ma &quot;oh but I am&quot;). The weld mÿa ‹ 'ma + 'ya.</li>
+<li>Leading tags: scé'ya (expecting yes), scé'thte (expecting no). Under ellipsis a clitic can outlive its host (Œr 'thte? — scé elides, 'thte hangs).</li>
+<li>The clitics dock on the focused constituent of any class (duíra'ya, Eg'ya / Eg't). Bare aoa = constituent negation; 't = the polar stamp; film't alone is grammatical but &quot;disagreeably subtle&quot;.</li>
+<li>Double negative = attenuation, not cancellation (aoa duíxeis film't ≈ &quot;semi-rightward-turn-ness&quot;); double negatives are disembodiers. Neg-raising is the default; low docking disambiguates, aoa-fronting wilfully re-ambiguates.</li>
+<li>Negation fusion runs the whole tense system: atáea'thte &quot;wasn't&quot; · gilæn't &quot;never-gave&quot; (doubled gilæn't gilæn't &quot;never, never&quot;) · ïegæn't &quot;will-not-give&quot;. The general negative strategy, not a present-tense quirk.</li>
+<li>The pro-verb át &quot;did&quot; answers for any verb, first-person order-flip intact: Ten ios át &quot;I did&quot; · Ios mæ át &quot;you did&quot;.</li>
+<li>æœá = the object-no, direct on the NP; æœá-e &quot;without / of-no&quot; (Ten æœá-e Fía más). æœá-e leads its NP (determiner-blood); mé-e trails (preposition-blood). The from/without twins: dræao and æœá-e.</li>
+<li>Negative-quantity scale (on partitive e + 'ya): niuain · aoa uain · æouain · ssíns.</li>
+<li>Comparison is built from the polarity clitics: X'ya = -er degree (slee'ya &quot;faster&quot; — reads as the 'ya-degree; the true comparative suffix is -mÿa, sleemÿa; gentle fork), 'ya'ma even-more. The standard takes iy &quot;than&quot;: Holdhmÿa iy tens &quot;taller than me&quot;. iy never omits — coherence keeps its anchor. Attributively the head Noun tmesizes into its standard, -iy hanging by the tmeter: Niïl holdhmÿa Fæ'hín-iy'ær &quot;a man taller than fær&quot;. The repeated adjective must vanish, its copula may stay: iy lus Sídia ___ (atá). iy + NP is a bare phrase — no silent structure; clausehood exists exactly where y-marking shows it. Comparative clauses shed everything but the standard-NP.</li>
+<li>-mÿa generalises the comparative to adverbs; contrariety wears -ma. Superlatives: mÿel &quot;more-than-any&quot; / niyel &quot;fewer-than-any&quot; (with variant definite articles; partitive e placements). Equative: the sin…sy correlative — sin mordach sy fær &quot;as big as her&quot; (in practice sy fær sin mordach fæ bhie); reaches noun-function (&quot;as a club&quot;) and adverbs. &quot;very&quot; = the duíra'ya boost (borderline, awaiting word).</li>
+<li>The emphasis kit is asymmetric: yes doubles (bháya'ya, fith'ya bha); no chains its lone morpheme (fith't o 't o 't). Combinations free; the chain grades open-endedly, whimsy over scarcity.</li>
+<li>Conjunct-glow: X'ya o Y &quot;X indeed, and Y&quot; — conjunct-emphasis is a polarity act by the docking law; one conjunct may glow alone; many-glows = two 'ya stamps. Negative glows dress as 'tya / 'thteya, avoiding added negators (split-pole X'ya o Y'tya; bare 't stays plain negation). An 'ma-stamp ('maya): unattested.</li>
+</ul>
+<h2>8 · The interrogative system</h2>
+<ul>
+<li>A clefting, particle-driven, prosody-blind, movement-only system. All questions are obligatorily tagged — no tonal questionhood exists.</li>
+<li>Particles: scér (past, leniting) / scén (non-past, eclipsing), placed at a notably irregular point. Suspended protases ask honestly: scér tmeses into ann (O scé'ann mao Myth dús bhie Son-Son e bhie? &quot;and if your nose is a-bleeding?&quot;).</li>
+<li>The retro-repeater (r.r.): the sentence's last verb repeated in advance at a notably nonregular point — the audible signifier of questionhood beyond the particle. Emphasis/urgency ∝ irregularity of placement; at the extreme the copy erupts mid-word (to- are -ward). R.r.s are questions-only; declaratively their mirror is plain repetition (§12). The r.r. alone is position-free.</li>
+<li>The frozen cleft ios: resonance-governed, never question-bound, not obligatory in questions; obligatory wherever thas stands (ios attends thas, never the reverse — mystery). Dropped in echoes, where even thas surrenders it: the missing cleft is the tell. Demonstrative-ios ≠ cleft-ios (rides plain bhie, no y-marking).</li>
+<li>Multiple-wh fronting: nothing sits in situ; every questioned element fronts, stacked. The th-word's home is clause-initial after the particle; a subject ahead of the wh is an error — except a first-person subject, which flips the order.</li>
+<li>thurn is inherently interrogative — no non-question form. here = sís thurn; there = ios thurn (existence stated with gæn: Í ios thurn niïl Nímhog gæn). them &quot;how&quot; (frame them…yail &quot;how many&quot;); thénu whom-oblique (after prepositions; whose = thénu mé); ythemnÿ &quot;how&quot; in reported speech.</li>
+<li>Echo-questions (in-situ and intonation both banned) are solved in the morphology: echo prefix gla- (reduced glés- for one-word echoes) + vowel-harmonising suffix -as: Glascér … laías? / Glésthas? &quot;WHAT?&quot;. Informal echo: the verb reduplicates and burrows inside the wh-word (Sclaí-laí-laí-laí-tha-laí-s mæ?). Statement-echo uses gla-…-as; question-echo re-poses the clause + tag (…scén scé'ya) with deixis shifted (mæ→ten). No ios in echoes — the echo absorbs it: cleft = ordinary question, no cleft = echo.</li>
+<li>Answers, yes–no: echoed verb + clitic (Fith'ya · Fith't / Nhœme'thte · Gæn'ma) or dedicated bháya / aobha / Syá; the pro-verb át for any verb. Echo-answers drift toward 'ya (Bháya. Ghusci'ya. — the Danæam &quot;you heard me&quot;).</li>
+<li>Wh-answers are the question's negative space: the focus fronts to exactly the th-word's slot; the cleft goes implicit; no particle, no r.r. In subclauses the implicit cleft holds the ghost y-…nÿ, so every overt th-containing clause takes bare y-. Fragments may fuse into one word by tmesis (C'achér'ed &quot;second drawer&quot;).</li>
+<li>Long-distance questions mark the path only where it matters: y-…nÿ marks the th-element in the first subordinate clause that itself contains one (yiosnÿ, yésnÿ); bare y- marks th-elements in all secondary clauses (yüs, yés). Binary — no third grade; agreement tracks th-content, not the abstract path. A relative clause with no internal th-element stays plain ios. &quot;Th-element&quot; = membership in the interrogative paradigm (thas…thés); surface th- alone does not qualify (thúil is not one); sís thurn does put one inside its clause.</li>
+<li>Rootness: • and scér/scén are root-clause-makers; y-…nÿ / y- fire in true subordinates only.</li>
+</ul>
+<h2>9 · The imperative</h2>
+<ul>
+<li>Danæam does not command; it announces compliance and directs the listener's attention to their own obedience, already underway. Frame: Air • &quot;S'aige'in&quot; dúirá film. — [Notice • &quot;so-said&quot; leftward turn] = &quot;Turn left.&quot; Air &quot;notice!&quot; opens; • presents; &quot;S'aige'in&quot; (sin wrapped around s-shorn saige) is the self-quotation. No particle, no r.r., no ios: its own sentence-type.</li>
+<li>Fragments drop the so-said nest and reduce the particle (Air → Ai', as gla- → glés-). Persons nest into the command, shedding their onset (Ai'æ'lith); Air's r survives as liaison only before i- and e-initial nested pronouns. Bare Ai'[verb] is implicitly 2pl unless context narrows it. fæ cannot nest in imperatives (official answer: Syá).</li>
+<li>Two axes of degree: urgency scales by compression (bare Ai'lith! maximal); gravity/anger by ceremonious expansion — syntactically proper embeddings of air plus expecting-yes questionoids (Sís mæ-film air, scén scé'ya? • &quot;S'aige'in&quot; dúirá film.). The more formally complete, the more trouble you are in. The prohibitive does not invert the scaling.</li>
+<li>Polarity clitics attach for force: 'ya do-emphasis; 't / 'thte prohibition (Ai'lith't! &quot;don't run&quot; — the announcement simply announces non-compliance). 1pl prohibitive: Air'ith'rubh't &quot;we touchn't&quot;; audibility variant dash-set Air'ith'rubh —'thte—!; periphrastic Sís mith air —'thte— • &quot;S'aige'in&quot; í aoa rubh. 1pl hortative: Ai'ith'rubh'ya &quot;let's touch!&quot; — 't forbids, 'ya invites.</li>
+<li>The optative: O • frames it (superseding Ai); Mee converts optative → imperative, carrying the implicit existential [í] [subject] Mee [gæn] — curses are gifts (O • Mee aoa mhís e Wíc linchs). Mee is monitory; its geas-tiers Me'æ'e (2sg), Me'en'e (1sg). The elliptical optative also underlies the topic-shifter (&quot;May what follows concern X&quot;); its reach beyond that frame unruled.</li>
+<li>No debitive exists — the imperative serves.</li>
+</ul>
+<h2>10 · The tmesis engine</h2>
+<ul>
+<li>One mechanism, five coats: things that go inside other things pay a toll and leave a seam. The two laws: the apostrophe marks every seam; the nested word sheds its onset consonant.</li>
+<li>The toll's phonology: hard onsets pay (drop): b c d g j k p q t w x. Soft onsets ride free. In clusters, hard members drop and soft survive (Thrugh → 'rugh; Wíc → 'íc; Malach keeps its m). Pronouns pay regardless of softness (mæ → 'æ, mith → 'ith).</li>
+<li>Seam-merge: identical sibilants across a seam merge (S'aige'in ‹ Sin + saige). Sin = &quot;so/as&quot;, so S'aige'in is &quot;as-said&quot; — the verbs-into-Sin domain is the as-X-ed adverbial factory. Sin's split-shapes: S'—'in · S'—'n · si'—'n · s'aige'n — the 'in → 'n elision freer than suspected, perhaps free variation.</li>
+<li>The five coats: the r.r. burrows into wh-words (informal echo); the r.r. into ordinary words (extreme emphasis); Nouns nest inside adjectives (C'achér'ed = ced split around (t)achér; endless adjective-nesting allowed, adverbs never nest); verbs nest inside Sin; pronouns nest inside the imperative (Ai'æ'lith — to command someone, Danæam ingests them).</li>
+<li>Host-minimality &amp; the tmeter: a guest whose host is too small to open hyphen-dangles instead (mé-saige — its saige a plain r.r.; -iy inside Fæ'hín-iy'ær). Working hypothesis: the host must leave a viable shell on both sides of the seam (mé's right shell would be a bare é).</li>
+<li>Welds (fusion proper): true fusion writes solid — Syá, ythús, iostá — no seam-mark, toll still paid (ythús ‹ yth + (l)us). Law: &quot;they fuse where the energetic resonance serves (it's vibe based)&quot; — optional always, obligatory never. The weld is also the complex-preposition formation (wythil · duílín · drúræao · dúiri).</li>
+<li>Stacking &amp; order: proximity decided by relevance first, English-style rank as tie-breaker; tmesized, the stack goes concentric — leftmost = outermost shell (re'bi'o'car'ld'g'd). Tmeting is optional — always.</li>
+<li>The wrapper carries the grammar, the core carries the meaning; a core may itself be reduplicated (Dú'greibach-greibach-e's). Guests may be pure cry (Ai'æ'titlop -luai- &quot;note-you-topple, aiee!&quot;). Monster tmeses attested: ro'gænstílgæn'il · Dé'ahor'cruí'sáillaí'ch'ía'er · aufGao'samsca'laíê · Gi'regéar'gýa · stil'ten'át &quot;sti'I'll-do&quot;. Names and whole clade-names ingest (Oob'aufGaolaí'sígænea &quot;incar'aufGaolaí'cerated&quot;; Or'ghínhe-îæth'ai ingests a year-name); derivation can ingest its own twin (Próitínä'raxis-e'íach).</li>
+<li>Whole clefts are emphasised by death-and-resummoning as deep tmesis.</li>
+</ul>
+<h2>11 · Coordination &amp; ellipsis</h2>
+<ul>
+<li>Coordinators: o &quot;and&quot; (between every pair, or before the last) · œr &quot;or&quot; · ax &quot;but; but-especially&quot; (n−1 pattern; extended to selective emphasis: Mith ax ten'ya) · æxó (NAND-flavoured) · aoæx &quot;either-or-neither&quot; (disjunction with a refusal built in; patterns as æxó) · aoœr &quot;neither-nor&quot;. Coordination is category-blind and function-parallel — form irrelevant. O the list-opener (&quot;all&quot; modifier) opens a coordination as a menu — options offered, both exist, soft both-at-once; only with o / œr / ax, never æxó/aoæx; distinct from the optative O, which wears the •.</li>
+<li>Reach-back coordination: no verb-category is barred from coordinating; the only restriction is the limits of the preceding phrase. Each o-conjunct bonds back to whatever layer of the opener coheres — and may return to an earlier layer after a deeper one. Hearers attach clauses back as their judgment serves.</li>
+<li>Omission under identity: the second conjunct may drop a repeated be.</li>
+<li>Phrase-level ellipsis (inside NP / AdjP / AdvP alike): gap or uain, as the resonance serves — the bare gap rides the hearer's reach; uain is the stand-in body.</li>
+<li>Fragments are unrestricted — only permissions, no restrictions; orphaned clitics permitted (Œr 'thte); a solitary owned fragment is allowed and nongrammatical (Holdhmÿa.), but iy never stands over a ghost (*Holdhmÿa iy.).</li>
+</ul>
+<h2>12 · Emphasis</h2>
+<ul>
+<li>The deafness law: loudness carries no meaning; no meaning rides melody anywhere (no tone exists; intonation subtypes imply nothing, ever). Segments alone carry meaning.</li>
+<li>No emphasis by movement — order-freedom is answerhood's alone. Emphasis rides repetitions and clitics.</li>
+<li>The triarchy: cleft for constituents · the kit (polarity clitics) for polarity · plain repetition for verbs — the r.r.'s declarative mirror (Fær mæ łathn! Łathn!).</li>
+<li>Declarative emphasis-clefting is granted; sentence-opening clefters stand bare. Pseudo-clefting in two grades: Sin uain ythénÿ… and the bare-opening Thé… (bare = no y…nÿ).</li>
+<li>The decleft doctrine: the atá-family is the sentence's cleft-memory; iostá is the manual de-clefter; emphasis docks free within frames.</li>
+<li>NP-internal emphasis: the resumptive-í frame — NP first, í reflecting, the general be closing; no ios, so never atá (ending on atá is proscribed); the whole NP pied-pipes, the part never travels alone. The resumptive í is not the reflexive í.</li>
+<li>Dislocation is refused as an emphasis device — no hanging themes left or right. The two-tier system: movement proper strands nothing (the semicolloquial Fith-fith: ten fith excepted, 1st person only); dislocation resumes with í (things) / fæ (persons); no particles.</li>
+<li>Emphatic-pronoun cells: standing machinery (segmental, both directions).</li>
+</ul>
+<h2>13 · Topic</h2>
+<ul>
+<li>Three marker devices: S'air'n · O • o e X • · Efui • — plus the for-its-part replica s'efui-e'in (placed after its topic). Sin X is the plainest road, running bare. Boundary-marks are conditioned per device (colon · closing • · bare). The shifter's logic: an elliptical optative, &quot;May what follows concern X&quot;.</li>
+<li>Markers stack, unranked; a marker may take the for-its-part replica as reprise. The thinnest marker suffices, and the resumptive elides beneath it (whether an overt í/fæ may also stand: open).</li>
+<li>No topic by bare movement — never without a marker. The first-person smoosh: O X ∆, the trill standing for the closing • (O Scóhn ∆ ten mac).</li>
+<li>Position is whatever: marked topics ride parenthetically anywhere an auxiliary fits. Initial = the first seam after the particles. Other positions live in the seams between clauses, never phrase-internally. The final seat stays closed — the be owns the door; afterthoughts only as new pointing clauses on the Œr 'thte model; the tail is a topic-reminder riding the post-clausal seam.</li>
+<li>Contrastive topics: routed through the tmesis-fold road — swallow, then stamp the tail ('ya).</li>
+<li>The marker split: bare for glow (emphasis), marked for topic.</li>
+<li>Topic-licence = resumability, the gift test's second jurisdiction: a topic is what í may say. Adjectives and adverbials cannot topicalise as themselves; verbs enter by the gerund door.</li>
+<li>The topic-path law: free at any depth; first subordinate plain, second-and-deeper bare y- (the nÿ never worn). The y-system's second office. (Two y-offices crossing in one sentence: precedence unruled.)</li>
+<li>The coordinate island holds: no travel, no in-situ dress, every marker moonlighting.</li>
+<li>The topic stack: free multiplicity; every secondary topic an object; predicates pair first-to-first by verb-last discipline; a referent may return; no one-topic law. No topic agreement, ever.</li>
+</ul>
+<h2>14 · NP syntax &amp; the function-country</h2>
+<ul>
+<li>Genitive/of: e serves both bearings — Hín e Gree &quot;a man of humour&quot; fronts the quality; lus Gree e lus Hín &quot;the humour of the man&quot; reverses it; order alone disambiguates. e's of-office spans quality, quantity, reference, partitive (general to quantifiers) — not material, not cause.</li>
+<li>Quality also derives directly: -ach (Stát→Státach; Grëach Hín) — a parallel road. Negative quality inherits the circumstance apparatus: aoa atá, atá'thte, or thé + æœá-e + bhie — the quality denied subjecthood.</li>
+<li>Quantity: one frame, Q e N — Niïl Scál e thíthíl Tonnaê &quot;a boat of a thousand tons&quot;; Niïl Lund e Shar &quot;a pound of sugar&quot;; the numeral absorbs one layer of of.</li>
+<li>Material: by, not e — Tïc by Úrsapê &quot;a house of bricks&quot;; means and matter merge. Compare Tïc e Úrsapfarmaí (abstract/industry association) and Tïc dúe Úrsap-Farm-farm (purposive: a house for the trade).</li>
+<li>Manner: three co-valid roads — by-instrumental (by Elin ghuethnea &quot;with verve served&quot;); tmesis (El'huethnea'in &quot;ve'served'rve&quot;); -ië adverb (elinië ghuethnea). Negative: honestly open.</li>
+<li>Cause: a family of four metaphors, and by never enters — origin e (Ærmuchaí e Síulnê &quot;exhaustion of wounds&quot;); gift-given gæn (fær Síulnê fær Ærmuchaí gænea); gift-received dræao + ghiæan (fæ Ærmuchaí fær Síulnê dræao ghiæanea); destination duín + tug (Yth fær Síulnê fæ duín Ærmuchaí tugea eibh &quot;brought to exhaustion by&quot;). yth may front a cause over a plain passive (Yth ír Ralxú lus Both rüstea eibh — whether a true passive-agent device or adverbial fronting is open).</li>
+<li>Function (&quot;used as&quot;): the sin…sy equative stretched to nouns — Ten sy Cthug sin lus Acusthia lynœa &quot;I as Club so the stick used&quot;; the sy-phrase fronts to the object slot.</li>
+<li>Reference (&quot;about&quot;): e — Ten fær e Atruens'ya saíea &quot;I him of the incident told&quot;.</li>
+<li>Essive (&quot;as a soldier&quot;): the possessed mé — tes-mé Maghr &quot;my-with soldier-being&quot;; accompaniment made possessive, a state carried. Also attested mao-mé. Functive frame: duín X tes-mé Yr (duín Berolth tes-mé Maghr).</li>
+<li>Translative (&quot;appointed as&quot;): same structure as become — the postposed hyphen-joined fær-dúe flag + -r state-noun object + causative verb (Mith fær-dúe Xæxr ghiæanea &quot;made him king&quot;; Mith fær-dúe Cáithoorhr oothíthea &quot;appointed him general&quot;). A goal-dress division glimpsed: -r state-nouns travel with ghiæan/oothíth; farm takes bare Væx; the du-dress holds Duílúch.</li>
+<li>Partitive: e presides; the enclitic 'ya is the default definiteness inside it (ssai e Frælithi'ya &quot;two of the children&quot;); lus does not appear there. Partitive quantifiers use the same Q-e frame.</li>
+<li>Benefactive vs recipient: doing-for wears dúe (Ten dúe Piell í átea); giving-to keeps duîm (Ten duîm Piell í gæn) — benefaction never swallowed by gift. dúe's three offices: purposive linker (dúe fith), infinitive-subject flag (dúe sê), benefactive; also &quot;for / out of&quot; (Byræao Stár dúe Ruth &quot;out of love for Red&quot;). dúe's two seats (preposed dúe sê; postposed fær-dúe): conditioning unruled; dúe/dué accent fork open.</li>
+<li>Price rides dúe. Value: the e-frame, with the Lyr/Lund currency-weight split and the worth-relative. Distance and duration: bare measure-NPs. Extent: the N-e-measure frame. &quot;ago&quot; = duáo + measure.</li>
+<li>Circumstance (&quot;with X&quot;): positive — the relative packs it, mé-e trailing, atá (the accompaniment stands as temporary second subject): Niïl Hín ythénÿ reinach Sáinsu mé-e atá. Negative, three roads: aoa atá · atá'thte · restructured with thé + æœá-e + plain bhie — the absent thing denied subjecthood; the be-choice tracks existence.</li>
+<li>Prepositions &amp; relational words: mé with · e of · by via/through/as-process · dræao from (second office: the passive agent — the will; by the channel) · yth past/over/beyond · Oob under · In at/in (time: category-blind) · duín in/into (state arrived at) · dús toward-the / dúïl toward-a · u- = du- toward (the du→u reform declared — &quot;horrible confusion&quot; expected; check every u-/du- sighting) · duáf upward (variant dúaf) · ufel · dúy to-through · uÿth · aoíth before (bare time-Nouns presumed) · aoyth like (recorded a preposition; near-pair with aoíth) · wythil despite · metałie inclusive-of · duílín within · drúræao since/after (the posterior country whole) · dúiri until/unto (also the honorific) · duáo ago. P+P compounds exist (duín ‹ du + In). Exclusion = the negated y-clause; addition = the aich-chain.</li>
+<li>Attributive adjectives: two strategies side by side — Adj-lead (reinach Sáinsu, Iarnach Ixixaí) and tmesis-fold; pronoun-compounds put the adjective last (sê-fær). A presumed blood-law: æœá-e leads its NP; mé-e trails.</li>
+<li>Vocative: the trills ∆ / V; intimacy Scéan-teos. The familiar possessive [kin]-[absolute] (rhié-færs, sídia-teos) — kin-noun lowercase; reaches epithets as mock-honorific (státachaí-færs &quot;His Idiocy&quot;); presupposes the known bond. The te…'os kin-frame (te'rhié'os &quot;parent-mine&quot;) reads as te-(person) + 'os possessive-former (unconfirmed).</li>
+<li>The absolute construction: usually a topic clause wearing an epithet — O X ∆ / O X V (O státachaí-færs ∆ dúe sê fæ niïl Pat sulænea).</li>
+<li>The infinitive: the toward-prefix on the verb — u- makes usót &quot;to go&quot;; subjects ride dúe (dúe sê … usót); goals prefix likewise (ułiuafth &quot;Heavensward&quot;). Preferred reading: the topic clause fronts as an as-frame (S'łiuafth-e'in — dúe sê S'eg'in usót).</li>
+<li>No heavy-shift, ever: weight goes to a fresh Aich—sentence or packs into the ythénÿ-relative; verb-last absorbs it.</li>
+<li>Nonrestrictive relatives ride clefts: the paradigm ythé/ythénÿ // ythés/ythésnÿ.</li>
+<li>Labels: the fragment-licence's own case. Honorific style: Alcuilaí, dúiri. The self-vow reads as intention. Purpose: by dúe and by by.</li>
+<li>Incorporation: subjects never; IOs may.</li>
+<li>We-firemen: apposition with mé (mith Łúgrchainr-mé &quot;we firemanbeing-with&quot;).</li>
+</ul>
+<h2>15 · Voice, aspect, mood</h2>
+<ul>
+<li>Passive: participle + eibh, patient as subject (farmea eibh); tense-transparent. The agent is where the deed comes from: a dræao-source (Dræao lus Ufín Ooraithr fæ ghiæanea — killed-being received as a dark gift; existence-as-donation speaking even in death). Other-constituent passives yes; IO passives no. Object-drop is free (which verbs resist: watched). Impersonals form from three verb-types.</li>
+<li>Causative: ghiæan by frame (also the become-copula: Duílúch Fæ'du'ærs fæ ghiæan; and &quot;get over&quot;: by ghiæan). Becoming/appointing: fær-dúe + -r state-noun + causative verb (ghiæan, oothíth). Ditransitive causatives yes; the causee omissible. Dynamic vs static = ghiæan vs eibh. Anticausative: silence.</li>
+<li>The becoming-gift is also the passive-with-agent's frame; ghiæan takes du-marked goal-states (Duílúch).</li>
+<li>Aspect: bare = perfective · dús [X-X] = progressive/imperfective (whether it wraps statives like &quot;knowing&quot;: watched) · gnomic = the habitual · ghiæan = ingressive · tenure = iterative · stíl- = the perfect, in all three tenses (Ten stílsótea; double pluperfect Ten úteo tes St'sót-sót'íl stílgænea; future perfect Iëao As í iëátea) · thuíl = the terminative, four free orders · the one-form perfect keeps its several readings. stil &quot;still&quot; (phase) pairs with thúil &quot;no longer&quot;; stíl- stacks on participles (stílbrís &quot;still-breaking&quot;).</li>
+<li>Mood: Syá = potential and contingent; the certainty ladder is assembled from standing pieces; Mee = monitory; aich sin = consecutive.</li>
+<li>The Verbless Eternal Past and Future (world / worldn't — the ceremonial deeps): Gil (not Gil't) with its own semantics; Hthom swallows propositions whole; the =-chain links (name and reach open); the coda þis-e stands (typed bis-e ratified as the keyboard's toll); force-pronouns Ton and þin.</li>
+<li>Tenure-predication ratified. 2983-class truths mark by donation and marcæn.</li>
+</ul>
+<h2>16 · Derivation &amp; morphology</h2>
+<ul>
+<li>-ea = the done participle / past (Brísea &quot;broken&quot;, scéalerea &quot;written&quot;, pliguea &quot;folded&quot;, gænea &quot;given&quot;, farmea &quot;made&quot;, átea, atáea, craigea, laíea, sulænea, rüstea…). ië- = future. -'thte/-'t fuse for the negatives across all tenses.</li>
+<li>Reduplication X-X = the verbal noun / gerund (&quot;the X-ing&quot;): Fith-Fith, Farm-farm, Brís-brís, Othœsræ-othœsræ &quot;outlawing&quot;, Insaig-insaig &quot;voting&quot;, Sinótæn-sinótæn &quot;the following&quot;, greibach-greibach &quot;the believing&quot;, Fœdh-fœdhýa, Glaoh-Glaoh, Côs-Côs, Chís-Chís, shrai-shrai, Crith-crith, Sclíeclu-Sclíeclu, Drúnhœme-Drúnhœme, Útcár-Útcár. Reduplication is the gerund-maker; the doubled stem names the act itself, and articles/genitives wrap it as any noun. Reflexives survive nominalisation by the eës-split gerund (Eë'shrai-shrai's sê-fær); no possessive-subject scaffold. Nouns from clauses: the fold-road plus the gift test. Fith-Fith (formal gerund) vs Fith-fith (colloquial, lowered second capital): split presumed deliberate.</li>
+<li>-ach = quality adjective (Stát→Státach, Grëach, reinach). -aí = the abstract former (Státachaí &quot;idiocy&quot;, Grëachaí, Ærmuchaí, mordachaí, Alcuilaí; skips -ach when -ach would be absurd: Úrsapfarmaí &quot;brickmakery&quot;). -ië = noun/degree-word → adverb (mêdhië, nirïë, elinië, mordachië, craithië; also Ghraíïe &quot;fourily&quot;). -r = the state/unit-noun former &quot;-being&quot; (Xæxr, Maghr, Statr, Gheor, Cáithoorhr, Ooraithr, wínr as suffixoid, and the unit-road for masses: uain Wícr). -æn = the verbalizer (elf/elfæn; yiusétæn). -iya = one-who / that-which, agentive-relativising (Thérafthyiya &quot;therapist&quot;, Líciya, Sísiyaoýa). -os = possessive-former in the kin-frame (te'rhié'os). -eith = the ordinal (ainteith &quot;first&quot;, ghslár-ghüleith). -ê = the pluraliser, plain and simple — not numeral-exclusive (Úrsapê, Síulnê, Tonnaê, Nímhogê, Frælithi irregular); one plural, with phrasal distributivity. -as = the echo suffix, vowel-harmonising — the attested case of suffix-harmony. af-/fel- = orientational-affect prefixes (up 🔥 / down; the Noun's capital survives mid-word: afŁamis, felCne…, afStrœ…).</li>
+<li>Adjectives derive from adjectives via the degree circumfixes (Or…il / Ro…il) and -mÿa. Adverbs DO modify adverbs — through the degree/attenuator syntax, not a dedicated suffix (Ten í or'mordachië'il—'t craithië fithea &quot;not-insufficiently-enormously hungrily ate&quot;). The attenuator family roïl/oril/or…il/ro…il: headcount watched.</li>
+<li>Tmesis-fold words are Nouns by the gift test. Derivation is closed: no further derivational machinery beyond the above.</li>
+</ul>
+<h2>17 · Numerals &amp; dating</h2>
+<ul>
+<li>Year-names, base 2+30 (base 60): a year-name has two places, A-B = A×60 + B, hyphen-joined; the first element capitalises, the second goes bare. Each place (1–60) is one of 30 pair-stems × 2 forms: ODD wears the bare stem, EVEN its gh- twin — mutation doing numerical duty. Attested stems: Slár 9 / Ghslár 10 · Ül 17 / Ghül 18 · Sfeith 21 / Ghsfeith 20 · Îæth 27 / Ghîæth 28 · Ínhe 43 / Ghínhe 44 · Raíwil 49 / Ghraíwil 50 · Heatth 57 / Gheatth 58. OPEN: the Sfeith pair runs {20, 21} against the others' {odd, odd+1} — direction unruled; unseen stems await.</li>
+<li>Canon checks: 44.27 Ghínhe-îæth = 2667 I.T. (Changing outlawed) · 49.21 Raíwíl-sfeith = 2961 (the Oath's end) · 49.43 Raíwíl-ínhe = 2983 (the Bródlainn riots) · 49.57 Raíwíl-heatth = 2997 (the present) · 10.18 Ghslár-ghül = 618 (the Olympiad). One Sgiesaetthum = 120 years = 2.0.</li>
+<li>The analytic counting forms (raí-ghíl-ssaighisseith and kin) are not used; the year series is the one numeral canon.</li>
+<li>Ordinal: -eith (ghslár-ghüleith Œlimpiad-e &quot;the 10.18th Olympiad&quot;). Possessive year: the Or'…'ai tmesis frame (Mis Or'ghínhe-îæth'ai yDuý.r.r &quot;our 2667th-year&quot;). AD years read as digit-pairs, not base-60 (Uain-éx o slár-cliffýa -anno Domini- = 1695); digit-mode stems: Uain 1, Cliff 5, Éx 6, Slár 9 (their year-series pairs unruled). Dates exist by donation (Raíwíl-heatth mith gæn &quot;it is 2997&quot;); spans mark with marcæn.</li>
+<li>Small counting cardinals (not year-stems; the converter's stem table unaffected): 1 Aint · 2 Ghaint · 3 Raí · 4 Ghraí — unmarked odd, gh- even, the year-stems' own pairing; ordinal ainteith &quot;first&quot;; 5 and 6 unmade. Counting table so far: 0 ssíns · 2 ssai · 5 cliff · 6 éx · 8 As · 1000 thíthíl.</li>
+<li>After numerals the noun stands in the counted -ê form (éx Nímhogê, thíthíl Tonnaê); the numeral+counted-ê phrase fills e's complement in measure frames. Bare numerals take no mutation. Attributive numerals and the compound-quantifier road: settled standing machinery.</li>
+</ul>
+<h2>18 · Phonology &amp; prosody</h2>
+<ul>
+<li>Prosody-blind: no fixed word-accent; no canonical peak; no length; no tone; no segmental effects from intonation. The trills ∆/V are the one exception, running parallel to the segments.</li>
+<li>Local suffix-harmony (-as attested). Vowels free under the seam-law. No consonant harmony; no phonotactic restrictions beyond seam-and-toll. þ and V are loan-flavoured.</li>
+<li>Letter values (Danæam → English): t = d · th = t · d = soft th (the) · þ = hard th (thank) · é = ay · á = ay · ú = ooh · e = eh · u = ah · a = uh · gh = sth (a hissed th, nearer sthsh; sth is unmistakable) · sc = sh · tsc = sk · sch = ch · ch = h (word-finally or after á: k) · h = glottal stop-t (meditative → medi'a'ive) · sh = a hissing sound · æ = ee'eh · œ = euh · î = eye · â = a (bat) · ê = eh (as e) · ó = owe · o = o (dot) · f = v · ff = f · bh = v · mh = v · rh = hr · nh = n · gn = n · z = soft s · s = hard s (legacy exceptions: the s of Síonæiya = sh) · w = u or w · ui = wih · ao = ow · œw = aw · ý = ee · í = ee · ÿ = ee'eh · ï = ee'eh</li>
+<li>Pronunciation keys: æ = &quot;the ee in eel: a lossy ee-eh diphthong&quot; · u/oo = &quot;the ool in eel&quot; · th ≈ [ɦ] · gh sounds [sθɦ]-wards · Rhié &quot;Hrjaiy&quot; · Férás &quot;Fay-raiss&quot; · ufsae &quot;Oofschye&quot; /aɪ/ · færs like &quot;fierce&quot; · aoyth &quot;ow-eeɦ&quot; · dræao &quot;Dree-ow&quot; · lus &quot;loose&quot; · Ufín &quot;Oofeenn&quot; · Ooraithr &quot;Oo*raiɦ-rr&quot; · fæ &quot;fee&quot; · ghiæanea &quot;sthɦih-ee-ah-neh-eh&quot;.</li>
+</ul>
+<h2>19 · The mysterious ios</h2>
+<ul>
+<li>ios is bound to thas — obligatory wherever thas stands; &quot;ios is the eternal companion of thas, not thas of ios&quot;. Elsewhere ios arrives as the resonance demands. Echoes strip it even from thas.</li>
+</ul>
+<h2>20 · Open watches</h2>
+<ul>
+<li>Forms &amp; lemmata: Nímhog vs Nimhog (í kept pending) · dúe vs dué accent · sain &quot;good&quot; vs &quot;great&quot; · Piell vs Cruích &quot;face&quot; · laí &quot;see&quot; vs &quot;say&quot; (saí &quot;say&quot; canon) · sírffrach vs írsifarach &quot;silvery&quot; · dræœa beside dræao · Langaír &quot;tongue&quot; vs Langaí · duáo/dúao · Frœ bare · rein unminted · Me'hair'os parse · férás-ufsae atomic or split · plain-letter suspects (Wíc, yound, Math, Claim, Gloiyornugh, fith, sót, slee) · nugænea ‹ nu- + gænea? · múlchtma's -tma · eg's class · Grainê/Nímhogê lemmata · the different-word unminted.</li>
+<li>Morphology: the attenuator family's headcount · -ach beyond the attested · further Adj→Adj formers and the P-sequence half of P+P compounding · the 'in→'n elision (free variation?) · the 's in Te'fhó'rhié's'os · the te…'os re-reading (unconfirmed) · Ydúynÿ's anatomy and trigger · the seam-doubled æ in fæ'uîm'ær (fold presumably open only to splittable pronouns) · þin~þis / Ton~Tonu conditioning · the =-linker's name and reach · Fith-Fith/Fith-fith split (presumed deliberate) · noun-capitalisation suspended inside tmesis-compounds (presumed) · seam-dress scaling (presumed law) · host-minimality threshold (viable-shell hypothesis).</li>
+<li>Syntax: the participle's seat (person-conditioned or free) · become's two goal-dresses (division firming) · dúe's two seats · the dash-hung clitic's conditioning · kit-docking inside the scér-frame · the fæ-frame's full exemplar · overt resumptives under topic-markers · the folded contrastive topic in the wild · a bare-clitic fragment · the multi-topic exemplar in Danæam ink · the return-marker unattested · two y-offices crossing · lone conjuncts in the resumptive-í frame · ranking among glow-stamps · multiplicities beyond two · the negator-avoidance rationale · 'maya unattested · gæn vs mé-e · niïl-topics · yth as passive-agent device or fronting · ír vs fær animate/inanimate · the stative ban on dús · the object-drop resister-list · aoíth with bare time-Nouns (presumed) · aoyth's class · Rîbha-e conditioning (the of-word hangs by hyphen where it cannot stand free — before the doorless and inside compounds; inference) · the resumptive frame's past/future be-faces (presumed by the grid) · names after e unlenited · ∆'s reach as a general boundary-vocable · the e's fate in the smoosh (presumed elided) · mith &quot;we will-dig&quot; (comitative or homonym) · quote-marks on &quot;s'aige'n&quot; (presumed quotative dress) · John-spellings elsewhere (Scóhn the nativized) · the elliptical optative's reach · slee'ya (degree-reading or doublet).</li>
+<li>Also open: tenure-composition for absolute vs contingent state (gænyin/gilæn one composition away) · vowel harmony's extent (-as attested) · very = duíra'ya? · the reciprocal intransitive (labile = voice design) · intonation × stress (tone-half moot; stress-half hangs on stress's own day).</li>
+<li>If the ideophones ever gain melody, the no-tone rulings reopen.</li>
+<li>Deferred: the remaining phonology-paradigm cells · two numeral tables · the superlative system's remainder.</li>
+</ul>
+</div>
+</div>
+</main>
+    <footer class="doc-foot">
+        <a class="prev" href="guideworde.html"><span class="arrow">←</span> Guideworde</a>
+        <a class="menu" href="index.html">Danæam</a>
+        <a class="next" href="storywarders.html">Storywarders <span class="arrow">→</span></a>
+    </footer>
+
+    <script src="../site.js"></script>
+</body>
+</html>
