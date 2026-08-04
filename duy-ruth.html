@@ -1,33 +1,274 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="alternate" type="text/plain" href="/llms.txt" title="LLM Context">
+    <link rel="alternate" type="text/plain" href="/agents.txt" title="Agent Instructions">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>O •</title>
+    <meta name="description" content="Faerish — Danæam: the language of Síonæiya.">
+    <meta property="og:title" content="O • Faerish — Danæam &ndash; Edith Mina Lyre">
+    <meta property="og:description" content="Faerish — Danæam: the language of Síonæiya.">
+    <meta property="og:type" content="article">
+    <meta property="og:image" content="https://edithminalyre.com/images/author.jpg">
+    <meta property="og:url" content="https://edithminalyre.com/duy-ruth.html">
+    <link rel="canonical" href="https://edithminalyre.com/duy-ruth.html">
+    <link rel="alternate" hreflang="en-AU" href="https://edithminalyre.com/duy-ruth.html">
+    <link rel="alternate" hreflang="x-default" href="https://edithminalyre.com/duy-ruth.html">
+    <meta name="author" content="Edith Mina Lyre">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="alternate" type="application/rss+xml" title="Edith Mina Lyre RSS Feed" href="/feed.xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;1,300;1,400&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+    <title>O • Faerish — Danæam &ndash; Edith Mina Lyre</title>
     <link rel="stylesheet" href="style.css">
     <style>
         .duy {
-            max-width: 46rem;
-            margin: 0 auto;
-            padding: clamp(3.5rem, 14vh, 8rem) 1.4rem clamp(4rem, 16vh, 9rem);
+            position: relative;
+            z-index: 10;
         }
-        .duy p {
+
+        .duy-subtitle {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin: 0 0 0.6rem;
+        }
+        .duy-meta {
+            font-family: var(--font-display);
+            font-size: 0.78rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin: 0 0 3rem;
+        }
+
+        /* ── base voice ─────────────────────────────────
+           Still Garamond, still --text-primary, still the
+           site's breath — but the conlang is allowed to
+           misbehave inside it. */
+        .duy .body p {
             font-family: var(--font-body);
             font-size: 1.06rem;
             line-height: 1.9;
             color: var(--text-primary);
-            white-space: pre-wrap;
             overflow-wrap: break-word;
             text-align: left;
-            margin: 0;
+            margin: 0 0 2.4rem;
+            transition: var(--theme-transition);
+        }
+
+        /* opening stanza: the world before the prion */
+        .duy .genesis {
+            font-size: 1.22rem;
+            line-height: 2.05;
+            letter-spacing: 0.015em;
+        }
+
+        .duy .genesis::first-letter {
+            font-family: var(--font-display);
+            font-size: 3.6rem;
+            float: left;
+            line-height: 0.82;
+            margin-right: 0.12em;
+            margin-top: 0.08em;
+            color: var(--gold);
+            text-shadow: 0 0 30px var(--glow-color);
+        }
+
+        /* ── the bullet that thinks it's a star ── */
+        .duy .o {
+            font-family: var(--font-display);
+            color: var(--accent);
+            text-shadow: 0 0 10px var(--accent-dim), 0 0 22px var(--glow-color);
+            letter-spacing: 0.1em;
+            white-space: nowrap;
+        }
+
+        /* ── section rupture: the • and ∆ become glyphs ── */
+        .duy .rupture {
+            display: block;
+            text-align: center;
+            margin: 3.4rem 0;
+            font-family: var(--font-display);
+            font-size: 1.05rem;
+            letter-spacing: 1.2em;
+            text-indent: 1.2em;
+            color: var(--stone);
+            user-select: none;
+            transition: color 0.4s ease;
+        }
+        .duy .rupture:hover { color: var(--accent); }
+        .duy .rupture .big {
+            font-size: 1.7rem;
+            color: var(--accent-dim);
+            text-shadow: 0 0 16px var(--accent-dim);
+            vertical-align: -0.12em;
+        }
+
+        /* ── speech: the quoted words burn amber ── */
+        .duy .said {
+            font-family: var(--font-display);
+            font-style: italic;
+            color: var(--honey);
+            text-shadow: 0 0 14px var(--glow-color);
+        }
+
+        /* ── proper nouns of the world, set like names on stone ── */
+        .duy .name {
+            font-family: var(--font-display);
+            font-style: italic;
+            color: var(--text-heading);
+            letter-spacing: 0.03em;
+        }
+
+        /* ── intrusions: the foreign machinery in the text
+              (felCne'téxt'ilea, afStrœ'charmænsy'œch, Steam,
+              Praxis, Próitínä'raxis) — slightly oversized,
+              slightly wrong, the infection showing through ── */
+        .duy .intruder {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-size: 1.14em;
+            color: var(--accent);
+            text-shadow: 0 0 12px var(--glow-color);
+        }
+
+        /* ── the Brís refrain: each echo a little more broken ── */
+        .duy .bris {
+            color: var(--text-heading);
+            letter-spacing: 0.06em;
+        }
+        .duy .bris-2 {
+            font-family: var(--font-display);
+            font-style: italic;
+            color: var(--gold);
+            letter-spacing: 0.12em;
+        }
+        .duy .bris-3 {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-size: 1.3em;
+            color: var(--amber);
+            letter-spacing: 0.22em;
+            text-shadow: 0 0 18px var(--glow-color);
+        }
+
+        /* ── doubling words: Farm-farm, Laí-laí, Brís-brís ── */
+        .duy .double {
+            font-style: italic;
+            color: var(--silver);
+        }
+
+        /* ── the ygyg drift: a word that floats off the line ── */
+        .duy .ygyg {
+            display: inline-block;
+            font-family: var(--font-display);
+            font-style: italic;
+            color: var(--accent-dim);
+            letter-spacing: 0.3em;
+            transform: translateY(-0.35em) rotate(-2deg);
+            text-shadow: 0 0 14px var(--accent-dim);
+        }
+
+        /* ── mid-text sigils: ∆barc, ∆ afStrœ... ── */
+        .duy .delta {
+            font-family: var(--font-display);
+            color: var(--accent);
+            font-size: 1.25em;
+            text-shadow: 0 0 14px var(--glow-color);
+        }
+
+        /* ── the final contamination: the closing stanza
+              gets faster, tighter, brighter — hot allostatic load ── */
+        .duy .prion {
+            font-size: 1.12rem;
+            line-height: 1.75;
+            letter-spacing: 0.02em;
+        }
+        .duy .prion .flash {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-size: 1.35em;
+            color: var(--gold);
+            text-shadow: 0 0 20px var(--glow-color), 0 0 40px var(--glow-color);
+        }
+
+        /* faint flicker on the most infected glyphs — slow,
+           subtle, killed for reduced-motion */
+        @keyframes prionFlicker {
+            0%, 100% { opacity: 1; }
+            46% { opacity: 1; }
+            50% { opacity: 0.72; }
+            54% { opacity: 1; }
+        }
+        .duy .flash, .duy .bris-3 {
+            animation: prionFlicker 9s ease-in-out infinite;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .duy .flash, .duy .bris-3 { animation: none; }
+        }
+
+        @media (max-width: 600px) {
+            .duy .genesis::first-letter { font-size: 2.9rem; }
+            .duy .rupture { letter-spacing: 0.8em; text-indent: 0.8em; }
         }
     </style>
+<base target="_blank">
 </head>
 <body>
     <div class="grain"></div>
-    <main class="duy">
-        <p lang="art-x-danaeam">O • o ai'æ'farm. S'aich'in -'æ'farm. Efui niïl drúach thas — ios 'æ -'farm. O niïl Drúach. Air mæ farm • O • Lus Farm-farm "s'aige'in" mæ sê-maos brís erl. Air • Sin Craghê fœrmæn sy farm • Sin Ffeë fiulæn • By lus Pulsc e felCne'téxt'ilea ∆ afStrœ'charmænsy'œch V — 'ya maios'ya Craghêýa afTol. Air. Farm. Mao Bocraíp mæ brís. Boc. Mao Langaír dúfrœdh mæ rifæn • Air • "S'aige'in" • O s'aich'in dúsáille mæ ghlæscer. Dræao lus Foll mæ brís o -æao Lutýrêýa o Fogýa o Scarryfê dué Craigachaí mæ sciapæn. felSciapæn o laí o —efui Laí-laí'thte— ygyg • Thas yŁærmuê mæ ios mæ ygyg caír-e át-e. Mao Ílthasr yiosnÿ dué yelSœinaí-aoya yios nhœme atá -'r duîm mao Boc mæ gæn o sísiyao ∆barc • Aoa-thiosas't Uœrd • -'t Steam • Air • Duín Síthüs annadh múlch œr scicach lus Uœrd mæ bhie o mao Fialth lus Uœrd bhie. O Air • Oob Onê síthüsië bildhuæn. Mis Bocraíp mith Fœrm gæn. Brísea mæ bhie • Brísea • Brísea o stílbrís. Sê-maos Brís-brísýa bhie. Lebendach mæ bhie o dúlebendr lus Brís-brís bhie. Air • "S'aige'in" sin duý Sæculomê Glaostalê scaoræn o críspæn o afCneilæn sy mæ brís. Sin Afghalhê thuíłf sy— sy bris. Sin Gosferê leafæn mæ brís. Air • Niïl Niya'nchia'il mæ screppæn o brís.      -Sin saige.- Brís. Ai'æ'titlop -luai- o aich -'uazilæn o aich — • ∆ • O aich sin niïl Felcadhá e Príónê sy ai'farm. Ai'farm. Mæ farm. Smiotherách Praxis o Próitínä'raxis-e'íach —'ya.</p>
+    <div class="cursor-glow" id="glow"></div>
+
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg class="sun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+        <svg class="moon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+    </button>
+
+    <main>
+        <a href="index.html" class="back">Edith Mina Lyre</a>
+
+        <h1>Faerish — Danæam</h1>
+        <p class="duy-subtitle">/ the language of Síonæiya</p>
+        <p class="duy-meta">᚛</p>
+
+        <div class="duy">
+            <div class="body">
+                <p class="genesis" lang="art-x-danaeam"><span class="o">O •</span> o ai'æ'farm. S'aich'in -'æ'farm. Efui niïl drúach thas — ios 'æ -'farm. O niïl <span class="name">Drúach</span>. Air mæ farm <span class="o">• O •</span></p>
+
+                <p lang="art-x-danaeam">Lus <span class="double">Farm-farm</span> <span class="said">"s'aige'in"</span> mæ sê-maos brís erl. Air <span class="o">•</span> Sin <span class="name">Craghê</span> fœrmæn sy farm <span class="o">•</span> Sin <span class="name">Ffeë</span> fiulæn <span class="o">•</span> By lus Pulsc e <span class="intruder">felCne'téxt'ilea</span> <span class="delta">∆</span> <span class="intruder">afStrœ'charmænsy'œch</span> V — 'ya maios'ya Craghêýa afTol.</p>
+
+                <p lang="art-x-danaeam">Air. Farm. Mao <span class="name">Bocraíp</span> mæ <span class="bris">brís</span>. Boc. Mao <span class="name">Langaír</span> dúfrœdh mæ rifæn <span class="o">•</span> Air <span class="o">•</span> <span class="said">"S'aige'in"</span> <span class="o">•</span> O s'aich'in dúsáille mæ ghlæscer.</p>
+
+                <p lang="art-x-danaeam">Dræao lus Foll mæ brís o -æao Lutýrêýa o Fogýa o Scarryfê dué Craigachaí mæ sciapæn. felSciapæn o laí o —efui <span class="double">Laí-laí'thte</span>— <span class="ygyg">ygyg</span> <span class="o">•</span> Thas yŁærmuê mæ ios mæ <span class="ygyg">ygyg</span> caír-e át-e.</p>
+
+                <p lang="art-x-danaeam">Mao Ílthasr yiosnÿ dué yelSœinaí-aoya yios nhœme atá -'r duîm mao Boc mæ gæn o sísiyao <span class="delta">∆barc</span> <span class="o">•</span> <span class="name">Aoa-thiosas't Uœrd</span> <span class="o">•</span> -'t <span class="intruder">Steam</span> <span class="o">•</span> Air <span class="o">•</span></p>
+
+                <p lang="art-x-danaeam">Duín <span class="name">Síthüs</span> annadh múlch œr scicach lus Uœrd mæ bhie o mao Fialth lus Uœrd bhie. O Air <span class="o">•</span> Oob <span class="name">Onê</span> síthüsië bildhuæn. Mis Bocraíp mith Fœrm gæn.</p>
+
+                <p lang="art-x-danaeam"><span class="bris">Brísea</span> mæ bhie <span class="o">•</span> <span class="bris-2">Brísea</span> <span class="o">•</span> <span class="bris-3">Brísea</span> o stílbrís. Sê-maos <span class="double">Brís-brísýa</span> bhie. Lebendach mæ bhie o dúlebendr lus <span class="double">Brís-brís</span> bhie.</p>
+
+                <p lang="art-x-danaeam">Air <span class="o">•</span> <span class="said">"S'aige'in"</span> sin duý Sæculomê Glaostalê scaoræn o críspæn o afCneilæn sy mæ brís. Sin Afghalhê thuíłf sy— sy bris. Sin Gosferê leafæn mæ brís. Air <span class="o">•</span> Niïl Niya'nchia'il mæ screppæn o brís.</p>
+
+                <span class="rupture"><span class="big">∆</span> • —Sin saige.— • <span class="big">∆</span></span>
+
+                <p class="prion" lang="art-x-danaeam"><span class="bris-2">Brís.</span> Ai'æ'titlop -luai- o aich -'uazilæn o aich — <span class="o">•</span> <span class="delta">∆</span> <span class="o">•</span> O aich sin niïl <span class="name">Felcadhá</span> e <span class="flash">Príónê</span> sy ai'farm. Ai'farm. Mæ farm. Smiotherách <span class="intruder">Praxis</span> o <span class="intruder">Próitínä'raxis-e'íach</span> —'ya.</p>
+            </div>
+        </div>
+
+        <div class="mark"></div>
     </main>
+
     <script src="site.js"></script>
 </body>
 </html>
