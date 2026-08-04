@@ -35,6 +35,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;1,300;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
     <title>Edith Mina Lyre</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Long titles: let the text wrap balanced across lines, and drop
+           the status tag onto its own line so the final word doesn't
+           orphan itself under the title. */
+        body.foyer .work h3 { text-wrap: balance; }
+        body.foyer .work.longtitle h3 .status {
+            display: block;
+            margin: 0.35rem 0 0;
+        }
+    </style>
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -130,7 +140,7 @@
                     <p class="blurb">or, The Democratisation of Schizophrenia.</p>
                 </a>
 
-                <a class="work" href="essays/if-i-trusted.html">
+                <a class="work longtitle" href="essays/if-i-trusted.html">
                     <h3><em>If I Trusted Any of You, I Would Be In Real Trouble</em><span class="status">from the archive &middot; 2026</span></h3>
                     <p class="blurb">On misinformation.</p>
                 </a>
