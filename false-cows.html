@@ -48,6 +48,7 @@
         .fc-quote.top    { margin-bottom: 3.2rem; }
         .fc-quote.bottom { margin-top: 3.2rem; }
         .fc-drawing {
+            pointer-events: none;   /* decorative — never intercepts taps */
             width: 100%;
             max-width: 480px;
             aspect-ratio: 9 / 16;
@@ -59,29 +60,6 @@
         }
         [data-theme="day"] .fc-drawing {
             background-image: url('false-cows-light.png');
-        }
-        .fc-back {
-            position: fixed;
-            top: 24px;
-            left: 24px;
-            font-family: var(--font-display);
-            font-size: 0.78rem;
-            letter-spacing: 0.12em;
-            color: var(--text-muted);
-            opacity: 0.55;
-            text-decoration: none;
-            background: none;
-            transition: opacity 0.4s ease, color 0.3s ease;
-        }
-        .fc-back::before {
-            content: '\2190';
-            margin-right: 0.5em;
-            color: var(--accent-dim);
-        }
-        .fc-back:hover {
-            opacity: 1;
-            color: var(--text-primary);
-            background: none;
         }
     </style>
 </head>
@@ -99,9 +77,9 @@
         </svg>
     </button>
 
-    <a href="index.html" class="fc-back" target="_self">Edith Mina Lyre</a>
-
     <main>
+        <a href="index.html" class="back">Edith Mina Lyre</a>
+
         <p class="fc-quote top">e quando vide noi, s&eacute; stesso morse</p>
         <div class="fc-drawing" role="img" aria-label="A figure with long horns or ears, two eyes, and slim legs — the false cow."></div>
         <p class="fc-quote bottom">s&igrave; come quei cui l&rsquo;ira dentro fiacca</p>
