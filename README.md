@@ -12,7 +12,6 @@ edith-site/
 ├── stories.html        # Stories index  
 ├── essays.html         # Essays index
 ├── bio.html            # Bio page
-├── contact.html        # Contact page
 ├── poems/              # Individual poem pages
 ├── stories/            # Individual story pages
 └── essays/             # Individual essay pages
