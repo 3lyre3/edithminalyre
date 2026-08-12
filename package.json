@@ -1,0 +1,15 @@
+{
+  "name": "edithminalyre-site",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "index:rebuild": "node scripts/rebuild-index-views.mjs",
+    "check:site": "node scripts/check-site.mjs",
+    "check:html": "html-validate \"**/*.html\"",
+    "test": "npm run check:site && npm run check:html"
+  },
+  "devDependencies": {
+    "html-validate": "11.6.2"
+  }
+}

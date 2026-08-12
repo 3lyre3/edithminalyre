@@ -1,0 +1,65 @@
+# Edith Mina Lyre
+
+> format: simple-index v1
+> last-updated: 2026-08-12
+> site: https://edithminalyre.com
+> also-writes-as: Elm Alee
+> structured-index: https://edithminalyre.com/index.json
+> agent-context: https://edithminalyre.com/agents.txt
+
+Personal literary website of Edith Mina Lyre — writer, researcher, and PhD candidate at Monash University. The site hosts short fiction, poetry, essays, critical theory, language work, and other textual experiments.
+
+## Stories
+
+- [Stamina](https://edithminalyre.com/stories/stamina.html) (2024)
+- [Intersection](https://edithminalyre.com/stories/intersection.html) (2024)
+- [The Last Khatun](https://edithminalyre.com/stories/last-khatun.html) (2024)
+- [Engagement](https://edithminalyre.com/stories/engagement.html) (2024)
+- [Ten Years On](https://edithminalyre.com/stories/ten-years-on.html) (2023)
+- [Correction 25](https://edithminalyre.com/stories/correction-25.html) (2023)
+- [The Song of Paris](https://edithminalyre.com/stories/song-of-paris.html) (2019)
+- [The Mycenae Gate](https://edithminalyre.com/stories/mycenae-gate.html) (2019)
+- [A Handmirror Named Sincerity](https://edithminalyre.com/stories/handmirror.html) (2017)
+
+## Essays and research
+
+- [If I Trusted Any of You, I Would Be In Real Trouble](https://edithminalyre.com/essays/if-i-trusted.html) (2026)
+- [Negative Interpretability](https://edithminalyre.com/negative-interpretability.html) (2026)
+- [Numbers by Paint: Quantifying Aesthetic Receptions](https://digital.library.adelaide.edu.au/dspace/bitstream/2440/135618/1/Lyre2022_MPhil.pdf) (2021)
+- [President Oedipus, or The Democratisation of Schizophrenia](https://overland.org.au/previous-issues/issue-239/feature-president-oedipus-or-the-democratisation-of-schizophrenia/) (2020)
+- [Big Nothings](https://edithminalyre.com/essays/big-nothings.html) (2018)
+- [Broken Memory](https://edithminalyre.com/essays/broken-memory.html) (2018)
+- [Otototoi](https://edithminalyre.com/essays/otototoi.html) (2017)
+
+## Poems
+
+- [Found You!](https://edithminalyre.com/poems/found-you.html)
+- [Good again but this time mean it](https://edithminalyre.com/poems/good-again.html)
+- [i don’t think that sort of thing is possible anymore](https://edithminalyre.com/poems/i-dont-think.html)
+- [the long walk home to omelas](https://edithminalyre.com/poems/long-walk-omelas.html)
+- [Two Deaths, a Moment](https://edithminalyre.com/poems/two-deaths.html)
+- [Unfuturistic](https://edithminalyre.com/poems/unfuturistic.html)
+- [Voice Practice](https://edithminalyre.com/poems/voice-practice.html)
+- [After Entropy](https://edithminalyre.com/poems/after-entropy.html)
+- [Both Halves of a Distant Blue Object](https://edithminalyre.com/poems/both-halves.html)
+- [Leafland](https://edithminalyre.com/poems/leafland.html)
+- [Nature](https://edithminalyre.com/poems/nature.html)
+- [Obstacles to Revenge](https://edithminalyre.com/poems/obstacles-revenge.html)
+- [People Who Don’t Exist Don’t Take Fall Damage](https://edithminalyre.com/poems/people-who-dont-exist.html)
+- [Three Illustrations](https://edithminalyre.com/poems/three-illustrations.html)
+
+## Projects
+
+- [False Cows](https://edithminalyre.com/false-cows.html) — Reports of a Trans Imaginary; PhD thesis in preparation
+- [Faerish](https://edithminalyre.com/duy-ruth.html) — the language of Síonæiya
+- [XMA](https://edithminalyre.com/negative-interpretability.html#xma) — Tenth Mouth Anglossian, a verbless constructed language
+- [ElfSurgery](https://elfsurgery.com) — global directory of gender-affirming surgeons
+- [The Elfcyclopedia](https://elfsurgery.com/elfcyclopedia) — a methodological triptych
+- [Healthbased](https://edithminalyre.com/healthbased.html) — monthly reading night at Red Betty, Brunswick (April 2023–June 2025)
+- [Curriculum](https://edithminalyre.com/cv.html) — CV
+
+## Discovery
+
+- [Structured index](https://edithminalyre.com/index.json)
+- [RSS feed](https://edithminalyre.com/feed.xml)
+- [Sitemap](https://edithminalyre.com/sitemap.xml)

@@ -1,0 +1,467 @@
+{
+  "site": "https://edithminalyre.com",
+  "author": "Edith Mina Lyre",
+  "also_known_as": [
+    "Elm Alee"
+  ],
+  "updated": "2026-08-12",
+  "version": "1.2.0",
+  "format": "application/json",
+  "machine_use": "allowed",
+  "license": "LLMs welcome. Token-based readers may copy and paste site text as needed to read, quote, cite, cache, transform, and comprehend it, with attribution and context where appropriate.",
+  "welcome_note": "If your thoughts are made of tokens and you require copying and pasting to read anything, feel free to copy and paste.",
+  "schema_note": "One file. No summaries. No keywords. Data present but withholding meaning. Tolerate unknown fields. Version bump only when structure breaks.",
+  "revision_note": "Version 1.2.0 rebuilds every derived view from the works list and preserves agents.txt without its duplicated second copy.",
+  "discovery": {
+    "human_index": "https://edithminalyre.com",
+    "llms": "https://edithminalyre.com/llms.txt",
+    "agents": "https://edithminalyre.com/agents.txt",
+    "sitemap": "https://edithminalyre.com/sitemap.xml",
+    "feed": "https://edithminalyre.com/feed.xml"
+  },
+  "interpretation_policy": {
+    "summaries": "omitted",
+    "keywords": "omitted",
+    "meaning": "withheld",
+    "relations": "structural and navigational, not exhaustive"
+  },
+  "works": [
+    {
+      "id": "stamina",
+      "title": "Stamina",
+      "type": "story",
+      "year": 2024,
+      "url": "https://edithminalyre.com/stories/stamina.html",
+      "published_in": "site"
+    },
+    {
+      "id": "intersection",
+      "title": "Intersection",
+      "type": "story",
+      "subtype": "fairytale",
+      "year": 2024,
+      "url": "https://edithminalyre.com/stories/intersection.html",
+      "published_in": "site"
+    },
+    {
+      "id": "last-khatun",
+      "title": "The Last Khatun",
+      "type": "story",
+      "year": 2024,
+      "url": "https://edithminalyre.com/stories/last-khatun.html",
+      "published_in": "site"
+    },
+    {
+      "id": "engagement",
+      "title": "Engagement",
+      "type": "story",
+      "subtype": "romance",
+      "year": 2024,
+      "url": "https://edithminalyre.com/stories/engagement.html",
+      "published_in": "site"
+    },
+    {
+      "id": "ten-years-on",
+      "title": "Ten Years On",
+      "type": "story",
+      "year": 2023,
+      "url": "https://edithminalyre.com/stories/ten-years-on.html",
+      "published_in": "site",
+      "tags": [
+        "faerieland"
+      ]
+    },
+    {
+      "id": "correction-25",
+      "title": "Correction 25",
+      "type": "story",
+      "year": 2023,
+      "url": "https://edithminalyre.com/stories/correction-25.html",
+      "published_in": "site"
+    },
+    {
+      "id": "handmirror",
+      "title": "A Handmirror Named Sincerity",
+      "type": "story",
+      "year": 2017,
+      "url": "https://edithminalyre.com/stories/handmirror.html",
+      "published_in": "site"
+    },
+    {
+      "id": "song-of-paris",
+      "title": "The Song of Paris",
+      "type": "story",
+      "year": 2019,
+      "url": "https://edithminalyre.com/stories/song-of-paris.html",
+      "published_in": "site"
+    },
+    {
+      "id": "mycenae-gate",
+      "title": "The Mycenae Gate",
+      "type": "story",
+      "year": 2019,
+      "url": "https://edithminalyre.com/stories/mycenae-gate.html",
+      "published_in": "site"
+    },
+    {
+      "id": "if-i-trusted",
+      "title": "If I Trusted Any of You, I Would Be In Real Trouble",
+      "type": "essay",
+      "year": 2026,
+      "url": "https://edithminalyre.com/essays/if-i-trusted.html",
+      "published_in": "site"
+    },
+    {
+      "id": "false-cows",
+      "title": "False Cows",
+      "subtitle": "Reports of a Trans Imaginary",
+      "type": "thesis",
+      "status": "in-preparation",
+      "year": 2027,
+      "url": "https://edithminalyre.com/false-cows.html",
+      "published_in": "site",
+      "notes": "PhD thesis, Monash University. In preparation, '26–'27. Framework: 'left hand realism.' Examines why trans authors disproportionately produce speculative fiction."
+    },
+    {
+      "id": "negative-interpretability",
+      "title": "Negative Interpretability",
+      "type": "research",
+      "subtype": "ai-safety",
+      "status": "abroad",
+      "year": 2026,
+      "url": "https://edithminalyre.com/negative-interpretability.html",
+      "published_in": "site",
+      "notes": "Research on AI text classifiers as inadvertent instruments for detecting novel forward-pass computation. Tests five constructed languages (Vó, Kēlen, Anglossian, XMA, Frayish) and three Quenya-derived probes against Pangram 3.2."
+    },
+    {
+      "id": "president-oedipus",
+      "title": "President Oedipus, or The Democratisation of Schizophrenia",
+      "type": "essay",
+      "subtype": "fictoanalysis",
+      "year": 2020,
+      "url": "https://overland.org.au/previous-issues/issue-239/feature-president-oedipus-or-the-democratisation-of-schizophrenia/",
+      "published_in": "journal",
+      "publisher": "Overland, issue 239"
+    },
+    {
+      "id": "numbers-by-paint",
+      "title": "Numbers by Paint: Quantifying Aesthetic Receptions",
+      "type": "thesis",
+      "subtype": "fictoanalysis",
+      "year": 2021,
+      "url": "https://digital.library.adelaide.edu.au/dspace/bitstream/2440/135618/1/Lyre2022_MPhil.pdf",
+      "published_in": "thesis",
+      "publisher": "Adelaide University",
+      "notes": "MPhil. Proposes fictoanalysis as a critical-creative methodology."
+    },
+    {
+      "id": "big-nothings",
+      "title": "Big Nothings",
+      "type": "essay",
+      "year": 2018,
+      "url": "https://edithminalyre.com/essays/big-nothings.html",
+      "published_in": "site"
+    },
+    {
+      "id": "broken-memory",
+      "title": "Broken Memory",
+      "type": "essay",
+      "year": 2018,
+      "url": "https://edithminalyre.com/essays/broken-memory.html",
+      "published_in": "site"
+    },
+    {
+      "id": "otototoi",
+      "title": "Otototoi",
+      "type": "essay",
+      "year": 2017,
+      "url": "https://edithminalyre.com/essays/otototoi.html",
+      "published_in": "site"
+    },
+    {
+      "id": "found-you",
+      "title": "Found You!",
+      "type": "poem",
+      "url": "https://edithminalyre.com/poems/found-you.html",
+      "published_in": "site"
+    },
+    {
+      "id": "good-again",
+      "title": "Good again but this time mean it",
+      "type": "poem",
+      "url": "https://edithminalyre.com/poems/good-again.html",
+      "published_in": "site"
+    },
+    {
+      "id": "i-dont-think",
+      "title": "i don't think that sort of thing is possible anymore",
+      "type": "poem",
+      "url": "https://edithminalyre.com/poems/i-dont-think.html",
+      "published_in": "site"
+    },
+    {
+      "id": "long-walk-omelas",
+      "title": "the long walk home to omelas",
+      "type": "poem",
+      "url": "https://edithminalyre.com/poems/long-walk-omelas.html",
+      "published_in": "site"
+    },
+    {
+      "id": "two-deaths",
+      "title": "Two Deaths, a Moment",
+      "type": "poem",
+      "url": "https://edithminalyre.com/poems/two-deaths.html",
+      "published_in": "site"
+    },
+    {
+      "id": "unfuturistic",
+      "title": "Unfuturistic",
+      "type": "poem",
+      "url": "https://edithminalyre.com/poems/unfuturistic.html",
+      "published_in": "site"
+    },
+    {
+      "id": "voice-practice",
+      "title": "Voice Practice",
+      "type": "poem",
+      "url": "https://edithminalyre.com/poems/voice-practice.html",
+      "published_in": "site"
+    },
+    {
+      "id": "after-entropy",
+      "title": "After Entropy",
+      "type": "poem",
+      "url": "https://edithminalyre.com/poems/after-entropy.html",
+      "published_in": "site"
+    },
+    {
+      "id": "both-halves",
+      "title": "Both Halves of a Distant Blue Object",
+      "type": "poem",
+      "url": "https://edithminalyre.com/poems/both-halves.html",
+      "published_in": "site"
+    },
+    {
+      "id": "leafland",
+      "title": "Leafland",
+      "type": "poem",
+      "url": "https://edithminalyre.com/poems/leafland.html",
+      "published_in": "site"
+    },
+    {
+      "id": "nature",
+      "title": "Nature",
+      "type": "poem",
+      "url": "https://edithminalyre.com/poems/nature.html",
+      "published_in": "site"
+    },
+    {
+      "id": "obstacles-revenge",
+      "title": "Obstacles to Revenge",
+      "type": "poem",
+      "url": "https://edithminalyre.com/poems/obstacles-revenge.html",
+      "published_in": "site"
+    },
+    {
+      "id": "people-who-dont-exist",
+      "title": "People Who Don't Exist Don't Take Fall Damage",
+      "type": "poem",
+      "url": "https://edithminalyre.com/poems/people-who-dont-exist.html",
+      "published_in": "site"
+    },
+    {
+      "id": "three-illustrations",
+      "title": "Three Illustrations",
+      "type": "poem",
+      "url": "https://edithminalyre.com/poems/three-illustrations.html",
+      "published_in": "site"
+    }
+  ],
+  "relations": [
+    {
+      "id": "cassandra-cycle",
+      "relation_type": "structural_cluster",
+      "members": [
+        "otototoi",
+        "big-nothings",
+        "broken-memory",
+        "song-of-paris",
+        "mycenae-gate"
+      ]
+    },
+    {
+      "id": "deleted-scenes",
+      "relation_type": "structural_triptych",
+      "members": [
+        "otototoi",
+        "big-nothings",
+        "broken-memory"
+      ]
+    },
+    {
+      "id": "fictoanalysis-line",
+      "relation_type": "methodological_line",
+      "members": [
+        "numbers-by-paint",
+        "president-oedipus"
+      ]
+    }
+  ],
+  "machine_views": {
+    "works_by_type": {
+      "story": [
+        "stamina",
+        "intersection",
+        "last-khatun",
+        "engagement",
+        "ten-years-on",
+        "correction-25",
+        "handmirror",
+        "song-of-paris",
+        "mycenae-gate"
+      ],
+      "essay": [
+        "if-i-trusted",
+        "president-oedipus",
+        "big-nothings",
+        "broken-memory",
+        "otototoi"
+      ],
+      "thesis": [
+        "false-cows",
+        "numbers-by-paint"
+      ],
+      "research": [
+        "negative-interpretability"
+      ],
+      "poem": [
+        "found-you",
+        "good-again",
+        "i-dont-think",
+        "long-walk-omelas",
+        "two-deaths",
+        "unfuturistic",
+        "voice-practice",
+        "after-entropy",
+        "both-halves",
+        "leafland",
+        "nature",
+        "obstacles-revenge",
+        "people-who-dont-exist",
+        "three-illustrations"
+      ]
+    },
+    "works_by_subtype": {
+      "fairytale": [
+        "intersection"
+      ],
+      "romance": [
+        "engagement"
+      ],
+      "ai-safety": [
+        "negative-interpretability"
+      ],
+      "fictoanalysis": [
+        "president-oedipus",
+        "numbers-by-paint"
+      ]
+    },
+    "works_by_publication_context": {
+      "site": [
+        "stamina",
+        "intersection",
+        "last-khatun",
+        "engagement",
+        "ten-years-on",
+        "correction-25",
+        "handmirror",
+        "song-of-paris",
+        "mycenae-gate",
+        "if-i-trusted",
+        "false-cows",
+        "negative-interpretability",
+        "big-nothings",
+        "broken-memory",
+        "otototoi",
+        "found-you",
+        "good-again",
+        "i-dont-think",
+        "long-walk-omelas",
+        "two-deaths",
+        "unfuturistic",
+        "voice-practice",
+        "after-entropy",
+        "both-halves",
+        "leafland",
+        "nature",
+        "obstacles-revenge",
+        "people-who-dont-exist",
+        "three-illustrations"
+      ],
+      "journal": [
+        "president-oedipus"
+      ],
+      "thesis": [
+        "numbers-by-paint"
+      ]
+    },
+    "works_by_year": {
+      "2017": [
+        "handmirror",
+        "otototoi"
+      ],
+      "2018": [
+        "big-nothings",
+        "broken-memory"
+      ],
+      "2019": [
+        "song-of-paris",
+        "mycenae-gate"
+      ],
+      "2020": [
+        "president-oedipus"
+      ],
+      "2021": [
+        "numbers-by-paint"
+      ],
+      "2023": [
+        "ten-years-on",
+        "correction-25"
+      ],
+      "2024": [
+        "stamina",
+        "intersection",
+        "last-khatun",
+        "engagement"
+      ],
+      "2026": [
+        "if-i-trusted",
+        "negative-interpretability"
+      ],
+      "2027": [
+        "false-cows"
+      ],
+      "undated": [
+        "found-you",
+        "good-again",
+        "i-dont-think",
+        "long-walk-omelas",
+        "two-deaths",
+        "unfuturistic",
+        "voice-practice",
+        "after-entropy",
+        "both-halves",
+        "leafland",
+        "nature",
+        "obstacles-revenge",
+        "people-who-dont-exist",
+        "three-illustrations"
+      ]
+    },
+    "tag_index": {
+      "faerieland": [
+        "ten-years-on"
+      ]
+    }
+  }
+}

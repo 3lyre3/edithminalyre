@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>404 — Not Found | Edith Mina Lyre</title>
+  <meta name="robots" content="noindex, follow">
+  <meta name="description" content="This page does not exist. Return to Edith Mina Lyre’s homepage or explore the site.">
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #fbfaf7;
+      --text: #171412;
+      --muted: #665f58;
+      --line: #ded7ce;
+      --link: #5b3324;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #141211;
+        --text: #f3eee8;
+        --muted: #b8aea4;
+        --line: #3a332d;
+        --link: #e6b59e;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100svh;
+      display: grid;
+      place-items: center;
+      padding: 2rem;
+      background: var(--bg);
+      color: var(--text);
+      font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+      line-height: 1.6;
+    }
+
+    main {
+      width: min(100%, 42rem);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      padding: 3rem 0;
+    }
+
+    p.code {
+      margin: 0 0 1rem;
+      color: var(--muted);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+    }
+
+    h1 {
+      margin: 0 0 1rem;
+      font-size: clamp(2.2rem, 8vw, 5rem);
+      line-height: 1;
+      font-weight: 500;
+    }
+
+    p {
+      max-width: 34rem;
+      margin: 0 0 1.25rem;
+      color: var(--muted);
+      font-size: 1.08rem;
+    }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1rem;
+      margin-top: 2rem;
+    }
+
+    a {
+      color: var(--link);
+      text-underline-offset: 0.18em;
+    }
+
+    a:focus-visible {
+      outline: 2px solid currentColor;
+      outline-offset: 0.25rem;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="code">404 · Not Found</p>
+    <h1>Why?</h1>
+    <p>
+      Why are you here?
+    </p>
+    <nav aria-label="Useful paths">
+      <a href="/">Go home</a>
+      <a href="/">Or don’t</a>
+    </nav>
+  </main>
+</body>
+</html>
