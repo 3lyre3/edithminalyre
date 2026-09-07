@@ -261,6 +261,52 @@ html.faerieland a.sand:focus-visible {
     scroll-margin-top: 4rem;
 }
 .doc .essay-body .note p.quote { margin-left: 4%; }
+.doc section.note { scroll-margin-top: 1.5rem; }
+
+/* ── footnote tags: a small numbered mark at the passage a note comments on,
+      fast click down to the note; the note's number is the fast click up ── */
+.doc a.fn {
+    font-family: var(--font-display);
+    font-size: 0.68em;
+    line-height: 0;
+    vertical-align: super;
+    margin-left: 0.18em;
+    padding: 0.1em 0.2em;
+    letter-spacing: 0.04em;
+    color: var(--silk-deep);
+    background: none;
+    text-decoration: none;
+    text-shadow: 0 0 8px rgba(150, 235, 175, 0.25);
+    scroll-margin-top: 38vh;               /* arriving from a note, the passage sits mid-screen */
+    transition: color 0.35s ease, text-shadow 0.35s ease;
+}
+.doc a.fn:hover, .doc a.fn:focus-visible, .doc a.fn:target {
+    color: var(--silk-pale);
+    text-shadow: 0 0 6px rgba(150, 235, 175, 0.7), 0 0 16px rgba(110, 215, 150, 0.5), 0 0 36px rgba(70, 185, 115, 0.3);
+}
+.doc a.fn:target { animation: fn-land 2.4s ease-out 1; }
+@keyframes fn-land {
+    0%   { color: #fff; text-shadow: 0 0 10px rgba(211, 245, 220, 0.95), 0 0 30px rgba(150, 235, 175, 0.8), 0 0 60px rgba(110, 215, 150, 0.6); }
+    100% { color: var(--silk-pale); }
+}
+.doc .essay-body p.num a.up {
+    color: var(--elfin-dim);
+    background: none;
+    transition: color 0.4s ease, text-shadow 0.4s ease;
+}
+.doc .essay-body p.num a.up::after {
+    content: '↑';
+    display: inline-block;
+    margin-left: 0.55em;
+    font-size: 0.85em;
+    opacity: 0.55;
+    transition: transform 0.4s ease, opacity 0.4s ease;
+}
+.doc .essay-body p.num a.up:hover, .doc .essay-body p.num a.up:focus-visible {
+    color: var(--silk);
+    text-shadow: 0 0 6px rgba(150, 235, 175, 0.6), 0 0 18px rgba(110, 215, 150, 0.4);
+}
+.doc .essay-body p.num a.up:hover::after { transform: translateY(-3px); opacity: 1; }
 
 /* ── the reel: a fast band of cards under each note, each a door into the
       manuscript. It slows to a stop under the pointer; a card lifts and

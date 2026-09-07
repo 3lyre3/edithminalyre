@@ -187,6 +187,38 @@ def build_doc(slug, back_href, ordinal=None, nxt=None, prev=None, post=None):
         t = post(t)
     write(slug + '.html', t)
 
+# ───────────────────────────────────────────────── footnote tags in "and Reconciliation"
+# Each of E's notes 4–19 comments on a passage of Bryth's letter; a small numbered tag sits at that
+# passage and opens the note, and the note's number leads back up to the tag. Notes 1–3 concern the
+# texts before the letter and carry no tag. The phrase must occur exactly once, or the build stops.
+FOOTNOTES = [
+    ('4',  'what-and-ever'),                                                     # E’s ‘and’ for Amaldéu’s NAND
+    ('4a', 'of incarcerated aufGaolaí.'),                                        # histories like these
+    ('5',  'to nor either benefit by the closure thereof.'),                     # the oath: prophecy for imperative
+    ('6',  'Tear your tongue lengthwise and learn to speak again.'),             # prophecy re-shackled to imperative
+    ('7',  'I literally don’t have it to give’ things.'),                        # giving, giving, getting
+    ('8',  'And never at my eyes. “What’s obvious, Britt?”'),                    # Britt’s field-report
+    ('9',  'I will not give the name “rape” to our first event.'),               # the green translations
+    ('10', '“I’m guilty if that’s what turns you on.”'),                         # correct hurting, correct turning on
+    ('11', 'Then we kissed. Shuddered. She vomited.'),                           # “Eyen.” — cops’ eyes, fey-green
+    ('12', 'which out of love for Red I still don’t.'),                          # the Faerishest sentence
+    ('13', 'It’s a thing I’ve found ways to think only in the negative.'),       # Genghis; the negative realm
+    ('14', 'jolted the performance to a more-than-overdue conclusion.'),         # Night: very Catholic
+    ('15', 'fugueless trudge from the Shimmerlands'),                            # the fugueless return
+    ('16', '(‘obviousness’ being the exchange-mechanism bonding reality and the Real)'),  # seed and mechanism
+    ('17', 'But everything hurts someone.'),                                     # Paris and Marigail
+    ('18', 'Faer Avatar’s eye beckons you, little ray.'),                        # ‘dreamer’ of the ‘eye’
+    ('19', 'drawing in when the tongue retracted.'),                             # the ley-eel, glossed
+]
+
+def reconciliation_footnotes(t):
+    for n, phrase in FOOTNOTES:
+        assert t.count(phrase) == 1, f'and-reconciliation: footnote {n} phrase found {t.count(phrase)} times: {phrase!r}'
+        note = re.match(r'\d+', n).group()
+        tag = f'<a class="fn" id="fn-{n}" href="notes-on.html#note-{note}" aria-label="Note {n}">{n}</a>'
+        t = t.replace(phrase, phrase + tag, 1)
+    return t
+
 def faerieland_links(t):
     t = replace1(t, '<span class="n">6—</span> and Reconciliation',
                  '<a href="and-reconciliation.html"><span class="n">6—</span> and Reconciliation</a>')
@@ -300,7 +332,10 @@ def build_notes():
             continue
         if RE_NUMBER.match(text):
             number = text.strip().rstrip('—').strip()
-            body.append(f'<p class="num">{html.escape(number)}—</p>')
+            if int(re.match(r'\d+', number).group()) >= 4:      # notes 4– carry a tag in the letter: the number leads back up to it
+                body.append(f'<p class="num"><a class="up" href="and-reconciliation.html#fn-{number}" aria-label="Up to the passage in and Reconciliation">{html.escape(number)}—</a></p>')
+            else:
+                body.append(f'<p class="num">{html.escape(number)}—</p>')
             continue
         body.append(para_html(p, extra_class=CLASS_FOR_STYLE.get(p['style'], '')))
     if open_section:
@@ -470,6 +505,52 @@ EXTRA_CSS = '''
     scroll-margin-top: 4rem;
 }
 .doc .essay-body .note p.quote { margin-left: 4%; }
+.doc section.note { scroll-margin-top: 1.5rem; }
+
+/* ── footnote tags: a small numbered mark at the passage a note comments on,
+      fast click down to the note; the note's number is the fast click up ── */
+.doc a.fn {
+    font-family: var(--font-display);
+    font-size: 0.68em;
+    line-height: 0;
+    vertical-align: super;
+    margin-left: 0.18em;
+    padding: 0.1em 0.2em;
+    letter-spacing: 0.04em;
+    color: var(--silk-deep);
+    background: none;
+    text-decoration: none;
+    text-shadow: 0 0 8px rgba(150, 235, 175, 0.25);
+    scroll-margin-top: 38vh;               /* arriving from a note, the passage sits mid-screen */
+    transition: color 0.35s ease, text-shadow 0.35s ease;
+}
+.doc a.fn:hover, .doc a.fn:focus-visible, .doc a.fn:target {
+    color: var(--silk-pale);
+    text-shadow: 0 0 6px rgba(150, 235, 175, 0.7), 0 0 16px rgba(110, 215, 150, 0.5), 0 0 36px rgba(70, 185, 115, 0.3);
+}
+.doc a.fn:target { animation: fn-land 2.4s ease-out 1; }
+@keyframes fn-land {
+    0%   { color: #fff; text-shadow: 0 0 10px rgba(211, 245, 220, 0.95), 0 0 30px rgba(150, 235, 175, 0.8), 0 0 60px rgba(110, 215, 150, 0.6); }
+    100% { color: var(--silk-pale); }
+}
+.doc .essay-body p.num a.up {
+    color: var(--elfin-dim);
+    background: none;
+    transition: color 0.4s ease, text-shadow 0.4s ease;
+}
+.doc .essay-body p.num a.up::after {
+    content: '↑';
+    display: inline-block;
+    margin-left: 0.55em;
+    font-size: 0.85em;
+    opacity: 0.55;
+    transition: transform 0.4s ease, opacity 0.4s ease;
+}
+.doc .essay-body p.num a.up:hover, .doc .essay-body p.num a.up:focus-visible {
+    color: var(--silk);
+    text-shadow: 0 0 6px rgba(150, 235, 175, 0.6), 0 0 18px rgba(110, 215, 150, 0.4);
+}
+.doc .essay-body p.num a.up:hover::after { transform: translateY(-3px); opacity: 1; }
 
 /* ── the reel: a fast band of cards under each note, each a door into the
       manuscript. It slows to a stop under the pointer; a card lifts and
@@ -566,7 +647,7 @@ if __name__ == '__main__':
                                                                             ('the-paxiean-histories.html', '4.0 Pasiphaë’s opening notes'))
     build_doc('dear-ama',              'come-with-me.html',          '3.0', ('and-reconciliation.html', '5.0 and Reconciliation'),
                                                                             ('mestarmya.html',          '3.1 Amaldéu’s letter to E'))
-    build_doc('and-reconciliation',    'dear-ama.html',              '5.0', ('notes-on.html',           '5.1 Notes'))
+    build_doc('and-reconciliation',    'dear-ama.html',              '5.0', ('notes-on.html',           '5.1 Notes'), post=reconciliation_footnotes)
     notes = build_notes()
     build_manuscript(notes)
     print('done')
