@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Come with me · Go with E</title>
+<style>
+  /* Same face as the plates (Noto Serif JP), subset to just these
+     letters:  CEGHIMOTW ceghimotw  — 2.7 KB, no network. */
+  @font-face {
+    font-family: "Plate Mincho";
+    src: url(data:font/woff2;base64,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) format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: block;
+  }
+
+  :root {
+    --bone:      #E3DAC9;
+    --ink-red:   166, 34, 39;   /* the red of the credit line — the fill */
+    --glow-red:  214, 66, 58;   /* a half-step hotter, so the halo reads as light */
+    --track:     0.30em;        /* a little tighter than the plates: mixed case */
+    --stretch:   1.3;           /* vertical stretch; horizontal spacing untouched */
+    --cap-shift: 0.068em;
+    --tilt:      0deg;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+
+  body {
+    margin: 0;
+    padding: 2.4vmin;
+    display: grid;
+    place-items: center;
+    background: #161D1E;
+    background-image: radial-gradient(ellipse 78% 68% at 50% 44%,
+                        #27312F 0%, #1B2324 52%, #101516 100%);
+  }
+
+  /* The square from the sketch. No drawing yet, so it holds its own
+     shape; drop an <img> in and swap aspect-ratio for the image's. */
+  .plate {
+    position: relative;
+    container-type: inline-size;
+    width: min(100%, calc(100dvh - 4.8vmin));
+    aspect-ratio: 1 / 1;
+    box-shadow: 0 2.2vmin 5.5vmin rgba(0, 0, 0, .55),
+                0 0.3vmin 1.2vmin rgba(0, 0, 0, .40);
+  }
+
+  /* the pencilled frame — four strokes that overshoot the corners,
+     the way the sketch's do */
+  .frame {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    stroke: var(--bone);
+    stroke-opacity: .30;
+    stroke-width: 1.4;
+    stroke-linecap: round;
+    fill: none;
+  }
+
+  .word {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.05em;
+    font-family: "Plate Mincho", serif;
+    font-size: 7.2cqw;
+    line-height: 1;
+    letter-spacing: var(--track);
+    color: var(--bone);
+    text-decoration: none;
+    white-space: nowrap;
+    outline: none;
+    transform-origin: 50% 50%;
+    transform: translate(-50%, -50%)
+               translateY(calc(-1 * var(--cap-shift) * var(--stretch)))
+               rotate(var(--tilt))
+               scaleY(var(--stretch));
+    transition: transform 480ms cubic-bezier(.22, .68, .2, 1),
+                color 480ms ease-out,
+                text-shadow 480ms ease-out;
+  }
+  .word > span { margin-right: calc(-1 * var(--track)); }  /* discount the trailing space */
+  .word .big { font-size: 1.9em; margin-top: 0.08em; }
+
+  .word:hover,
+  .word:focus-visible {
+    color: rgb(var(--ink-red));
+    text-shadow:
+      0 0 0.05em rgba(var(--glow-red), .85),
+      0 0 0.16em rgba(var(--glow-red), .75),
+      0 0 0.42em rgba(var(--glow-red), .45),
+      0 0 0.95em rgba(var(--glow-red), .28),
+      0 0 2.00em rgba(var(--glow-red), .14);   /* hotter red outward: on dark ground
+                                                   the plates' ink-red halo reads as a bruise */
+    transform: translate(-50%, -50%)
+               translateY(calc(-1 * var(--cap-shift) * var(--stretch)))
+               rotate(var(--tilt))
+               scale(1.055)
+               scaleY(var(--stretch));
+  }
+
+  /* ── Come with me: set the way the sketch is — "Come" big, "with"
+        small and tucked in at its heel, "me" on its own line below;
+        no tall stretch, a lean to the left, and it perks up on hover ── */
+  .word--come {
+    --stretch: 1.04;
+    --track:   0.11em;
+    --tilt:    -5deg;
+    font-size: 8.2cqw;           /* a touch larger: it gives up the stretch, so it needs the width */
+    align-items: flex-start;
+    gap: 0;
+  }
+  .word--come:hover, .word--come:focus-visible { --tilt: -1.5deg; }
+  .word--come .l1 { display: flex; align-items: baseline; }
+  .word--come .with {
+    font-size: 0.6em;
+    letter-spacing: 0.07em;
+    margin-left: 0.5em;
+    position: relative;
+    top: 0.08em;
+    transform: rotate(3deg);
+  }
+  .word--come .l2 {
+    font-size: 0.9em;
+    margin-left: 1.45em;
+    margin-top: 0.1em;
+  }
+
+  /* ── Go with E: "Go with" on one line, the E large beneath the Go ── */
+  .word--go { align-items: flex-start; }
+  .word--go .big { margin-left: 0.28em; margin-top: 0.06em; }
+
+  /* ── back, top right: bone at rest, the same red when touched ── */
+  .back {
+    position: fixed;
+    top: 18px;
+    right: 22px;
+    z-index: 10;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 1.7rem;
+    line-height: 1;
+    padding: 10px 12px;
+    color: rgba(227, 218, 201, 0.7);
+    text-decoration: none;
+    outline: none;
+    transition: color 480ms ease-out, text-shadow 480ms ease-out;
+  }
+  .back:hover, .back:focus-visible {
+    color: rgb(var(--ink-red));
+    text-shadow: 0 0 0.16em rgba(var(--glow-red), .75), 0 0 0.5em rgba(var(--glow-red), .4);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .word, .back { transition: none; }
+  }
+
+  /* the shared site chrome (mounted by ../site.js) has no place on the plates */
+  .theme-toggle, .cursor-glow, .wisp, .grain { display: none !important; }
+</style>
+</head>
+<body>
+  <a class="back" href="intermaze.html" aria-label="Back">&larr;</a>
+
+  <div class="plate">
+    <svg class="frame" viewBox="0 0 1000 1000" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M -12 8 C 300 5, 640 11, 1014 6"/>
+      <path d="M 994 -10 C 991 320, 997 660, 993 1012"/>
+      <path d="M 1010 992 C 700 995, 340 989, -14 994"/>
+      <path d="M 6 1012 C 9 700, 4 330, 8 -12"/>
+    </svg>
+
+    <a class="word word--come" href="and-reconciliation.html" style="--x: 32%; --y: 30%">
+      <span class="l1"><span>Come</span><span class="with">with</span></span>
+      <span class="l2">me</span>
+    </a>
+
+    <a class="word word--go" href="paxie.html" style="--x: 70%; --y: 61%">
+      <span>Go with</span>
+      <span class="big">E</span>
+    </a>
+  </div>
+  <script src="../site.js"></script>
+  <script src="milestone.js"></script>
+</body>
+</html>

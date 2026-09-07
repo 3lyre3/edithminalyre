@@ -1,0 +1,307 @@
+/* ═══════════════════════════════════════════════════════════
+   FAERIELAND — shared by the milestone document pages
+   Load after style.css. These pages are always night; the site's amber
+   cools here to silver at rest and leaf-green when touched.
+   ═══════════════════════════════════════════════════════════ */
+
+html.faerieland {
+    --elfin:     #bfc6cf;                  /* resting silver            */
+    --elfin-dim: #9aa2ac;                  /* silver, further off       */
+    --silk:      #a9ecbb;                  /* leaf, lit from within     */
+    --silk-deep: #7fd497;                  /* leaf, in shade            */
+    --silk-pale: #d3f5dc;                  /* leaf, gone almost white   */
+    --sand:      #ead9ae;                  /* golden bone — Paxie's map */
+    --sand-glow: 238, 210, 150;
+
+    --accent:         var(--silk);
+    --accent-dim:     var(--silk-deep);
+    --gold:           var(--silk);         /* drop caps and such        */
+    --honey:          var(--silk-pale);
+    --glow-color:     rgba(120, 205, 150, 0.05);
+    --glow-secondary: rgba(150, 170, 205, 0.04);
+}
+
+html.faerieland .theme-toggle { display: none; }
+
+/* ── Back button, top right on every Faerieland page ─────────── */
+html.faerieland .back--corner {
+    position: fixed;
+    top: 18px;
+    right: 18px;
+    z-index: 1000;
+    margin: 0;
+    padding: 10px 12px;                    /* a real touch target around a small arrow */
+    font-size: 1.35rem;
+    line-height: 1;
+}
+html.faerieland .back::before {
+    color: var(--elfin-dim);
+    text-shadow: 0 0 12px rgba(200, 210, 220, 0.18);
+    transition: transform 0.3s ease, color 0.4s ease, text-shadow 0.4s ease;
+}
+html.faerieland .back:hover::before,
+html.faerieland .back:focus-visible::before {
+    color: var(--silk);
+    text-shadow: 0 0 10px rgba(150, 235, 175, 0.55), 0 0 24px rgba(110, 215, 150, 0.35);
+}
+
+/* ── The list (faerieland.html) ──────────────────────────────── */
+.fae {
+    list-style: none;
+    margin-top: 2.6rem;
+}
+.fae .item {
+    /* ~17px on a phone, ~20px on a laptop, capped at 23px — scales with viewport */
+    font-size: clamp(1.1rem, 0.85rem + 0.6vw, 1.45rem);
+    line-height: 1.6;
+    margin-bottom: 1.5em;
+}
+/* the hover lives on an inner span so the site's reveal animation
+   (which holds a transform on .item) can't pin it */
+.fae .tx {
+    display: inline-block;
+    transform-origin: 0 50%;
+    color: var(--elfin);
+    letter-spacing: 0.01em;
+    text-shadow: 0 0 18px rgba(214, 222, 232, 0.08);
+    transition:
+        color 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+        text-shadow 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+        letter-spacing 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.fae .item:hover .tx {
+    color: var(--silk);
+    letter-spacing: 0.025em;
+    transform: translateX(6px) scale(1.04);
+    text-shadow:
+        0 0 6px  rgba(150, 235, 175, 0.6),
+        0 0 18px rgba(110, 215, 150, 0.45),
+        0 0 48px rgba(70, 185, 115, 0.3);
+}
+.fae .n {
+    font-family: var(--font-display);
+    font-size: 1.06em;
+    letter-spacing: 0.08em;
+    color: var(--elfin-dim);
+    transition: color 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.fae .item:hover .n { color: var(--silk-deep); }
+.fae .c {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 0.86em;
+    letter-spacing: 0.02em;
+    opacity: 0.72;
+}
+
+/* ── Documents set from Word: letters, stories, essays ───────
+      The converter keeps the document's own alignment, indents, tabs,
+      breaks, blank lines and run formatting; these rules give them the
+      Faerieland voice. ─────────────────────────────────────────── */
+.doc .work-body p,
+.doc .essay-body p {
+    font-size: clamp(1.05rem, 0.85rem + 0.5vw, 1.32rem);
+    line-height: 1.8;
+    color: var(--elfin);
+}
+.doc .work-header h1 {
+    font-size: clamp(1.7rem, 1.3rem + 1.2vw, 2.3rem);
+    color: var(--elfin);
+    letter-spacing: 0.03em;
+}
+.doc .work-header.centered h1 { text-align: center; }
+.doc .work-header.right h1    { text-align: right; }
+.doc .work-header.centered::after { left: 50%; transform: translateX(-50%); }
+.doc .work-header.right::after    { left: auto; right: 0; }
+.doc h1.mixed    { font-style: normal; }      /* a title that mixes italic and roman keeps the contrast */
+.doc h1.mixed em { font-style: italic; }
+
+.doc p.blank    { height: 1.15em; margin: 0; }            /* an empty line in the document */
+.doc .tab       { display: inline-block; width: 7.7%; }   /* a tab character: the default half-inch stop, as a share of the column */
+.doc .ragged    { text-align: left; hyphens: manual; }    /* tabbed or hanging lines are not justified */
+.doc .centered  { text-align: center; }
+.doc .right     { text-align: right; }
+.doc .sc        { font-variant: small-caps; }
+.doc .caps      { text-transform: uppercase; }
+.doc .u         { text-decoration: underline; text-underline-offset: 0.12em; }
+.doc sup, .doc sub {
+    font-family: var(--font-display);
+    color: var(--silk-deep);
+    margin-left: 0.1em;
+    line-height: 0;
+}
+.doc p.centered em,                                        /* centred italic lines — invocations, refrains */
+.doc p.centered.ix-sub {
+    font-family: var(--font-display);
+    letter-spacing: 0.06em;
+}
+.doc p.centered:not(.ix-title):not(.ix-sub) em {
+    color: var(--silk);
+    text-shadow: 0 0 14px rgba(150, 235, 175, 0.28);
+}
+
+/* named paragraph styles from the documents */
+.doc .quote   { font-size: 0.95em; line-height: 1.75; margin-bottom: 1.2em; }   /* 1 Clean Quote */
+.doc .bq      { font-size: 0.95em; margin: 2em 0; }                              /* 1 Block Quote */
+.doc .epi     { font-size: 0.95em; color: var(--elfin-dim); margin: 2.2em 0; }   /* 1 Epigraph */
+.doc .opener  { margin-bottom: 1.1em; }                                          /* Special Opener */
+.doc .ix-title { margin-bottom: 0.15em; }                                        /* index: title over its percentage */
+.doc .ix-sub   { font-size: 0.9em; color: var(--elfin-dim); margin-bottom: 1.5em; }
+
+/* letters open in a small voice — no drop cap; essays never had one */
+.letter .work-body p:first-of-type::first-letter {
+    font-size: inherit;
+    float: none;
+    margin: 0;
+    line-height: inherit;
+    color: inherit;
+    font-family: inherit;
+    text-shadow: none;
+}
+
+/* ── The sandy link: holds Paxie's golden bone at rest, so it stands
+      apart from the silver around it; on hover it warms rather than greens ── */
+html.faerieland a.sand {
+    color: var(--sand);
+    background-image: linear-gradient(var(--sand), var(--sand));
+    background-size: 100% 1px;             /* underlined from the start, not only on hover */
+    text-shadow: 0 0 10px rgba(var(--sand-glow), 0.18);
+    transition: color 0.4s ease, text-shadow 0.4s ease;
+}
+html.faerieland a.sand:hover,
+html.faerieland a.sand:focus-visible {
+    color: #f4e9c8;
+    text-shadow:
+        0 0 6px  rgba(var(--sand-glow), 0.7),
+        0 0 18px rgba(var(--sand-glow), 0.45),
+        0 0 40px rgba(214, 178, 98, 0.3);
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   MILESTONE — onward links, the Notes page, and its reels
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── onward: the next page in the reading, set right, under the text ── */
+.onward { margin: 3.6rem 0 0.5rem; text-align: right; }
+.onward .next {
+    font-family: var(--font-display);
+    font-size: clamp(1.05rem, 0.9rem + 0.5vw, 1.3rem);
+    letter-spacing: 0.08em;
+    color: var(--elfin);
+    background: none;
+    text-shadow: 0 0 18px rgba(214, 222, 232, 0.08);
+    transition: color 0.55s cubic-bezier(0.16, 1, 0.3, 1), text-shadow 0.55s cubic-bezier(0.16, 1, 0.3, 1), letter-spacing 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.onward .next::after {
+    content: '→';
+    display: inline-block;
+    margin-left: 0.6em;
+    color: var(--elfin-dim);
+    transition: transform 0.4s ease, color 0.4s ease;
+}
+.onward .next:hover, .onward .next:focus-visible {
+    color: var(--silk);
+    letter-spacing: 0.11em;
+    text-shadow: 0 0 6px rgba(150, 235, 175, 0.6), 0 0 18px rgba(110, 215, 150, 0.45);
+}
+.onward .next:hover::after, .onward .next:focus-visible::after { transform: translateX(6px); color: var(--silk-deep); }
+
+/* ── the Notes: a chapter tag over each numbered note ── */
+.doc h2.chap {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-style: italic;
+    font-size: clamp(1.25rem, 1rem + 0.8vw, 1.7rem);
+    letter-spacing: 0.04em;
+    text-transform: none;                  /* the site's h2 lowercases; the chapter tags keep their capitals */
+    color: var(--silk);
+    text-shadow: 0 0 14px rgba(150, 235, 175, 0.22);
+    margin: 3.4rem 0 0.3rem;
+}
+.doc section.note:first-of-type h2.chap { margin-top: 1rem; }
+.doc .essay-body p.num {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    letter-spacing: 0.12em;
+    color: var(--elfin-dim);
+    margin: 0 0 1rem;
+}
+.doc h3.ms {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.2rem;
+    letter-spacing: 0.06em;
+    color: var(--elfin);
+    margin: 1.6rem 0 0.6rem;
+    scroll-margin-top: 4rem;
+}
+.doc .essay-body .note p.quote { margin-left: 4%; }
+
+/* ── the reel: a fast band of cards under each note, each a door into the
+      manuscript. It slows to a stop under the pointer; a card lifts and
+      gleams the way Plate IV's pieces do. ── */
+.reel {
+    --gap: 1.1rem;
+    position: relative;
+    margin: 1.4rem 0 2.6rem;
+    padding: 0.85rem 0;
+    border-top: 1px solid rgba(191, 198, 207, 0.22);
+    border-bottom: 1px solid rgba(191, 198, 207, 0.22);
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+}
+.reel-track {
+    display: flex;
+    width: max-content;
+    animation: reel calc(var(--n, 8) * 0.7s) linear infinite;
+    will-change: transform;
+}
+.reel:hover .reel-track, .reel:focus-within .reel-track { animation-play-state: paused; }
+.reel-half { display: flex; flex: none; }
+@keyframes reel { to { transform: translateX(-50%); } }
+
+.reel .card {
+    flex: none;
+    position: relative;
+    overflow: hidden;
+    margin-right: var(--gap);
+    padding: 0.42em 1em 0.46em;
+    border: 1px solid rgba(191, 198, 207, 0.42);
+    border-radius: 0.6em;
+    background: rgba(8, 12, 14, 0.55);
+    font-family: var(--font-display);
+    font-size: clamp(1rem, 0.85rem + 0.4vw, 1.2rem);
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+    color: var(--elfin);
+    text-decoration: none;
+    transform-origin: 50% 60%;
+    transition: transform 0.42s cubic-bezier(0.2, 0.7, 0.2, 1), color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+}
+.reel .card::after {                     /* the sheen that sweeps through on hover */
+    content: '';
+    position: absolute;
+    inset: -40% -60%;
+    background: linear-gradient(115deg, transparent 42%, rgba(255, 255, 255, 0.32) 50%, transparent 58%);
+    transform: translateX(-120%);
+    pointer-events: none;
+}
+.reel .card:hover, .reel .card:focus-visible {
+    color: var(--silk-pale);
+    border-color: var(--silk);
+    transform: translateY(-3px) scale(1.12);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.45), 0 0 10px rgba(150, 235, 175, 0.45), 0 0 28px rgba(110, 215, 150, 0.3);
+    z-index: 2;
+}
+.reel .card:hover::after, .reel .card:focus-visible::after { animation: card-sweep 900ms cubic-bezier(0.3, 0.5, 0.3, 1) both; }
+@keyframes card-sweep { from { transform: translateX(-120%); } to { transform: translateX(120%); } }
+
+@media (prefers-reduced-motion: reduce) {
+    .reel { overflow-x: auto; -webkit-mask-image: none; mask-image: none; }
+    .reel-track { animation: none; }
+    .reel-half[aria-hidden="true"] { display: none; }
+    .reel .card, .reel .card::after, .onward .next, .onward .next::after { transition: none; animation: none; }
+}
