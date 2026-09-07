@@ -183,9 +183,31 @@ html.faerieland a.sand:focus-visible {
    MILESTONE — onward links, the Notes page, and its reels
    ═══════════════════════════════════════════════════════════ */
 
-/* ── onward: the next page in the reading, set right, under the text ── */
-.onward { margin: 3.6rem 0 0.5rem; text-align: right; }
-.onward .next {
+/* ── the script's ordinal, small above the title ── */
+.ordinal {
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    letter-spacing: 0.22em;
+    color: var(--elfin-dim);
+    margin: 0 0 0.5rem;
+    opacity: 0.85;
+}
+.work-header.centered .ordinal { text-align: center; }
+.work-header.right .ordinal    { text-align: right; }
+
+/* ── onward: under the text, the next page in order sits right; where the
+      script's reverse chain runs back toward the start, that sits left ── */
+.onward { margin: 3.6rem 0 0.5rem; display: flex; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
+.onward .next { margin-left: auto; }
+.onward .prev::before {
+    content: '←';
+    display: inline-block;
+    margin-right: 0.6em;
+    color: var(--elfin-dim);
+    transition: transform 0.4s ease, color 0.4s ease;
+}
+.onward .prev:hover::before, .onward .prev:focus-visible::before { transform: translateX(-6px); color: var(--silk-deep); }
+.onward .next, .onward .prev {
     font-family: var(--font-display);
     font-size: clamp(1.05rem, 0.9rem + 0.5vw, 1.3rem);
     letter-spacing: 0.08em;
@@ -201,7 +223,8 @@ html.faerieland a.sand:focus-visible {
     color: var(--elfin-dim);
     transition: transform 0.4s ease, color 0.4s ease;
 }
-.onward .next:hover, .onward .next:focus-visible {
+.onward .next:hover, .onward .next:focus-visible,
+.onward .prev:hover, .onward .prev:focus-visible {
     color: var(--silk);
     letter-spacing: 0.11em;
     text-shadow: 0 0 6px rgba(150, 235, 175, 0.6), 0 0 18px rgba(110, 215, 150, 0.45);

@@ -6,15 +6,15 @@ Every page is copied in, re-pointed at the site's shared style.css / site.js one
 back arrow and onward link per the page tree, and the Notes page is built from its .docx with a
 fast hoverable reel of manuscript links under each note.
 
-The tree:
-    Map I  -THIS->  Map II  -IS / NOT THE->  Map III  -WORLD...->  Plate IV
-    Plate IV:  Faerieland zone -> faerieland.html ;  Intermaze zone -> intermaze.html
-    intermaze -> come-with-me ("Me or E?")
-    come-with-me:  Come with me -> and-reconciliation -> notes-on
-                   Go with E    -> paxie (The Paxiean Histories)
-    paxie:  #1 -> the-paxiean-histories ("Intr.") ;  #23 -> dear-ama
-    the-paxiean-histories -> left-hand-realism -> coda -> c1da -> the-false-cow -> mestarmya
-        -> dear-ama -> and-reconciliation -> notes-on
+The route, with the script's ordinals:
+    [1.0] Map I  -THIS->  [1.1] Map II  -IS / NOT THE->  [1.2] Map III  -WORLD...->  Plate IV
+    Plate IV:  Faerieland zone -> [2.0] faerieland (back to Plate IV) ;  Intermaze zone -> [1.3] paxie
+    [1.3] paxie:  #1 "Paxie starts here!" -> come-with-me ("Me or E?") ;  #23 -> dear-ama
+    come-with-me:  Go with E [2.1] -> [3.0] dear-ama ;  Come with me -> [5.0] and-reconciliation
+    out of order (the defiant reader):  [3.0] dear-ama -> [3.1] mestarmya -> ([3.2] Daedalus, not yet written)
+        -> [4.0] the-paxiean-histories (Pasiphaë's opening notes)
+    in order:  [4.0] -> [4.1] left-hand-realism -> [4.2] coda -> [4.3] c1da -> [4.4] the-false-cow
+        -> ([3.2]) -> [3.1] mestarmya -> [3.0] dear-ama -> [5.0] and-reconciliation -> [5.1] notes-on
 """
 import html, math, os, re, shutil, sys, unicodedata
 
@@ -123,7 +123,7 @@ def build_plate_iv():
     t = replace1(t, '<body>\n', '<body>\n  ' + back_anchor('this-is-not-the-world-iii.html') + '\n\n', 'plate-iv: body start')
     links_js = '''
   // where a zone leads: click or Enter opens it. Zones without a destination stay as they were.
-  const LINKS = {"faerieland": "faerieland.html", "walkways": "intermaze.html"};
+  const LINKS = {"faerieland": "faerieland.html", "walkways": "paxie.html"};
   for (const [id, href] of Object.entries(LINKS)) {
     const el = document.getElementById(id);
     el.classList.add('linked');
@@ -140,10 +140,10 @@ def build_plate_iv():
 # ───────────────────────────────────────────────── Paxie's map
 def build_paxie():
     t = read('paxie.html')
-    t = replace1(t, '<a class="pt" id="stop-1" href="#">', '<a class="pt" id="stop-1" href="the-paxiean-histories.html">')
+    t = replace1(t, '<a class="pt" id="stop-1" href="#">', '<a class="pt" id="stop-1" href="come-with-me.html">')
     t = replace1(t, '<a class="pt" id="stop-23" href="#">', '<a class="pt" id="stop-23" href="dear-ama.html">')
     t = replace1(t, '<a class="back" href="faerieland.html" aria-label="Back to Faerieland">&larr;</a>',
-                 back_anchor('come-with-me.html'))
+                 back_anchor('plate-iv.html'))
     t = replace1(t, '</style>', CHROME_HIDE_CSS + '</style>', 'paxie: style end')
     t = replace1(t, '</body>', plate_scripts(), 'paxie: body end')
     write('paxie.html', t)
@@ -152,54 +152,12 @@ def build_paxie():
 def build_come_with_me():
     t = read('come-with-me.html')
     t = replace1(t, '<a class="word word--come" href="#"', '<a class="word word--come" href="and-reconciliation.html"')
-    t = replace1(t, '<a class="word word--go" href="#"', '<a class="word word--go" href="paxie.html"')
+    t = replace1(t, '<a class="word word--go" href="#"', '<a class="word word--go" href="dear-ama.html"')
     t = replace1(t, '<a class="back" href="faerieland.html" aria-label="Back to Faerieland">&larr;</a>',
-                 back_anchor('intermaze.html'))
+                 back_anchor('paxie.html'))
     t = replace1(t, '</style>', CHROME_HIDE_CSS + '</style>', 'come-with-me: style end')
     t = replace1(t, '</body>', plate_scripts(), 'come-with-me: body end')
     write('come-with-me.html', t)
-
-# ───────────────────────────────────────────────── The Intermaze (placeholder)
-def build_intermaze():
-    # the same plate as come-with-me, with its own word; Plate Mincho's subset lacks these letters, so Georgia stands in
-    src = read('come-with-me.html')
-    style = re.search(r'<style>(.*?)</style>', src, re.S).group(1)
-    frame = re.search(r'<svg class="frame".*?</svg>', src, re.S).group(0)
-    style = style.replace('font-family: "Plate Mincho", serif;', 'font-family: "Plate Mincho", Georgia, "Times New Roman", serif;')
-    page = f'''<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The Intermaze</title>
-<style>{style}
-  .word--maze {{ --stretch: 1.12; --track: 0.22em; font-size: 5.6cqw; gap: 0.35em; }}
-  .word--maze .small {{ font-size: 0.55em; letter-spacing: 0.3em; opacity: .8; }}
-  .word--enter {{ --stretch: 1.04; --track: 0.16em; --tilt: -3deg; font-size: 4.2cqw; }}
-  .word--enter:hover, .word--enter:focus-visible {{ --tilt: 0deg; }}
-{PLATE_BACK_CSS}{CHROME_HIDE_CSS}</style>
-</head>
-<body>
-  {back_anchor('plate-iv.html')}
-
-  <div class="plate">
-    {frame}
-
-    <span class="word word--maze" style="--x: 50%; --y: 34%">
-      <span class="small">the</span>
-      <span>Intermaze</span>
-    </span>
-
-    <a class="word word--enter" href="come-with-me.html" style="--x: 50%; --y: 66%">
-      <span>me, or E?</span>
-    </a>
-  </div>
-  <script src="../site.js"></script>
-  <script src="milestone.js"></script>
-</body>
-</html>
-'''
-    write('intermaze.html', page)
 
 # ───────────────────────────────────────────────── Faerieland document pages
 def retarget_doc(t, slug):
@@ -209,15 +167,22 @@ def retarget_doc(t, slug):
     assert '../style.css' in t and '../site.js' in t, f'{slug}: shared assets not re-pointed'
     return t
 
-def onward(href, label):
-    return f'<nav class="onward"><a class="next" href="{href}">{label}</a></nav>\n\n        <div class="mark"></div>'
+def onward(nxt=None, prev=None):
+    """The onward nav under the text: `prev` runs back toward the start (the script's reverse chain,
+    3.0 -> 3.1 -> 3.2 -> 4.0), `next` runs on in order. Each is (href, label)."""
+    links = ''
+    if prev: links += f'<a class="prev" href="{prev[0]}">{prev[1]}</a>'
+    if nxt:  links += f'<a class="next" href="{nxt[0]}">{nxt[1]}</a>'
+    return f'<nav class="onward">{links}</nav>\n\n        <div class="mark"></div>'
 
-def build_doc(slug, back_href, next_href=None, next_label=None, post=None):
+def build_doc(slug, back_href, ordinal=None, nxt=None, prev=None, post=None):
     t = retarget_doc(read(slug + '.html'), slug)
     t = sub1(t, r'<a href="[^"]*" class="back back--corner" aria-label="[^"]*"></a>',
              f'<a href="{back_href}" class="back back--corner" aria-label="Back"></a>', what=f'{slug}: back arrow')
-    if next_href:
-        t = replace1(t, '<div class="mark"></div>', onward(next_href, next_label), f'{slug}: mark')
+    if ordinal:                                   # the script's ordinal, small, above the title
+        t = sub1(t, r'(\n\s*)<h1', rf'\1<p class="ordinal">{ordinal}</p>\1<h1', what=f'{slug}: h1 for ordinal')
+    if nxt or prev:
+        t = replace1(t, '<div class="mark"></div>', onward(nxt, prev), f'{slug}: mark')
     if post:
         t = post(t)
     write(slug + '.html', t)
@@ -355,6 +320,7 @@ def build_notes():
         <a href="and-reconciliation.html" class="back back--corner" aria-label="Back"></a>
 
         <header class="work-header{(' ' + align) if align else ''}">
+            <p class="ordinal">5.1</p>
             {h1}
         </header>
 
@@ -426,9 +392,31 @@ EXTRA_CSS = '''
    MILESTONE — onward links, the Notes page, and its reels
    ═══════════════════════════════════════════════════════════ */
 
-/* ── onward: the next page in the reading, set right, under the text ── */
-.onward { margin: 3.6rem 0 0.5rem; text-align: right; }
-.onward .next {
+/* ── the script's ordinal, small above the title ── */
+.ordinal {
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    letter-spacing: 0.22em;
+    color: var(--elfin-dim);
+    margin: 0 0 0.5rem;
+    opacity: 0.85;
+}
+.work-header.centered .ordinal { text-align: center; }
+.work-header.right .ordinal    { text-align: right; }
+
+/* ── onward: under the text, the next page in order sits right; where the
+      script's reverse chain runs back toward the start, that sits left ── */
+.onward { margin: 3.6rem 0 0.5rem; display: flex; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
+.onward .next { margin-left: auto; }
+.onward .prev::before {
+    content: '←';
+    display: inline-block;
+    margin-right: 0.6em;
+    color: var(--elfin-dim);
+    transition: transform 0.4s ease, color 0.4s ease;
+}
+.onward .prev:hover::before, .onward .prev:focus-visible::before { transform: translateX(-6px); color: var(--silk-deep); }
+.onward .next, .onward .prev {
     font-family: var(--font-display);
     font-size: clamp(1.05rem, 0.9rem + 0.5vw, 1.3rem);
     letter-spacing: 0.08em;
@@ -444,7 +432,8 @@ EXTRA_CSS = '''
     color: var(--elfin-dim);
     transition: transform 0.4s ease, color 0.4s ease;
 }
-.onward .next:hover, .onward .next:focus-visible {
+.onward .next:hover, .onward .next:focus-visible,
+.onward .prev:hover, .onward .prev:focus-visible {
     color: var(--silk);
     letter-spacing: 0.11em;
     text-shadow: 0 0 6px rgba(150, 235, 175, 0.6), 0 0 18px rgba(110, 215, 150, 0.45);
@@ -564,18 +553,20 @@ if __name__ == '__main__':
     build_map('this-is-not-the-world-ii.html',  'this-is-not-the-world-iii.html', 'this-is-not-the-world.html')
     build_map('this-is-not-the-world-iii.html', 'plate-iv.html',                  'this-is-not-the-world-ii.html')
     build_plate_iv()
-    build_intermaze()
     build_come_with_me()
     build_paxie()
-    build_doc('faerieland',            'plate-iv.html', post=faerieland_links)
-    build_doc('and-reconciliation',    'come-with-me.html',          'notes-on.html',              'Notes')
-    build_doc('the-paxiean-histories', 'paxie.html',                 'left-hand-realism.html',     'Left Hand Realism')
-    build_doc('left-hand-realism',     'the-paxiean-histories.html', 'coda.html',                  'Coda')
-    build_doc('coda',                  'left-hand-realism.html',     'c1da.html',                  'C1DA')
-    build_doc('c1da',                  'coda.html',                  'the-false-cow.html',         'The False Cow')
-    build_doc('the-false-cow',         'c1da.html',                  'mestarmya.html',             'Mestarmya')
-    build_doc('mestarmya',             'the-false-cow.html',         'dear-ama.html',              'Dear Ama')
-    build_doc('dear-ama',              'mestarmya.html',             'and-reconciliation.html',    'and Reconciliation')
+    # (slug, default back, ordinal, next in order, reverse toward the start)
+    build_doc('faerieland',            'plate-iv.html',              '2.0', post=faerieland_links)
+    build_doc('the-paxiean-histories', 'mestarmya.html',             '4.0', ('left-hand-realism.html',  '4.1 Left Hand Realism'))
+    build_doc('left-hand-realism',     'the-paxiean-histories.html', '4.1', ('coda.html',               '4.2 Coda'))
+    build_doc('coda',                  'left-hand-realism.html',     '4.2', ('c1da.html',               '4.3 C1DA'))
+    build_doc('c1da',                  'coda.html',                  '4.3', ('the-false-cow.html',      '4.4 The False Cow'))
+    build_doc('the-false-cow',         'c1da.html',                  '4.4', ('mestarmya.html',          '3.1 Amaldéu’s letter to E'))   # 3.2, Daedalus's note, is not yet written
+    build_doc('mestarmya',             'the-false-cow.html',         '3.1', ('dear-ama.html',           '3.0 E’s letter to Amaldéu'),
+                                                                            ('the-paxiean-histories.html', '4.0 Pasiphaë’s opening notes'))
+    build_doc('dear-ama',              'come-with-me.html',          '3.0', ('and-reconciliation.html', '5.0 and Reconciliation'),
+                                                                            ('mestarmya.html',          '3.1 Amaldéu’s letter to E'))
+    build_doc('and-reconciliation',    'dear-ama.html',              '5.0', ('notes-on.html',           '5.1 Notes'))
     notes = build_notes()
     build_manuscript(notes)
     print('done')
