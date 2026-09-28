@@ -14,6 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;1,300;1,400&amp;family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&amp;display=swap" rel="stylesheet">
     <title>Elysicester – Edith Mina Lyre</title>
     <link rel="stylesheet" href="style.css">
+    <noscript><style>.threshold, .veil, .controls { display: none; }</style></noscript>
     <script type="importmap">
     {
         "imports": {
@@ -31,8 +32,13 @@
         <a href="/">d&uacute;rrync</a>
     </nav>
 
+    <div class="controls">
+        <button type="button" id="sound-toggle" class="control" aria-pressed="false">sound off</button>
+        <button type="button" id="home-view" class="control" hidden>the whole city</button>
+    </div>
+
     <main id="diorama" class="diorama">
-        <h1 class="visually-hidden">Elysicester</h1>
+        <h1 id="diorama-title" class="visually-hidden" tabindex="-1">Elysicester</h1>
         <canvas id="stage" class="stage" role="img" aria-label="Elysicester at dusk, a floating piece of the golden city. Drag to orbit it; pinch or scroll to come closer."></canvas>
 
         <section id="fallback" class="fallback" aria-labelledby="fallback-title" hidden>
@@ -52,7 +58,19 @@
         </nav>
 
         <div id="point-label" class="point-label" aria-hidden="true" hidden></div>
-        <button type="button" id="home-view" class="home-view" hidden>the whole city</button>
+
+        <section id="threshold" class="threshold" aria-labelledby="threshold-title">
+            <h2 id="threshold-title" class="visually-hidden">The Mega-Screen: INSERT BLUTIX</h2>
+            <div class="mega-screen" aria-hidden="true">
+                <div class="mega-track"><span>I</span><span>N</span><span>S</span><span>E</span><span>R</span><span>T</span><span class="mega-gap"></span><span>B</span><span>L</span><span>U</span><span>T</span><span>I</span><span>X</span></div>
+            </div>
+            <button type="button" id="threshold-begin" class="threshold-begin">
+                <span id="threshold-prompt" class="threshold-prompt">enter</span>
+                <span class="visually-hidden"> (tap, click or press any key to enter Elysicester)</span>
+            </button>
+        </section>
+        <p id="threshold-voice" class="threshold-voice" aria-live="polite"></p>
+        <div id="veil" class="veil" aria-hidden="true"></div>
     </main>
 
     <dialog id="reader" class="reader" aria-labelledby="reader-place">

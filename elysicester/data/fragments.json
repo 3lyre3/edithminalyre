@@ -277,6 +277,18 @@
       "text": "E sighs against the rail. At last, her adventure is truly underway.",
       "read_on": "https://digital.library.adelaide.edu.au/server/api/core/bitstreams/9cbedc1a-5eac-4ee5-b909-320c83028bba/content#page=54",
       "status": "draft"
+    },
+    {
+      "id": "nbp-e1-mega-screen-1",
+      "place": "mega-screen",
+      "work": "nbp",
+      "source": "Agamemnon, Episode 1 (thesis p. 29)",
+      "text": "Tap blutix here.",
+      "read_on": "https://digital.library.adelaide.edu.au/server/api/core/bitstreams/9cbedc1a-5eac-4ee5-b909-320c83028bba/content#page=29",
+      "italic": [
+        "Tap blutix here"
+      ],
+      "status": "draft"
     }
   ]
 }

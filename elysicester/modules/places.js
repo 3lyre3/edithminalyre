@@ -837,10 +837,11 @@ const BUILDERS = {
 };
 
 /**
- * Build the city into the buckets.
- * @returns {{ anchors: Map<string, Vector3>, extras: object[], update: (time: number) => void }}
+ * Build the city into the buckets, letting a frame through between steps.
+ * @param {() => Promise<void>} [pause] - yields to the browser between steps
+ * @returns {Promise<{ anchors: Map<string, Vector3>, extras: object[], update: (time: number) => void }>}
  */
-export function buildPlaces(buckets, placeData, materials) {
+export async function buildPlaces(buckets, placeData, materials, pause = async () => {}) {
     const random = createRandom(239);
     const byId = new Map(placeData.places.map((place) => [place.id, place]));
     const extras = [];
@@ -848,13 +849,18 @@ export function buildPlaces(buckets, placeData, materials) {
 
     buildWall(buckets);
     buildPavements(buckets);
+    await pause();
     buildHouses(buckets, random, byId);
+    await pause();
     buildSignalTowers(buckets);
 
     const anchors = new Map();
     for (const place of placeData.places.filter((entry) => entry.tier === 1)) {
         const builder = BUILDERS[place.id];
-        if (builder) builder({ buckets, place, random, byId, extras, animated, materials });
+        if (builder) {
+            builder({ buckets, place, random, byId, extras, animated, materials });
+            await pause();
+        }
         anchors.set(place.id, new Vector3().fromArray(place.position));
     }
 

@@ -239,11 +239,19 @@ a:focus-visible {
     pointer-events: none;
 }
 
-.home-view {
+/* Top right: the sound switch, and the way back to the whole city. */
+.controls {
     position: fixed;
     top: max(12px, env(safe-area-inset-top));
     right: max(18px, env(safe-area-inset-right));
     z-index: 50;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+}
+
+.control {
     padding: 2px 6px;
     font-family: var(--font-display);
     font-size: 17px;
@@ -258,9 +266,193 @@ a:focus-visible {
     cursor: pointer;
 }
 
-.home-view:hover,
-.home-view:focus-visible {
+.control:hover,
+.control:focus-visible {
     color: var(--honey);
+}
+
+.control[hidden] {
+    display: none;
+}
+
+.control[aria-pressed="true"] {
+    color: var(--honey);
+}
+
+/*
+ * The threshold. First the Mega-Screen: a dark screen in the red desert air,
+ * enormous italic letters rolling in from the right, a short step left with
+ * each flicker (the flicker stays gentle, under three a second). Then, above
+ * the flight, E's lines surface one at a time.
+ */
+.threshold {
+    position: fixed;
+    inset: 0;
+    z-index: 45;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background:
+        radial-gradient(ellipse 120% 60% at 50% 115%, rgba(150, 40, 24, 0.42), transparent 62%),
+        #040305;
+    transition: opacity 0.9s ease;
+}
+
+.threshold.is-leaving {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.threshold[hidden] {
+    display: none;
+}
+
+.mega-screen {
+    position: relative;
+    height: min(64vh, 76vw);
+    overflow: hidden;
+    background: rgba(10, 10, 14, 0.94);
+    border-block: 1px solid rgba(200, 200, 208, 0.1);
+}
+
+.mega-screen::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0 2px, transparent 2px 5px);
+    pointer-events: none;
+}
+
+.mega-track {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    display: flex;
+    gap: 0.1em;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 300;
+    font-size: min(54vh, 64vw);
+    line-height: 1;
+    white-space: nowrap;
+    color: #eaedf7;
+    text-shadow: 0 0 0.05em rgba(200, 220, 255, 0.55);
+    transform: translate(100vw, -50%);
+    animation: mega-roll 24s steps(96) infinite, mega-flicker 0.42s steps(2) infinite;
+}
+
+.mega-gap {
+    width: 0.45em;
+}
+
+@keyframes mega-roll {
+    from { transform: translate(100vw, -50%); }
+    to { transform: translate(-100%, -50%); }
+}
+
+@keyframes mega-flicker {
+    0% { opacity: 1; }
+    50% { opacity: 0.84; }
+}
+
+.threshold-begin {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 0 24px max(11vh, 60px);
+    color: inherit;
+    background: none;
+    border: 0;
+    cursor: pointer;
+}
+
+.threshold-begin:focus-visible {
+    outline: none;
+}
+
+.threshold-prompt {
+    font-family: var(--font-display);
+    font-size: 24px;
+    letter-spacing: 0.08em;
+    color: #d4dbec;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+}
+
+/* The prompt shows once its own words have arrived, so no stand-in flashes first. */
+.threshold-prompt.is-ready {
+    opacity: 1;
+}
+
+.threshold-begin:focus-visible .threshold-prompt {
+    outline: 1px solid var(--honey);
+    outline-offset: 8px;
+}
+
+.threshold-voice {
+    position: fixed;
+    left: 50%;
+    bottom: 20vh;
+    z-index: 46;
+    width: min(30em, calc(100vw - 48px));
+    margin: 0;
+    padding: 0.7em 1.4em;
+    transform: translateX(-50%);
+    font-family: var(--font-display);
+    font-size: clamp(21px, 3.2vw, 30px);
+    font-weight: 500;
+    line-height: 1.35;
+    text-align: center;
+    text-wrap: balance;
+    color: #f4f5fb;
+    text-shadow: 0 0 10px rgba(3, 2, 6, 0.95), 0 0 2px rgba(3, 2, 6, 1);
+    /* A pool of shade under each line, so it reads over the brightest gate. */
+    background: radial-gradient(closest-side, rgba(4, 3, 8, 0.72), rgba(4, 3, 8, 0.5) 55%, transparent);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.threshold-voice.is-speaking {
+    animation: voice 1.3s ease both;
+}
+
+@keyframes voice {
+    0% { opacity: 0; }
+    22% { opacity: 1; }
+    76% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+/* A dark veil the city lifts out of, after the flight. */
+.veil {
+    position: fixed;
+    inset: 0;
+    z-index: 44;
+    background: #000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1.2s ease;
+}
+
+.veil.is-dark {
+    opacity: 1;
+    transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mega-track {
+        left: 50%;
+        font-size: min(22vh, 11vw);
+        transform: translate(-50%, -50%);
+        animation: none;
+    }
+
+    .threshold-voice.is-speaking {
+        animation: none;
+        opacity: 1;
+    }
 }
 
 /* The reader: the only place long text appears. */

@@ -20,6 +20,7 @@ import {
     NeutralToneMapping,
     PerspectiveCamera,
     Scene,
+    Vector2,
     Vector3,
     WebGLRenderer,
 } from 'three';
@@ -79,21 +80,46 @@ function createReadout() {
     };
 }
 
+/** Let a frame through, so the threshold keeps moving while the city is built. */
+function pause() {
+    return new Promise((resolve) => requestAnimationFrame(() => resolve()));
+}
+
+/**
+ * Make the renderer early, before the city is built: the Intermaze flies on it
+ * while the stage is still being assembled.
+ */
+export function createRenderer(canvas) {
+    const renderer = new WebGLRenderer({ canvas, antialias: false, powerPreference: 'high-performance' });
+    renderer.toneMapping = NeutralToneMapping;
+    renderer.toneMappingExposure = 1.0;
+    renderer.info.autoReset = false;
+    fitRenderer(renderer, canvas);
+    return renderer;
+}
+
+/** Keep the drawing buffer matched to the canvas (pixel ratio capped at 2); true if it changed. */
+export function fitRenderer(renderer, canvas) {
+    const ratio = Math.min(window.devicePixelRatio || 1, MAX_PIXEL_RATIO);
+    const width = canvas.clientWidth || window.innerWidth;
+    const height = canvas.clientHeight || window.innerHeight;
+    const size = renderer.getSize(new Vector2());
+    if (renderer.getPixelRatio() === ratio && size.x === width && size.y === height) return false;
+    renderer.setPixelRatio(ratio);
+    renderer.setSize(width, height, false);
+    return true;
+}
+
 /**
  * @param {object} options
+ * @param {import('three').WebGLRenderer} options.renderer - from createRenderer
  * @param {HTMLCanvasElement} options.canvas
  * @param {{ places: object, paper: object }} options.data
  * @param {boolean} options.reducedMotion
  * @param {boolean} options.debug
  * @param {() => void} [options.onLost] - called if the WebGL context is lost
  */
-export async function createStage({ canvas, data, reducedMotion, debug, onLost }) {
-    const renderer = new WebGLRenderer({ canvas, antialias: false, powerPreference: 'high-performance' });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, MAX_PIXEL_RATIO));
-    renderer.toneMapping = NeutralToneMapping;
-    renderer.toneMappingExposure = 1.0;
-    renderer.info.autoReset = false;
-
+export async function createStage({ renderer, canvas, data, reducedMotion, debug, onLost }) {
     const scene = new Scene();
     scene.fog = new FogExp2(0x3a2440, 0.0034);
     const camera = new PerspectiveCamera(35, 1, 0.5, 900);
@@ -117,10 +143,14 @@ export async function createStage({ canvas, data, reducedMotion, debug, onLost }
     const flutter = { value: 0 };
     makeFlagsFlutter(materials.turquoise, flutter);
     const buckets = new Buckets();
+    await pause();
     buildIsland(buckets);
-    const places = buildPlaces(buckets, data.places, materials);
+    await pause();
+    const places = await buildPlaces(buckets, data.places, materials, pause);
+    await pause();
     for (const mesh of buckets.build(materials, { turquoise: ['sway'] }).values()) scene.add(mesh);
     for (const extra of places.extras) scene.add(extra);
+    await pause();
 
     const wisp = createWisp({ reducedMotion });
     scene.add(wisp.object);
@@ -136,10 +166,9 @@ export async function createStage({ canvas, data, reducedMotion, debug, onLost }
     const ink = createInk(renderer, { reducedMotion });
 
     function resize() {
+        fitRenderer(renderer, canvas);
         const width = canvas.clientWidth || window.innerWidth;
         const height = canvas.clientHeight || window.innerHeight;
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, MAX_PIXEL_RATIO));
-        renderer.setSize(width, height, false);
         camera.aspect = width / height;
         camera.fov = camera.aspect < 0.8 ? 46 : 35;
         camera.updateProjectionMatrix();
@@ -151,6 +180,7 @@ export async function createStage({ canvas, data, reducedMotion, debug, onLost }
     resize();
     rig.update(0);
 
+    await pause();
     renderer.setRenderTarget(ink.target);
     if (renderer.extensions.has('KHR_parallel_shader_compile')) await renderer.compileAsync(scene, camera);
     else renderer.compile(scene, camera);
@@ -223,6 +253,6 @@ export async function createStage({ canvas, data, reducedMotion, debug, onLost }
         },
     };
 
-    if (debug) window.elysicesterDebug = { info: () => stage.info(), rig, stage };
+    if (debug) Object.assign(window.elysicesterDebug ??= {}, { info: () => stage.info(), rig, stage });
     return stage;
 }
