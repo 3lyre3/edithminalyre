@@ -184,7 +184,10 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
     await pause();
     const solids = createSolids(scene);
     solids.ready.then((ok) => {
-        if (ok) rig.setSolids(solids);
+        if (!ok) return;
+        rig.setSolids(solids);
+        // The hums (an extra) keep clear of the city's solids too.
+        scene.getObjectByName('hums')?.userData.useSolids?.(solids);
     });
 
     const frameListeners = [];

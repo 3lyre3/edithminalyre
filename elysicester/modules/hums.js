@@ -101,6 +101,36 @@ function birdMaterial(gradientMap, clock) {
 }
 
 // =============================================================================
+// Keeping clear of the spires
+// =============================================================================
+
+/**
+ * A spire's girth at height y: its shaft (0.72 across the radius at the foot,
+ * tapering to 0.34, with rings that stand out 0.37 more), then its cone.
+ */
+function girthAt(spire, y) {
+    const above = y - spire.base;
+    if (above < 0) return 0;
+    if (above <= spire.height) return 0.72 - 0.38 * (above / spire.height) + 0.37;
+    const up = (above - spire.height) / 3.6;
+    return up > 1 ? 0 : 0.42 * (1 - up);
+}
+
+/** True if a dart from `from` to `to` (rising in its little arc) passes every spire at least `margin` off. */
+function clearPath(spires, from, to, margin = 0.3) {
+    const dx = to.x - from.x;
+    const dz = to.z - from.z;
+    const length2 = dx * dx + dz * dz;
+    for (const spire of spires) {
+        const t = length2 > 1e-9 ? Math.min(1, Math.max(0, ((spire.x - from.x) * dx + (spire.z - from.z) * dz) / length2)) : 0;
+        const y = from.y + (to.y - from.y) * t + Math.sin(Math.PI * t) * 0.35;
+        const gap = Math.hypot(spire.x - (from.x + dx * t), spire.z - (from.z + dz * t)) - girthAt(spire, y);
+        if (gap < margin) return false;
+    }
+    return true;
+}
+
+// =============================================================================
 // Main Code
 // =============================================================================
 
@@ -116,11 +146,12 @@ export function createHums({ spires, gradientMap }) {
     mesh.name = 'hums';
     mesh.frustumCulled = false;
 
-    /** A place to hover: by a spire, somewhere up its height, a little way off it. */
+    /** A place to hover: by a spire, somewhere up its height, a little way off its girth there. */
     const hoverBy = (random, spire, out) => {
         const angle = random() * Math.PI * 2;
-        const reach = random.range(0.95, 2.1);
-        return out.set(spire.x + Math.cos(angle) * reach, spire.base + spire.height * random.range(0.25, 0.95), spire.z + Math.sin(angle) * reach);
+        const y = spire.base + spire.height * random.range(0.25, 0.95);
+        const reach = girthAt(spire, y) + random.range(0.55, 1.3);
+        return out.set(spire.x + Math.cos(angle) * reach, y, spire.z + Math.sin(angle) * reach);
     };
 
     const birds = Array.from({ length: COUNT }, (_, index) => {
@@ -131,7 +162,27 @@ export function createHums({ spires, gradientMap }) {
     });
 
     const position = new Vector3();
+    const target = new Vector3();
+    const probe = new Vector3();
     const heading = new Euler(0, 0, 0, 'YXZ');
+    // Once the camera's solids are known (solids.js), a dart must also keep clear of the bridges,
+    // stairs and roofs the spires alone don't account for.
+    let solids = null;
+    mesh.userData.useSolids = (known) => {
+        solids = known;
+    };
+
+    /** True if nothing solid lies on or near the dart's arc (or if the solids aren't known yet). */
+    function clearOfSolids(from, to) {
+        if (!solids?.available) return true;
+        for (let step = 0; step <= 8; step += 1) {
+            const t = step / 8;
+            probe.copy(from).lerp(to, t);
+            probe.y += Math.sin(Math.PI * t) * 0.35;
+            if (solids.distance(probe) < (step === 8 ? 0.25 : 0.12)) return false;
+        }
+        return true;
+    }
     const turn = new Quaternion();
     const matrix = new Matrix4();
     const one = new Vector3(1, 1, 1);
@@ -146,13 +197,20 @@ export function createHums({ spires, gradientMap }) {
             bird.end = bird.start + random.range(0.6, 2.6);
             return;
         }
-        // Mostly on to a neighbouring spire, sometimes round the same one.
-        const next = random() < 0.25 ? bird.spire : random.pick(spires);
-        bird.spire = next;
+        // Mostly on to a neighbouring spire, sometimes round the same one: only where the way is clear.
         bird.from.copy(bird.to);
-        hoverBy(random, next, bird.to);
-        bird.darting = true;
-        bird.end = bird.start + Math.min(1.3, Math.max(0.3, bird.from.distanceTo(bird.to) / SPEED));
+        for (let attempt = 0; attempt < 8; attempt += 1) {
+            const next = random() < 0.25 ? bird.spire : random.pick(spires);
+            hoverBy(random, next, target);
+            if (!clearPath(spires, bird.from, target) || !clearOfSolids(bird.from, target)) continue;
+            bird.spire = next;
+            bird.to.copy(target);
+            bird.darting = true;
+            bird.end = bird.start + Math.min(1.3, Math.max(0.3, bird.from.distanceTo(bird.to) / SPEED));
+            return;
+        }
+        // No clear way just now: it hovers a while longer where it is.
+        bird.end = bird.start + random.range(0.4, 1.2);
     }
 
     function update(time) {
