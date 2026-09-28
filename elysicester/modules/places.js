@@ -41,6 +41,7 @@ import {
 } from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { doorCanOpen, doorOpen, shadowTexture } from './extras.js';
+import { createHums } from './hums.js';
 import {
     SEA_LEVEL,
     createRandom,
@@ -812,7 +813,7 @@ function buildSteelGarden({ buckets, place, random, mounts }) {
 }
 
 /** The golden bridgework: spires, bridges curling spire to spire, floating stairs. */
-function buildBridgework({ buckets, place, random, mounts }) {
+function buildBridgework({ buckets, place, random, mounts, extras, animated, materials, wanted }) {
     const [px, , pz] = place.position;
     // A plaque on two legs at the foot of the bridgework, looking down the avenue to the gate.
     const plaqueX = px + 3.3;
@@ -879,6 +880,12 @@ function buildBridgework({ buckets, place, random, mounts }) {
             const point = a.clone().lerp(b, step / steps);
             buckets.add('gold', box(0.9, 0.12, 0.5, { x: point.x, y: point.y, z: point.z, ry }, GOLDS[1]));
         }
+    }
+    // As an extra (extras.js): a few of the bridgework's countless bronze hums.
+    if (wanted.has('hums')) {
+        const hums = createHums({ spires, gradientMap: materials.gold.gradientMap });
+        extras.push(hums.object);
+        animated.push(hums.update);
     }
     return spires;
 }

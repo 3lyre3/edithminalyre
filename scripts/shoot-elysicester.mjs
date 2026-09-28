@@ -12,8 +12,9 @@
  *   reduced  1280×800 with prefers-reduced-motion
  *   nogl     1280×800 with WebGL disabled (the still and its list)
  *   extras   1280×800 with every optional extra on (?extras=all,door-open): the
- *            words round the sky, the café shadow, the door opening and the
- *            console's voice must all appear, with no problems besides
+ *            words round the sky, the café shadow, the door opening, the
+ *            console's voice and the hums must all appear, with no problems
+ *            besides
  * In each: console errors and failed requests are recorded; the threshold is
  * crossed (the card is screenshotted, then begun by click, tap or a key; the
  * desktop pass watches the whole Intermaze, the mobile pass skips it with a
@@ -667,6 +668,7 @@ async function extrasRound(page, spoken, outDir, name) {
             shadow: Boolean(scene.getObjectByName('cafe-shadow')),
             door: Boolean(door),
             doorOpened: door ? door.rotation.y < -0.3 : false,
+            hums: scene.getObjectByName('hums')?.count ?? 0,
         };
     });
     const glide = () => page.waitForFunction(() => !window.elysicesterDebug.rig.gliding, null, { timeout: 30_000 }).catch(() => {});
@@ -689,6 +691,7 @@ async function extrasRound(page, spoken, outDir, name) {
     if (!found.door) problems.push('the door cannot open');
     else if (!found.doorOpened) problems.push('the door did not open');
     if (!voice) problems.push(`the console said ${JSON.stringify(spoken.slice(0, 3))}`);
+    if (!found.hums) problems.push('no hums in the bridgework');
     return { ...found, voice, spoken: spoken.slice(0, 3), ok: problems.length === 0, problems };
 }
 
@@ -826,7 +829,7 @@ try {
             const signs = result.signs
                 ? `signs ${summarise(result.signs.results)}${result.signs.coverage ? `, glyphs ${result.signs.glyphProblems.length ? 'MISSING' : 'all held'}` : ''}${result.signs.navScanned ? `, list axe serious ${navSerious}` : ''}`
                 : '';
-            const extras = result.extras ? `extras ${result.extras.ok ? 'sky, shadow, door and voice all there' : 'NOT OK'}` : '';
+            const extras = result.extras ? `extras ${result.extras.ok ? 'sky, shadow, door, voice and hums all there' : 'NOT OK'}` : '';
             const camera = result.camera ? `camera ${result.camera.ok ? `kept clear (closest ${Math.min(...result.camera.rows.map((row) => row.closest))})` : 'WENT INTO SOMETHING'}` : '';
             process.stdout.write(`${name.padEnd(8)} ${result.mode.padEnd(6)} ${problems === 0 ? 'clean' : `${problems} problem(s)`}  ${[crossing, sound, info, orbit, still, camera, signs, extras, pointer, keys, axe, kept].filter(Boolean).join(' · ')}\n`);
             for (const line of [...result.messages, ...result.failures]) process.stdout.write(`    ${line}\n`);

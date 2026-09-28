@@ -14,6 +14,9 @@
  *   door-open  the same door, open whatever the hour (to see it by)
  *   voice      a few lines in the browser's console, in the site's own words:
  *              the city's names as Elm gave them, and one of its passages
+ *   hums       a few of the bridgework's "countless hums": tiny bronze
+ *              hummingbirds hovering by the spires and darting between them
+ *              (Numbers by Paint, Episode 3; hums.js)
  */
 
 // =============================================================================
@@ -26,7 +29,7 @@ import { CanvasTexture, LinearFilter, RepeatWrapping } from 'three';
 // Constants
 // =============================================================================
 
-export const EXTRAS = Object.freeze(['sky', 'shadow', 'door', 'door-open', 'voice']);
+export const EXTRAS = Object.freeze(['sky', 'shadow', 'door', 'door-open', 'voice', 'hums']);
 
 /** The words inscribed round the sky, as Elm's milestone pages have them. */
 export const INSCRIPTION = 'THIS IS NOT THE WORLD';
