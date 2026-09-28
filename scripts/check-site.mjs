@@ -1,10 +1,13 @@
 import { readFile, readdir } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { loadRedirects, servedPath } from './redirects.mjs';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const siteOrigin = 'https://edithminalyre.com';
 const errors = [];
+// A reference may reach its file through a rewrite in _redirects (Elysicester's stamped code does).
+const redirects = await loadRedirects(root);
 
 async function walk(directory) {
     const entries = await readdir(directory, { withFileTypes: true });
@@ -54,7 +57,7 @@ function resolveLocalReference(fromFile, rawReference) {
 
     let target;
     try {
-        target = decodeURIComponent(url.pathname).replace(/^\/+/, '');
+        target = decodeURIComponent(servedPath(redirects, url.pathname)).replace(/^\/+/, '');
     } catch {
         errors.push(`${fromFile}: malformed URL encoding in ${JSON.stringify(reference)}`);
         return null;

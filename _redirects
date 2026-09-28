@@ -1,3 +1,10 @@
 # Elysicester's address, as a phone keyboard likes to capitalise it, still finds the city.
+# (Cloudflare matches paths case by case, so each spelling is listed, with and without its slash.)
 /Elysicester /elysicester/ 301
+/Elysicester/ /elysicester/ 301
 /ELYSICESTER /elysicester/ 301
+/ELYSICESTER/ /elysicester/ 301
+
+# The city's code, at an address that changes whenever the code does (scripts/stamp-elysicester.mjs),
+# so a browser that kept yesterday's scripts still meets today's city.
+/elysicester/v/:stamp/* /elysicester/:splat 200

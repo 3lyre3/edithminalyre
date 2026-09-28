@@ -51,6 +51,7 @@ import { createRequire } from 'node:module';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { loadRedirects, matchRedirect } from './redirects.mjs';
 
 // =============================================================================
 // Constants
@@ -127,11 +128,19 @@ function option(name, fallback) {
     return index > -1 ? process.argv[index + 1] : fallback;
 }
 
-/** A tiny static server for the repo root; the diorama needs http for modules. */
+/** A tiny static server for the repo root; the diorama needs http for modules. It follows _redirects, as Pages does. */
 async function serve() {
+    const redirects = await loadRedirects(ROOT);
     const server = createServer(async (request, response) => {
         try {
-            let pathname = decodeURIComponent(new URL(request.url, 'http://localhost').pathname);
+            const url = new URL(request.url, 'http://localhost');
+            const found = matchRedirect(redirects, url.pathname);
+            if (found && found.status !== 200) {
+                response.writeHead(found.status, { Location: `${found.location}${url.search}` });
+                response.end();
+                return;
+            }
+            let pathname = decodeURIComponent(found ? found.location : url.pathname);
             if (pathname.endsWith('/')) pathname += 'index.html';
             const file = path.join(ROOT, pathname);
             if (!file.startsWith(ROOT)) throw new Error('outside root');

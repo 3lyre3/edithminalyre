@@ -16,6 +16,9 @@
  *     files, no image wider or taller than 1024 px
  *   - the page's import map points at files that exist in vendor/, and the
  *     vendored three.js matches the version pinned in package.json
+ *   - the page loads its code through a stamped address that is current (a
+ *     hash of the code, so browsers never keep an old city), and _redirects
+ *     serves that address from the diorama's own files
  *   - the page makes no outside requests beyond the site's Google Fonts link,
  *     doesn't load the shared site.js, and carries noindex until it is listed
  *     in sitemap.xml
@@ -28,6 +31,8 @@
 import { readFile, readdir, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { loadRedirects, servedPath } from './redirects.mjs';
+import { currentStamp, stampsIn } from './stamp-elysicester.mjs';
 
 // =============================================================================
 // Constants
@@ -434,6 +439,23 @@ async function checkPage(files) {
                 fail(`${pagePath}: import map entry ${JSON.stringify(specifier)} points to missing ${resolved}`);
             }
         }
+    }
+
+    // The code arrives through its stamp, so no browser keeps an old city (stamp-elysicester.mjs).
+    const stamp = await currentStamp();
+    const stamps = stampsIn(html);
+    for (const entry of ['main.js', 'style.css']) {
+        if (!new RegExp(`(?:src|href)=(['"])v/[0-9a-f]{10}/${entry.replace('.', '\\.')}\\1`).test(html)) {
+            fail(`${pagePath}: must load ${entry} through its stamped address, v/<stamp>/${entry}`);
+        }
+    }
+    if (stamps.some((value) => value !== stamp)) {
+        fail(`${pagePath}: stamp ${[...new Set(stamps)].join(', ')} is stale (the code is now ${stamp}); run npm run stamp:elysicester`);
+    }
+    const redirects = await loadRedirects(ROOT);
+    const served = servedPath(redirects, `/${DIORAMA_DIR}/v/${stamp}/main.js`);
+    if (served !== `/${DIORAMA_DIR}/main.js`) {
+        fail(`_redirects: /${DIORAMA_DIR}/v/<stamp>/* must be served from /${DIORAMA_DIR}/ (a 200 rewrite); it gives ${served}`);
     }
 
     const outsideUrl = /\bhttps?:\/\/[^\s"'<>)`\\]+/g;
