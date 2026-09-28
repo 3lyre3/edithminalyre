@@ -62,6 +62,8 @@ const require = createRequire(import.meta.url);
 const CHROMIUM_ARGS = ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'];
 const NO_WEBGL_ARGS = ['--disable-webgl', '--disable-3d-apis'];
 const LOAD_TIMEOUT = 90_000;
+/** The rig's own tap limit (rigs/orbit.js TAP_TIME): a longer press is no tap. */
+const TAP_LIMIT = 800;
 const SERIOUS = new Set(['serious', 'critical']);
 
 const MIME = {
@@ -480,10 +482,26 @@ async function pointerRound(page, context, pass, fragments, outDir, name) {
             results.push({ id: fragment.id, ok: false, why: 'the point is hidden behind the city in its own view', spot });
             continue;
         }
-        if (pass.hasTouch) await touch(context, page, [{ x: spot.x, y: spot.y }]);
-        else await page.mouse.click(spot.x, spot.y);
-        const inspected = await inspectOpen(page, fragment, path.join(outDir, `${name}-panel-${fragment.id}.png`));
-        results.push({ id: fragment.id, ok: inspected.matched && inspected.closed, ...inspected });
+        // Under SwiftShader a simulated press can outlast the rig's tap limit (it answers input only between
+        // slow frames). Such a press isn't a tap at all, so it's tried again, and said so; a press that was a
+        // tap and still opened nothing fails at once.
+        let inspected = null;
+        let slowPresses = 0;
+        for (let attempt = 0; attempt < 3; attempt += 1) {
+            await page.evaluate(() => {
+                const canvas = document.getElementById('stage');
+                window.__press = {};
+                canvas.addEventListener('pointerdown', (event) => { window.__press.down = event.timeStamp; }, { once: true });
+                canvas.addEventListener('pointerup', (event) => { window.__press.up = event.timeStamp; }, { once: true });
+            });
+            if (pass.hasTouch) await touch(context, page, [{ x: spot.x, y: spot.y }]);
+            else await page.mouse.click(spot.x, spot.y);
+            inspected = await inspectOpen(page, fragment, path.join(outDir, `${name}-panel-${fragment.id}.png`));
+            const press = await page.evaluate(() => (window.__press.up ?? Infinity) - (window.__press.down ?? 0));
+            if (inspected.matched || press < TAP_LIMIT) break;
+            slowPresses += 1;
+        }
+        results.push({ id: fragment.id, ok: inspected.matched && inspected.closed, ...inspected, ...(slowPresses ? { slowPresses } : {}) });
     }
     return results;
 }
@@ -825,7 +843,8 @@ try {
             const info = result.info ? `${result.info.calls} calls, ${result.info.triangles} tris` : '';
             const orbit = result.drag ? (result.drag.orbited ? 'drag orbits' : 'DRAG DID NOT ORBIT') : '';
             const still = result.stillness ? (result.stillness.drifted ? 'DRIFTED' : 'no drift') : '';
-            const pointer = result.pointer ? `pointer ${summarise(result.pointer)}` : '';
+            const slow = result.pointer?.reduce((sum, entry) => sum + (entry.slowPresses ?? 0), 0) ?? 0;
+            const pointer = result.pointer ? `pointer ${summarise(result.pointer)}${slow ? ` (${slow} press${slow === 1 ? '' : 'es'} too slow to be a tap under SwiftShader, pressed again)` : ''}` : '';
             const keys = result.keyboard ? `keyboard ${summarise(result.keyboard)}` : '';
             const serious = [...(result.pointer ?? []), ...(result.keyboard ?? [])]
                 .flatMap((entry) => entry.violations ?? []).filter((violation) => SERIOUS.has(violation.impact));

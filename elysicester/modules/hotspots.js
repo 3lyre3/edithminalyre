@@ -205,8 +205,8 @@ export function createHotspots({ stage, fragments, read, places, label, reducedM
     points.renderOrder = 5;
     scene.add(points);
 
-    // Glass and cloth don't hide a point; the sky and sea never stand in front of one, nor a passing hum.
-    const occluders = scene.children.filter((child) => child instanceof Mesh && !['sky', 'sea', 'glass', 'turquoise', 'hums'].includes(child.name));
+    // Glass, cloth and water don't hide a point; the sky and sea never stand in front of one, nor a passing hum.
+    const occluders = scene.children.filter((child) => child instanceof Mesh && !['sky', 'sea', 'glass', 'turquoise', 'hums', 'verti-pool'].includes(child.name));
     const raycaster = new Raycaster();
     const projected = new Vector3();
     const drawingBuffer = new Vector2();

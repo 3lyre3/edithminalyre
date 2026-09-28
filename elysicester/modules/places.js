@@ -26,6 +26,7 @@ import {
     ConeGeometry,
     CylinderGeometry,
     DodecahedronGeometry,
+    DoubleSide,
     ExtrudeGeometry,
     Float32BufferAttribute,
     Group,
@@ -33,6 +34,7 @@ import {
     Mesh,
     MeshBasicMaterial,
     PlaneGeometry,
+    ShaderMaterial,
     Shape,
     SphereGeometry,
     TorusGeometry,
@@ -335,6 +337,10 @@ function addHouse(buckets, random, x, z, height, style, detail) {
         pieces.push(cone(0.12, 1.1, 6, { y: top + radius + 0.4, z: roofZ }, GOLDS[3]));
     } else {
         pieces.push(box(roofWidth + 0.16, 0.3, roofDepth + 0.16, { y: top + 0.15, z: roofZ }, roof));
+    }
+    // A cornice under every roof but a flat one (that has its own slab): a drawn line where wall meets roof.
+    if (roofStyle !== 'flat') {
+        pieces.push(box(roofWidth + 0.12, 0.12, roofDepth + 0.12, { y: top - 0.05, z: roofZ }, new Color(wall).offsetHSL(0, 0.02, -0.13)));
     }
     if (roofStyle === 'gable' && detail() < 0.35) {
         pieces.push(box(0.24, 0.8, 0.24, { x: roofWidth * 0.26, y: top + 0.75, z: roofZ + roofDepth * 0.12 }, new Color(roof).offsetHSL(0, 0, -0.08)));
@@ -823,6 +829,69 @@ function buildSteelGarden({ buckets, place, random, mounts }) {
 }
 
 /** The golden bridgework: spires, bridges curling spire to spire, floating stairs. */
+/**
+ * "From the tenth storey, then across the sky-parade, the spire's verti-pool
+ * leads her to the inner gate of the sky-grottos" (Numbers by Paint, Episode
+ * 3): a sheath of water standing up round the tallest spire's upper reach, as
+ * high as the gate, light rising through it. Water is no wall: the camera may
+ * pass through it, and it hides nothing.
+ */
+function vertiPool(spire) {
+    const from = spire.base + spire.height * 0.42;
+    const to = spire.base + spire.height + 0.35;
+    const girth = (y) => 0.72 - 0.38 * Math.min(1, Math.max(0, (y - spire.base) / spire.height)) + 0.3;
+    // A tapering sheath: the spire's own taper, a hand's breadth off it.
+    const geometry = new CylinderGeometry(girth(to), girth(from), to - from, 18, 12, true);
+    geometry.translate(spire.x, (from + to) / 2, spire.z);
+    const uniforms = { time: { value: 0 }, from: { value: from }, to: { value: to } };
+    const material = new ShaderMaterial({
+        uniforms,
+        transparent: true,
+        depthWrite: false,
+        side: DoubleSide,
+        vertexShader: /* glsl */ `
+            varying vec3 vWorld;
+            varying vec3 vNormalWorld;
+            void main() {
+                vec4 world = modelMatrix * vec4(position, 1.0);
+                vWorld = world.xyz;
+                vNormalWorld = normalize(mat3(modelMatrix) * normal);
+                gl_Position = projectionMatrix * viewMatrix * world;
+            }
+        `,
+        fragmentShader: /* glsl */ `
+            uniform float time;
+            uniform float from;
+            uniform float to;
+            varying vec3 vWorld;
+            varying vec3 vNormalWorld;
+            void main() {
+                vec3 toEye = normalize(cameraPosition - vWorld);
+                float edge = 1.0 - abs(dot(normalize(vNormalWorld), toEye));
+                float around = atan(vWorld.z, vWorld.x);
+                // Light rising through the water, in bands that waver and break as they climb.
+                float waver = sin(around * 3.0 + vWorld.y * 1.3 + time * 0.9) * 0.3 + sin(around * 7.0 - vWorld.y * 0.6 + time * 1.4) * 0.12;
+                float rising = fract(vWorld.y * 0.7 - time * 0.45 + waver);
+                float band = smoothstep(0.0, 0.04, rising) * (1.0 - smoothstep(0.05, 0.12, rising));
+                band *= 0.45 + 0.55 * smoothstep(-0.2, 0.6, sin(around * 2.0 + vWorld.y * 0.35 - time * 0.3));
+                float fine = fract(vWorld.y * 2.3 - time * 0.8 - waver * 1.5);
+                band += (1.0 - smoothstep(0.0, 0.06, abs(fine - 0.5))) * 0.25;
+                vec3 water = vec3(0.24, 0.48, 0.8);
+                vec3 color = water * (0.45 + 0.8 * edge) + vec3(0.85, 0.96, 1.0) * band * 0.85;
+                // It rises out of nothing below, and brims at the top.
+                float fade = smoothstep(from, from + 2.5, vWorld.y);
+                float brim = smoothstep(to - 0.5, to, vWorld.y);
+                float alpha = (0.1 + 0.34 * edge + band * 0.26 + brim * 0.28) * fade;
+                gl_FragColor = vec4(color + brim * vec3(0.4, 0.6, 0.7), alpha);
+            }
+        `,
+    });
+    const object = new Mesh(geometry, material);
+    object.name = 'verti-pool';
+    object.renderOrder = 2;
+    return { object, update: (time) => { uniforms.time.value = time; } };
+}
+
 function buildBridgework({ buckets, place, random, mounts, extras, animated, materials, wanted }) {
     const [px, , pz] = place.position;
     // A plaque on two legs at the foot of the bridgework, looking down the avenue to the gate.
@@ -891,6 +960,11 @@ function buildBridgework({ buckets, place, random, mounts, extras, animated, mat
             buckets.add('gold', box(0.9, 0.12, 0.5, { x: point.x, y: point.y, z: point.z, ry }, GOLDS[1]));
         }
     }
+    // The tallest spire's verti-pool, rising to the inner gate of the sky-grottos.
+    const pool = vertiPool(spires.reduce((tallest, spire) => (spire.height > tallest.height ? spire : tallest)));
+    extras.push(pool.object);
+    animated.push(pool.update);
+
     // As an extra (extras.js): a few of the bridgework's countless bronze hums.
     if (wanted.has('hums')) {
         const hums = createHums({ spires, gradientMap: materials.gold.gradientMap });
@@ -1244,6 +1318,65 @@ function buildVines(buckets, spires) {
 }
 
 /**
+ * "…vine-ridden plazas, a mess of golden ribbons, to mounting, golden
+ * bridges" (Numbers by Paint, Episode 3): gold ribbons slung between near
+ * spires of the bridgework, sagging and turning over as they go. Drawn from
+ * both sides; the camera may pass through them. A stream of its own.
+ */
+function buildRibbons(buckets, spires) {
+    const random = createRandom(7070);
+    const shaft = (spire, y) => 0.72 - 0.38 * Math.min(1, Math.max(0, (y - spire.base) / spire.height));
+    for (let ribbon = 0; ribbon < 9; ribbon += 1) {
+        const a = spires[Math.floor(random() * spires.length)];
+        const b = spires[Math.floor(random() * spires.length)];
+        const fa = random.range(0.25, 0.7);
+        const fb = random.range(0.25, 0.7);
+        const turns = random.range(0.75, 2.25);
+        const sag = random.range(0.5, 1.4);
+        const width = random.range(0.16, 0.26);
+        const color = new Color(GOLDS[Math.floor(random() * GOLDS.length)]).offsetHSL(0, 0.04, 0.02);
+        if (a === b) continue;
+        const start = new Vector3(a.x, a.base + a.height * fa, a.z);
+        const end = new Vector3(b.x, b.base + b.height * fb, b.z);
+        const across = Math.hypot(end.x - start.x, end.z - start.z);
+        if (across > 8 || across < 2) continue;
+        // From the face of one spire to the face of the other, not their hearts.
+        const flat = new Vector3(end.x - start.x, 0, end.z - start.z).normalize();
+        start.addScaledVector(flat, shaft(a, start.y));
+        end.addScaledVector(flat, -shaft(b, end.y));
+        const segments = 30;
+        const positions = [];
+        const rim = [];
+        const point = new Vector3();
+        const ahead = new Vector3();
+        const tangent = new Vector3();
+        const side = new Vector3();
+        const up = new Vector3(0, 1, 0);
+        for (let step = 0; step <= segments; step += 1) {
+            const t = step / segments;
+            point.lerpVectors(start, end, t).y -= sag * 4 * t * (1 - t);
+            const next = Math.min(1, t + 1 / segments);
+            ahead.lerpVectors(start, end, next).y -= sag * 4 * next * (1 - next);
+            tangent.subVectors(ahead, point);
+            if (tangent.lengthSq() < 1e-8) tangent.copy(flat);
+            tangent.normalize();
+            side.crossVectors(tangent, up).normalize().applyAxisAngle(tangent, turns * Math.PI * t);
+            rim.push([point.clone().addScaledVector(side, width / 2), point.clone().addScaledVector(side, -width / 2)]);
+        }
+        for (let step = 0; step < segments; step += 1) {
+            const [a0, a1] = rim[step];
+            const [b0, b1] = rim[step + 1];
+            // Both faces, so the ribbon shows whichever way it has turned.
+            for (const [p, q, r] of [[a0, b0, a1], [a1, b0, b1], [a0, a1, b0], [a1, b1, b0]]) positions.push(...p.toArray(), ...q.toArray(), ...r.toArray());
+        }
+        const geometry = new BufferGeometry();
+        geometry.setAttribute('position', new Float32BufferAttribute(positions, 3));
+        geometry.computeVertexNormals();
+        buckets.add('gold', paint(geometry, color), { passable: true });
+    }
+}
+
+/**
  * The "amethystine trash chute" she tosses her coffee down, on her way up the
  * golden bridges (Numbers by Paint, Episode 3): from a landing on the first
  * spire, curling down to a bronze bin by the plaza.
@@ -1318,6 +1451,7 @@ export async function buildPlaces(buckets, placeData, materials, pause = async (
     const spires = built.get('bridge');
     if (spires) {
         buildVines(buckets, spires);
+        buildRibbons(buckets, spires);
         buildChute(buckets, spires);
     }
 
