@@ -6,9 +6,10 @@
  * bridgework. One of countless hums." (Numbers by Paint, Episode 3.)
  *
  * A few of the countless: tiny bronze birds that hover by the spires, wings a
- * blur, and dart from one spire to the next. One draw call for them all; each
- * keeps a random stream of its own, so nothing else in the city moves. Where
- * motion is reduced, they hover where they are, wings still.
+ * blur, and dart from one spire to the next, each "dripping with steam" (a few
+ * puffs rising off it). One draw call for the birds and one for their steam;
+ * each keeps a random stream of its own, so nothing else in the city moves.
+ * Where motion is reduced, they hover where they are, wings and steam still.
  */
 
 // =============================================================================
@@ -16,16 +17,21 @@
 // =============================================================================
 
 import {
+    BufferAttribute,
     BufferGeometry,
     ConeGeometry,
     DoubleSide,
+    DynamicDrawUsage,
     Euler,
     Float32BufferAttribute,
     InstancedMesh,
     Matrix4,
     MeshToonMaterial,
+    Points,
     Quaternion,
+    ShaderMaterial,
     SphereGeometry,
+    Vector2,
     Vector3,
 } from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
@@ -35,11 +41,15 @@ import { createRandom, paint, pose } from './kit.js';
 // Constants
 // =============================================================================
 
-const COUNT = 9;
+/** A few more of the countless (each bird keeps a stream of its own, so the first nine fly as they always did). */
+const COUNT = 14;
 const BRONZE = 0xc0803e;
 const BRONZE_DARK = 0x7a4a22;
 /** How fast a hum darts between spires, in world units a second. */
 const SPEED = 7;
+/** Each hum is "dripping with steam": this many puffs apiece, each rising and fading over LIFE seconds. */
+const PUFFS = 3;
+const LIFE = 1.7;
 
 // =============================================================================
 // The bird
@@ -98,6 +108,59 @@ function birdMaterial(gradientMap, clock) {
             ].join('\n'));
     };
     return material;
+}
+
+// =============================================================================
+// Steam
+// =============================================================================
+
+/**
+ * The steam the hums drip: soft puffs, one set of points for every bird. Each
+ * puff leaves its bird, rises and swells, and fades, then leaves it again from
+ * wherever the bird has got to. Drawn only; it blocks and hides nothing.
+ */
+function createSteam(count) {
+    const positions = new Float32Array(count * 3);
+    const ages = new Float32Array(count);
+    const geometry = new BufferGeometry();
+    // BufferAttribute, not Float32BufferAttribute (which copies): the puffs are written straight into these arrays.
+    geometry.setAttribute('position', new BufferAttribute(positions, 3).setUsage(DynamicDrawUsage));
+    geometry.setAttribute('age', new BufferAttribute(ages, 1).setUsage(DynamicDrawUsage));
+    const uniforms = { viewportHeight: { value: 800 } };
+    const material = new ShaderMaterial({
+        uniforms,
+        transparent: true,
+        depthWrite: false,
+        vertexShader: /* glsl */ `
+            attribute float age;
+            uniform float viewportHeight;
+            varying float vAge;
+            void main() {
+                vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+                vAge = age;
+                float size = 0.06 + 0.2 * age;
+                gl_PointSize = clamp(size * projectionMatrix[1][1] * viewportHeight * 0.5 / -mvPosition.z, 1.0, 48.0);
+                gl_Position = projectionMatrix * mvPosition;
+            }
+        `,
+        fragmentShader: /* glsl */ `
+            varying float vAge;
+            void main() {
+                float fromCentre = length(gl_PointCoord - 0.5) * 2.0;
+                float puff = 1.0 - smoothstep(0.35, 1.0, fromCentre);
+                float fade = pow(1.0 - vAge, 1.6) * smoothstep(0.0, 0.08, vAge);
+                gl_FragColor = vec4(vec3(0.96, 0.9, 0.84), puff * fade * 0.42);
+            }
+        `,
+    });
+    const points = new Points(geometry, material);
+    points.name = 'hum-steam';
+    points.frustumCulled = false;
+    const size = new Vector2();
+    points.onBeforeRender = (renderer) => {
+        uniforms.viewportHeight.value = renderer.getDrawingBufferSize(size).y;
+    };
+    return { points, positions, ages, geometry };
 }
 
 // =============================================================================
@@ -187,6 +250,27 @@ export function createHums({ spires, gradientMap }) {
     const matrix = new Matrix4();
     const one = new Vector3(1, 1, 1);
 
+    // The steam: PUFFS a bird, each born from wherever its bird is when the last has faded.
+    const steam = createSteam(COUNT * PUFFS);
+    mesh.add(steam.points);
+    const puffs = Array.from({ length: COUNT * PUFFS }, () => ({ origin: new Vector3(), last: Infinity }));
+
+    /** Move a bird's puffs on: rise, swell, drift a little, and start again from the bird. */
+    function breathe(index, at, time) {
+        for (let puff = 0; puff < PUFFS; puff += 1) {
+            const slot = index * PUFFS + puff;
+            const state = puffs[slot];
+            const age = ((time + (puff / PUFFS) * LIFE + index * 0.37) % LIFE) / LIFE;
+            if (age < state.last) state.origin.set(at.x, at.y - 0.04, at.z);
+            state.last = age;
+            const rise = age * 0.5 + age * age * 0.3;
+            steam.positions[slot * 3] = state.origin.x + Math.sin(slot * 1.7 + age * 3) * 0.06 * age;
+            steam.positions[slot * 3 + 1] = state.origin.y + rise;
+            steam.positions[slot * 3 + 2] = state.origin.z + Math.cos(slot * 2.3 + age * 2) * 0.06 * age;
+            steam.ages[slot] = age;
+        }
+    }
+
     /** The next thing a bird does, once it has done the last. */
     function advance(bird) {
         const { random } = bird;
@@ -236,8 +320,11 @@ export function createHums({ spires, gradientMap }) {
             heading.set(pitch, yaw, 0);
             matrix.compose(position, turn.setFromEuler(heading), one);
             mesh.setMatrixAt(index, matrix);
+            breathe(index, position, time);
         });
         mesh.instanceMatrix.needsUpdate = true;
+        steam.geometry.attributes.position.needsUpdate = true;
+        steam.geometry.attributes.age.needsUpdate = true;
     }
 
     update(0);
