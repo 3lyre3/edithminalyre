@@ -31,6 +31,7 @@ const SOLID_MESHES = new Set(['gold', 'dimGold', 'brick', 'stone', 'steel', 'gla
 /** Beyond the grid, everything is air this far from anything. */
 const FAR = 1000;
 const IDENTITY = new Matrix4();
+const UP = new Vector3(0, 1, 0);
 
 // =============================================================================
 // What goes to the worker
@@ -97,6 +98,7 @@ export function createSolids(scene) {
     const gradient = new Vector3();
     const toward = new Vector3();
     const before = new Vector3();
+    const side = new Vector3();
 
     /** Signed distance to the nearest surface, in world units (negative inside). */
     function distance(x, y, z) {
@@ -146,12 +148,15 @@ export function createSolids(scene) {
     /**
      * Carry a point from `from` toward `to` in steps short enough that nothing
      * thin is tunnelled through, pushing it clear after each: it ends at `to`
-     * if the way is open, or slid along whatever stood in the way. Writes `out`.
+     * if the way is open, or slid along whatever stood in the way. Met head-on
+     * (a step that gets nowhere), it slips sideways across the surface, so a
+     * pole or a spire is gone round rather than stopped at. Writes `out`.
      */
     function sweep(from, to, clearance, out) {
         const stride = clearance * 0.4;
         out.copy(from);
         push(out, clearance);
+        let slips = 0;
         for (let step = 0; step < 72; step += 1) {
             toward.subVectors(to, out);
             const length = toward.length();
@@ -159,7 +164,18 @@ export function createSolids(scene) {
             before.copy(out);
             out.addScaledVector(toward, Math.min(1, stride / length));
             push(out, clearance);
-            if (out.distanceToSquared(before) < 1e-10) break;
+            if (out.distanceToSquared(before) > (stride * 0.1) ** 2) continue;
+            // Head-on: step across the surface (round it, level, where it stands upright).
+            if (slips >= 12) break;
+            slips += 1;
+            const normal = slope(out);
+            side.crossVectors(UP, normal);
+            if (side.lengthSq() < 1e-6) side.crossVectors(normal, toward);
+            if (side.lengthSq() < 1e-6) break;
+            side.normalize();
+            if (side.dot(toward) < 0) side.negate();
+            out.addScaledVector(side, stride);
+            push(out, clearance);
         }
         return out;
     }

@@ -85,6 +85,8 @@ const STAR = light(0xfff0c0, 4.4);
 const GLITCH = [light(0xff3ad8, 3.0), light(0x3afff0, 3.0)];
 
 const GATE_Z = -3.2;
+/** No house stands nearer the Steel Garden's middle than this (its disc is 4.3 across the radius). */
+const GARDEN_ROOM = 7.2;
 
 // =============================================================================
 // Shape helpers
@@ -394,6 +396,11 @@ function buildHouses(buckets, random, byId) {
     buckets.add('gold', box(5.2, 0.16, 0.9, { x: fx - 0.1, y: gangY, z: fz - 4.5 }, GOLDS[1]));
     buckets.add('gold', box(5.2, 0.5, 0.06, { x: fx - 0.1, y: gangY + 0.3, z: fz - 4.05 }, GOLDS[2]));
 
+    // A house that would crowd the Steel Garden's rim is still drawn from the stream (so every other
+    // house keeps its place and its look) but never built: the garden has room round it to be seen.
+    const [gx, , gz] = byId.get('steel-garden').position;
+    const unbuilt = { add() {} };
+    let cleared = 0;
     const styles = ['gable', 'gable', 'pyramid', 'dome', 'flat'];
     for (let attempt = 0; attempt < 2600 && placed.length < 80; attempt += 1) {
         const x = random.range(-26, 8);
@@ -403,9 +410,12 @@ function buildHouses(buckets, random, byId) {
         if (placed.some(([px, pz]) => Math.hypot(px - x, pz - z) < 3.0)) continue;
         const westness = Math.min(1, Math.max(0, -x / 24));
         const height = random.range(1.8, 3.4) + westness * random.range(1.5, 4.5);
-        addHouse(buckets, random, x, z, height, styles[Math.floor(random() * styles.length)], detail);
+        const crowds = Math.hypot(x - gx, z - gz) < GARDEN_ROOM;
+        if (crowds) cleared += 1;
+        addHouse(crowds ? unbuilt : buckets, random, x, z, height, styles[Math.floor(random() * styles.length)], detail);
         placed.push([x, z]);
     }
+    return { built: placed.length - cleared, cleared };
 }
 
 /** The signal-towers: twisted fins of a pod of monstrous, copper dolphins. */
@@ -1055,7 +1065,7 @@ const BUILDERS = {
 /**
  * Build the city into the buckets, letting a frame through between steps.
  * @param {() => Promise<void>} [pause] - yields to the browser between steps
- * @returns {Promise<{ anchors: Map<string, Vector3>, mounts: Map<string, object>, extras: object[], update: (time: number) => void }>}
+ * @returns {Promise<{ anchors: Map<string, Vector3>, mounts: Map<string, object>, extras: object[], houses: { built: number, cleared: number }, update: (time: number) => void }>}
  */
 export async function buildPlaces(buckets, placeData, materials, pause = async () => {}) {
     const random = createRandom(239);
@@ -1067,7 +1077,7 @@ export async function buildPlaces(buckets, placeData, materials, pause = async (
     buildWall(buckets, mounts);
     buildPavements(buckets);
     await pause();
-    buildHouses(buckets, random, byId);
+    const houses = buildHouses(buckets, random, byId);
     await pause();
     buildSignalTowers(buckets);
 
@@ -1085,6 +1095,7 @@ export async function buildPlaces(buckets, placeData, materials, pause = async (
         anchors,
         mounts,
         extras,
+        houses,
         update(time) {
             for (const step of animated) step(time);
         },

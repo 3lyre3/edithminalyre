@@ -36,6 +36,7 @@ import {
     Vector3,
 } from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { createRayGrid } from './rays.js';
 
 // =============================================================================
 // Constants
@@ -463,6 +464,8 @@ export function createSignOverlay({ stage, label, isBusy }) {
     // sign standing in front (the rays stop short of the plate being read, so it never blocks itself).
     const occluders = scene.children.filter((child) => child instanceof Mesh && !['sky', 'sea', 'glass', 'turquoise', 'signs'].includes(child.name));
     const viewBlockers = scene.children.filter((child) => child instanceof Mesh && !['sky', 'sea', 'turquoise'].includes(child.name));
+    // The flags aren't solid to the camera (it may pass through cloth), but a view seen through them is crowded.
+    const cloth = scene.children.filter((child) => child instanceof Mesh && child.name === 'turquoise');
 
     function pickAt(x, y) {
         const rect = canvas.getBoundingClientRect();
@@ -489,8 +492,14 @@ export function createSignOverlay({ stage, label, isBusy }) {
     }
 
     const DOWN = new Vector3(0, -1, 0);
+    const UP = new Vector3(0, 1, 0);
+
+    // Lines of sight through a grid of the city's triangles (rays.js), sorted in idle moments;
+    // until then, three.js's own raycaster (the same answer, only slower).
+    const sight = createRayGrid(viewBlockers);
 
     function clearLine(from, to) {
+        if (sight.ready()) return sight.clear(from, to, 0.08);
         const direction = to.clone().sub(from);
         const distance = direction.length();
         raycaster.set(from, direction.normalize());
@@ -498,11 +507,15 @@ export function createSignOverlay({ stage, label, isBusy }) {
         return raycaster.intersectObjects(viewBlockers, false).length === 0;
     }
 
-    /** The plate's centre and four corners (a little inset): the whole face must be seen, not just its middle. */
+    /**
+     * Points across the plate's face (a little inset), close enough together that
+     * a pole standing before any of its words hides one: the whole face must be
+     * seen, not just its middle.
+     */
     function facePoints(entry) {
         const points = [entry.centre];
-        for (const across of [-0.8, 0.8]) {
-            for (const upward of [-0.7, 0.7]) {
+        for (const across of [-0.85, -0.57, -0.28, 0, 0.28, 0.57, 0.85]) {
+            for (const upward of [-0.6, 0.6]) {
                 points.push(entry.centre.clone()
                     .addScaledVector(entry.side, (across * entry.width) / 2)
                     .addScaledVector(entry.up, (upward * entry.height) / 2));
@@ -518,7 +531,9 @@ export function createSignOverlay({ stage, label, isBusy }) {
 
     /** True if open sky lies above `eye` (so it isn't inside a house or under an arch). */
     function openSky(eye) {
-        raycaster.set(eye.clone().add(new Vector3(0, 60, 0)), DOWN);
+        const above = eye.clone().add(new Vector3(0, 60, 0));
+        if (sight.ready()) return sight.clear(above, eye, 0.2);
+        raycaster.set(above, DOWN);
         raycaster.far = 60 - 0.2;
         return raycaster.intersectObjects(viewBlockers, false).length === 0;
     }
@@ -546,63 +561,192 @@ export function createSignOverlay({ stage, label, isBusy }) {
     }
 
     const views = new Map();
+    const probe = new Vector3();
+    const toward = new Vector3();
+
+    /** True if the flags hang across the first `length` of the way from `eye` toward `target`. */
+    function throughCloth(eye, target, length) {
+        if (!cloth.length) return false;
+        raycaster.set(eye, toward.subVectors(target, eye).normalize());
+        raycaster.far = length;
+        return raycaster.intersectObjects(cloth, false).length > 0;
+    }
+
+    /** How far a ray gets through the solids' field (as a share of `length`) before it meets anything. */
+    function reachOf(eye, target, length) {
+        toward.subVectors(target, eye);
+        const full = toward.length();
+        toward.divideScalar(full);
+        let travelled = 0;
+        while (travelled < length) {
+            probe.copy(eye).addScaledVector(toward, travelled);
+            const gap = solids.distance(probe);
+            if (gap < 0.15) break;
+            travelled += Math.max(gap, 0.2);
+        }
+        return Math.min(1, travelled / length);
+    }
 
     /**
-     * Where to stand to read a plate: straight on first, then a little round and
-     * a little higher, then from behind if its words read from there too. The
-     * first place with nothing between it and the plate, and room around the
+     * How open the view from `eye` is, traced through the solids' field: rays
+     * over the whole frame, and how much of it is filled by things close to the
+     * camera (a roof, a spire, a pole); and rays just round the plate, and
+     * whether anything crosses in front of it. 1 is open on both counts.
+     */
+    function openness(eye, entry) {
+        const reach = eye.distanceTo(entry.centre);
+        const halfHeight = reach * Math.tan(MathUtils.degToRad(camera.fov) / 2) * 0.95;
+        const halfWidth = halfHeight * Math.max(0.5, camera.aspect);
+        // The frame as the camera will see it: square to the line of sight, through the plate.
+        const look = entry.centre.clone().sub(eye).normalize();
+        const right = new Vector3().crossVectors(look, UP).normalize();
+        const up = new Vector3().crossVectors(right, look);
+        const target = new Vector3();
+        let near = 0;
+        let frame = 0;
+        for (const across of [-1, -0.66, -0.33, 0, 0.33, 0.66, 1]) {
+            for (const upward of [-1, -0.5, 0, 0.5, 1]) {
+                target.copy(entry.centre).addScaledVector(right, across * halfWidth).addScaledVector(up, upward * halfHeight);
+                const length = eye.distanceTo(target);
+                if (reachOf(eye, target, length * 0.55) < 1 || throughCloth(eye, target, length * 0.55)) near += 1;
+                frame += 1;
+            }
+        }
+        // Round the plate; and across its face, closely enough that a pole before any of its words shows.
+        const blocked = (spots) => spots.filter(([across, upward]) => {
+            target.copy(entry.centre).addScaledVector(entry.side, (across * entry.width) / 2).addScaledVector(entry.up, (upward * entry.height) / 2);
+            return reachOf(eye, target, eye.distanceTo(target) - 1.2) < 1;
+        }).length;
+        const round = [];
+        for (const across of [-1.4, 0, 1.4]) for (const upward of [-1.6, 0, 1.6]) round.push([across, upward]);
+        const face = [];
+        for (const across of [-0.9, -0.6, -0.3, 0, 0.3, 0.6, 0.9]) for (const upward of [-0.5, 0.5]) face.push([across, upward]);
+        return { open: 1 - near / frame, clear: 1 - blocked(round) / round.length, faced: blocked(face) === 0 };
+    }
+
+    /**
+     * Where to stand to read a plate. Every stance round it (straight on, then
+     * turned a little or a lot, lower or higher, nearer or at the full reading
+     * distance, and from behind if its words read from there too) is scored:
+     * stances with nothing at all before the plate's words come first; then, a
+     * frame not crowded by things close to the camera, and nothing crossing
+     * round the plate; then looking at it more squarely. Best first, the first
+     * place with nothing between it and the whole plate, and room around the
      * plate as well, wins; failing that, the first that sees the plate at all.
      * Each sign's view is found once and kept.
+     *
+     * The search is a generator that pauses after every stance it scores and
+     * every ray it casts, so the idle-time search can stop wherever a frame is
+     * due and carry on next time.
      */
-    function readingView(entry) {
-        if (views.has(entry.sign.id)) return views.get(entry.sign.id);
+    function* searchView(entry) {
         const distance = readingDistance(entry);
         const facing = Math.atan2(entry.normal.x, entry.normal.z);
         const sides = entry.mount.twoSided ? [0, Math.PI] : [0];
+        const eye = new Vector3();
+        const place = (candidate) => {
+            const across = Math.sqrt(1 - candidate.lift * candidate.lift) * candidate.reach;
+            return eye.set(Math.sin(candidate.theta) * across, candidate.lift * candidate.reach, Math.cos(candidate.theta) * across).add(entry.centre);
+        };
         const candidates = [];
         for (const side of sides) {
-            for (const lift of [0.3, 0.5, 0.18, 0.7]) {
-                for (const turn of [0, 0.35, -0.35, 0.7, -0.7]) {
-                    for (const reach of [distance, distance * 0.7]) candidates.push({ theta: facing + side + turn, lift, reach });
+            for (const [lift, liftScore] of [[0.3, 0.3], [0.5, 0.2], [0.18, 0.1], [0.7, 0]]) {
+                for (const turn of [0, 0.35, -0.35, 0.7, -0.7, 1.05, -1.05]) {
+                    for (const [share, reachScore] of [[1, 0.2], [0.75, 0.25], [0.55, 0.05]]) {
+                        const candidate = { theta: facing + side + turn, lift, reach: Math.max(6, distance * share) };
+                        candidate.score = liftScore + reachScore + (1 - Math.abs(turn) / 1.05) * 0.6 + (side ? 0 : 0.2);
+                        candidates.push(candidate);
+                    }
                 }
             }
         }
-        const eye = new Vector3();
-        const margins = marginPoints(entry);
-        let chosen = null;
-        let fallback = null;
+        // The cheap tests first, through the field: room to stand, and an open foreground.
+        const known = solids?.available;
+        const ranked = [];
         for (const candidate of candidates) {
-            const across = Math.sqrt(1 - candidate.lift * candidate.lift) * candidate.reach;
-            eye.set(Math.sin(candidate.theta) * across, candidate.lift * candidate.reach, Math.cos(candidate.theta) * across).add(entry.centre);
-            if (!openSky(eye) || !roomy(eye) || !clearFrom(eye, entry)) continue;
-            fallback ??= candidate;
-            if (margins.every((point) => clearLine(eye, point))) {
-                chosen = candidate;
-                break;
+            if (!roomy(place(candidate))) continue;
+            if (known) {
+                const { open, clear, faced } = openness(eye, entry);
+                Object.assign(candidate, { open, clear, faced, score: candidate.score + 3 * open + 2 * clear });
+                yield;
             }
+            ranked.push(candidate);
         }
-        const view = chosen ?? fallback ?? candidates[0];
-        views.set(entry.sign.id, view);
-        return view;
+        // Whole words first: a stance with anything before the plate's face waits behind every one without.
+        ranked.sort((a, b) => (b.faced === false ? 0 : 1) - (a.faced === false ? 0 : 1) || b.score - a.score);
+        const face = facePoints(entry);
+        const margins = marginPoints(entry);
+        let fallback = null;
+        for (const candidate of ranked) {
+            place(candidate);
+            const standing = eye.clone();
+            if (!openSky(standing)) continue;
+            yield;
+            let seen = true;
+            for (const point of face) {
+                seen = clearLine(standing, point);
+                yield;
+                if (!seen) break;
+            }
+            if (!seen) continue;
+            fallback ??= candidate;
+            let roomAround = true;
+            for (const point of margins) {
+                roomAround = clearLine(standing, point);
+                yield;
+                if (!roomAround) break;
+            }
+            if (roomAround) return candidate;
+        }
+        return fallback ?? candidates[0];
     }
 
-    // Find every sign's view in idle moments, one sign at a time, so focusing one never waits:
-    // once the solids are known (views found before then are found again, with room to stand).
-    const idle = window.requestIdleCallback ?? ((callback) => setTimeout(callback, 60));
+    /** The view for a sign, found now if the idle-time search hasn't reached it yet. */
+    function readingView(entry) {
+        if (views.has(entry.sign.id)) return views.get(entry.sign.id);
+        const search = current?.entry === entry ? current.search : searchView(entry);
+        if (current?.entry === entry) current = null;
+        let step = search.next();
+        while (!step.done) step = search.next();
+        views.set(entry.sign.id, step.value);
+        return step.value;
+    }
+
+    // Find every sign's view in idle moments, a few milliseconds at a time (the search pauses
+    // mid-sign wherever a frame is due), so focusing one seldom waits and the city never stutters.
+    // It begins once the solids are known; views found before then are found again, with room to stand.
+    const idle = window.requestIdleCallback ?? ((callback) => setTimeout(() => callback(null), 50));
     const pending = [];
+    let current = null;
     let searchMs = 0;
-    const prepareNext = () => {
-        const entry = pending.shift();
-        if (!entry) return;
+    const sorting = sight.build();
+    const prepare = (deadline) => {
         const started = performance.now();
-        readingView(entry);
+        const until = started + Math.max(2, Math.min(10, deadline?.timeRemaining() ?? 6));
+        while (performance.now() < until) {
+            if (!sight.ready()) {
+                sorting.next();
+                continue;
+            }
+            if (!current) {
+                const entry = pending.shift();
+                if (!entry) break;
+                if (views.has(entry.sign.id)) continue;
+                current = { entry, search: searchView(entry) };
+            }
+            const step = current.search.next();
+            if (step.done) {
+                views.set(current.entry.sign.id, step.value);
+                current = null;
+            }
+        }
         searchMs += performance.now() - started;
-        idle(prepareNext);
+        if (current || pending.length) idle(prepare);
     };
     (solids?.ready ?? Promise.resolve(false)).then(() => {
         views.clear();
         pending.push(...signs.entries);
-        idle(prepareNext);
+        idle(prepare);
     });
 
     canvas.addEventListener('pointermove', (event) => {
@@ -662,6 +806,7 @@ export function createSignOverlay({ stage, label, isBusy }) {
         /** For tests: the sign shown, where each plate is on screen, and what finding the views cost. */
         shownId: () => (label.hidden ? null : shown?.sign.id ?? null),
         viewSearch: () => ({ prepared: views.size, of: signs.entries.length, ms: Math.round(searchMs) }),
+        viewFor: (id) => views.get(id) ?? null,
         screenPositions() {
             return signs.entries.map((entry) => {
                 projected.copy(entry.centre).project(camera);

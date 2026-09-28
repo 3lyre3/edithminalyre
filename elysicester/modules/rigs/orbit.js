@@ -40,6 +40,8 @@ const TAP_TIME = 800;
 const CLEARANCE = 0.7;
 /** On a flight to a place, how far something may hold the camera back from its path before it lets go. */
 const LET_GO = 3;
+/** And how many frames it may be held short of a flight's end before it takes the last step anyway. */
+const HOLD_FRAMES = 20;
 
 /** Half the height and width, in world units, the whole-diorama view must hold. */
 const HALF_HEIGHT = 37;
@@ -86,6 +88,7 @@ export class OrbitRig {
         this.solids = null;
         this.placed = false;
         this.gliding = false;
+        this.held = 0;
         this.nominal = new Vector3();
         this.resolved = new Vector3();
         this.offset = new Vector3();
@@ -273,8 +276,11 @@ export class OrbitRig {
             if (this.gliding) {
                 // A flight to a place keeps to its own path: the camera slides round what stands in
                 // the way and, if something big holds it back, lets go and rejoins the path past it.
-                if (this.resolved.distanceTo(this.nominal) > LET_GO) this.solids.push(this.resolved.copy(this.nominal), CLEARANCE);
-                if (this.arrived()) {
+                // Held back at the end of the flight, it takes the last step anyway: the goal has room.
+                const held = this.resolved.distanceTo(this.nominal);
+                this.held = this.arrived() && held > 0.05 ? this.held + 1 : 0;
+                if (held > LET_GO || this.held > HOLD_FRAMES) this.solids.push(this.resolved.copy(this.nominal), CLEARANCE);
+                if (this.arrived() && this.resolved.distanceTo(this.nominal) <= 0.05) {
                     this.gliding = false;
                     this.adopt(this.now, this.resolved);
                 }
