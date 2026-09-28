@@ -24,7 +24,7 @@ import {
     Vector3,
     WebGLRenderer,
 } from 'three';
-import { Buckets, createMaterials, duskLight, flutter } from './kit.js';
+import { Buckets, createMaterials, duskLight, flutter, wallX } from './kit.js';
 import { inscriptionTexture } from './extras.js';
 import { createInk } from './ink.js';
 import { buildIsland } from './island.js';
@@ -46,6 +46,15 @@ const SUN_DIRECTION = new Vector3(-0.82, 0.1, -0.4).normalize();
 /** Dusk light is soft and comes from everywhere; the key falls low from the south-west. */
 const KEY_DIRECTION = new Vector3(-0.35, 0.5, 0.8).normalize();
 const MAX_PIXEL_RATIO = 2;
+/**
+ * A safety net for slower phones: if frames run slower than this (seconds) for a sustained stretch,
+ * the drawing buffer steps down a quarter at a time, never below 1. It only ever steps down, so it can't
+ * see-saw; a phone that keeps up never notices it.
+ */
+const SLOW_FRAME = 1 / 38;
+const SLOW_STRETCH = 2.5;
+const RATIO_STEP = 0.25;
+const SETTLING = 4;
 
 // =============================================================================
 // Main Code
@@ -86,9 +95,9 @@ export function createRenderer(canvas) {
     return renderer;
 }
 
-/** Keep the drawing buffer matched to the canvas (pixel ratio capped at 2); true if it changed. */
-export function fitRenderer(renderer, canvas) {
-    const ratio = Math.min(window.devicePixelRatio || 1, MAX_PIXEL_RATIO);
+/** Keep the drawing buffer matched to the canvas (pixel ratio capped at 2, or lower); true if it changed. */
+export function fitRenderer(renderer, canvas, cap = MAX_PIXEL_RATIO) {
+    const ratio = Math.min(window.devicePixelRatio || 1, cap, MAX_PIXEL_RATIO);
     const width = canvas.clientWidth || window.innerWidth;
     const height = canvas.clientHeight || window.innerHeight;
     const size = renderer.getSize(new Vector2());
@@ -147,6 +156,9 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
     buildIsland(buckets);
     await pause();
     const places = await buildPlaces(buckets, data.places, materials, pause, extras, reducedMotion);
+    // The sun-dock's warmth on the water round it (the dock is a half-sun unfurled from the wall).
+    const dock = data.places.places.find((place) => place.id === 'sun-dock');
+    if (dock) sea.warmAt(wallX(dock.position[2]) + 1.6, dock.position[2], 6.5);
     await pause();
     for (const mesh of buckets.build(materials, { turquoise: ['sway'], weed: ['sway'] }).values()) scene.add(mesh);
     for (const extra of places.extras) scene.add(extra);
@@ -168,8 +180,15 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
 
     const ink = createInk(renderer, { reducedMotion });
 
+    // The drawing buffer's ceiling, lowered only if this device can't keep up (SLOW_FRAME). Under ?debug=1
+    // (the local checks and the stills) it holds, so their pictures stay exact, unless ?adapt=1 asks.
+    let ratioCap = MAX_PIXEL_RATIO;
+    const adaptive = !debug || new URLSearchParams(window.location.search).has('adapt');
+    let slowFor = 0;
+    let runningFor = 0;
+
     function resize() {
-        fitRenderer(renderer, canvas);
+        fitRenderer(renderer, canvas, ratioCap);
         const width = canvas.clientWidth || window.innerWidth;
         const height = canvas.clientHeight || window.innerHeight;
         camera.aspect = width / height;
@@ -209,9 +228,24 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
 
     function frame(now) {
         if (!running) return;
-        const dt = last ? Math.min(0.05, (now - last) / 1000) : 1 / 60;
+        const real = last ? (now - last) / 1000 : 1 / 60;
+        const dt = Math.min(0.05, real);
         last = now;
         if (!reducedMotion) elapsed += dt;
+
+        // A sustained run of slow frames (not a single hitch, nor the gap a hidden tab leaves) steps the
+        // drawing buffer down, once in a while, until it keeps up or reaches 1.
+        runningFor += Math.min(real, 1);
+        if (adaptive && runningFor > SETTLING && real < 1) {
+            slowFor = real > SLOW_FRAME ? slowFor + real : Math.max(0, slowFor - real * 2);
+            const current = Math.min(window.devicePixelRatio || 1, ratioCap);
+            if (slowFor > SLOW_STRETCH && current > 1) {
+                ratioCap = Math.max(1, current - RATIO_STEP);
+                slowFor = 0;
+                runningFor = 0;
+                resize();
+            }
+        }
 
         renderer.info.reset();
         rig.update(dt);
@@ -226,7 +260,8 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         const { calls, triangles, points, lines } = renderer.info.render;
         lastInfo = { calls, triangles, points, lines };
         for (const listener of frameListeners) listener(dt, elapsed);
-        readout?.(dt, lastInfo);
+        // The readout counts real time, so a slow device shows its true rate (dt is clamped for the animation).
+        readout?.(Math.min(real, 1), lastInfo);
         requestAnimationFrame(frame);
     }
 
@@ -269,6 +304,6 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         },
     };
 
-    if (debug) Object.assign(window.elysicesterDebug ??= {}, { info: () => stage.info(), rig, stage, solids, houses: places.houses });
+    if (debug) Object.assign(window.elysicesterDebug ??= {}, { info: () => stage.info(), rig, stage, solids, houses: places.houses, pixelRatio: () => renderer.getPixelRatio() });
     return stage;
 }

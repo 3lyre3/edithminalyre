@@ -19,6 +19,7 @@
 // =============================================================================
 
 import {
+    AdditiveBlending,
     BoxGeometry,
     BufferGeometry,
     CatmullRomCurve3,
@@ -92,6 +93,8 @@ const WINDOW = light(0xffc46a, 3.0);
 /** A window lit lower, by a lamp further in. */
 const WINDOW_LOW = light(0xff9e4a, 2.1);
 const LAMP = light(0xffd28a, 4.2);
+/** The cafés' footlights, burning low and warm. */
+const FOOTLIGHT = light(0xffc070, 3.6);
 const COOL = light(0xd4fff4, 2.6);
 const DOOR = light(0xffd23a, 2.6);
 /** What lies beyond the yellow door, when it stands open (an extra). */
@@ -517,6 +520,9 @@ function buildCafes({ buckets, place, mounts, extras, animated, wanted }) {
 
     const audience = new Vector3(21, 0, z);
     const cafes = [[-3.3, 0], [0, 0.55], [3.3, 0]];
+    // "Angled to shine up every face, no café less equal": footlights before each, as on a stage, and the
+    // warm wash they throw up its front. The wash is one additive sheet for all three.
+    const washes = [];
     cafes.forEach(([dz, dx], index) => {
         const cz = z + dz;
         const cx = wallX(cz) + 1.75 + dx;
@@ -536,9 +542,17 @@ function buildCafes({ buckets, place, mounts, extras, animated, wanted }) {
             box(0.46, 0.6, 0.05, { x: 0.68, y: 1.25, z: 1.08 }, WINDOW),
             box(0.3, 0.4, 0.05, { y: 3.7, z: 0.88 }, WINDOW),
         ];
+        for (const along of [-0.84, -0.28, 0.28, 0.84]) {
+            pieces.push(box(0.2, 0.09, 0.14, { x: along, y: 0.05, z: 1.36 }, SHADOW));
+            glows.push(box(0.14, 0.04, 0.04, { x: along, y: 0.08, z: 1.29 }, FOOTLIGHT));
+        }
+        const wash = new PlaneGeometry(2.2, 2.3, 1, 4);
+        wash.translate(0, 1.15, 1.075);
+        paintBy(wash, (wx, wy, wz, out) => out.setRGB(0.5, 0.3, 0.12).multiplyScalar(Math.pow(1 - Math.min(1, wy / 2.3), 1.6)));
         const at = { x: cx, y: 0.3, z: cz, ry };
         for (const piece of frame(pieces, at)) buckets.add('brick', piece);
         for (const piece of frame(glows, at)) buckets.add('glow', piece);
+        washes.push(frame([wash], at)[0]);
         // A board above the awning, under the gable.
         mount(mounts, `jetty-cafes/cafe-${index + 1}`, {
             position: inFrame(0, 2.03, 1.09, at),
@@ -568,6 +582,16 @@ function buildCafes({ buckets, place, mounts, extras, animated, wanted }) {
             });
         }
     });
+    const footlit = new Mesh(mergeGeometries(washes.map((wash) => wash.toNonIndexed()), false), new MeshBasicMaterial({
+        vertexColors: true,
+        transparent: true,
+        blending: AdditiveBlending,
+        depthWrite: false,
+        // Light added, not a surface: the fog would only add its own colour to it.
+        fog: false,
+    }));
+    footlit.name = 'footlight-wash';
+    extras.push(footlit);
 }
 
 /** A pennant string or ribbon, with per-vertex "sway" so the flags can flutter. */

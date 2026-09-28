@@ -15,7 +15,7 @@
 // Imports
 // =============================================================================
 
-import { Color, Mesh, PlaneGeometry, ShaderMaterial, UniformsLib, UniformsUtils } from 'three';
+import { Color, Mesh, PlaneGeometry, ShaderMaterial, UniformsLib, UniformsUtils, Vector3 } from 'three';
 import { ISLAND_RADIUS, SEA_LEVEL, rimRadiusGLSL, wallXGLSL } from './kit.js';
 import { DUSK_GLSL } from './sky.js';
 
@@ -65,6 +65,7 @@ const fragmentShader = /* glsl */ `
     uniform vec3 wallGold;
     uniform vec3 silver;
     uniform vec3 violet;
+    uniform vec3 warmth;
 
     varying vec3 vWorld;
     varying vec3 vNormal;
@@ -120,9 +121,15 @@ const fragmentShader = /* glsl */ `
         vec3 halfway = normalize(view + normalize(sunDirection));
         color += vec3(0.85, 0.8, 1.0) * step(0.9975, max(dot(normal, halfway), 0.0)) * 0.9;
 
-        // Drawn swell: thin light crests drifting in toward the wall, like engraved waves.
+        // The sun-dock "grew upon the water's surface": its warmth lies on the water round it.
+        vec2 fromDock = vWorld.xz - warmth.xy;
+        float warm = exp(-dot(fromDock, fromDock) / (warmth.z * warmth.z));
+        color += vec3(1.0, 0.58, 0.2) * warm * (0.16 + 0.14 * fresnel);
+
+        // Drawn swell: thin light crests drifting in toward the wall, like engraved waves (gilded by the dock).
         float swell = fract(vWorld.x * 0.55 + sin(vWorld.z * 0.3 + time * 0.15) * 1.2 + time * 0.25);
-        color = mix(color, mix(violet, silver, 0.35) * 0.8, smoothstep(0.9, 0.95, swell) * (1.0 - smoothstep(0.97, 1.0, swell)) * 0.4);
+        float crestLine = smoothstep(0.9, 0.95, swell) * (1.0 - smoothstep(0.97, 1.0, swell));
+        color = mix(color, mix(mix(violet, silver, 0.35) * 0.8, vec3(1.3, 0.85, 0.42), warm), crestLine * (0.4 + 0.35 * warm));
 
         // Breakers: flat, drawn shapes of silver and violet bursting along the wall's foot.
         float travel = sin(vWorld.z * 0.7 + time * 0.9 + 2.0 * sin(vWorld.z * 0.23 + time * 0.37));
@@ -171,6 +178,8 @@ export function createSea({ sunDirection, edgeAngle, horizonDip = { value: 0.16 
             wallGold: { value: new Color(0xd8a44c) },
             silver: { value: new Color(0xe8eaf8) },
             violet: { value: new Color(0x9a72ea) },
+            // Where the sun-dock's warmth lies on the water: x, z and how far it reaches (none until set).
+            warmth: { value: new Vector3(0, 0, 1e-3) },
         },
     ]);
     // The sky's own horizon, shared, so the water mirrors the dusk exactly where the sky has it.
@@ -183,6 +192,10 @@ export function createSea({ sunDirection, edgeAngle, horizonDip = { value: 0.16 
         mesh,
         update(time) {
             uniforms.time.value = time;
+        },
+        /** Lay a warm light on the water about (x, z), out to `reach`: the sun-dock's. */
+        warmAt(x, z, reach) {
+            uniforms.warmth.value.set(x, z, reach);
         },
     };
 }
