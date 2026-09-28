@@ -95,7 +95,7 @@ function checkReference(fromFile, rawReference) {
 
 for (const htmlFile of htmlFiles) {
     const html = await textFor(htmlFile);
-    if (!['404.html', 'secret_s3cret_secr3t/index.html'].includes(htmlFile)) {
+    if (!['404.html', 'secret_s3cret_secr3t/index.html', 'elysicester/index.html'].includes(htmlFile)) {
         if (!/<script\s+src=(['"])(?:\.\.\/)?site\.js\1><\/script>/.test(html)) {
             errors.push(`${htmlFile}: shared site.js is missing`);
         }

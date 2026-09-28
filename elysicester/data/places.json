@@ -1,0 +1,112 @@
+{
+  "schema": 1,
+  "places": [
+    {
+      "id": "sun-dock",
+      "tier": 1,
+      "district": "docks",
+      "label": "The sun-dock",
+      "position": [17, 0.4, 5],
+      "focus": { "distance": 16, "height": 6 }
+    },
+    {
+      "id": "jetty-cafes",
+      "tier": 1,
+      "district": "docks",
+      "label": "The three cafés",
+      "position": [11, 2, -4],
+      "focus": { "distance": 15, "height": 6 }
+    },
+    {
+      "id": "flags",
+      "tier": 1,
+      "district": "crossroads",
+      "label": "The turquoise flags",
+      "position": [5, 8, -3],
+      "focus": { "distance": 16, "height": 7 }
+    },
+    {
+      "id": "steel-garden",
+      "tier": 1,
+      "district": "crossroads",
+      "label": "The Steel Garden",
+      "position": [4, 1.5, 7],
+      "focus": { "distance": 14, "height": 6 }
+    },
+    {
+      "id": "bridge",
+      "tier": 1,
+      "district": "spires",
+      "label": "The golden bridgework",
+      "position": [-6, 11, -2],
+      "focus": { "distance": 20, "height": 6 }
+    },
+    {
+      "id": "sky-grottos",
+      "tier": 1,
+      "district": "grottos",
+      "label": "The sky-grottos",
+      "position": [-16, 24, -6],
+      "focus": { "distance": 20, "height": 2 }
+    },
+    {
+      "id": "sea-wall",
+      "tier": 1,
+      "district": "waterfront",
+      "label": "The sea-wall",
+      "position": [10, 3, -13],
+      "focus": { "distance": 16, "height": 5 }
+    },
+    {
+      "id": "gas-station",
+      "tier": 1,
+      "district": "walkway",
+      "label": "The gas station",
+      "position": [-3, 1.5, 13],
+      "focus": { "distance": 14, "height": 5 }
+    },
+    {
+      "id": "edge",
+      "tier": 1,
+      "district": "rim",
+      "label": "The edge",
+      "position": [27, 0, -12],
+      "focus": { "distance": 18, "height": 7 }
+    },
+    {
+      "id": "blue-beach",
+      "tier": 2,
+      "district": "mainland",
+      "label": "Blue Beach",
+      "position": null
+    },
+    {
+      "id": "shop",
+      "tier": 2,
+      "district": "desert-eternal",
+      "label": "The Shop",
+      "position": null
+    },
+    {
+      "id": "mega-screen",
+      "tier": 2,
+      "district": "desert-eternal",
+      "label": "The Mega-Screen",
+      "position": null
+    },
+    {
+      "id": "holowreck",
+      "tier": 2,
+      "district": "desert-eternal",
+      "label": "The Holowreck",
+      "position": null
+    },
+    {
+      "id": "intermaze",
+      "tier": 2,
+      "district": "threshold",
+      "label": "The Intermaze",
+      "position": null
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+/*
+ * Elysicester — diorama UI only: reader panel, controls, title card.
+ * The scene itself is drawn on the canvas; this file dresses the HTML around it
+ * in the site's cloth (void and amber, EB Garamond and Cormorant).
+ */
+
+:root {
+    --void: #050506;
+    --deep: #0e0e11;
+    --smoke: #1a1a1e;
+    --stone: #505058;
+    --bone: #808088;
+    --pale: #a8a8b2;
+    --silver: #c8c8d0;
+    --ivory: #e8e8ec;
+    --rust: #a05020;
+    --amber: #c07830;
+    --gold: #d89840;
+    --honey: #e8b860;
+
+    --font-body: 'EB Garamond', Georgia, serif;
+    --font-display: 'Cormorant', Georgia, serif;
+
+    color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    height: 100%;
+    background: var(--void);
+    color: var(--pale);
+    font-family: var(--font-body);
+    font-size: 18px;
+    line-height: 1.6;
+    overflow: hidden;
+}
+
+a {
+    color: var(--amber);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+}
+
+a:hover,
+a:focus-visible {
+    color: var(--honey);
+}
+
+:focus-visible {
+    outline: 1px solid var(--honey);
+    outline-offset: 3px;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* The way out, visible at every moment. */
+.plainly {
+    position: fixed;
+    top: max(14px, env(safe-area-inset-top));
+    left: max(18px, env(safe-area-inset-left));
+    z-index: 50;
+    font-family: var(--font-display);
+    font-size: 17px;
+    letter-spacing: 0.08em;
+    color: var(--bone);
+}
+
+.plainly .sep {
+    margin: 0 0.4em;
+    color: var(--stone);
+}
+
+.diorama {
+    position: fixed;
+    inset: 0;
+}
+
+.stage {
+    display: block;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+}
+
+.noscript {
+    position: fixed;
+    inset: auto 0 40% 0;
+    max-width: 32em;
+    margin: 0 auto;
+    padding: 0 24px;
+    text-align: center;
+    color: var(--silver);
+}
