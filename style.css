@@ -1339,6 +1339,13 @@ body.foyer .door .glyph {
     transition: transform 0.6s ease;
 }
 body.foyer .door:hover .glyph { transform: rotate(180deg); }
+/* Elysicester's door carries Elm's own mark, set in her one-glyph font (U+E000). */
+@font-face {
+    font-family: 'Elm Glyph';
+    src: url('/elysicester/assets/ElmGlyph-Regular.woff') format('woff');
+    font-display: block;
+}
+body.foyer .door .glyph.elm-glyph { font-family: 'Elm Glyph', var(--font-display); }
 body.foyer .door .door-title {
     display: block;
     font-family: var(--font-display);

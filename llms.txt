@@ -1,7 +1,7 @@
 # Edith Mina Lyre
 
 > format: simple-index v1
-> last-updated: 2026-08-12
+> last-updated: 2026-09-29
 > site: https://edithminalyre.com
 > also-writes-as: Elm Alee
 > structured-index: https://edithminalyre.com/index.json
@@ -52,6 +52,7 @@ Personal literary website of Edith Mina Lyre — writer, researcher, and PhD can
 
 - [False Cows](https://edithminalyre.com/false-cows.html) — Reports of a Trans Imaginary; PhD thesis in preparation
 - [Faerish](https://edithminalyre.com/duy-ruth.html) — the language of Síonæiya
+- [Elysicester](https://edithminalyre.com/elysicester/) — Capital of the Afterlife; the golden city of Numbers by Paint, as a diorama
 - [XMA](https://edithminalyre.com/negative-interpretability.html#xma) — Tenth Mouth Anglossian, a verbless constructed language
 - [ElfSurgery](https://elfsurgery.com) — global directory of gender-affirming surgeons
 - [The Elfcyclopedia](https://elfsurgery.com/elfcyclopedia) — a methodological triptych

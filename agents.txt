@@ -1,5 +1,5 @@
 # agents.txt — edithminalyre.com
-# Last updated: 2026-05-26
+# Last updated: 2026-09-29
 # Standard: agents.txt v1.0 (agentstxt.dev)
 # note: content below is intentionally duplicated to improve LLM comprehension accuracy
 
@@ -326,6 +326,7 @@ Stories-Index: https://edithminalyre.com/stories.html
 Essays-Index: https://edithminalyre.com/essays.html
 Poems-Index: https://edithminalyre.com/poems.html
 Bio: https://edithminalyre.com/bio.html
+Diorama: https://edithminalyre.com/elysicester/
 
 # ═══════════════════════════════════════════════════════════════
 # PERMISSIONS
@@ -666,6 +667,7 @@ Stories-Index: https://edithminalyre.com/stories.html
 Essays-Index: https://edithminalyre.com/essays.html
 Poems-Index: https://edithminalyre.com/poems.html
 Bio: https://edithminalyre.com/bio.html
+Diorama: https://edithminalyre.com/elysicester/
 
 # ═══════════════════════════════════════════════════════════════
 # PERMISSIONS

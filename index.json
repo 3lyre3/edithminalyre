@@ -4,7 +4,7 @@
   "also_known_as": [
     "Elm Alee"
   ],
-  "updated": "2026-08-12",
+  "updated": "2026-09-29",
   "version": "1.2.0",
   "format": "application/json",
   "machine_use": "allowed",
@@ -275,6 +275,17 @@
       "type": "poem",
       "url": "https://edithminalyre.com/poems/three-illustrations.html",
       "published_in": "site"
+    },
+    {
+      "id": "elysicester",
+      "title": "Elysicester",
+      "subtitle": "Capital of the Afterlife",
+      "type": "diorama",
+      "status": "in-progress",
+      "year": 2026,
+      "url": "https://edithminalyre.com/elysicester/",
+      "published_in": "site",
+      "notes": "Tier 1 of a drawn 3D diorama of the golden city of Numbers by Paint. Reading points: passages from Numbers by Paint and President Oedipus. Signs: Danæam from the Faerish dictionary."
     }
   ],
   "relations": [
@@ -349,6 +360,9 @@
         "obstacles-revenge",
         "people-who-dont-exist",
         "three-illustrations"
+      ],
+      "diorama": [
+        "elysicester"
       ]
     },
     "works_by_subtype": {
@@ -396,7 +410,8 @@
         "nature",
         "obstacles-revenge",
         "people-who-dont-exist",
-        "three-illustrations"
+        "three-illustrations",
+        "elysicester"
       ],
       "journal": [
         "president-oedipus"
@@ -436,7 +451,8 @@
       ],
       "2026": [
         "if-i-trusted",
-        "negative-interpretability"
+        "negative-interpretability",
+        "elysicester"
       ],
       "2027": [
         "false-cows"

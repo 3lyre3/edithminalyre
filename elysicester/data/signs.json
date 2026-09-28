@@ -9,7 +9,7 @@
       "gloss": "the sun to welcome",
       "provenance": "faerish/guideworde.html — the example under saílturn — welcome",
       "entry": "saílturn — welcome · 'Yáe dúe saílturn' — the sun to welcome.",
-      "status": "draft"
+      "status": "approved"
     },
     {
       "id": "cafe-coffee",
@@ -19,7 +19,7 @@
       "gloss": "coffee",
       "provenance": "faerish/guideworde.html — the entry Cafi — coffee (a loanword)",
       "entry": "Cafi — coffee · loanword",
-      "status": "draft"
+      "status": "approved"
     },
     {
       "id": "cafe-cafe",
@@ -29,7 +29,7 @@
       "gloss": "café",
       "provenance": "faerish/guideworde.html — the English index: café — Cafiarmaí",
       "entry": "café — Cafiarmaí",
-      "status": "draft"
+      "status": "approved"
     },
     {
       "id": "cafe-tea",
@@ -39,7 +39,7 @@
       "gloss": "tea",
       "provenance": "faerish/guideworde.html — the entry Sî — tea",
       "entry": "Sî — tea",
-      "status": "draft"
+      "status": "approved"
     },
     {
       "id": "flags-delight",
@@ -49,7 +49,7 @@
       "gloss": "delight-word",
       "provenance": "faerish/guideworde.html — the entry Ai’ai! — delight-word",
       "entry": "Ai’ai! — delight-word",
-      "status": "draft"
+      "status": "approved"
     },
     {
       "id": "steel-garden-garden",
@@ -59,7 +59,7 @@
       "gloss": "garden",
       "provenance": "faerish/guideworde.html — the English index: garden — Gârty",
       "entry": "garden — Gârty",
-      "status": "draft"
+      "status": "approved"
     },
     {
       "id": "steel-garden-gift",
@@ -69,7 +69,7 @@
       "gloss": "the unreturnable gift",
       "provenance": "faerish/guideworde.html — the entry Gil — the unreturnable gift",
       "entry": "Gil — the unreturnable gift",
-      "status": "draft"
+      "status": "approved"
     },
     {
       "id": "bridge-solar",
@@ -79,7 +79,7 @@
       "gloss": "a solar bridge",
       "provenance": "faerish/guideworde.html — the example under Brëch — bridge",
       "entry": "Brëch — bridge · 'yálénëách Brëch' — a solar bridge.",
-      "status": "draft"
+      "status": "approved"
     },
     {
       "id": "sky-grottos-notice",
@@ -89,7 +89,7 @@
       "gloss": "notice!",
       "provenance": "faerish/guideworde.html — the entry Air — notice!",
       "entry": "Air — notice!",
-      "status": "draft"
+      "status": "approved"
     },
     {
       "id": "sea-wall-ocean",
@@ -99,7 +99,7 @@
       "gloss": "ocean",
       "provenance": "faerish/guideworde.html — the entry Amár — ocean",
       "entry": "Amár — ocean",
-      "status": "draft"
+      "status": "approved"
     },
     {
       "id": "gas-station-power",
@@ -109,7 +109,7 @@
       "gloss": "power",
       "provenance": "faerish/guideworde.html — the English index: power — fultós",
       "entry": "power — fultós",
-      "status": "draft"
+      "status": "approved"
     },
     {
       "id": "edge-worldnt",
@@ -119,7 +119,7 @@
       "gloss": "worldn’t",
       "provenance": "faerish/guideworde.html — the entry Hthom — World, its liturgic case: Hthom’t “worldn’t”",
       "entry": "Hthom — World · may swallow whole clauses in the special liturgic case \"Hth’-…-’om\": Hthom’t “worldn’t”",
-      "status": "draft"
+      "status": "approved"
     },
     {
       "id": "gate-name",
@@ -130,7 +130,7 @@
       "gloss": "Elysicester",
       "provenance": "Elm, in conversation, 28 Sep 2026: “Elysicester's name in Danæam is: Êlyscaíniy”",
       "given": "Elm, 28 Sep 2026",
-      "status": "draft"
+      "status": "approved"
     }
   ]
 }
