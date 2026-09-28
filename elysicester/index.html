@@ -33,7 +33,18 @@
 
     <main id="diorama" class="diorama">
         <h1 class="visually-hidden">Elysicester</h1>
-        <canvas id="stage" class="stage"></canvas>
+        <canvas id="stage" class="stage" role="img" aria-label="Elysicester at dusk, a floating piece of the golden city. Drag to orbit it; pinch or scroll to come closer."></canvas>
+
+        <section id="fallback" class="fallback" aria-labelledby="fallback-title" hidden>
+            <picture class="fallback-still">
+                <source media="(orientation: portrait)" srcset="fallback-portrait.webp">
+                <img src="fallback.webp" width="1024" height="640" loading="lazy" alt="Elysicester at dusk: a floating piece of golden city on a hanging rock, spires and bridges climbing toward a mountain that hangs in the sky, the sea breaking silver and violet against its wall.">
+            </picture>
+            <div class="fallback-note">
+                <h2 id="fallback-title">Elysicester, held still</h2>
+                <p>This browser can't draw the city as it moves (it has no WebGL to lend), so Elysicester arrives as a still: one dusk, drawn once.</p>
+            </div>
+        </section>
     </main>
 
     <noscript>

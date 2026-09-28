@@ -6,72 +6,72 @@
       "tier": 1,
       "district": "docks",
       "label": "The sun-dock",
-      "position": [17, 0.4, 5],
-      "focus": { "distance": 16, "height": 6 }
+      "position": [12.4, 0.6, 5],
+      "focus": { "distance": 17, "height": 6 }
     },
     {
       "id": "jetty-cafes",
       "tier": 1,
       "district": "docks",
       "label": "The three cafés",
-      "position": [11, 2, -4],
-      "focus": { "distance": 15, "height": 6 }
+      "position": [13.4, 3.4, -3.2],
+      "focus": { "distance": 16, "height": 5 }
     },
     {
       "id": "flags",
       "tier": 1,
       "district": "crossroads",
       "label": "The turquoise flags",
-      "position": [5, 8, -3],
-      "focus": { "distance": 16, "height": 7 }
+      "position": [5, 8.4, -1],
+      "focus": { "distance": 18, "height": 5 }
     },
     {
       "id": "steel-garden",
       "tier": 1,
       "district": "crossroads",
       "label": "The Steel Garden",
-      "position": [4, 1.5, 7],
-      "focus": { "distance": 14, "height": 6 }
+      "position": [3, 1.6, 6],
+      "focus": { "distance": 15, "height": 6 }
     },
     {
       "id": "bridge",
       "tier": 1,
       "district": "spires",
       "label": "The golden bridgework",
-      "position": [-6, 11, -2],
-      "focus": { "distance": 20, "height": 6 }
+      "position": [-6.5, 13, -2],
+      "focus": { "distance": 26, "height": 4 }
     },
     {
       "id": "sky-grottos",
       "tier": 1,
       "district": "grottos",
       "label": "The sky-grottos",
-      "position": [-16, 24, -6],
-      "focus": { "distance": 20, "height": 2 }
+      "position": [-14.2, 24.6, -8.6],
+      "focus": { "distance": 21, "height": 1, "azimuth": 72 }
     },
     {
       "id": "sea-wall",
       "tier": 1,
       "district": "waterfront",
       "label": "The sea-wall",
-      "position": [10, 3, -13],
-      "focus": { "distance": 16, "height": 5 }
+      "position": [9.4, 3.3, -13],
+      "focus": { "distance": 16, "height": 4 }
     },
     {
       "id": "gas-station",
       "tier": 1,
       "district": "walkway",
       "label": "The gas station",
-      "position": [-3, 1.5, 13],
-      "focus": { "distance": 14, "height": 5 }
+      "position": [-2, 2.6, 14],
+      "focus": { "distance": 15, "height": 5 }
     },
     {
       "id": "edge",
       "tier": 1,
       "district": "rim",
       "label": "The edge",
-      "position": [27, 0, -12],
-      "focus": { "distance": 18, "height": 7 }
+      "position": [26, 0.9, -9.6],
+      "focus": { "distance": 18, "height": 6 }
     },
     {
       "id": "blue-beach",
