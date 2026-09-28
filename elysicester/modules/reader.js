@@ -3,8 +3,9 @@
  *
  * It shows one fragment exactly as it stands in its source (italics restored
  * from the fragment's "italic" list; blank lines keep their paragraphs), the
- * work and section it comes from, a "read on" link to the full text, and any
- * links the place hosts. Esc closes it, and focus returns to whatever opened it.
+ * work and section it comes from, a "read on" link to the full text (naming
+ * the page it opens at, where there is one), and any links the place hosts.
+ * Esc closes it, and focus returns to whatever opened it.
  */
 
 // =============================================================================
@@ -54,6 +55,7 @@ export function createReader({ dialog, places, onClose }) {
     const body = dialog.querySelector('[data-reader-text]');
     const source = dialog.querySelector('[data-reader-source]');
     const readOn = dialog.querySelector('[data-reader-read-on]');
+    const readOnWords = [...readOn.childNodes].find((node) => node.nodeType === Node.TEXT_NODE) ?? readOn.insertBefore(document.createTextNode(''), readOn.firstChild);
     const alsoBlock = dialog.querySelector('[data-reader-also]');
     const alsoList = dialog.querySelector('[data-reader-also-list]');
     let returnTo = null;
@@ -92,6 +94,9 @@ export function createReader({ dialog, places, onClose }) {
             }
             source.textContent = `${WORKS[fragment.work] ?? ''}, ${fragment.source}`;
             readOn.href = fragment.read_on;
+            // Phones' PDF viewers open at the first page whatever the address asks, so the link names its page.
+            const page = /#page=(\d+)/.exec(fragment.read_on)?.[1];
+            readOnWords.nodeValue = page ? `read on from p. ${page}` : 'read on';
 
             alsoList.replaceChildren();
             for (const link of place?.links ?? []) {
