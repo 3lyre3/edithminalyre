@@ -33,6 +33,7 @@ import { OrbitRig } from './rigs/orbit.js';
 import { createSea } from './sea.js';
 import { createSigns } from './signs.js';
 import { createSky } from './sky.js';
+import { createSolids } from './solids.js';
 import { createWisp } from './wisp.js';
 
 // =============================================================================
@@ -176,6 +177,14 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
     else renderer.compile(scene, camera);
     renderer.setRenderTarget(null);
 
+    // What the camera may not pass through is worked out in a worker while the flight plays;
+    // until it's ready, the camera orbits free.
+    await pause();
+    const solids = createSolids(scene);
+    solids.ready.then((ok) => {
+        if (ok) rig.setSolids(solids);
+    });
+
     const frameListeners = [];
     const readout = debug ? createReadout() : null;
     let running = false;
@@ -219,6 +228,7 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         rig,
         anchors: places.anchors,
         signs,
+        solids,
         canvas,
         start() {
             if (running) return;
@@ -244,6 +254,6 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         },
     };
 
-    if (debug) Object.assign(window.elysicesterDebug ??= {}, { info: () => stage.info(), rig, stage });
+    if (debug) Object.assign(window.elysicesterDebug ??= {}, { info: () => stage.info(), rig, stage, solids });
     return stage;
 }

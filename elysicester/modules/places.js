@@ -581,9 +581,10 @@ function buildFlags({ buckets, place, random, byId, mounts }) {
     span.normalize();
     const facing = new Vector3(span.z, 0, -span.x);
     const middle = new Vector3((east1[0] + east2[0]) / 2, rodY, (east1[1] + east2[1]) / 2);
+    // (Rods, wires and strings are drawn but passable: the camera never bumps into a thread.)
     buckets.add('steel', cylinder(0.035, 0.035, rodLength, 5, {
         x: middle.x, y: rodY, z: middle.z, rx: Math.PI / 2, ry: Math.atan2(span.x, span.z),
-    }, STEEL_DARK));
+    }, STEEL_DARK), { passable: true });
     mount(mounts, 'flags/banner', {
         position: middle.clone().add(new Vector3(0, -0.46, 0)).addScaledVector(facing, 0.03),
         normal: facing,
@@ -599,7 +600,7 @@ function buildFlags({ buckets, place, random, byId, mounts }) {
     ]);
     for (const [a, b] of wires) {
         const curve = sagging(a, b, 0.25);
-        buckets.add('steel', paint(new TubeGeometry(curve, 16, 0.03, 3, false), STEEL_DARK));
+        buckets.add('steel', paint(new TubeGeometry(curve, 16, 0.03, 3, false), STEEL_DARK), { passable: true });
     }
 
     const [gx, , gz] = byId.get('steel-garden').position;
@@ -616,7 +617,7 @@ function buildFlags({ buckets, place, random, byId, mounts }) {
 
     strings.forEach(([from, to], stringIndex) => {
         const curve = sagging(anchorsHigh[from], anchorsHigh[to], random.range(0.7, 1.4));
-        buckets.add('steel', paint(new TubeGeometry(curve, 20, 0.02, 3, false), STEEL_DARK));
+        buckets.add('steel', paint(new TubeGeometry(curve, 20, 0.02, 3, false), STEEL_DARK), { passable: true });
         const length = curve.getLength();
         const ribbon = stringIndex % 3 === 2;
         if (ribbon) {

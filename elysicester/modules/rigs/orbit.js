@@ -7,6 +7,11 @@
  * motion. focus(placeId) eases the camera toward a named place (and cuts
  * straight there under reduced motion).
  *
+ * Once it's given the city's solids (setSolids), the camera never enters the
+ * rock, the mountain, a spire or a house: it slides along whatever it meets,
+ * and takes where it ends up as its own place, so no drag is lost pressing on
+ * a wall.
+ *
  * Every rig exposes attach(camera, domElement), update(dt), focus(placeId) and
  * dispose(), so later tiers can swap in a rail rig or a walking rig.
  */
@@ -31,6 +36,10 @@ const POLAR_MAX = 1.95;
 const RADIUS_MIN = 7;
 const TAP_SLOP = 7;
 const TAP_TIME = 800;
+/** How near the camera may come to anything solid (past the near plane's corners). */
+const CLEARANCE = 0.7;
+/** On a flight to a place, how far something may hold the camera back from its path before it lets go. */
+const LET_GO = 3;
 
 /** Half the height and width, in world units, the whole-diorama view must hold. */
 const HALF_HEIGHT = 37;
@@ -74,6 +83,18 @@ export class OrbitRig {
         this.camera = null;
         this.element = null;
         this.listeners = [];
+        this.solids = null;
+        this.placed = false;
+        this.gliding = false;
+        this.nominal = new Vector3();
+        this.resolved = new Vector3();
+        this.offset = new Vector3();
+        this.probe = new Vector3();
+    }
+
+    /** Keep the camera out of the city's solids (from solids.js) from now on. */
+    setSolids(solids) {
+        this.solids = solids;
     }
 
     attach(camera, element) {
@@ -94,6 +115,7 @@ export class OrbitRig {
         listen(element, 'pointermove', (event) => {
             const pointer = this.pointers.get(event.pointerId);
             if (!pointer) return;
+            if (event.clientX !== pointer.x || event.clientY !== pointer.y) this.takeOver();
             const rect = element.getBoundingClientRect();
             if (this.pointers.size === 1) {
                 this.goal.theta -= ((event.clientX - pointer.x) / rect.width) * DRAG;
@@ -157,8 +179,19 @@ export class OrbitRig {
     }
 
     zoomBy(factor) {
+        this.takeOver();
         this.goal.radius = MathUtils.clamp(this.goal.radius * factor, RADIUS_MIN, this.radiusMax);
         this.atHome = false;
+    }
+
+    /**
+     * The visitor's hands are on the camera again: a flight to a place (which
+     * follows its own path round whatever is in the way) ends where the camera
+     * really is, and from here on it presses against what it meets.
+     */
+    takeOver() {
+        if (this.gliding && this.solids?.available && this.placed) this.adopt(this.now, this.camera.position);
+        this.gliding = false;
     }
 
     /** Frame the whole diorama for this aspect ratio and vertical field of view. */
@@ -187,6 +220,7 @@ export class OrbitRig {
         this.goal.theta = this.now.theta + shortest(this.home.theta - this.now.theta);
         this.atHome = true;
         this.idle = 0;
+        this.gliding = true;
     }
 
     /**
@@ -208,6 +242,7 @@ export class OrbitRig {
         this.goal.theta = this.now.theta + shortest(theta - this.now.theta);
         this.atHome = false;
         this.idle = 0;
+        this.gliding = true;
         return true;
     }
 
@@ -216,6 +251,7 @@ export class OrbitRig {
         const turn = (this.keys.has('ArrowLeft') ? 1 : 0) - (this.keys.has('ArrowRight') ? 1 : 0);
         const tilt = (this.keys.has('ArrowUp') ? 1 : 0) - (this.keys.has('ArrowDown') ? 1 : 0);
         if (turn || tilt) {
+            this.takeOver();
             this.goal.theta += turn * KEY_TURN * dt;
             this.goal.phi = MathUtils.clamp(this.goal.phi - tilt * KEY_TURN * 0.6 * dt, POLAR_MIN, POLAR_MAX);
             this.idle = 0;
@@ -228,13 +264,67 @@ export class OrbitRig {
         this.now.theta += (this.goal.theta - this.now.theta) * k;
         this.now.phi += (this.goal.phi - this.now.phi) * k;
 
-        const sinPhi = Math.sin(this.now.phi);
-        this.camera.position.set(
-            this.now.target.x + this.now.radius * sinPhi * Math.sin(this.now.theta),
-            this.now.target.y + this.now.radius * Math.cos(this.now.phi),
-            this.now.target.z + this.now.radius * sinPhi * Math.cos(this.now.theta),
-        );
+        this.positionOf(this.now, this.nominal);
+        if (this.solids?.available) {
+            // Slide from where the camera was to where it's going (or, under reduced motion, cut
+            // there and step out of anything solid).
+            if (this.reducedMotion || !this.placed) this.solids.push(this.resolved.copy(this.nominal), CLEARANCE);
+            else this.solids.sweep(this.camera.position, this.nominal, CLEARANCE, this.resolved);
+            if (this.gliding) {
+                // A flight to a place keeps to its own path: the camera slides round what stands in
+                // the way and, if something big holds it back, lets go and rejoins the path past it.
+                if (this.resolved.distanceTo(this.nominal) > LET_GO) this.solids.push(this.resolved.copy(this.nominal), CLEARANCE);
+                if (this.arrived()) {
+                    this.gliding = false;
+                    this.adopt(this.now, this.resolved);
+                }
+            } else if (this.resolved.distanceToSquared(this.nominal) > 1e-10) {
+                // The visitor's own moves press on what they meet: where the camera ends up is its place.
+                this.adopt(this.now, this.resolved);
+            }
+            this.keepClear(this.goal);
+            this.camera.position.copy(this.resolved);
+        } else {
+            this.camera.position.copy(this.nominal);
+        }
+        this.placed = true;
         this.camera.lookAt(this.now.target);
+    }
+
+    /** True once the eased state has all but reached the goal. */
+    arrived() {
+        return this.now.target.distanceToSquared(this.goal.target) < 1e-4
+            && Math.abs(this.now.radius - this.goal.radius) < 0.01
+            && Math.abs(this.now.theta - this.goal.theta) < 1e-3
+            && Math.abs(this.now.phi - this.goal.phi) < 1e-3;
+    }
+
+    /** Where a state's camera stands: its angles and radius about its target. */
+    positionOf(state, out) {
+        const sinPhi = Math.sin(state.phi);
+        return out.set(
+            state.target.x + state.radius * sinPhi * Math.sin(state.theta),
+            state.target.y + state.radius * Math.cos(state.phi),
+            state.target.z + state.radius * sinPhi * Math.cos(state.theta),
+        );
+    }
+
+    /** Take a camera position as a state's own: its radius and angles about the state's target. */
+    adopt(state, position) {
+        this.offset.subVectors(position, state.target);
+        const radius = this.offset.length();
+        if (radius < 1e-6) return;
+        state.radius = radius;
+        state.phi = Math.acos(MathUtils.clamp(this.offset.y / radius, -1, 1));
+        state.theta += shortest(Math.atan2(this.offset.x, this.offset.z) - state.theta);
+    }
+
+    /** If the goal itself lies in rock or wall, move it out to open air: a drag never sinks into a dead zone. */
+    keepClear(state) {
+        const point = this.positionOf(state, this.probe);
+        if (this.solids.distance(point) >= CLEARANCE) return;
+        this.solids.push(point, CLEARANCE);
+        this.adopt(state, point);
     }
 
     dispose() {

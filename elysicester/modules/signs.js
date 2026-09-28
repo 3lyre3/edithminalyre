@@ -384,6 +384,8 @@ export function readingDistance(entry) {
 // =============================================================================
 
 const HIDE_AFTER_TAP_MS = 4500;
+/** A reading view stands at least this far from anything solid (more than the camera's own clearance). */
+const VIEW_ROOM = 1.2;
 /** A reading point this close to a tap keeps it, even over a sign. */
 const POINT_KEEPS_TAP_PX = 18;
 
@@ -449,7 +451,7 @@ export function createSignList({ list, signs, places, onFocusSign }) {
  * @param {() => boolean} options.isBusy - true while a reading point is lit or the reader is open
  */
 export function createSignOverlay({ stage, label, isBusy }) {
-    const { camera, canvas, rig, signs, scene } = stage;
+    const { camera, canvas, rig, signs, scene, solids } = stage;
     const raycaster = new Raycaster();
     const pointer = new Vector2();
     const projected = new Vector3();
@@ -525,6 +527,11 @@ export function createSignOverlay({ stage, label, isBusy }) {
         return clearFrom(camera.position, entry);
     }
 
+    /** True if the camera could stand at `eye` without the solids moving it (solids.js keeps it clear). */
+    function roomy(eye) {
+        return !solids?.available || solids.distance(eye) >= VIEW_ROOM;
+    }
+
     /** Points around the plate, well clear of its edges: a view that sees them isn't peering through a gap. */
     function marginPoints(entry) {
         const points = [];
@@ -567,7 +574,7 @@ export function createSignOverlay({ stage, label, isBusy }) {
         for (const candidate of candidates) {
             const across = Math.sqrt(1 - candidate.lift * candidate.lift) * candidate.reach;
             eye.set(Math.sin(candidate.theta) * across, candidate.lift * candidate.reach, Math.cos(candidate.theta) * across).add(entry.centre);
-            if (!openSky(eye) || !clearFrom(eye, entry)) continue;
+            if (!openSky(eye) || !roomy(eye) || !clearFrom(eye, entry)) continue;
             fallback ??= candidate;
             if (margins.every((point) => clearLine(eye, point))) {
                 chosen = candidate;
@@ -579,9 +586,10 @@ export function createSignOverlay({ stage, label, isBusy }) {
         return view;
     }
 
-    // Find every sign's view in idle moments, one sign at a time, so focusing one never waits.
+    // Find every sign's view in idle moments, one sign at a time, so focusing one never waits:
+    // once the solids are known (views found before then are found again, with room to stand).
     const idle = window.requestIdleCallback ?? ((callback) => setTimeout(callback, 60));
-    const pending = [...signs.entries];
+    const pending = [];
     let searchMs = 0;
     const prepareNext = () => {
         const entry = pending.shift();
@@ -591,7 +599,11 @@ export function createSignOverlay({ stage, label, isBusy }) {
         searchMs += performance.now() - started;
         idle(prepareNext);
     };
-    idle(prepareNext);
+    (solids?.ready ?? Promise.resolve(false)).then(() => {
+        views.clear();
+        pending.push(...signs.entries);
+        idle(prepareNext);
+    });
 
     canvas.addEventListener('pointermove', (event) => {
         if (event.pointerType !== 'mouse' || event.buttons || pinned) return;

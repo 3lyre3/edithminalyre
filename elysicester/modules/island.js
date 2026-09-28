@@ -20,7 +20,9 @@ import {
     Vector3,
 } from 'three';
 import {
+    CLIFF_DEPTH,
     SEA_LEVEL,
+    UNDERSIDE_DEPTH,
     createRandom,
     fbm2,
     groundY,
@@ -37,9 +39,7 @@ import {
 
 const SEGMENTS = 144;
 const GROUND_RINGS = 16;
-const CLIFF_DEPTH = 3.4;
 const UNDERSIDE_RINGS = 11;
-const UNDERSIDE_DEPTH = 22;
 
 const PAVEMENT = new Color(0x9a7440);
 const PAVEMENT_DARK = new Color(0x6a5030);
@@ -258,5 +258,5 @@ export function buildIsland(buckets) {
     buckets.add('stone', buildRock());
     const { spikes, roots } = buildHangings(random);
     for (const spike of spikes) buckets.add('stone', spike);
-    for (const root of roots) buckets.add('stone', root);
+    for (const root of roots) buckets.add('stone', root, { passable: true });
 }
