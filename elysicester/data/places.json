@@ -39,7 +39,7 @@
       "district": "spires",
       "label": "The golden bridgework",
       "position": [-6.5, 13, -2],
-      "focus": { "distance": 26, "height": 4 }
+      "focus": { "distance": 26, "height": 4, "azimuth": 40 }
     },
     {
       "id": "sky-grottos",
@@ -47,7 +47,10 @@
       "district": "grottos",
       "label": "The sky-grottos",
       "position": [-14.2, 24.6, -8.6],
-      "focus": { "distance": 21, "height": 1, "azimuth": 72 }
+      "focus": { "distance": 21, "height": 1, "azimuth": 72 },
+      "links": [
+        { "href": "/duy-ruth.html", "label": "Faerish — Danæam" }
+      ]
     },
     {
       "id": "sea-wall",
@@ -55,7 +58,14 @@
       "district": "waterfront",
       "label": "The sea-wall",
       "position": [9.4, 3.3, -13],
-      "focus": { "distance": 16, "height": 4 }
+      "focus": { "distance": 16, "height": 4 },
+      "links": [
+        { "href": "/essays/otototoi.html", "label": "Otototoi Popoi Da" },
+        { "href": "/essays/big-nothings.html", "label": "Big Nothings" },
+        { "href": "/essays/broken-memory.html", "label": "Broken Memory, Then Nothing" },
+        { "href": "/stories/mycenae-gate.html", "label": "The Mycenae Gate" },
+        { "href": "/stories/song-of-paris.html", "label": "The Song of Paris" }
+      ]
     },
     {
       "id": "gas-station",

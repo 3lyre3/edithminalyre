@@ -236,6 +236,12 @@ async function checkFragments(fragments, placeIds) {
         }
         if (!STATUSES.has(fragment.status)) fail(`${where}: status must be "draft" or "approved"`);
         if (fragment.offset !== undefined && !isVector(fragment.offset)) fail(`${where}: offset must be [x, y, z]`);
+        if (fragment.facing !== undefined && !Number.isFinite(fragment.facing)) fail(`${where}: facing must be a number of degrees`);
+        for (const run of fragment.italic ?? []) {
+            if (typeof run !== 'string' || !fragment.text?.includes(run)) {
+                fail(`${where}: italic run ${JSON.stringify(run)} is not part of the text`);
+            }
+        }
         const problem = await checkTarget(`${where} read_on`, fragment.read_on);
         if (problem) fail(problem);
     }

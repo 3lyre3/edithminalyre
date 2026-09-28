@@ -1,4 +1,282 @@
 {
   "schema": 1,
-  "fragments": []
+  "fragments": [
+    {
+      "id": "nbp-e3-sun-dock-1",
+      "place": "sun-dock",
+      "work": "nbp",
+      "source": "Agamemnon, Episode 3 (thesis p. 49)",
+      "text": "A sun-dock unfurled from the wall and grew upon the water’s surface, awaiting his arrival.",
+      "read_on": "https://digital.library.adelaide.edu.au/server/api/core/bitstreams/9cbedc1a-5eac-4ee5-b909-320c83028bba/content#page=49",
+      "offset": [
+        0,
+        0.4,
+        0
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "po-sun-dock-2",
+      "place": "sun-dock",
+      "work": "po",
+      "source": "Overland 239 (2020)",
+      "text": "Sometimes I arrive halfway through a conversation and have to think, yeah, if I’d arrived for the start of all of this nothing would’ve made sense, thank God I came late.",
+      "read_on": "https://overland.org.au/previous-issues/issue-239/feature-president-oedipus-or-the-democratisation-of-schizophrenia/#:~:text=Sometimes%20I%20arrive%20halfway",
+      "offset": [
+        2.4,
+        1.2,
+        -1.6
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "nbp-e3-jetty-cafes-1",
+      "place": "jetty-cafes",
+      "work": "nbp",
+      "source": "Agamemnon, Episode 3 (thesis p. 49)",
+      "text": "Right ahead at the beginnings of the jetty three brick-red, steepled cafés faced out like actors centre-stage. Angled to shine up every face, no café less equal.",
+      "read_on": "https://digital.library.adelaide.edu.au/server/api/core/bitstreams/9cbedc1a-5eac-4ee5-b909-320c83028bba/content#page=49",
+      "offset": [
+        0,
+        0,
+        0
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "nbp-e3-jetty-cafes-2",
+      "place": "jetty-cafes",
+      "work": "nbp",
+      "source": "Agamemnon, Episode 3 (thesis p. 54)",
+      "text": "She eats a croissant, leaves her favourite café, coffee in hand, and plots opposite the sun. Striking an ambling pace for the sky-grottos.",
+      "read_on": "https://digital.library.adelaide.edu.au/server/api/core/bitstreams/9cbedc1a-5eac-4ee5-b909-320c83028bba/content#page=54",
+      "offset": [
+        -0.6,
+        -2.2,
+        3.4
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "nbp-e3-flags-1",
+      "place": "flags",
+      "work": "nbp",
+      "source": "Agamemnon, Episode 3 (thesis p. 49)",
+      "text": "Turquoise flags ribboned the skies above the gaps, gangways, connecting balconies, crisscrossing tram-wires, slapping at the faces of the tallest travellers, tangling the sycamores’ heights, frayed and blackened where they graced the electric lines.",
+      "read_on": "https://digital.library.adelaide.edu.au/server/api/core/bitstreams/9cbedc1a-5eac-4ee5-b909-320c83028bba/content#page=49",
+      "offset": [
+        0,
+        0,
+        0
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "nbp-e3-flags-2",
+      "place": "flags",
+      "work": "nbp",
+      "source": "Agamemnon, Episode 3 (thesis p. 50)",
+      "text": "Looking from tree to waterfront, the shadow saw a composite ecosystem, turquoise ribbons dangling from the sky as seaweed bubbled from the shoreline.",
+      "read_on": "https://digital.library.adelaide.edu.au/server/api/core/bitstreams/9cbedc1a-5eac-4ee5-b909-320c83028bba/content#page=50",
+      "offset": [
+        -2.2,
+        -0.6,
+        3.2
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "nbp-e3-steel-garden-1",
+      "place": "steel-garden",
+      "work": "nbp",
+      "source": "Agamemnon, Episode 3 (thesis p. 49)",
+      "text": "At the feet of the traveller-throng, tumbling, bumbling here and there among the Elysian crossroads, small dogs scrambled, snuffling at the water-front, lifting chunks of moss-algae and running with them to the Steel Garden, to lay at the claws of the bird statues there. Gifts. Moss, in consequence, had overrun the garden.",
+      "read_on": "https://digital.library.adelaide.edu.au/server/api/core/bitstreams/9cbedc1a-5eac-4ee5-b909-320c83028bba/content#page=49",
+      "offset": [
+        1.6,
+        0.3,
+        -1.8
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "nbp-e3-steel-garden-2",
+      "place": "steel-garden",
+      "work": "nbp",
+      "source": "Agamemnon, Episode 3 (thesis p. 50)",
+      "text": "Algae dripped from the albatrosses’ wings, the ibises’ spear-like beaks. It overgrew the seagulls’ claws, encased them in the steel of the garden-floor. From the centre, a solitary, steel sycamore — caked all bluish-green — writhed upwards, into the hanging flags where the colours mingled.",
+      "read_on": "https://digital.library.adelaide.edu.au/server/api/core/bitstreams/9cbedc1a-5eac-4ee5-b909-320c83028bba/content#page=50",
+      "offset": [
+        -1.4,
+        1.6,
+        1.4
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "nbp-e3-bridge-1",
+      "place": "bridge",
+      "work": "nbp",
+      "source": "Agamemnon, Episode 3 (thesis p. 54)",
+      "text": "Long staircases direct her by underground, vine-ridden plazas, a mess of golden ribbons, to mounting, golden bridges, rising from twist to twist, curling spire to spire, tossing her coffee down an amethystine trash chute.",
+      "read_on": "https://digital.library.adelaide.edu.au/server/api/core/bitstreams/9cbedc1a-5eac-4ee5-b909-320c83028bba/content#page=54",
+      "offset": [
+        0,
+        0,
+        0
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "nbp-e3-bridge-2",
+      "place": "bridge",
+      "work": "nbp",
+      "source": "Agamemnon, Episode 3 (thesis p. 54)",
+      "text": "Lets a loud, bronze hummingbird, dripping with steam, bring her a second cup that, after fixing her hair, she accepts with a tiny squeeze of the hummingbird’s beak. Its wings flap extra quick. Blushes. Flits back to the anonymity of the enormous, deep-tangling bridgework. One of countless hums.",
+      "read_on": "https://digital.library.adelaide.edu.au/server/api/core/bitstreams/9cbedc1a-5eac-4ee5-b909-320c83028bba/content#page=54",
+      "offset": [
+        1.4,
+        3.0,
+        2.6
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "nbp-e3-sky-grottos-1",
+      "place": "sky-grottos",
+      "work": "nbp",
+      "source": "Agamemnon, Episode 3 (thesis p. 55)",
+      "text": "From the tenth storey, then across the sky-parade, the spire’s verti-pool leads her to the inner gate of the sky-grottos. Through its cold, white arches, she yawns relief. For troubled, claustrophobic thoughts, there’s nothing quite like passing under the frame of an unfamiliar door.",
+      "read_on": "https://digital.library.adelaide.edu.au/server/api/core/bitstreams/9cbedc1a-5eac-4ee5-b909-320c83028bba/content#page=55",
+      "offset": [
+        0.9,
+        -0.2,
+        0
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "nbp-e3-sky-grottos-2",
+      "place": "sky-grottos",
+      "work": "nbp",
+      "source": "Agamemnon, Episode 3 (thesis p. 55)",
+      "text": "Cassandra stood at the strange, yellow door, unsure what brought her to it. Her hand lay on the metal knob, ready to turn — but why was she here? You can’t just go opening doors.",
+      "read_on": "https://digital.library.adelaide.edu.au/server/api/core/bitstreams/9cbedc1a-5eac-4ee5-b909-320c83028bba/content#page=55",
+      "italic": [
+        "You can’t just go opening doors."
+      ],
+      "offset": [
+        -5.0,
+        2.9,
+        4.2
+      ],
+      "facing": 20,
+      "status": "draft"
+    },
+    {
+      "id": "nbp-e1-sea-wall-1",
+      "place": "sea-wall",
+      "work": "nbp",
+      "source": "Agamemnon, Episode 1 (thesis p. 35)",
+      "text": "Against the city-walls of Elysicester, the sea erupts in bursts of silver and violet, tumbling up the golden bricking. Cassandra gazes long along the precipice, scratching her teeth, blinking, trying to order her thoughts.",
+      "read_on": "https://digital.library.adelaide.edu.au/server/api/core/bitstreams/9cbedc1a-5eac-4ee5-b909-320c83028bba/content#page=35",
+      "offset": [
+        0,
+        0,
+        0
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "nbp-e1-sea-wall-2",
+      "place": "sea-wall",
+      "work": "nbp",
+      "source": "Agamemnon, Episode 1 (thesis p. 35)",
+      "text": "It scared her, some nights, the ocean. Only when it was endless. If even one prick of light stood out, anywhere, it made a different scene. Then, the world was only huge. Islands far apart but still there— world just enormous, not empty.",
+      "read_on": "https://digital.library.adelaide.edu.au/server/api/core/bitstreams/9cbedc1a-5eac-4ee5-b909-320c83028bba/content#page=35",
+      "offset": [
+        2.2,
+        -2.8,
+        1.6
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "po-gas-station-1",
+      "place": "gas-station",
+      "work": "po",
+      "source": "Overland 239 (2020)",
+      "text": "Gas stations are the most plausible, believable structures in the world. That gas stations were bound to exist, thereby have always existed, is intuitive. City or country or carved into the cliffside of a tumbling, Alpine ravine, they don’t change.",
+      "read_on": "https://overland.org.au/previous-issues/issue-239/feature-president-oedipus-or-the-democratisation-of-schizophrenia/#:~:text=Gas%20stations%20are%20the%20most%20plausible",
+      "italic": [
+        "have always existed"
+      ],
+      "offset": [
+        0,
+        0.6,
+        0.6
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "nbp-e1-gas-station-2",
+      "place": "gas-station",
+      "work": "nbp",
+      "source": "Agamemnon, Episode 1 (thesis p. 32)",
+      "text": "Set apart from the golden walls, dividing the walkway either side of it, there stood a peculiar structure, its frames bearing no gold, nor any metal, by appearances made all of glass.",
+      "read_on": "https://digital.library.adelaide.edu.au/server/api/core/bitstreams/9cbedc1a-5eac-4ee5-b909-320c83028bba/content#page=32",
+      "offset": [
+        2.4,
+        -0.9,
+        2.2
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "po-edge-1",
+      "place": "edge",
+      "work": "po",
+      "source": "Overland 239 (2020)",
+      "text": "Every time you load his skin it glitches. You drive right through the star fence, off the edge, and don’t fall, don’t get to die, don’t get to re-spawn.\n           You have to reboot to start another match.",
+      "read_on": "https://overland.org.au/previous-issues/issue-239/feature-president-oedipus-or-the-democratisation-of-schizophrenia/#:~:text=Every%20time%20you%20load%20his%20skin",
+      "offset": [
+        0,
+        0,
+        0
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "nbp-e1-edge-2",
+      "place": "edge",
+      "work": "nbp",
+      "source": "Agamemnon, Episode 1 (thesis p. 30)",
+      "text": "Elysicester was their moon, the one moon Elysium needed. Now it was sinking into the dark. From the shores, Elysicester’s fata-morganic aspect (how, in the endless dusk of Elysium, the city would glimmer above the horizon) had long vanished.",
+      "read_on": "https://digital.library.adelaide.edu.au/server/api/core/bitstreams/9cbedc1a-5eac-4ee5-b909-320c83028bba/content#page=30",
+      "offset": [
+        -1.4,
+        2.2,
+        2.8
+      ],
+      "status": "draft"
+    },
+    {
+      "id": "nbp-e3-intermaze-1",
+      "place": "intermaze",
+      "work": "nbp",
+      "source": "Agamemnon, Episode 3 (thesis p. 53)",
+      "text": "They?\n\nThat’s what the Shopkeeper told me.\n\nWhen did he tell us?\n\nIn a dream.\n\nOh.\n\nYes you never remember the dreams.",
+      "read_on": "https://digital.library.adelaide.edu.au/server/api/core/bitstreams/9cbedc1a-5eac-4ee5-b909-320c83028bba/content#page=53",
+      "status": "draft"
+    },
+    {
+      "id": "nbp-e3-intermaze-2",
+      "place": "intermaze",
+      "work": "nbp",
+      "source": "Agamemnon, Episode 3 (thesis p. 54)",
+      "text": "E sighs against the rail. At last, her adventure is truly underway.",
+      "read_on": "https://digital.library.adelaide.edu.au/server/api/core/bitstreams/9cbedc1a-5eac-4ee5-b909-320c83028bba/content#page=54",
+      "status": "draft"
+    }
+  ]
 }

@@ -10,14 +10,17 @@
  *   desktop  1280×800
  *   mobile   390×844 (touch, device pixel ratio 3)
  *   reduced  1280×800 with prefers-reduced-motion
- *   nogl     1280×800 with WebGL disabled
- * Each records console errors and failed requests, reads renderer.info through
- * ?debug=1, drags to orbit (mouse or real touch events) and screenshots before
- * and after. The reduced pass also waits past the idle delay to confirm the
- * view doesn't drift. Headless frame rates mean nothing; Elm's phone judges
- * smoothness.
+ *   nogl     1280×800 with WebGL disabled (the still and its list)
+ * In each: console errors and failed requests are recorded, renderer.info is
+ * read through ?debug=1, the view is dragged (mouse, or real touch points),
+ * every reading point is opened by pointer (or, in the still, by its link) and
+ * by keyboard (Tab, Enter, Esc, and focus must come back), each panel is
+ * screenshotted and scanned with axe, and a reload must keep read points dim.
+ * The reduced pass also waits past the idle delay to confirm nothing drifts.
+ * Before the passes, every outside "read on" address is asked whether it
+ * answers. Headless frame rates mean nothing; Elm's phone judges smoothness.
  *
- *   node scripts/shoot-elysicester.mjs [--out <dir>] [--only desktop,mobile]
+ *   node scripts/shoot-elysicester.mjs [--out <dir>] [--only desktop,mobile] [--quick]
  *   node scripts/shoot-elysicester.mjs --stills    (re-render the fallback stills)
  */
 
@@ -27,6 +30,7 @@
 
 import { createServer } from 'node:http';
 import { mkdir, readFile, stat, writeFile } from 'node:fs/promises';
+import { createRequire } from 'node:module';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -36,9 +40,11 @@ import { fileURLToPath } from 'node:url';
 // =============================================================================
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
+const require = createRequire(import.meta.url);
 const CHROMIUM_ARGS = ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'];
 const NO_WEBGL_ARGS = ['--disable-webgl', '--disable-3d-apis'];
 const LOAD_TIMEOUT = 90_000;
+const SERIOUS = new Set(['serious', 'critical']);
 
 const MIME = {
     '.html': 'text/html; charset=utf-8',
@@ -56,10 +62,10 @@ const MIME = {
 };
 
 const PASSES = {
-    desktop: { viewport: { width: 1280, height: 800 } },
+    desktop: { viewport: { width: 1280, height: 800 }, keyboard: true },
     mobile: { viewport: { width: 390, height: 844 }, deviceScaleFactor: 3, isMobile: true, hasTouch: true },
-    reduced: { viewport: { width: 1280, height: 800 }, reducedMotion: 'reduce', checkStillness: true },
-    nogl: { viewport: { width: 1280, height: 800 }, noWebGL: true },
+    reduced: { viewport: { width: 1280, height: 800 }, reducedMotion: 'reduce', checkStillness: true, keyboard: true },
+    nogl: { viewport: { width: 1280, height: 800 }, noWebGL: true, keyboard: true },
 };
 
 const STILLS = [
@@ -113,7 +119,10 @@ async function openPass(chromium, pass) {
         if (['error', 'warning'].includes(message.type())) messages.push(`${message.type()}: ${message.text()}`);
     });
     page.on('pageerror', (error) => messages.push(`pageerror: ${error.message}`));
-    page.on('requestfailed', (request) => failures.push(`${request.url()} (${request.failure()?.errorText})`));
+    page.on('requestfailed', (request) => {
+        // Leaving the page mid-request (a reload) is not a failure of the page.
+        if (request.failure()?.errorText !== 'net::ERR_ABORTED') failures.push(`${request.url()} (${request.failure()?.errorText})`);
+    });
     page.on('response', (response) => {
         if (response.status() >= 400) failures.push(`${response.url()} (HTTP ${response.status()})`);
     });
@@ -140,30 +149,33 @@ async function rigAngles(page) {
     });
 }
 
+async function touch(context, page, points) {
+    const client = await context.newCDPSession(page);
+    const [first, ...rest] = points;
+    await client.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [first] });
+    for (const point of rest) await client.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [point] });
+    await client.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+    await client.detach();
+}
+
 /** Drag across the canvas: a mouse on desktop, real touch points on touch devices. */
-async function drag(page, context, touch, from, to) {
-    if (!touch) {
-        await page.mouse.move(from.x, from.y);
-        await page.mouse.down();
-        for (let step = 1; step <= 12; step += 1) {
-            await page.mouse.move(from.x + ((to.x - from.x) * step) / 12, from.y + ((to.y - from.y) * step) / 12);
-        }
-        await page.mouse.up();
+async function drag(page, context, isTouch, from, to) {
+    const steps = Array.from({ length: 12 }, (_, index) => ({
+        x: from.x + ((to.x - from.x) * (index + 1)) / 12,
+        y: from.y + ((to.y - from.y) * (index + 1)) / 12,
+    }));
+    if (isTouch) {
+        await touch(context, page, [from, ...steps]);
         return;
     }
-    const client = await context.newCDPSession(page);
-    await client.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: from.x, y: from.y }] });
-    for (let step = 1; step <= 12; step += 1) {
-        await client.send('Input.dispatchTouchEvent', {
-            type: 'touchMove',
-            touchPoints: [{ x: from.x + ((to.x - from.x) * step) / 12, y: from.y + ((to.y - from.y) * step) / 12 }],
-        });
-    }
-    await client.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+    await page.mouse.move(from.x, from.y);
+    await page.mouse.down();
+    for (const step of steps) await page.mouse.move(step.x, step.y);
+    await page.mouse.up();
 }
 
 async function hideChrome(page) {
-    await page.addStyleTag({ content: '.plainly, .debug-readout { visibility: hidden !important; }' });
+    await page.addStyleTag({ content: '.plainly, .debug-readout, .home-view { visibility: hidden !important; }' });
 }
 
 /** Encode a PNG as a WebP of the given size, using the browser's own encoder. */
@@ -182,6 +194,132 @@ async function toWebP(page, png, width, height) {
         context.drawImage(image, 0, 0, targetWidth, targetHeight);
         return canvas.toDataURL('image/webp', 0.8).split(',')[1];
     }, { source: `data:image/png;base64,${png.toString('base64')}`, width, height });
+}
+
+// -----------------------------------------------------------------------------
+// The reader and its points
+// -----------------------------------------------------------------------------
+
+async function readerState(page) {
+    return page.evaluate(() => ({
+        open: document.getElementById('reader').open,
+        text: document.querySelector('[data-reader-text]').textContent,
+        active: document.activeElement?.dataset?.fragment ?? document.activeElement?.tagName ?? null,
+    }));
+}
+
+async function scanReader(page) {
+    const loaded = await page.evaluate(() => Boolean(window.axe));
+    if (!loaded) await page.addScriptTag({ path: require.resolve('axe-core/axe.min.js') });
+    return page.evaluate(async () => {
+        const result = await window.axe.run(document.getElementById('reader'), { resultTypes: ['violations'] });
+        return result.violations.map((violation) => ({ id: violation.id, impact: violation.impact, help: violation.help, nodes: violation.nodes.length }));
+    });
+}
+
+function firstWords(fragment) {
+    return fragment.text.split(/\n{2,}/)[0].slice(0, 28);
+}
+
+/** Open, look, scan, close: one reading point's round trip. */
+async function inspectOpen(page, fragment, shot) {
+    await page.waitForFunction(() => document.getElementById('reader').open, null, { timeout: 4000 }).catch(() => {});
+    await page.waitForTimeout(200);
+    const state = await readerState(page);
+    const matched = state.open && state.text.includes(firstWords(fragment));
+    if (shot) await page.screenshot({ path: shot });
+    const violations = state.open ? await scanReader(page) : [];
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(250);
+    const after = await readerState(page);
+    return { matched, closed: !after.open, activeAfter: after.active, violations };
+}
+
+/** Wait until the camera has finished easing toward its goal. */
+async function cameraSettled(page) {
+    await page.waitForFunction(() => {
+        const { now, goal } = window.elysicesterDebug.rig;
+        return Math.abs(now.radius - goal.radius) < 0.05 && Math.abs(now.theta - goal.theta) < 0.002
+            && Math.abs(now.phi - goal.phi) < 0.002 && now.target.distanceTo(goal.target) < 0.03;
+    }, null, { timeout: 60_000, polling: 200 });
+}
+
+async function pointerRound(page, context, pass, fragments, outDir, name) {
+    const results = [];
+    for (const fragment of fragments) {
+        // The idle drift would move points between measuring and tapping (closing the reader re-enables it).
+        await page.evaluate((id) => {
+            window.elysicesterDebug.rig.setDrifting(false);
+            window.elysicesterDebug.focusFragment(id);
+        }, fragment.id);
+        await cameraSettled(page);
+        const spot = await page.evaluate((id) => window.elysicesterDebug.hotspots.screenPositions().find((entry) => entry.id === id), fragment.id);
+        const { width, height } = pass.viewport;
+        if (!spot?.inFront || spot.x < 0 || spot.y < 0 || spot.x > width || spot.y > height) {
+            results.push({ id: fragment.id, ok: false, why: 'the point is off-screen in its own view', spot });
+            continue;
+        }
+        if (!spot.visible) {
+            results.push({ id: fragment.id, ok: false, why: 'the point is hidden behind the city in its own view', spot });
+            continue;
+        }
+        if (pass.hasTouch) await touch(context, page, [{ x: spot.x, y: spot.y }]);
+        else await page.mouse.click(spot.x, spot.y);
+        const inspected = await inspectOpen(page, fragment, path.join(outDir, `${name}-panel-${fragment.id}.png`));
+        results.push({ id: fragment.id, ok: inspected.matched && inspected.closed, ...inspected });
+    }
+    return results;
+}
+
+async function stillClickRound(page, fragments, outDir, name) {
+    const results = [];
+    for (const fragment of fragments) {
+        await page.click(`#points a[data-fragment="${fragment.id}"]`);
+        const inspected = await inspectOpen(page, fragment, path.join(outDir, `${name}-panel-${fragment.id}.png`));
+        results.push({ id: fragment.id, ok: inspected.matched && inspected.closed, ...inspected });
+    }
+    return results;
+}
+
+async function keyboardRound(page, fragments) {
+    await page.evaluate(() => document.activeElement?.blur());
+    let arrived = false;
+    for (let press = 0; press < 8 && !arrived; press += 1) {
+        await page.keyboard.press('Tab');
+        arrived = await page.evaluate(() => Boolean(document.activeElement?.dataset?.fragment));
+    }
+    const results = [];
+    for (const fragment of fragments) {
+        const focused = await page.evaluate(() => document.activeElement?.dataset?.fragment ?? null);
+        await page.keyboard.press('Enter');
+        const inspected = await inspectOpen(page, fragment, null);
+        const focusReturned = inspected.activeAfter === fragment.id;
+        results.push({ id: fragment.id, ok: focused === fragment.id && inspected.matched && inspected.closed && focusReturned, focused, focusReturned, ...inspected });
+        await page.keyboard.press('Tab');
+    }
+    return results;
+}
+
+async function checkReadOn() {
+    const data = JSON.parse(await readFile(path.join(ROOT, 'elysicester', 'data', 'fragments.json'), 'utf8'));
+    const urls = [...new Set(data.fragments.map((fragment) => fragment.read_on.split('#')[0]).filter((url) => /^https?:/.test(url)))];
+    const answers = [];
+    for (const url of urls) {
+        try {
+            let response = await fetch(url, { method: 'HEAD', redirect: 'follow' });
+            if (response.status === 405) response = await fetch(url, { redirect: 'follow' });
+            answers.push({ url, status: response.status });
+        } catch (error) {
+            answers.push({ url, status: `error: ${error.message}` });
+        }
+    }
+    return answers;
+}
+
+function summarise(results) {
+    if (!results) return '';
+    const ok = results.filter((result) => result.ok).length;
+    return `${ok}/${results.length}`;
 }
 
 // =============================================================================
@@ -212,8 +350,9 @@ try {
     } else {
         const outDir = path.resolve(option('out', path.join(os.tmpdir(), 'elysicester-shots')));
         const only = option('only', Object.keys(PASSES).join(',')).split(',');
+        const quick = process.argv.includes('--quick');
         await mkdir(outDir, { recursive: true });
-        const report = { origin, passes: {} };
+        const report = { origin, readOn: await checkReadOn(), passes: {} };
 
         for (const [name, pass] of Object.entries(PASSES).filter(([key]) => only.includes(key))) {
             const { browser, context, page, messages, failures } = await openPass(chromium, pass);
@@ -221,6 +360,9 @@ try {
             const mode = await settle(page);
             const result = { mode, messages, failures };
             await page.screenshot({ path: path.join(outDir, `${name}.png`) });
+            const fragments = await page.evaluate(() => [...document.querySelectorAll('#points a')].map((link) => link.dataset.fragment));
+            const data = JSON.parse(await readFile(path.join(ROOT, 'elysicester', 'data', 'fragments.json'), 'utf8'));
+            const ordered = fragments.map((id) => data.fragments.find((fragment) => fragment.id === id));
 
             if (mode === 'live') {
                 result.info = await page.evaluate(() => window.elysicesterDebug.info());
@@ -231,26 +373,54 @@ try {
                 const after = await rigAngles(page);
                 result.drag = { before, after, orbited: Math.abs(after.theta - before.theta) > 0.05 };
                 await page.screenshot({ path: path.join(outDir, `${name}-dragged.png`) });
-
                 if (pass.checkStillness) {
                     const start = await rigAngles(page);
                     await page.waitForTimeout(10_000);
                     const end = await rigAngles(page);
                     result.stillness = { drifted: Math.abs(end.theta - start.theta) > 1e-4 };
                 }
+                if (!quick) result.pointer = await pointerRound(page, context, pass, ordered, outDir, name);
+            } else if (!quick) {
+                result.pointer = await stillClickRound(page, ordered, outDir, name);
+            }
+
+            if (!quick && pass.keyboard) result.keyboard = await keyboardRound(page, ordered);
+
+            if (!quick) {
+                await page.reload({ waitUntil: 'load' });
+                await settle(page);
+                result.persisted = await page.evaluate(() => ({
+                    list: [...document.querySelectorAll('#points a')].filter((link) => link.dataset.read === 'yes').length,
+                    total: document.querySelectorAll('#points a').length,
+                    points: window.elysicesterDebug?.hotspots?.readIds().length ?? null,
+                }));
             }
             report.passes[name] = result;
             await browser.close();
         }
 
         await writeFile(path.join(outDir, 'report.json'), `${JSON.stringify(report, null, 2)}\n`);
+        for (const answer of report.readOn) process.stdout.write(`read on  ${answer.status}  ${answer.url}\n`);
         for (const [name, result] of Object.entries(report.passes)) {
             const problems = result.messages.length + result.failures.length;
             const info = result.info ? `${result.info.calls} calls, ${result.info.triangles} tris` : '';
             const orbit = result.drag ? (result.drag.orbited ? 'drag orbits' : 'DRAG DID NOT ORBIT') : '';
-            const still = result.stillness ? (result.stillness.drifted ? 'DRIFTED under reduced motion' : 'no drift') : '';
-            process.stdout.write(`${name.padEnd(8)} ${result.mode.padEnd(6)} ${problems === 0 ? 'clean' : `${problems} problem(s)`}  ${[info, orbit, still].filter(Boolean).join(' · ')}\n`);
+            const still = result.stillness ? (result.stillness.drifted ? 'DRIFTED' : 'no drift') : '';
+            const pointer = result.pointer ? `pointer ${summarise(result.pointer)}` : '';
+            const keys = result.keyboard ? `keyboard ${summarise(result.keyboard)}` : '';
+            const serious = [...(result.pointer ?? []), ...(result.keyboard ?? [])]
+                .flatMap((entry) => entry.violations ?? []).filter((violation) => SERIOUS.has(violation.impact));
+            const axe = result.pointer ? `axe serious ${serious.length}` : '';
+            const kept = result.persisted ? `dim after reload ${result.persisted.list}/${result.persisted.total}${result.persisted.points === null ? '' : ` (points ${result.persisted.points})`}` : '';
+            process.stdout.write(`${name.padEnd(8)} ${result.mode.padEnd(6)} ${problems === 0 ? 'clean' : `${problems} problem(s)`}  ${[info, orbit, still, pointer, keys, axe, kept].filter(Boolean).join(' · ')}\n`);
             for (const line of [...result.messages, ...result.failures]) process.stdout.write(`    ${line}\n`);
+            for (const entry of [...(result.pointer ?? []), ...(result.keyboard ?? [])].filter((item) => !item.ok)) {
+                process.stdout.write(`    not ok: ${JSON.stringify(entry)}\n`);
+            }
+            const minor = [...(result.pointer ?? []), ...(result.keyboard ?? [])].flatMap((entry) => entry.violations ?? []);
+            for (const violation of new Map(minor.map((item) => [item.id, item])).values()) {
+                process.stdout.write(`    axe ${violation.impact}: ${violation.id} — ${violation.help}\n`);
+            }
         }
         process.stdout.write(`Screenshots and report.json in ${outDir}\n`);
     }

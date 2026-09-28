@@ -42,10 +42,34 @@
             </picture>
             <div class="fallback-note">
                 <h2 id="fallback-title">Elysicester, held still</h2>
-                <p>This browser can't draw the city as it moves (it has no WebGL to lend), so Elysicester arrives as a still: one dusk, drawn once.</p>
+                <p>This browser can't draw the city as it moves (it has no WebGL to lend), so Elysicester arrives as a still: one dusk, drawn once. Its reading points are listed here, and every one of them opens.</p>
             </div>
         </section>
+
+        <nav id="points" class="points" aria-labelledby="points-title">
+            <h2 id="points-title" class="points-title">Reading points</h2>
+            <ol class="points-list"></ol>
+        </nav>
+
+        <div id="point-label" class="point-label" aria-hidden="true" hidden></div>
+        <button type="button" id="home-view" class="home-view" hidden>the whole city</button>
     </main>
+
+    <dialog id="reader" class="reader" aria-labelledby="reader-place">
+        <article class="reader-body">
+            <header class="reader-head">
+                <h2 id="reader-place" class="reader-place" data-reader-place>Elysicester</h2>
+                <button type="button" class="reader-close" data-reader-close aria-label="Close">&times;</button>
+            </header>
+            <div class="reader-text" data-reader-text tabindex="-1"></div>
+            <p class="reader-source" data-reader-source></p>
+            <p class="reader-read-on"><a data-reader-read-on href="https://digital.library.adelaide.edu.au/server/api/core/bitstreams/9cbedc1a-5eac-4ee5-b909-320c83028bba/content" target="_blank" rel="noopener">read on<span class="visually-hidden"> (opens in a new tab)</span></a></p>
+            <section class="reader-also" data-reader-also aria-labelledby="reader-also-title" hidden>
+                <h3 id="reader-also-title" class="reader-also-title">also here</h3>
+                <ul data-reader-also-list></ul>
+            </section>
+        </article>
+    </dialog>
 
     <noscript>
         <p class="noscript">Elysicester is drawn by script. Without it, the city stays in the book: <a href="https://digital.library.adelaide.edu.au/server/api/core/bitstreams/9cbedc1a-5eac-4ee5-b909-320c83028bba/content">Numbers by Paint</a>.</p>

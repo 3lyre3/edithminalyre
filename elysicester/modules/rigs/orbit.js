@@ -30,7 +30,7 @@ const POLAR_MIN = 0.22;
 const POLAR_MAX = 1.95;
 const RADIUS_MIN = 7;
 const TAP_SLOP = 7;
-const TAP_TIME = 450;
+const TAP_TIME = 800;
 
 /** Half the height and width, in world units, the whole-diorama view must hold. */
 const HALF_HEIGHT = 37;
@@ -87,7 +87,7 @@ export class OrbitRig {
         listen(element, 'pointerdown', (event) => {
             element.setPointerCapture(event.pointerId);
             this.pointers.set(event.pointerId, {
-                x: event.clientX, y: event.clientY, startX: event.clientX, startY: event.clientY, startTime: performance.now(),
+                x: event.clientX, y: event.clientY, startX: event.clientX, startY: event.clientY, startTime: event.timeStamp,
             });
             this.idle = 0;
         });
@@ -117,8 +117,8 @@ export class OrbitRig {
             this.pointers.delete(event.pointerId);
             if (element.hasPointerCapture(event.pointerId)) element.releasePointerCapture(event.pointerId);
             const moved = Math.hypot(event.clientX - pointer.startX, event.clientY - pointer.startY);
-            if (event.type === 'pointerup' && wasSingle && moved < TAP_SLOP && performance.now() - pointer.startTime < TAP_TIME) {
-                for (const listener of this.tapListeners) listener(event.clientX, event.clientY);
+            if (event.type === 'pointerup' && wasSingle && moved < TAP_SLOP && event.timeStamp - pointer.startTime < TAP_TIME) {
+                for (const listener of this.tapListeners) listener(event.clientX, event.clientY, event.pointerType);
             }
         };
         listen(element, 'pointerup', release);
@@ -151,7 +151,7 @@ export class OrbitRig {
         listen(window, 'blur', () => this.keys.clear());
     }
 
-    /** Called for a click or tap that didn't turn into a drag: (clientX, clientY). */
+    /** Called for a click or tap that didn't turn into a drag: (clientX, clientY, pointerType). */
     onTap(listener) {
         this.tapListeners.push(listener);
     }
@@ -189,11 +189,18 @@ export class OrbitRig {
         this.idle = 0;
     }
 
-    focus(placeId) {
+    /**
+     * Ease toward a place. With a point (a reading point's position), the camera
+     * centres that point instead of the place's anchor; with an azimuth (degrees),
+     * it comes round to that side.
+     */
+    focus(placeId, point = null, azimuth = null) {
         const place = this.places.get(placeId);
         if (!place) return false;
-        const { position, focus } = place;
-        const theta = focus.azimuth === undefined ? Math.atan2(position.x, position.z) : MathUtils.degToRad(focus.azimuth);
+        const { focus } = place;
+        const position = point ?? place.position;
+        const facing = azimuth ?? focus.azimuth;
+        const theta = facing === undefined || facing === null ? Math.atan2(position.x, position.z) : MathUtils.degToRad(facing);
         this.goal.target.copy(position);
         this.goal.radius = focus.distance;
         this.goal.phi = Math.acos(MathUtils.clamp(focus.height / focus.distance, -0.95, 0.95));
