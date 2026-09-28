@@ -28,6 +28,8 @@ import { FIELD_SCALE } from './solids-field.js';
 
 /** The meshes the camera keeps out of: all but the sky, the sea's shader, the flags and the lights. */
 const SOLID_MESHES = new Set(['gold', 'dimGold', 'brick', 'stone', 'steel', 'glass', 'arch', 'copper', 'signs']);
+/** Pieces standing on their own: the foyer-rock (it bobs a little, well within the camera's clearance). */
+const SOLID_GROUPS = new Set(['foyer-rock']);
 /** Beyond the grid, everything is air this far from anything. */
 const FAR = 1000;
 const IDENTITY = new Matrix4();
@@ -42,9 +44,13 @@ function solidTriangles(scene) {
     const chunks = [];
     let total = 0;
     const vertex = new Vector3();
-    for (const mesh of scene.children) {
-        if (!mesh.isMesh || !SOLID_MESHES.has(mesh.name)) continue;
-        mesh.updateMatrixWorld();
+    const sources = [];
+    for (const child of scene.children) {
+        if (child.isMesh && SOLID_MESHES.has(child.name)) sources.push(child);
+        else if (SOLID_GROUPS.has(child.name)) child.traverse((node) => node.isMesh && sources.push(node));
+    }
+    for (const mesh of sources) {
+        mesh.updateWorldMatrix(true, false);
         const position = mesh.geometry.attributes.position;
         const index = mesh.geometry.index;
         const ranges = mesh.userData.solidRanges ?? [[0, index ? index.count : position.count]];

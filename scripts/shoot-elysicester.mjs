@@ -29,7 +29,10 @@
  * touch taps the plate), and its words must show over it marked as Danæam, with
  * the site's gloss or none; the still lists them as plain words; the list is
  * scanned with axe. A close-up of each plate is kept. The
- * reduced pass also waits past the idle delay to confirm nothing drifts.
+ * reduced pass also waits past the idle delay to confirm nothing drifts. The
+ * desktop pass drives the camera hard at three places, tilted all the way
+ * down, as close as it comes, round and round, and it must keep clear of
+ * every surface.
  * Before the passes, every outside "read on" address is asked whether it
  * answers. Headless frame rates mean nothing; Elm's phone judges smoothness.
  *
@@ -80,7 +83,7 @@ const MIME = {
  * toggle round; soundOn: arrive with "sound on" remembered from a past visit.
  */
 const PASSES = {
-    desktop: { viewport: { width: 1280, height: 800 }, keyboard: true, begin: 'click', then: 'watch', expect: 'flight', sound: true },
+    desktop: { viewport: { width: 1280, height: 800 }, keyboard: true, begin: 'click', then: 'watch', expect: 'flight', sound: true, camera: true },
     mobile: { viewport: { width: 390, height: 844 }, deviceScaleFactor: 3, isMobile: true, hasTouch: true, begin: 'tap', then: 'skip', expect: 'flight' },
     reduced: { viewport: { width: 1280, height: 800 }, reducedMotion: 'reduce', checkStillness: true, keyboard: true, begin: 'key', expect: 'crossfade', sound: true, soundOn: true },
     nogl: { viewport: { width: 1280, height: 800 }, noWebGL: true, keyboard: true, begin: 'click', expect: 'crossfade' },
@@ -610,6 +613,43 @@ async function keyboardRound(page, fragments) {
 }
 
 /**
+ * The camera never enters anything solid: at three places where it once did
+ * (under the sun-dock's water, into the Steel Garden's floor, the hanging
+ * mountain), tilt all the way down, come as close as the rig allows and go
+ * round, watching every frame's distance from the nearest surface.
+ */
+async function cameraRound(page) {
+    return page.evaluate(async () => {
+        const { rig, solids, stage } = window.elysicesterDebug;
+        await solids.ready;
+        if (!solids.available) return { ok: false, problems: ['the solids never arrived'] };
+        let closest = Infinity;
+        stage.onFrame(() => {
+            closest = Math.min(closest, solids.distance(stage.camera.position));
+        });
+        const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+        const rows = [];
+        for (const place of ['sun-dock', 'steel-garden', 'sky-grottos']) {
+            rig.focus(place);
+            const until = performance.now() + 20_000;
+            while (rig.gliding && performance.now() < until) await wait(150);
+            closest = Infinity;
+            rig.goal.phi = 1.95;
+            rig.zoomBy(0.01);
+            for (let step = 0; step < 30; step += 1) {
+                rig.goal.theta += 0.2;
+                await wait(80);
+            }
+            await wait(1200);
+            rows.push({ place, closest: Number(closest.toFixed(2)) });
+        }
+        rig.toHome();
+        const problems = rows.filter((row) => row.closest < 0.65).map((row) => `${row.place}: came within ${row.closest} of a surface`);
+        return { rows, ok: problems.length === 0, problems };
+    });
+}
+
+/**
  * The optional extras, all on: the words round the sky, the shadow on its
  * café wall, the yellow door (made to open now) turning on its hinge, and the
  * voice in the console. Each must be there; the door is pictured, and the
@@ -743,6 +783,7 @@ try {
                     result.stillness = { drifted: Math.abs(end.theta - start.theta) > 1e-4 };
                 }
                 if (pass.signs !== false) result.signs = await signRound(page, context, pass, outDir, name);
+                if (pass.camera) result.camera = await cameraRound(page);
                 if (pass.extras) result.extras = await extrasRound(page, spoken, outDir, name);
                 if (!quick && !pass.extras) result.pointer = await pointerRound(page, context, pass, ordered, outDir, name);
             } else {
@@ -786,9 +827,11 @@ try {
                 ? `signs ${summarise(result.signs.results)}${result.signs.coverage ? `, glyphs ${result.signs.glyphProblems.length ? 'MISSING' : 'all held'}` : ''}${result.signs.navScanned ? `, list axe serious ${navSerious}` : ''}`
                 : '';
             const extras = result.extras ? `extras ${result.extras.ok ? 'sky, shadow, door and voice all there' : 'NOT OK'}` : '';
-            process.stdout.write(`${name.padEnd(8)} ${result.mode.padEnd(6)} ${problems === 0 ? 'clean' : `${problems} problem(s)`}  ${[crossing, sound, info, orbit, still, signs, extras, pointer, keys, axe, kept].filter(Boolean).join(' · ')}\n`);
+            const camera = result.camera ? `camera ${result.camera.ok ? `kept clear (closest ${Math.min(...result.camera.rows.map((row) => row.closest))})` : 'WENT INTO SOMETHING'}` : '';
+            process.stdout.write(`${name.padEnd(8)} ${result.mode.padEnd(6)} ${problems === 0 ? 'clean' : `${problems} problem(s)`}  ${[crossing, sound, info, orbit, still, camera, signs, extras, pointer, keys, axe, kept].filter(Boolean).join(' · ')}\n`);
             for (const line of [...result.messages, ...result.failures]) process.stdout.write(`    ${line}\n`);
             for (const line of result.extras?.problems ?? []) process.stdout.write(`    extras not ok: ${line}\n`);
+            for (const line of result.camera?.problems ?? []) process.stdout.write(`    camera not ok: ${line}\n`);
             for (const line of [...result.threshold.problems, ...(result.reentered?.problems ?? []).map((text) => `on return: ${text}`), ...(result.sound?.problems ?? [])]) {
                 process.stdout.write(`    not ok: ${line}\n`);
             }
