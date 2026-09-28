@@ -920,18 +920,20 @@ function buildSkyGrottos({ buckets, place, random, extras, animated, materials, 
         flat.computeVertexNormals();
         return flat;
     };
-    const rock = (x, y, z, color) => color.set(0x8a7272).lerp(new Color(0x3a3044), Math.min(1, Math.max(0, (centre.y - y) / 11)));
+    // The mountain is the island's kin, a floating rock: the "rock" material lays its strata, and
+    // this only tints them, paler up top and deepening toward the point it hangs from.
+    const rock = (x, y, z, color) => color.set(0xfff4ee).lerp(new Color(0x857a96), Math.min(1, Math.max(0, (centre.y - y) / 11)));
 
     const body = roughen(new IcosahedronGeometry(5.6, 1), 0.35, 1.3);
     pose(body, { x: centre.x, y: centre.y, z: centre.z, sx: 1.2, sy: 0.5, sz: 1.0 });
-    buckets.add('stone', paintBy(body, rock));
+    buckets.add('rock', paintBy(body, rock));
     const under = roughen(new ConeGeometry(5.4, 10, 9, 3), 0.3, 4.2);
     pose(under, { x: centre.x, y: centre.y - 6.4, z: centre.z, rx: Math.PI });
-    buckets.add('stone', paintBy(under, rock));
+    buckets.add('rock', paintBy(under, rock));
     for (const [dx, dz, height, radius] of [[-0.8, -0.6, 7.5, 3.0], [2.4, 1.4, 5.2, 2.2], [-3.0, 1.6, 4.6, 2.0]]) {
         const peak = roughen(new ConeGeometry(radius, height, 7, 2), 0.25, dx + dz);
         pose(peak, { x: centre.x + dx, y: centre.y + 2.2 + height / 2, z: centre.z + dz });
-        buckets.add('stone', paintBy(peak, rock));
+        buckets.add('rock', paintBy(peak, rock));
     }
 
     const faceX = centre.x + 6.3;
@@ -1111,6 +1113,159 @@ function buildEdge({ buckets, place, random, mounts }) {
 }
 
 // =============================================================================
+// From the text, about the city: seaweed at the shore, vines, the amethyst chute
+// =============================================================================
+
+const WEED = [0x2f4a36, 0x3c5a3a, 0x46623c, 0x2a4440];
+const WEED_TIP = new Color(0x6e9c62);
+const FOAM = 0xe6e8f6;
+const VINE = 0x3a6236;
+const LEAVES = [0x4e7c46, 0x5c8c4a, 0x3f6e40];
+const AMETHYST = 0xb07cf0;
+const BRONZE_BIN = 0x6a4428;
+
+/** Give a piece a "sway" of its own: 0 where it holds fast, `amount` at the far end of `along` (0 to 1 per vertex). */
+function swaying(geometry, along, amount) {
+    const position = geometry.attributes.position;
+    const sway = new Float32Array(position.count);
+    for (let index = 0; index < position.count; index += 1) {
+        sway[index] = Math.min(1, Math.max(0, along(position.getX(index), position.getY(index), position.getZ(index)))) * amount;
+    }
+    geometry.setAttribute('sway', new Float32BufferAttribute(sway, 1));
+    return geometry;
+}
+
+/** A piece that doesn't sway at all (every piece in a swaying bucket needs the attribute). */
+function holdsFast(geometry) {
+    return swaying(geometry, () => 0, 0);
+}
+
+/**
+ * The seaweed that "bubbled from the shoreline" (Numbers by Paint, Episode 3,
+ * "turquoise ribbons dangling from the sky as seaweed bubbled from the
+ * shoreline"): mats of it at the wall's foot, riding the swell, strands of it
+ * drifting out on the water, a frond or two standing up, and the bubbles it
+ * brings up. Kept clear of the cafés' platform and the sun-dock. A stream of
+ * its own, so nothing else in the city moves.
+ */
+function buildShoreWeed(buckets) {
+    const random = createRandom(8080);
+    const [north, south] = wallEnds();
+    const clear = (z) => !((z > -7 && z < 0.8) || (z > 1.4 && z < 8.8));
+    for (let cluster = 0; cluster < 24; cluster += 1) {
+        const z = random.range(north + 1.2, south - 1.2);
+        const x = wallX(z) + random.range(0.08, 0.3);
+        const color = WEED[Math.floor(random() * WEED.length)];
+        const lumps = 2 + Math.floor(random() * 3);
+        const strands = 5 + Math.floor(random() * 5);
+        const fronds = Math.floor(random() * 3);
+        if (!clear(z)) continue;
+        // Small clumps, half under the water at the wall's foot.
+        for (let lump = 0; lump < lumps; lump += 1) {
+            const radius = random.range(0.09, 0.22);
+            const clump = pose(new IcosahedronGeometry(radius, 0), {
+                x: x + random.range(0, 0.35), y: SEA_LEVEL - radius * 0.2, z: z + random.range(-0.35, 0.35), sy: 0.5, ry: random() * Math.PI,
+            });
+            buckets.add('weed', holdsFast(paint(clump, color)), { passable: true });
+        }
+        // Strands fanned out on the water from the clumps, each a little wavy, waving more the further it drifts.
+        for (let strand = 0; strand < strands; strand += 1) {
+            const reach = random.range(0.45, 1.6);
+            const angle = random.range(-1.25, 1.25);
+            const wave = random.range(2, 4.5);
+            const strip = new PlaneGeometry(0.06, reach, 1, 10);
+            strip.rotateX(-Math.PI / 2);
+            strip.translate(0, 0, reach / 2);
+            const position = strip.attributes.position;
+            for (let index = 0; index < position.count; index += 1) {
+                const along = position.getZ(index) / reach;
+                position.setX(index, position.getX(index) + Math.sin(along * wave * Math.PI) * 0.07 * along);
+            }
+            swaying(strip, (sx, sy, sz) => sz / reach, 0.9);
+            pose(strip, { x: x + 0.05, y: SEA_LEVEL + 0.04, z: z + random.range(-0.3, 0.3), ry: Math.PI / 2 + angle });
+            buckets.add('weed', paintBy(strip.toNonIndexed(), (px, py, pz, out) => out.set(color).lerp(WEED_TIP, 0.3)), { passable: true });
+        }
+        // A frond or two standing up, bent at the middle.
+        for (let frond = 0; frond < fronds; frond += 1) {
+            const height = random.range(0.35, 0.8);
+            const lean = random.range(0.25, 0.6);
+            const blade = new PlaneGeometry(0.1, height, 1, 6);
+            blade.translate(0, height / 2, 0);
+            const position = blade.attributes.position;
+            for (let index = 0; index < position.count; index += 1) {
+                const up = position.getY(index) / height;
+                position.setX(index, position.getX(index) + up * up * lean);
+            }
+            swaying(blade, (bx, by) => by / height, 0.7);
+            pose(blade, { x: x + random.range(0, 0.25), y: SEA_LEVEL - 0.05, z: z + random.range(-0.35, 0.35), ry: random() * Math.PI * 2 });
+            buckets.add('weed', paintBy(blade.toNonIndexed(), (bx, by, bz, out) => out.set(color).lerp(WEED_TIP, Math.min(1, Math.max(0, (by - SEA_LEVEL) / height)))), { passable: true });
+        }
+        // The bubbles it brings up: beads of foam on the water about it.
+        for (let bead = 0; bead < 5; bead += 1) {
+            const ball = new SphereGeometry(random.range(0.025, 0.06), 5, 3);
+            pose(ball, { x: x + random.range(0, 0.9), y: SEA_LEVEL + 0.06, z: z + random.range(-0.7, 0.7) });
+            buckets.add('weed', holdsFast(paint(ball.toNonIndexed(), FOAM)), { passable: true });
+        }
+    }
+}
+
+/**
+ * The "vine-ridden plazas" at the bridgework's foot (Numbers by Paint, Episode
+ * 3): vines winding up the lower reaches of most of the spires, leafed as they
+ * go. A stream of its own.
+ */
+function buildVines(buckets, spires) {
+    const random = createRandom(6161);
+    for (const spire of spires) {
+        const skip = random() < 0.3;
+        const climb = spire.height * random.range(0.18, 0.4);
+        const turns = random.range(1.1, 2.3);
+        const phase = random() * Math.PI * 2;
+        if (skip) continue;
+        const points = [];
+        for (let step = 0; step <= 28; step += 1) {
+            const t = step / 28;
+            const y = spire.base + 0.08 + t * climb;
+            const radius = 0.72 - 0.38 * ((y - spire.base) / spire.height) + 0.06;
+            const angle = phase + t * turns * Math.PI * 2;
+            points.push(new Vector3(spire.x + Math.cos(angle) * radius, y, spire.z + Math.sin(angle) * radius));
+        }
+        buckets.add('weed', holdsFast(taperedTube(points, 0.075, 0.025, VINE, 56, 4).toNonIndexed()), { passable: true });
+        for (let leaf = 0; leaf < 12; leaf += 1) {
+            const at = points[Math.min(points.length - 1, Math.floor(random() * points.length))];
+            const outward = Math.atan2(at.z - spire.z, at.x - spire.x);
+            const blade = new ConeGeometry(0.1, 0.26, 3);
+            blade.translate(0, 0.13, 0);
+            swaying(blade, (lx, ly) => ly / 0.26, 0.25);
+            pose(blade, { x: at.x, y: at.y, z: at.z, ry: -outward, rz: -Math.PI / 2 + random.range(-0.5, 0.5), sz: 0.3 });
+            buckets.add('weed', paint(blade.toNonIndexed(), LEAVES[Math.floor(random() * LEAVES.length)]), { passable: true });
+        }
+    }
+}
+
+/**
+ * The "amethystine trash chute" she tosses her coffee down, on her way up the
+ * golden bridges (Numbers by Paint, Episode 3): from a landing on the first
+ * spire, curling down to a bronze bin by the plaza.
+ */
+function buildChute(buckets, spires) {
+    const spire = spires[0];
+    const top = new Vector3(spire.x + 0.95, spire.base + spire.height * 0.55, spire.z - 0.35);
+    const floor = groundY(spire.x + 1.9, spire.z - 1.9);
+    const points = [
+        top,
+        new Vector3(spire.x + 1.7, top.y - 1.4, spire.z - 0.7),
+        new Vector3(spire.x + 2.25, top.y - 3.4, spire.z - 1.35),
+        new Vector3(spire.x + 1.95, floor + 1.0, spire.z - 1.85),
+    ];
+    buckets.add('amethyst', tube(points, 0.23, AMETHYST, 36, 6));
+    // Its mouth at the landing, and the bin it empties into.
+    buckets.add('amethyst', paint(pose(new CylinderGeometry(0.42, 0.24, 0.5, 6, 1, true), { x: top.x, y: top.y + 0.2, z: top.z }), AMETHYST));
+    buckets.add('gold', box(0.9, 0.12, 0.7, { x: top.x - 0.1, y: top.y - 0.08, z: top.z + 0.05 }, GOLDS[1]));
+    buckets.add('steel', cylinder(0.42, 0.36, 0.8, 10, { x: spire.x + 1.95, y: floor + 0.4, z: spire.z - 1.85 }, BRONZE_BIN));
+}
+
+// =============================================================================
 // Main Code
 // =============================================================================
 
@@ -1148,13 +1303,22 @@ export async function buildPlaces(buckets, placeData, materials, pause = async (
     buildSignalTowers(buckets);
 
     const anchors = new Map();
+    const built = new Map();
     for (const place of placeData.places.filter((entry) => entry.tier === 1)) {
         const builder = BUILDERS[place.id];
         if (builder) {
-            builder({ buckets, place, random, byId, extras, animated, materials, mounts, wanted, still });
+            built.set(place.id, builder({ buckets, place, random, byId, extras, animated, materials, mounts, wanted, still }));
             await pause();
         }
         anchors.set(place.id, new Vector3().fromArray(place.position));
+    }
+
+    // Details from the text about the city, each on a random stream of its own (so nothing above moves).
+    buildShoreWeed(buckets);
+    const spires = built.get('bridge');
+    if (spires) {
+        buildVines(buckets, spires);
+        buildChute(buckets, spires);
     }
 
     return {

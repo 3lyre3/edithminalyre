@@ -224,17 +224,22 @@ export function createMaterials() {
         gold: toon({ emissive: 0x8a7424, emissiveIntensity: 0.3 }),
         /** The sea-wall's golden bricking. */
         bricking: bricks(toon({ emissive: 0x8a7424, emissiveIntensity: 0.28 })),
-        dimGold: toon({ emissive: 0x3a2a0c, emissiveIntensity: 0.4 }),
+        /** The ground and its paving (streets, platforms, the jetty): flagstones, in the bricking's bond. */
+        dimGold: bricks(toon({ emissive: 0x3a2a0c, emissiveIntensity: 0.4 }), { length: 1.1, height: 0.5 }),
         brick: toon({}),
         stone: toon({}),
         /** The island's underside: striated rock, like the floating islands in Elm's cosmology plate. */
         rock: strata(toon({}), {
-            strata: [0x7c5e5c, 0x8a6a58, 0x6e5a66, 0x94765e, 0x66545f],
+            strata: [0x7c5e5c, 0x86665a, 0x76606a, 0x8e705e, 0x6e5c64],
             deep: 0x2e2438,
             reach: CLIFF_DEPTH + UNDERSIDE_DEPTH,
         }),
         steel: toon({}),
         turquoise: toon({ emissive: 0x1a8a84, emissiveIntensity: 0.6, side: DoubleSide }),
+        /** Seaweed at the shore and the vines of the plazas: green things, swaying a little. */
+        weed: toon({ emissive: 0x0e2a18, emissiveIntensity: 0.5, side: DoubleSide }),
+        /** The amethystine trash chute. */
+        amethyst: toon({ transparent: true, opacity: 0.78, emissive: 0x5a2496, emissiveIntensity: 0.6 }),
         glass: toon({ transparent: true, opacity: 0.3, emissive: 0x3a5a62, emissiveIntensity: 0.35, side: DoubleSide }),
         arch: toon({ emissive: 0x5a6878, emissiveIntensity: 0.45 }),
         copper: toon({ emissive: 0x4a1c08, emissiveIntensity: 0.4 }),

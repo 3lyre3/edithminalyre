@@ -42,6 +42,36 @@ const FAR_ISLANDS = 6;
 // Shaders
 // =============================================================================
 
+/**
+ * The dusk's colours, for the sky and for any water that mirrors it: dusk(height
+ * above the far horizon, how far round toward the sunken sun), and towardSun(a
+ * direction). Whatever includes it declares `uniform vec3 sunDirection;` first.
+ */
+export const DUSK_GLSL = /* glsl */ `
+    vec3 dusk(float height, float toward) {
+        float sun = toward * toward * toward;
+        // A thin, hot line where sky meets sea; rose above it; then violet, indigo, and night overhead.
+        vec3 horizon = mix(vec3(0.34, 0.12, 0.18), vec3(1.2, 0.5, 0.2), sun);
+        vec3 low = mix(vec3(0.13, 0.05, 0.13), vec3(0.26, 0.085, 0.12), sun);
+        vec3 color = mix(horizon, low, smoothstep(0.0, 0.035, height));
+        color = mix(color, vec3(0.068, 0.032, 0.12), smoothstep(0.03, 0.2, height));
+        color = mix(color, vec3(0.024, 0.018, 0.078), smoothstep(0.18, 0.5, height));
+        color = mix(color, vec3(0.007, 0.007, 0.034), smoothstep(0.48, 1.1, height));
+        // The glow over where the sun went down.
+        color += vec3(0.95, 0.38, 0.10) * pow(toward, 16.0) * exp(-height * 18.0) * 0.6;
+        return color;
+    }
+
+    /** How far round toward the sun a direction faces, from 0 (away, or across) to 1. */
+    float towardSun(vec3 direction) {
+        vec3 sunFlat = normalize(vec3(sunDirection.x, 0.0, sunDirection.z));
+        vec2 level = direction.xz;
+        float length2 = dot(level, level);
+        if (length2 < 1e-8) return 0.0;
+        return max(dot(level * inversesqrt(length2), sunFlat.xz), 0.0);
+    }
+`;
+
 const vertexShader = /* glsl */ `
     varying vec3 vDirection;
 
@@ -107,29 +137,7 @@ const fragmentShader = /* glsl */ `
         return sum / 0.9375;
     }
 
-    /** The dusk itself, by height above the far horizon and how far round toward the sunken sun (0 to 1). */
-    vec3 dusk(float height, float toward) {
-        float sun = toward * toward * toward;
-        // A thin, hot line where sky meets sea; rose above it; then violet, indigo, and night overhead.
-        vec3 horizon = mix(vec3(0.34, 0.12, 0.18), vec3(1.2, 0.5, 0.2), sun);
-        vec3 low = mix(vec3(0.13, 0.05, 0.13), vec3(0.26, 0.085, 0.12), sun);
-        vec3 color = mix(horizon, low, smoothstep(0.0, 0.035, height));
-        color = mix(color, vec3(0.068, 0.032, 0.12), smoothstep(0.03, 0.2, height));
-        color = mix(color, vec3(0.024, 0.018, 0.078), smoothstep(0.18, 0.5, height));
-        color = mix(color, vec3(0.007, 0.007, 0.034), smoothstep(0.48, 1.1, height));
-        // The glow over where the sun went down.
-        color += vec3(0.95, 0.38, 0.10) * pow(toward, 16.0) * exp(-height * 18.0) * 0.6;
-        return color;
-    }
-
-    /** How far round toward the sun a direction faces, from 0 (away, or across) to 1. */
-    float towardSun(vec3 direction) {
-        vec3 sunFlat = normalize(vec3(sunDirection.x, 0.0, sunDirection.z));
-        vec2 level = direction.xz;
-        float length2 = dot(level, level);
-        if (length2 < 1e-8) return 0.0;
-        return max(dot(level * inversesqrt(length2), sunFlat.xz), 0.0);
-    }
+    ${DUSK_GLSL}
 
     /**
      * Long, low banks of cloud, laid in flat like the rest of the drawing: a dusky body, and
@@ -235,11 +243,12 @@ const fragmentShader = /* glsl */ `
         float width = fwidth(lineAt);
         float offLine = abs(fract(lineAt + 0.5) - 0.5);
         float crest = (1.0 - smoothstep(0.0, width * 1.1 + 0.015, offLine)) * (1.0 - smoothstep(0.1, 0.3, width));
-        // Broken into short strokes, scattered the way an engraver scatters them.
-        float strokes = wrappedNoise(p * vec2(0.085, 0.12), 1e5) * 0.7 + wrappedNoise(p * 0.013, 1e5) * 0.3;
-        crest *= smoothstep(0.6 - 0.14 * pool, 0.72 - 0.14 * pool, strokes);
+        // Broken into short strokes, scattered the way an engraver scatters them, drifting slowly so
+        // that under the city they glint rather than scratch.
+        float strokes = wrappedNoise(p * vec2(0.21, 0.29) + vec2(time * 0.09, time * 0.05), 1e5) * 0.7 + wrappedNoise(p * 0.013, 1e5) * 0.3;
+        crest *= smoothstep(0.6 - 0.12 * pool, 0.71 - 0.12 * pool, strokes);
         vec3 crestColor = mix(vec3(0.13, 0.1, 0.24), vec3(1.0, 0.66, 0.3), pool);
-        color = mix(color, crestColor, crest * (0.1 + 0.7 * pool));
+        color = mix(color, crestColor, crest * (0.09 + 0.46 * pool));
         color += vec3(0.5, 0.33, 0.14) * pool * pool * 0.06;
 
         // Far out, the sea goes to haze, and meets the sky's own horizon without a seam.
@@ -333,7 +342,7 @@ export function createSky({ sunDirection, inscription = null }) {
             INSCRIPTION_LOW: '0.046',
             INSCRIPTION_HEIGHT: '0.034',
             INSCRIPTION_COPIES: '12.0',
-            INSCRIPTION_STRENGTH: '0.1',
+            INSCRIPTION_STRENGTH: '0.07',
         });
     }
     const material = new ShaderMaterial({
@@ -351,6 +360,8 @@ export function createSky({ sunDirection, inscription = null }) {
 
     return {
         mesh,
+        /** How far below eye level the far horizon lies (the sine of it), for water that mirrors the dusk. */
+        horizonDip: uniforms.horizonDip,
         /** Keep the dome centred on the eye, the horizon where the far sea ends, the stars breathing, and the glow round the island. */
         update(time, camera) {
             uniforms.time.value = time;

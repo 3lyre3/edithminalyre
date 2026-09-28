@@ -116,7 +116,7 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
 
     const edge = data.places.places.find((place) => place.id === 'edge');
     const sky = createSky({ sunDirection: SUN_DIRECTION, inscription: extras.has('sky') ? await inscriptionTexture() : null });
-    const sea = createSea({ sunDirection: SUN_DIRECTION, edgeAngle: Math.atan2(edge.position[2], edge.position[0]) });
+    const sea = createSea({ sunDirection: SUN_DIRECTION, edgeAngle: Math.atan2(edge.position[2], edge.position[0]), horizonDip: sky.horizonDip });
     scene.add(sky.mesh, sea.mesh);
 
     const key = new DirectionalLight(0xffd6a0, 2.5);
@@ -135,18 +135,20 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
     duskLight(materials.bricking, { sun: SUN_DIRECTION, rim: 0.45, shine: 0.15 });
     duskLight(materials.brick, { sun: SUN_DIRECTION, rim: 0.45, tip: 0.2, tipFrom: 4, tipTo: 12 });
     duskLight(materials.stone, { sun: SUN_DIRECTION, rim: 0.4, tip: 0.28, tipFrom: 20, tipTo: 48 });
-    duskLight(materials.rock, { sun: SUN_DIRECTION, rim: 0.35 });
+    // The rock: the island's underside, and the hanging mountain, whose peaks hold the last of the light.
+    duskLight(materials.rock, { sun: SUN_DIRECTION, rim: 0.38, tip: 0.34, tipFrom: 29, tipTo: 39 });
     duskLight(materials.copper, { sun: SUN_DIRECTION, rim: 0.4, shine: 0.3 });
     const wind = { value: 0 };
     flutter(materials.turquoise, wind);
     flutter(materials.sign, wind);
+    flutter(materials.weed, wind);
     const buckets = new Buckets();
     await pause();
     buildIsland(buckets);
     await pause();
     const places = await buildPlaces(buckets, data.places, materials, pause, extras, reducedMotion);
     await pause();
-    for (const mesh of buckets.build(materials, { turquoise: ['sway'] }).values()) scene.add(mesh);
+    for (const mesh of buckets.build(materials, { turquoise: ['sway'], weed: ['sway'] }).values()) scene.add(mesh);
     for (const extra of places.extras) scene.add(extra);
     await pause();
     const signs = await createSigns({ data: data.signs, mounts: places.mounts, material: materials.sign, renderer });

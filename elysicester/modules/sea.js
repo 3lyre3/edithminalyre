@@ -1,10 +1,14 @@
 /**
  * sea.js — the Elysian Sea, where it meets the island.
  *
- * Violet-dark water east of the golden wall. Breakers burst silver and violet
- * along the wall's foot; near the rim the water stops behaving like water and
- * breaks into flickering blocks, the place where the world glitches.
- * Colours are linear; the ink pass tone-maps them.
+ * Violet-dark water east of the golden wall. It mirrors the same dusk as the
+ * sky (the colours are shared, from sky.js), and at the wall's foot it holds
+ * the golden bricking's reflection, broken by the swell. Breakers burst
+ * silver and violet along the wall ("the sea erupts in bursts of silver and
+ * violet, tumbling up the golden bricking", Numbers by Paint, Episode 1); the
+ * swell is drawn as light crest lines drifting in; near the rim the water
+ * stops behaving like water and breaks into flickering blocks, the place where
+ * the world glitches. Colours are linear; the ink pass tone-maps them.
  */
 
 // =============================================================================
@@ -13,6 +17,10 @@
 
 import { Color, Mesh, PlaneGeometry, ShaderMaterial, UniformsLib, UniformsUtils } from 'three';
 import { ISLAND_RADIUS, SEA_LEVEL, rimRadiusGLSL, wallXGLSL } from './kit.js';
+import { DUSK_GLSL } from './sky.js';
+
+/** The top of the sea-wall's face above the water (its merlons stand higher, but gapped). */
+const WALL_TOP = 3.1;
 
 // =============================================================================
 // Shaders
@@ -52,8 +60,9 @@ const fragmentShader = /* glsl */ `
     uniform float time;
     uniform float edgeAngle;
     uniform vec3 sunDirection;
+    uniform float horizonDip;
     uniform vec3 deepColor;
-    uniform vec3 skyColor;
+    uniform vec3 wallGold;
     uniform vec3 silver;
     uniform vec3 violet;
 
@@ -64,6 +73,7 @@ const fragmentShader = /* glsl */ `
 
     ${rimRadiusGLSL()}
     ${wallXGLSL()}
+    ${DUSK_GLSL}
 
     float hash12(vec2 p) {
         vec3 p3 = fract(vec3(p.xyx) * 0.1031);
@@ -89,14 +99,30 @@ const fragmentShader = /* glsl */ `
         vec3 normal = normalize(vNormal);
         vec3 view = normalize(cameraPosition - vWorld);
         float fresnel = pow(1.0 - max(dot(normal, view), 0.0), 3.0);
-        vec3 color = mix(deepColor, skyColor, 0.15 + 0.55 * fresnel);
+
+        // The dusk, mirrored: the hot horizon line at a glance along the water, the night overhead
+        // straight down into it; the sea keeps its own violet beneath.
+        vec3 mirrored = reflect(-view, normal);
+        vec3 sky = dusk(max(mirrored.y + horizonDip, 0.0), towardSun(mirrored));
+        vec3 color = mix(deepColor, violet * 0.42, 0.18 + 0.5 * fresnel) + sky * fresnel * 0.55;
+
+        // The golden bricking, mirrored at its foot where a glance off the water would meet it,
+        // broken up by the swell.
+        if (mirrored.x < -0.04) {
+            float reach = max(fromWall, 0.0) / -mirrored.x;
+            float meets = vWorld.y + mirrored.y * reach;
+            float onWall = step(meets, ${WALL_TOP.toFixed(2)}) * step(${(SEA_LEVEL - 0.4).toFixed(2)}, meets) * exp(-reach * 0.05);
+            float broken = 0.55 + 0.45 * smoothstep(-0.3, 0.6, sin(vWorld.z * 2.3 + sin(vWorld.x * 1.7 + time * 0.8) * 1.4 + time * 0.6));
+            float rows = 0.85 + 0.15 * step(0.5, fract(meets / 0.6));
+            color = mix(color, wallGold * rows, onWall * broken * (0.28 + 0.4 * fresnel));
+        }
 
         vec3 halfway = normalize(view + normalize(sunDirection));
         color += vec3(0.85, 0.8, 1.0) * step(0.9975, max(dot(normal, halfway), 0.0)) * 0.9;
 
-        // Drawn swell: thin lighter crests drifting in toward the wall, like engraved waves.
+        // Drawn swell: thin light crests drifting in toward the wall, like engraved waves.
         float swell = fract(vWorld.x * 0.55 + sin(vWorld.z * 0.3 + time * 0.15) * 1.2 + time * 0.25);
-        color = mix(color, violet * 0.55, smoothstep(0.9, 0.95, swell) * 0.45);
+        color = mix(color, mix(violet, silver, 0.35) * 0.8, smoothstep(0.9, 0.95, swell) * (1.0 - smoothstep(0.97, 1.0, swell)) * 0.4);
 
         // Breakers: flat, drawn shapes of silver and violet bursting along the wall's foot.
         float travel = sin(vWorld.z * 0.7 + time * 0.9 + 2.0 * sin(vWorld.z * 0.23 + time * 0.37));
@@ -127,7 +153,7 @@ const fragmentShader = /* glsl */ `
  * @param {import('three').Vector3} options.sunDirection
  * @param {number} options.edgeAngle - where on the rim the edge place is (radians, atan2(z, x))
  */
-export function createSea({ sunDirection, edgeAngle }) {
+export function createSea({ sunDirection, edgeAngle, horizonDip = { value: 0.16 } }) {
     const west = 7.4;
     const east = ISLAND_RADIUS * 1.08;
     const extent = ISLAND_RADIUS * 1.1;
@@ -142,11 +168,13 @@ export function createSea({ sunDirection, edgeAngle }) {
             edgeAngle: { value: edgeAngle },
             sunDirection: { value: sunDirection.clone().normalize() },
             deepColor: { value: new Color(0x1a1040) },
-            skyColor: { value: new Color(0x7a4a7a) },
+            wallGold: { value: new Color(0xd8a44c) },
             silver: { value: new Color(0xe8eaf8) },
             violet: { value: new Color(0x9a72ea) },
         },
     ]);
+    // The sky's own horizon, shared, so the water mirrors the dusk exactly where the sky has it.
+    uniforms.horizonDip = horizonDip;
     const material = new ShaderMaterial({ uniforms, vertexShader, fragmentShader, fog: true });
     const mesh = new Mesh(geometry, material);
     mesh.name = 'sea';
