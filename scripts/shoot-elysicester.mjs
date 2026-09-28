@@ -83,6 +83,17 @@ const PASSES = {
     nogl: { viewport: { width: 1280, height: 800 }, noWebGL: true, keyboard: true, begin: 'click', expect: 'crossfade' },
 };
 
+/**
+ * The site's paper grain (an feTurbulence background, as on every page of the
+ * site) never finishes rasterising under SwiftShader: the site's own homepage
+ * stalls a screenshot the same way, and loads in well under a second without
+ * these flags. Real GPUs draw it; the tests lift it. Stills are shot without it
+ * anyway, since the page lays it over them live.
+ */
+function liftGrain() {
+    document.addEventListener('DOMContentLoaded', () => document.querySelector('.grain')?.remove());
+}
+
 /** Log every change of data-threshold and data-mode from the first moment, with its time. */
 function watchThreshold() {
     window.__elysicesterLog = [];
@@ -138,6 +149,7 @@ async function openPass(chromium, pass) {
         reducedMotion: pass.reducedMotion ?? 'no-preference',
     });
     await context.addInitScript(watchThreshold);
+    await context.addInitScript(liftGrain);
     const page = await context.newPage();
     const messages = [];
     const failures = [];
@@ -357,7 +369,8 @@ async function drag(page, context, isTouch, from, to) {
 }
 
 async function hideChrome(page) {
-    await page.addStyleTag({ content: '.plainly, .debug-readout, .controls, .threshold-voice, .veil, .point-label { visibility: hidden !important; }' });
+    // The page lays the site's grain over the still as over the scene, so the still itself is shot without it.
+    await page.addStyleTag({ content: '.plainly, .debug-readout, .controls, .threshold-voice, .veil, .point-label, .sign-label, .grain { visibility: hidden !important; }' });
 }
 
 /** Encode a PNG as a WebP of the given size, using the browser's own encoder. */

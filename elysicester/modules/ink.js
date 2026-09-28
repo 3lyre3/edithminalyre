@@ -5,9 +5,9 @@
  * pass then tone-maps the colour, lays light ink lines wherever the depth
  * folds (silhouettes and creases: the second difference of inverse depth is
  * zero across any flat plane, so only real edges ink), lets those lines
- * wobble a little like a hand's, lays the site's paper grain over everything,
- * and darkens the corners a touch. Under reduced motion the lines and grain
- * hold still.
+ * wobble a little like a hand's, lays a faint paper fibre over everything
+ * (the page adds the site's own grain above), and darkens the corners a
+ * touch. Under reduced motion the lines and fibre hold still.
  */
 
 // =============================================================================
@@ -135,9 +135,10 @@ export function createInk(renderer, { reducedMotion }) {
         cameraNear: { value: 0.5 },
         cameraFar: { value: 900 },
         lineWidth: { value: 1 },
-        inkStrength: { value: 0.85 },
+        inkStrength: { value: 0.95 },
         inkColor: { value: new Color(0x1c130e) },
-        grainAmount: { value: 0.05 },
+        // The page lays the site's own grain over everything; this is only the paper's fibre beneath it.
+        grainAmount: { value: 0.025 },
         grainSeed: { value: 0 },
         boil: { value: 0 },
     };
@@ -155,12 +156,12 @@ export function createInk(renderer, { reducedMotion }) {
 
     return {
         target,
-        /** Match the drawing buffer; lines stay about one CSS pixel wide. */
+        /** Match the drawing buffer; lines stay a little over one CSS pixel wide, like a fine nib. */
         resize() {
             renderer.getDrawingBufferSize(size);
             target.setSize(size.x, size.y);
             uniforms.resolution.value.copy(size);
-            uniforms.lineWidth.value = Math.max(1, renderer.getPixelRatio());
+            uniforms.lineWidth.value = Math.max(1.3, renderer.getPixelRatio() * 1.15);
         },
         /** Draw the scene through the ink onto the canvas. */
         render(sceneToDraw, sceneCamera, time) {

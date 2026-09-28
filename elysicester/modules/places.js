@@ -58,6 +58,8 @@ import {
 
 const GOLDS = [0xeacb7a, 0xdfbc6a, 0xd2ab5a, 0xf2dc96];
 const GOLD_ROOFS = [0xb46a30, 0x9a582a, 0xc27a38];
+/** Now and then a roof of another metal or clay: dark bronze, rose tile, old brick, verdigris. */
+const ROOF_ACCENTS = [0x6e4428, 0xa8563a, 0x8e3f2c, 0x5e8c7a];
 const PAVE = 0xb08a4c;
 const PAVE_DARK = 0x7e6036;
 const BRICK = [0x9c3e2e, 0x8e3628, 0xa4462f];
@@ -275,33 +277,98 @@ function clearZones(byId) {
     ];
 }
 
-function addHouse(buckets, random, x, z, height, style) {
+/**
+ * One house. The shared random stream decides what it always decided (size,
+ * turn, colours, style, lit windows), in the same order, so the rest of the
+ * city keeps its shape; `detail`, a stream of its own, adds the variety: slim
+ * towers and two-tier houses, walls tinted a little apart, a few bronze, rose
+ * or verdigris roofs, doors, dark windows among the lit ones, chimneys and
+ * balconies.
+ */
+function addHouse(buckets, random, x, z, height, style, detail) {
     const w = random.range(1.6, 2.7);
     const d = random.range(1.6, 2.7);
     const ry = random.pick([0, 0.07, -0.05, Math.PI / 2, 0.12]);
-    const wall = GOLDS[Math.floor(random() * GOLDS.length)];
-    const roof = GOLD_ROOFS[Math.floor(random() * GOLD_ROOFS.length)];
-    const pieces = [box(w, height, d, { y: height / 2 }, wall)];
-    if (style === 'gable') {
-        pieces.push(gable(w + 0.2, 1.1, d + 0.2, { y: height }, roof));
-    } else if (style === 'pyramid') {
-        pieces.push(cone(Math.max(w, d) * 0.74, 1.6, 4, { y: height + 0.8, ry: Math.PI / 4 }, roof));
-    } else if (style === 'dome') {
-        pieces.push(paint(pose(new SphereGeometry(Math.min(w, d) * 0.55, 12, 6, 0, Math.PI * 2, 0, Math.PI / 2), { y: height }), roof));
-        pieces.push(cone(0.12, 1.1, 6, { y: height + Math.min(w, d) * 0.55 + 0.4 }, GOLDS[3]));
+    const wallBase = GOLDS[Math.floor(random() * GOLDS.length)];
+    const roofBase = GOLD_ROOFS[Math.floor(random() * GOLD_ROOFS.length)];
+
+    const tower = detail() < 0.12;
+    const width = tower ? w * 0.62 : w;
+    const depth = tower ? d * 0.62 : d;
+    const tall = tower ? height + detail.range(2.6, 4.6) : height;
+    const wall = new Color(wallBase).offsetHSL(detail.range(-0.012, 0.012), detail.range(-0.08, 0.04), detail.range(-0.07, 0.05));
+    const roof = detail() < 0.24 ? ROOF_ACCENTS[Math.floor(detail() * ROOF_ACCENTS.length)] : roofBase;
+    const stacked = !tower && tall > 3.1 && detail() < 0.28;
+    const roofStyle = tower ? 'pyramid' : style;
+
+    const pieces = [];
+    let top = tall;
+    let roofWidth = width;
+    let roofDepth = depth;
+    if (stacked) {
+        const lower = tall * 0.58;
+        pieces.push(box(width, lower, depth, { y: lower / 2 }, wall));
+        roofWidth = width * 0.72;
+        roofDepth = depth * 0.72;
+        pieces.push(box(roofWidth, tall - lower, roofDepth, { y: lower + (tall - lower) / 2, z: -depth * 0.08 }, wall.clone().offsetHSL(0, 0, 0.03)));
+        pieces.push(box(width + 0.12, 0.14, depth + 0.12, { y: lower + 0.07 }, roof));
     } else {
-        pieces.push(box(w + 0.16, 0.3, d + 0.16, { y: height + 0.15 }, roof));
+        pieces.push(box(width, tall, depth, { y: tall / 2 }, wall));
     }
+    const roofZ = stacked ? -depth * 0.08 : 0;
+    if (roofStyle === 'gable') {
+        pieces.push(gable(roofWidth + 0.2, 1.1, roofDepth + 0.2, { y: top, z: roofZ }, roof));
+    } else if (roofStyle === 'pyramid') {
+        const rise = tower ? 2.4 : 1.6;
+        pieces.push(cone(Math.max(roofWidth, roofDepth) * 0.74, rise, 4, { y: top + rise / 2, z: roofZ, ry: Math.PI / 4 }, roof));
+    } else if (roofStyle === 'dome') {
+        const radius = Math.min(roofWidth, roofDepth) * 0.55;
+        pieces.push(paint(pose(new SphereGeometry(radius, 12, 6, 0, Math.PI * 2, 0, Math.PI / 2), { y: top, z: roofZ }), roof));
+        pieces.push(cone(0.12, 1.1, 6, { y: top + radius + 0.4, z: roofZ }, GOLDS[3]));
+    } else {
+        pieces.push(box(roofWidth + 0.16, 0.3, roofDepth + 0.16, { y: top + 0.15, z: roofZ }, roof));
+    }
+    if (roofStyle === 'gable' && detail() < 0.35) {
+        pieces.push(box(0.24, 0.8, 0.24, { x: roofWidth * 0.26, y: top + 0.75, z: roofZ + roofDepth * 0.12 }, new Color(roof).offsetHSL(0, 0, -0.08)));
+    }
+
+    // A door on the front, and dark windows in the rows the lit ones leave empty.
+    const darkWindow = new Color(wall).multiplyScalar(0.34);
+    pieces.push(box(0.42, 0.82, 0.05, { x: detail.range(-width * 0.22, width * 0.22), y: 0.46, z: depth / 2 + 0.02 }, SHADOW));
+    if (!tower && tall > 3 && detail() < 0.16) {
+        pieces.push(box(width * 0.6, 0.08, 0.46, { y: 1.95, z: depth / 2 + 0.23 }, wall.clone().offsetHSL(0, 0, -0.1)));
+        pieces.push(box(width * 0.6, 0.3, 0.04, { y: 2.12, z: depth / 2 + 0.44 }, SHADOW));
+    }
+    // Which wall a window at height y sits on: the lower storey, or the narrower one above it.
+    const lowerTop = stacked ? tall * 0.58 : tall;
+    const faceAt = (y) => (stacked && y > lowerTop
+        ? { front: roofZ + roofDepth / 2 + 0.02, half: roofWidth / 2, depthHalf: roofDepth / 2, centreZ: roofZ, top: tall }
+        : { front: depth / 2 + 0.02, half: width / 2, depthHalf: depth / 2, centreZ: 0, top: lowerTop });
     const glows = [];
+    const litRows = new Set();
     if (random() < 0.7) {
         const rows = Math.max(1, Math.floor(height / 1.6));
         for (let row = 0; row < rows; row += 1) {
             if (random() < 0.35) continue;
             const y = 1.1 + row * 1.5;
-            const across = random.range(-w * 0.25, w * 0.25);
-            glows.push(box(0.26, 0.42, 0.04, { x: across, y, z: d / 2 + 0.02 }, WINDOW));
+            const across = random.range(-w * 0.25, w * 0.25) / (w / 2);
+            const face = faceAt(y);
+            if (y + 0.25 > face.top) continue;
+            glows.push(box(0.26, 0.42, 0.04, { x: across * face.half, y, z: face.front }, WINDOW));
+            litRows.add(row);
         }
     }
+    const rows = Math.max(1, Math.floor((tall - 0.6) / 1.5));
+    for (let row = 0; row < rows; row += 1) {
+        const y = 1.1 + row * 1.5;
+        const face = faceAt(y);
+        if (y + 0.25 > face.top) continue;
+        if (!litRows.has(row)) pieces.push(box(0.24, 0.4, 0.04, { x: face.half * 0.52 * (row % 2 ? 1 : -1), y, z: face.front }, darkWindow));
+        if (detail() < 0.6) {
+            pieces.push(box(0.04, 0.4, 0.24, { x: face.half + 0.02, y, z: face.centreZ + detail.range(-face.depthHalf * 0.4, face.depthHalf * 0.4) }, darkWindow));
+        }
+    }
+
     const at = { x, y: groundY(x, z) - 0.05, z, ry };
     for (const piece of frame(pieces, at)) buckets.add('gold', piece);
     for (const piece of frame(glows, at)) buckets.add('glow', piece);
@@ -311,12 +378,16 @@ function addHouse(buckets, random, x, z, height, style) {
 function buildHouses(buckets, random, byId) {
     const zones = clearZones(byId);
     const placed = [];
+    // The houses' finer variety draws on a stream of its own, so the shared one runs as before.
+    const detail = createRandom(1209);
 
-    // Two tall houses by the crossroads, joined by a gangway the flags tangle over.
+    // Two tall houses by the crossroads, joined by a gangway the flags tangle over: kept plain
+    // (no tower, no second storey), so the gangway still meets their walls.
+    const steady = Object.assign(() => 0.99, { range: (low, high) => (low + high) / 2, pick: (list) => list[0] });
     const [fx, , fz] = byId.get('flags').position;
     const pair = [[fx - 2.6, fz - 4.4, 6.4], [fx + 2.4, fz - 4.6, 5.8]];
     for (const [x, z, height] of pair) {
-        addHouse(buckets, random, x, z, height, 'gable');
+        addHouse(buckets, random, x, z, height, 'gable', steady);
         placed.push([x, z]);
     }
     const gangY = groundY(fx, fz - 4.5) + 5.1;
@@ -332,7 +403,7 @@ function buildHouses(buckets, random, byId) {
         if (placed.some(([px, pz]) => Math.hypot(px - x, pz - z) < 3.0)) continue;
         const westness = Math.min(1, Math.max(0, -x / 24));
         const height = random.range(1.8, 3.4) + westness * random.range(1.5, 4.5);
-        addHouse(buckets, random, x, z, height, styles[Math.floor(random() * styles.length)]);
+        addHouse(buckets, random, x, z, height, styles[Math.floor(random() * styles.length)], detail);
         placed.push([x, z]);
     }
 }

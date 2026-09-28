@@ -4,14 +4,20 @@
  * A dome drawn at the far plane: deep indigo overhead, violet in the middle
  * air, a rose band all round the horizon and an amber glow on the side where
  * the sun hangs just under it. Faint stars above; below the horizon the dusk
- * thickens into haze. Colours are linear; the ink pass tone-maps them.
+ * thickens into haze. Around the island, wherever the eye stands, a soft gold
+ * glow: Elysicester lit like the one moon Elysium needs. Colours are linear;
+ * the ink pass tone-maps them.
  */
 
 // =============================================================================
 // Imports
 // =============================================================================
 
-import { BackSide, Mesh, ShaderMaterial, SphereGeometry } from 'three';
+import { BackSide, Mesh, ShaderMaterial, SphereGeometry, Vector3 } from 'three';
+
+/** Where the glow gathers: the island's heart, and how far its light reaches around it. */
+const GLOW_CENTRE = new Vector3(0, 2, 0);
+const GLOW_REACH = 34;
 
 // =============================================================================
 // Shaders
@@ -30,6 +36,8 @@ const vertexShader = /* glsl */ `
 const fragmentShader = /* glsl */ `
     uniform vec3 sunDirection;
     uniform float time;
+    uniform vec3 haloDirection;
+    uniform float haloWidth;
 
     varying vec3 vDirection;
 
@@ -58,8 +66,8 @@ const fragmentShader = /* glsl */ `
         if (height >= 0.0) {
             color = mix(dusk, upper, smoothstep(0.0, 0.16, height));
             color = mix(color, zenith, smoothstep(0.16, 0.8, height));
-            color += amber * sunSide * exp(-height * 16.0) * 0.55;
-            color += rose * exp(-height * 26.0) * 0.3;
+            color += amber * sunSide * exp(-height * 16.0) * 0.42;
+            color += rose * exp(-height * 26.0) * 0.22;
         } else {
             color = mix(dusk * 0.7, farSea, smoothstep(0.0, -0.08, height));
             color = mix(color, vec3(0.008, 0.006, 0.018), smoothstep(-0.1, -0.6, height));
@@ -75,6 +83,12 @@ const fragmentShader = /* glsl */ `
                 color += vec3(1.0, 0.93, 0.82) * core * twinkle * smoothstep(0.05, 0.45, height) * (seed - 0.986) * 55.0;
             }
         }
+
+        // Elysicester glows like the one moon Elysium needs: a soft gold corona close about the
+        // island, gone within half its width again, however near or far the eye. (The dusk is
+        // dark enough that any wider glow would brown the whole sky.)
+        float reach = (1.0 - dot(direction, haloDirection)) / max(haloWidth, 1e-4);
+        color += vec3(1.0, 0.7, 0.34) * exp(-max(reach - 0.6, 0.0) * 2.2) * 0.045;
 
         gl_FragColor = vec4(color, 1.0);
     }
@@ -92,6 +106,8 @@ export function createSky({ sunDirection }) {
     const uniforms = {
         sunDirection: { value: sunDirection.clone().normalize() },
         time: { value: 0 },
+        haloDirection: { value: new Vector3(0, -1, 0) },
+        haloWidth: { value: 0.03 },
     };
     const material = new ShaderMaterial({
         uniforms,
@@ -107,10 +123,14 @@ export function createSky({ sunDirection }) {
 
     return {
         mesh,
-        /** Keep the dome centred on the eye and let the stars breathe. */
+        /** Keep the dome centred on the eye, let the stars breathe, and keep the glow round the island. */
         update(time, camera) {
             uniforms.time.value = time;
             mesh.position.copy(camera.position);
+            const toward = uniforms.haloDirection.value.copy(GLOW_CENTRE).sub(camera.position);
+            const distance = toward.length();
+            toward.normalize();
+            uniforms.haloWidth.value = 1 - Math.cos(Math.asin(Math.min(0.999, GLOW_REACH / Math.max(distance, 1e-3))));
         },
     };
 }

@@ -427,9 +427,8 @@ export function createSignList({ list, signs, places, onFocusSign }) {
         fillWords(button, sign);
         const where = document.createElement('span');
         where.className = 'visually-hidden';
-        where.textContent = sign.danaeam === null
-            ? ` (${sign.where ?? places.get(sign.place)?.label}: a sign still waiting for its word)`
-            : ` (${places.get(sign.place)?.label})`;
+        const place = sign.where ?? places.get(sign.place)?.label;
+        where.textContent = sign.danaeam === null ? ` (${place}: a sign still waiting for its word)` : ` (${place})`;
         button.append(where);
         button.addEventListener('focus', () => onFocusSign(sign));
         button.addEventListener('click', () => onFocusSign(sign));
@@ -458,9 +457,10 @@ export function createSignOverlay({ stage, label, isBusy }) {
     let pinned = false;
     let hideTimer = 0;
 
-    // A tap sees through glass; a reading view shouldn't be taken through it.
+    // A tap sees through glass; a reading view shouldn't be taken through it, nor past another
+    // sign standing in front (the rays stop short of the plate being read, so it never blocks itself).
     const occluders = scene.children.filter((child) => child instanceof Mesh && !['sky', 'sea', 'glass', 'turquoise', 'signs'].includes(child.name));
-    const viewBlockers = scene.children.filter((child) => child instanceof Mesh && !['sky', 'sea', 'turquoise', 'signs'].includes(child.name));
+    const viewBlockers = scene.children.filter((child) => child instanceof Mesh && !['sky', 'sea', 'turquoise'].includes(child.name));
 
     function pickAt(x, y) {
         const rect = canvas.getBoundingClientRect();
@@ -525,31 +525,73 @@ export function createSignOverlay({ stage, label, isBusy }) {
         return clearFrom(camera.position, entry);
     }
 
+    /** Points around the plate, well clear of its edges: a view that sees them isn't peering through a gap. */
+    function marginPoints(entry) {
+        const points = [];
+        for (const across of [-1.7, 1.7]) {
+            for (const upward of [-2, 2]) {
+                points.push(entry.centre.clone()
+                    .addScaledVector(entry.side, (across * entry.width) / 2)
+                    .addScaledVector(entry.up, (upward * entry.height) / 2));
+            }
+        }
+        return points;
+    }
+
+    const views = new Map();
+
     /**
      * Where to stand to read a plate: straight on first, then a little round and
      * a little higher, then from behind if its words read from there too. The
-     * first place with nothing between it and the plate wins.
+     * first place with nothing between it and the plate, and room around the
+     * plate as well, wins; failing that, the first that sees the plate at all.
+     * Each sign's view is found once and kept.
      */
     function readingView(entry) {
+        if (views.has(entry.sign.id)) return views.get(entry.sign.id);
         const distance = readingDistance(entry);
         const facing = Math.atan2(entry.normal.x, entry.normal.z);
         const sides = entry.mount.twoSided ? [0, Math.PI] : [0];
         const candidates = [];
         for (const side of sides) {
-            for (const lift of [0.2, 0.42, 0.66]) {
+            for (const lift of [0.3, 0.5, 0.18, 0.7]) {
                 for (const turn of [0, 0.35, -0.35, 0.7, -0.7]) {
                     for (const reach of [distance, distance * 0.7]) candidates.push({ theta: facing + side + turn, lift, reach });
                 }
             }
         }
         const eye = new Vector3();
+        const margins = marginPoints(entry);
+        let chosen = null;
+        let fallback = null;
         for (const candidate of candidates) {
             const across = Math.sqrt(1 - candidate.lift * candidate.lift) * candidate.reach;
             eye.set(Math.sin(candidate.theta) * across, candidate.lift * candidate.reach, Math.cos(candidate.theta) * across).add(entry.centre);
-            if (openSky(eye) && clearFrom(eye, entry)) return candidate;
+            if (!openSky(eye) || !clearFrom(eye, entry)) continue;
+            fallback ??= candidate;
+            if (margins.every((point) => clearLine(eye, point))) {
+                chosen = candidate;
+                break;
+            }
         }
-        return candidates[0];
+        const view = chosen ?? fallback ?? candidates[0];
+        views.set(entry.sign.id, view);
+        return view;
     }
+
+    // Find every sign's view in idle moments, one sign at a time, so focusing one never waits.
+    const idle = window.requestIdleCallback ?? ((callback) => setTimeout(callback, 60));
+    const pending = [...signs.entries];
+    let searchMs = 0;
+    const prepareNext = () => {
+        const entry = pending.shift();
+        if (!entry) return;
+        const started = performance.now();
+        readingView(entry);
+        searchMs += performance.now() - started;
+        idle(prepareNext);
+    };
+    idle(prepareNext);
 
     canvas.addEventListener('pointermove', (event) => {
         if (event.pointerType !== 'mouse' || event.buttons || pinned) return;
@@ -605,8 +647,9 @@ export function createSignOverlay({ stage, label, isBusy }) {
         claimsTap(x, y, pointDistance) {
             return pointDistance > POINT_KEEPS_TAP_PX && pickAt(x, y) !== null;
         },
-        /** For tests: the sign shown, and where each plate is on screen. */
+        /** For tests: the sign shown, where each plate is on screen, and what finding the views cost. */
         shownId: () => (label.hidden ? null : shown?.sign.id ?? null),
+        viewSearch: () => ({ prepared: views.size, of: signs.entries.length, ms: Math.round(searchMs) }),
         screenPositions() {
             return signs.entries.map((entry) => {
                 projected.copy(entry.centre).project(camera);

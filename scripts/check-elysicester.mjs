@@ -9,8 +9,9 @@
  *   - every read_on and place link resolves: local files exist, and the only
  *     outside URLs are the Overland and Adelaide texts
  *   - every Danæam string has provenance, and actually appears in the file it
- *     cites (so nothing on screen can be coined); missing words say what they
- *     need instead
+ *     cites, its gloss beside it in the same entry (so nothing on screen can be
+ *     coined); a word Elm gave herself ("given") must quote her, word and gloss;
+ *     missing words say what they need instead
  *   - the diorama stays inside its budget: total size, file size, no audio
  *     files, no image wider or taller than 1024 px
  *   - the page's import map points at files that exist in vendor/, and the
@@ -283,6 +284,13 @@ async function checkSigns(signs, placeIds) {
         }
         if (sign.gloss !== null && (typeof sign.gloss !== 'string' || !sign.gloss.trim())) {
             fail(`${where}: gloss must be a string from the site, or null`);
+        }
+        if (sign.given !== undefined) {
+            // A word Elm gave herself, which the site doesn't carry: its record must quote her, word and gloss.
+            if (typeof sign.given !== 'string' || !/^Elm\b/.test(sign.given)) fail(`${where}: "given" must say Elm gave it, and when`);
+            if (!sign.provenance.includes(sign.danaeam)) fail(`${where}: a word Elm gave must be quoted in its provenance`);
+            if (sign.gloss && !sign.provenance.includes(sign.gloss)) fail(`${where}: its gloss must come from her words too`);
+            continue;
         }
         const cited = sign.provenance.split(/\s/)[0];
         if (!/\.html$/.test(cited) || !await exists(cited)) {

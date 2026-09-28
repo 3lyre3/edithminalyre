@@ -126,9 +126,10 @@
       "place": "jetty-cafes",
       "mount": "gate/name",
       "where": "The city gate",
-      "danaeam": null,
-      "gloss": null,
-      "needs": "Elysicester’s own name in Danæam, for the plate that hangs in the city gate",
+      "danaeam": "Êlyscaíniy",
+      "gloss": "Elysicester",
+      "provenance": "Elm, in conversation, 28 Sep 2026: “Elysicester's name in Danæam is: Êlyscaíniy”",
+      "given": "Elm, 28 Sep 2026",
       "status": "draft"
     }
   ]
