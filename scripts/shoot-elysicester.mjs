@@ -6,11 +6,14 @@
  * (for example `npm i --no-save playwright axe-core` in a parent directory).
  *
  * Serves the repo on a local port and launches Chromium with SwiftShader
- * (working WebGL without a GPU). Four passes:
+ * (working WebGL without a GPU). Five passes:
  *   desktop  1280×800
  *   mobile   390×844 (touch, device pixel ratio 3)
  *   reduced  1280×800 with prefers-reduced-motion
  *   nogl     1280×800 with WebGL disabled (the still and its list)
+ *   extras   1280×800 with every optional extra on (?extras=all,door-open): the
+ *            words round the sky, the café shadow, the door opening and the
+ *            console's voice must all appear, with no problems besides
  * In each: console errors and failed requests are recorded; the threshold is
  * crossed (the card is screenshotted, then begun by click, tap or a key; the
  * desktop pass watches the whole Intermaze, the mobile pass skips it with a
@@ -81,6 +84,8 @@ const PASSES = {
     mobile: { viewport: { width: 390, height: 844 }, deviceScaleFactor: 3, isMobile: true, hasTouch: true, begin: 'tap', then: 'skip', expect: 'flight' },
     reduced: { viewport: { width: 1280, height: 800 }, reducedMotion: 'reduce', checkStillness: true, keyboard: true, begin: 'key', expect: 'crossfade', sound: true, soundOn: true },
     nogl: { viewport: { width: 1280, height: 800 }, noWebGL: true, keyboard: true, begin: 'click', expect: 'crossfade' },
+    // The optional extras, every one on (and the door made to open now): each must appear, and nothing else change.
+    extras: { viewport: { width: 1280, height: 800 }, begin: 'click', then: 'skip', expect: 'flight', query: 'extras=all,door-open', signs: false, extras: true },
 };
 
 /**
@@ -604,6 +609,49 @@ async function keyboardRound(page, fragments) {
     return results;
 }
 
+/**
+ * The optional extras, all on: the words round the sky, the shadow on its
+ * café wall, the yellow door (made to open now) turning on its hinge, and the
+ * voice in the console. Each must be there; the door is pictured, and the
+ * whole city with the sky's words.
+ */
+async function extrasRound(page, spoken, outDir, name) {
+    const found = await page.evaluate(async () => {
+        const { scene } = window.elysicesterDebug.stage;
+        const sky = scene.getObjectByName('sky');
+        const door = scene.getObjectByName('yellow-door');
+        const until = performance.now() + 25_000;
+        while (door && door.rotation.y > -0.3 && performance.now() < until) await new Promise((resolve) => setTimeout(resolve, 200));
+        return {
+            inscription: 'INSCRIPTION' in (sky?.material.defines ?? {}),
+            shadow: Boolean(scene.getObjectByName('cafe-shadow')),
+            door: Boolean(door),
+            doorOpened: door ? door.rotation.y < -0.3 : false,
+        };
+    });
+    const glide = () => page.waitForFunction(() => !window.elysicesterDebug.rig.gliding, null, { timeout: 30_000 }).catch(() => {});
+    await page.evaluate(() => {
+        const { stage, signs } = window.elysicesterDebug;
+        signs.focusSign(stage.signs.entries.find((entry) => entry.sign.id === 'sky-grottos-notice').sign);
+    });
+    await glide();
+    await page.screenshot({ path: path.join(outDir, `${name}-door.png`) });
+    await page.evaluate(() => {
+        window.elysicesterDebug.signs.focusSign(null);
+        window.elysicesterDebug.rig.toHome();
+    });
+    await glide();
+    await page.screenshot({ path: path.join(outDir, `${name}-sky.png`) });
+    const voice = spoken.length >= 3 && spoken[0].includes('Elysicester') && spoken[0].includes('Êlyscaíniy');
+    const problems = [];
+    if (!found.inscription) problems.push('no words round the sky');
+    if (!found.shadow) problems.push('no shadow on the café wall');
+    if (!found.door) problems.push('the door cannot open');
+    else if (!found.doorOpened) problems.push('the door did not open');
+    if (!voice) problems.push(`the console said ${JSON.stringify(spoken.slice(0, 3))}`);
+    return { ...found, voice, spoken: spoken.slice(0, 3), ok: problems.length === 0, problems };
+}
+
 async function checkReadOn() {
     const data = JSON.parse(await readFile(path.join(ROOT, 'elysicester', 'data', 'fragments.json'), 'utf8'));
     const urls = [...new Set(data.fragments.map((fragment) => fragment.read_on.split('#')[0]).filter((url) => /^https?:/.test(url)))];
@@ -668,7 +716,9 @@ try {
                 await page.goto(`${origin}/elysicester/data/places.json`);
                 await page.evaluate(() => window.localStorage.setItem('elysicester:sound', JSON.stringify('on')));
             }
-            await page.goto(`${origin}/elysicester/?debug=1`, { waitUntil: 'load' });
+            const spoken = [];
+            if (pass.extras) page.on('console', (message) => { if (message.type() === 'log') spoken.push(message.text()); });
+            await page.goto(`${origin}/elysicester/?debug=1${pass.query ? `&${pass.query}` : ''}`, { waitUntil: 'load' });
             const threshold = await enter(page, context, pass, { begin: pass.begin, then: pass.then, shots: path.join(outDir, name), voiceLines });
             const { mode } = threshold;
             const result = { mode, threshold, messages, failures };
@@ -693,7 +743,8 @@ try {
                     result.stillness = { drifted: Math.abs(end.theta - start.theta) > 1e-4 };
                 }
                 if (pass.signs !== false) result.signs = await signRound(page, context, pass, outDir, name);
-                if (!quick) result.pointer = await pointerRound(page, context, pass, ordered, outDir, name);
+                if (pass.extras) result.extras = await extrasRound(page, spoken, outDir, name);
+                if (!quick && !pass.extras) result.pointer = await pointerRound(page, context, pass, ordered, outDir, name);
             } else {
                 result.signs = await stillSignCheck(page);
                 if (!quick) result.pointer = await stillClickRound(page, ordered, outDir, name);
@@ -701,7 +752,7 @@ try {
 
             if (!quick && pass.keyboard) result.keyboard = await keyboardRound(page, ordered);
 
-            if (!quick) {
+            if (!quick && !pass.extras) {
                 await page.reload({ waitUntil: 'load' });
                 result.reentered = await enter(page, context, pass, { begin: pass.begin, then: 'skip' });
                 result.persisted = await page.evaluate(() => ({
@@ -734,8 +785,10 @@ try {
             const signs = result.signs
                 ? `signs ${summarise(result.signs.results)}${result.signs.coverage ? `, glyphs ${result.signs.glyphProblems.length ? 'MISSING' : 'all held'}` : ''}${result.signs.navScanned ? `, list axe serious ${navSerious}` : ''}`
                 : '';
-            process.stdout.write(`${name.padEnd(8)} ${result.mode.padEnd(6)} ${problems === 0 ? 'clean' : `${problems} problem(s)`}  ${[crossing, sound, info, orbit, still, signs, pointer, keys, axe, kept].filter(Boolean).join(' · ')}\n`);
+            const extras = result.extras ? `extras ${result.extras.ok ? 'sky, shadow, door and voice all there' : 'NOT OK'}` : '';
+            process.stdout.write(`${name.padEnd(8)} ${result.mode.padEnd(6)} ${problems === 0 ? 'clean' : `${problems} problem(s)`}  ${[crossing, sound, info, orbit, still, signs, extras, pointer, keys, axe, kept].filter(Boolean).join(' · ')}\n`);
             for (const line of [...result.messages, ...result.failures]) process.stdout.write(`    ${line}\n`);
+            for (const line of result.extras?.problems ?? []) process.stdout.write(`    extras not ok: ${line}\n`);
             for (const line of [...result.threshold.problems, ...(result.reentered?.problems ?? []).map((text) => `on return: ${text}`), ...(result.sound?.problems ?? [])]) {
                 process.stdout.write(`    not ok: ${line}\n`);
             }

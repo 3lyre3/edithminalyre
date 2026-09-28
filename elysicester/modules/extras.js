@@ -39,13 +39,13 @@ const DUSK_UNTIL = 21;
 // Which extras, and when
 // =============================================================================
 
-/** Which extras the address asks for (a Set of names; empty unless asked). */
+/** Which extras the address asks for (a Set of names; empty unless asked). "all" is every one but door-open. */
 export function wantedExtras(search = window.location.search) {
     const asked = new URLSearchParams(search).get('extras');
     if (!asked) return new Set();
     const names = asked.split(',').map((name) => name.trim().toLowerCase()).filter(Boolean);
-    if (names.includes('all')) return new Set(EXTRAS.filter((name) => name !== 'door-open'));
-    return new Set(names.filter((name) => EXTRAS.includes(name)));
+    const all = names.includes('all') ? EXTRAS.filter((name) => name !== 'door-open') : [];
+    return new Set([...all, ...names.filter((name) => EXTRAS.includes(name))]);
 }
 
 /** True at Samhain in the southern hemisphere (30 April and 1 May), by the visitor's calendar. */
