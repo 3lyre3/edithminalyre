@@ -24,13 +24,14 @@ import {
     Vector3,
     WebGLRenderer,
 } from 'three';
-import { Buckets, createMaterials } from './kit.js';
+import { Buckets, createMaterials, flutter } from './kit.js';
 import { createInk } from './ink.js';
 import { buildIsland } from './island.js';
 import { stagePaper } from './paper.js';
 import { buildPlaces } from './places.js';
 import { OrbitRig } from './rigs/orbit.js';
 import { createSea } from './sea.js';
+import { createSigns } from './signs.js';
 import { createSky } from './sky.js';
 import { createWisp } from './wisp.js';
 
@@ -47,21 +48,6 @@ const MAX_PIXEL_RATIO = 2;
 // =============================================================================
 // Main Code
 // =============================================================================
-
-/** Teach the turquoise cloth to flutter, using each vertex's "sway". */
-function makeFlagsFlutter(material, clock) {
-    material.onBeforeCompile = (shader) => {
-        shader.uniforms.flutterTime = clock;
-        shader.vertexShader = shader.vertexShader
-            .replace('#include <common>', '#include <common>\nuniform float flutterTime;\nattribute float sway;')
-            .replace('#include <begin_vertex>', [
-                '#include <begin_vertex>',
-                'float flutter = sin(flutterTime * 3.1 + position.x * 1.7 + position.z * 1.3) * 0.6',
-                '    + sin(flutterTime * 5.3 + position.y * 2.1) * 0.3;',
-                'transformed += vec3(0.1, 0.04, 0.1) * flutter * sway;',
-            ].join('\n'));
-    };
-}
 
 function createReadout() {
     const panel = document.createElement('div');
@@ -114,7 +100,7 @@ export function fitRenderer(renderer, canvas) {
  * @param {object} options
  * @param {import('three').WebGLRenderer} options.renderer - from createRenderer
  * @param {HTMLCanvasElement} options.canvas
- * @param {{ places: object, paper: object }} options.data
+ * @param {{ places: object, paper: object, signs: object }} options.data
  * @param {boolean} options.reducedMotion
  * @param {boolean} options.debug
  * @param {() => void} [options.onLost] - called if the WebGL context is lost
@@ -140,8 +126,9 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
     scene.add(new HemisphereLight(0x9a86c8, 0x6a4450, 0.75), key, sunset, seaFill, underglow);
 
     const materials = createMaterials();
-    const flutter = { value: 0 };
-    makeFlagsFlutter(materials.turquoise, flutter);
+    const wind = { value: 0 };
+    flutter(materials.turquoise, wind);
+    flutter(materials.sign, wind);
     const buckets = new Buckets();
     await pause();
     buildIsland(buckets);
@@ -150,6 +137,9 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
     await pause();
     for (const mesh of buckets.build(materials, { turquoise: ['sway'] }).values()) scene.add(mesh);
     for (const extra of places.extras) scene.add(extra);
+    await pause();
+    const signs = await createSigns({ data: data.signs, mounts: places.mounts, material: materials.sign, renderer });
+    scene.add(signs.mesh);
     await pause();
 
     const wisp = createWisp({ reducedMotion });
@@ -206,7 +196,7 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         places.update(elapsed);
         wisp.update(elapsed);
         paper.update(camera);
-        flutter.value = elapsed;
+        wind.value = elapsed;
         ink.render(scene, camera, elapsed);
 
         const { calls, triangles, points, lines } = renderer.info.render;
@@ -228,6 +218,7 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         camera,
         rig,
         anchors: places.anchors,
+        signs,
         canvas,
         start() {
             if (running) return;

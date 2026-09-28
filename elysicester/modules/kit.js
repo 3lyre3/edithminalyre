@@ -262,7 +262,10 @@ export function light(hex, strength) {
     return new Color(hex).multiplyScalar(strength);
 }
 
-/** The materials every piece of the city is drawn with; one draw call each. */
+/**
+ * The materials every piece of the city is drawn with; one draw call each.
+ * "sign" has no picture yet: signs.js gives it the atlas of Danæam signs.
+ */
 export function createMaterials() {
     const gradientMap = toonRamp();
     const toon = (options) => new MeshToonMaterial({ gradientMap, vertexColors: true, color: 0xffffff, ...options });
@@ -276,6 +279,27 @@ export function createMaterials() {
         glass: toon({ transparent: true, opacity: 0.3, emissive: 0x3a5a62, emissiveIntensity: 0.35, side: DoubleSide }),
         arch: toon({ emissive: 0x5a6878, emissiveIntensity: 0.45 }),
         copper: toon({ emissive: 0x4a1c08, emissiveIntensity: 0.4 }),
+        sign: toon({ vertexColors: false, emissive: 0xffffff, emissiveIntensity: 0.3 }),
         glow: new MeshBasicMaterial({ vertexColors: true }),
+    };
+}
+
+/**
+ * Teach a material to flutter in the wind, by each vertex's "sway" (0 stays
+ * still). The flags and the banner among them share one clock.
+ * @param {import('three').Material} material
+ * @param {{ value: number }} clock - seconds, shared as a uniform
+ */
+export function flutter(material, clock) {
+    material.onBeforeCompile = (shader) => {
+        shader.uniforms.flutterTime = clock;
+        shader.vertexShader = shader.vertexShader
+            .replace('#include <common>', '#include <common>\nuniform float flutterTime;\nattribute float sway;')
+            .replace('#include <begin_vertex>', [
+                '#include <begin_vertex>',
+                'float flutter = sin(flutterTime * 3.1 + position.x * 1.7 + position.z * 1.3) * 0.6',
+                '    + sin(flutterTime * 5.3 + position.y * 2.1) * 0.3;',
+                'transformed += vec3(0.1, 0.04, 0.1) * flutter * sway;',
+            ].join('\n'));
     };
 }

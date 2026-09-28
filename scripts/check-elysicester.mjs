@@ -255,13 +255,22 @@ async function checkSigns(signs, placeIds) {
     }
     uniqueIds(signs.signs, label);
     const textCache = new Map();
+    const mounts = new Set();
     for (const sign of signs.signs) {
         const where = `${label} ${sign.id}`;
         if (!placeIds.has(sign.place)) fail(`${where}: unknown place ${JSON.stringify(sign.place)}`);
+        if (typeof sign.mount !== 'string' || !/^[a-z-]+\/[a-z0-9-]+$/.test(sign.mount)) {
+            fail(`${where}: needs a mount ("place/slot") to hang on`);
+        } else if (mounts.has(sign.mount)) {
+            fail(`${where}: mount ${sign.mount} already carries another sign`);
+        }
+        mounts.add(sign.mount);
+        if (!['draft', 'approved'].includes(sign.status)) fail(`${where}: status must be "draft" or "approved"`);
         if (sign.danaeam === null) {
             if (typeof sign.needs !== 'string' || !sign.needs.trim()) {
                 fail(`${where}: a missing word must say what it "needs"`);
             }
+            if (sign.gloss !== null) fail(`${where}: a missing word can't have a gloss`);
             continue;
         }
         if (typeof sign.danaeam !== 'string' || !sign.danaeam.trim()) {
@@ -284,7 +293,23 @@ async function checkSigns(signs, placeIds) {
         const text = textCache.get(cited);
         if (!text.includes(sign.danaeam)) fail(`${where}: ${JSON.stringify(sign.danaeam)} does not appear in ${cited}`);
         if (sign.gloss && !text.includes(sign.gloss)) fail(`${where}: gloss ${JSON.stringify(sign.gloss)} does not appear in ${cited}`);
+        // The gloss must be the site's gloss for this string: in the same entry, not anywhere on the page.
+        if (sign.gloss && text.includes(sign.danaeam) && text.includes(sign.gloss) && !glossBeside(text, sign.danaeam, sign.gloss)) {
+            fail(`${where}: gloss ${JSON.stringify(sign.gloss)} is not beside ${JSON.stringify(sign.danaeam)} in ${cited}`);
+        }
+        if (typeof sign.entry === 'string' && !text.includes(sign.entry)) {
+            fail(`${where}: its quoted entry does not appear word for word in ${cited}`);
+        }
     }
+}
+
+/** True if `gloss` appears within a short reach of some occurrence of `word`. */
+function glossBeside(text, word, gloss, reach = 48) {
+    for (let at = text.indexOf(word); at !== -1; at = text.indexOf(word, at + 1)) {
+        const window = text.slice(Math.max(0, at - reach), at + word.length + reach);
+        if (window.includes(gloss)) return true;
+    }
+    return false;
 }
 
 async function checkPaper(paper, placeIds) {

@@ -21,6 +21,7 @@
 import { createAudio } from './modules/audio.js';
 import { createHotspots, createPointList } from './modules/hotspots.js';
 import { createReader } from './modules/reader.js';
+import { createSignList, createSignOverlay } from './modules/signs.js';
 import { createRenderer, createStage, fitRenderer } from './modules/stage.js';
 import { markRead, readFragments, rememberSound, soundWanted } from './modules/state.js';
 import { createThreshold } from './modules/threshold.js';
@@ -66,6 +67,14 @@ function showStill() {
     const fallback = byId('fallback');
     fallback.querySelector('.fallback-note').append(byId('points'));
     fallback.hidden = false;
+    // With no camera to turn, a sign in the list is simply its words.
+    for (const button of byId('signs-list').querySelectorAll('button')) {
+        const words = document.createElement('span');
+        words.className = button.className;
+        words.dataset.sign = button.dataset.sign;
+        words.append(...button.childNodes);
+        button.replaceWith(words);
+    }
 }
 
 /** The sound switch: off unless chosen; the choice is remembered. */
@@ -130,7 +139,9 @@ async function boot() {
     const pointsNav = byId('points');
     pointsNav.inert = true;
 
-    const [placeData, fragmentData, paper] = await Promise.all([loadData('places'), loadData('fragments'), loadData('paper')]);
+    const [placeData, fragmentData, paper, signData] = await Promise.all([
+        loadData('places'), loadData('fragments'), loadData('paper'), loadData('signs'),
+    ]);
     const places = new Map(placeData.places.map((place) => [place.id, place]));
     const fragmentById = new Map(fragmentData.fragments.map((fragment) => [fragment.id, fragment]));
     const readable = fragmentData.fragments.filter((fragment) => places.get(fragment.place)?.tier === 1);
@@ -142,7 +153,17 @@ async function boot() {
     const read = readFragments();
     let stage = null;
     let hotspots = null;
+    let signOverlay = null;
     const reader = createReader({ dialog: byId('reader'), places, onClose: () => stage?.rig.setDrifting(true) });
+    createSignList({
+        list: byId('signs-list'),
+        signs: signData.signs,
+        places,
+        onFocusSign: (sign) => {
+            if (sign) hotspots?.light(null);
+            signOverlay?.focusSign(sign);
+        },
+    });
 
     const focusFragment = (fragment) => {
         if (!stage) return;
@@ -154,6 +175,7 @@ async function boot() {
         markRead(fragment.id);
         list.markRead(fragment.id);
         hotspots?.markRead(fragment.id);
+        signOverlay?.hide();
         if (stage) {
             stage.rig.setDrifting(false);
             focusFragment(fragment);
@@ -178,7 +200,7 @@ async function boot() {
     let building;
     if (hasWebGL2()) {
         renderer = createRenderer(canvas);
-        building = createStage({ renderer, canvas, data: { places: placeData, paper }, reducedMotion, debug, onLost: showStill })
+        building = createStage({ renderer, canvas, data: { places: placeData, paper, signs: signData }, reducedMotion, debug, onLost: showStill })
             .then((built) => {
                 stage = built;
                 hotspots = createHotspots({
@@ -189,6 +211,12 @@ async function boot() {
                     label: byId('point-label'),
                     reducedMotion,
                     onPick: (fragment) => open(fragment, null),
+                    yieldTap: (x, y, pointDistance) => signOverlay?.claimsTap(x, y, pointDistance) ?? false,
+                });
+                signOverlay = createSignOverlay({
+                    stage,
+                    label: byId('sign-label'),
+                    isBusy: () => !byId('point-label').hidden || byId('reader').open,
                 });
                 if (debug) window.elysicesterDebug.readyAt = performance.now();
                 return stage;
@@ -239,6 +267,8 @@ async function boot() {
     if (debug) {
         Object.assign(window.elysicesterDebug, {
             hotspots,
+            signs: signOverlay,
+            signCoverage: stage?.signs.coverage ?? null,
             reader,
             fragments: readable,
             focusFragment: (id) => focusFragment(readable.find((fragment) => fragment.id === id)),

@@ -20,7 +20,12 @@
  * by its link) and by keyboard (Tab, Enter, Esc, and focus must come back),
  * each panel is screenshotted and scanned with axe, and a reload must keep
  * read points dim. Sound must stay off until the toggle turns it on (desktop),
- * and a remembered "on" must wait for the beginning gesture (reduced). The
+ * and a remembered "on" must wait for the beginning gesture (reduced). Every
+ * sign is read: its fonts must hold every letter it needs, the camera must find
+ * a clear view of its whole face (desktop and reduced reach it from the list,
+ * touch taps the plate), and its words must show over it marked as Danæam, with
+ * the site's gloss or none; the still lists them as plain words; the list is
+ * scanned with axe. A close-up of each plate is kept. The
  * reduced pass also waits past the idle delay to confirm nothing drifts.
  * Before the passes, every outside "read on" address is asked whether it
  * answers. Headless frame rates mean nothing; Elm's phone judges smoothness.
@@ -385,13 +390,17 @@ async function readerState(page) {
     }));
 }
 
-async function scanReader(page) {
+async function scanElement(page, id) {
     const loaded = await page.evaluate(() => Boolean(window.axe));
     if (!loaded) await page.addScriptTag({ path: require.resolve('axe-core/axe.min.js') });
-    return page.evaluate(async () => {
-        const result = await window.axe.run(document.getElementById('reader'), { resultTypes: ['violations'] });
+    return page.evaluate(async (target) => {
+        const result = await window.axe.run(document.getElementById(target), { resultTypes: ['violations'] });
         return result.violations.map((violation) => ({ id: violation.id, impact: violation.impact, help: violation.help, nodes: violation.nodes.length }));
-    });
+    }, id);
+}
+
+async function scanReader(page) {
+    return scanElement(page, 'reader');
 }
 
 function firstWords(fragment) {
@@ -446,6 +455,111 @@ async function pointerRound(page, context, pass, fragments, outDir, name) {
         results.push({ id: fragment.id, ok: inspected.matched && inspected.closed, ...inspected });
     }
     return results;
+}
+
+/**
+ * Every sign: its fonts hold every letter it needs; the camera comes round to
+ * read it; its words show over it, marked as Danæam, with the site's gloss (or
+ * none). Desktop reaches each sign from its entry in the list (keyboard focus);
+ * touch passes tap the plate itself. A close-up of each plate is kept.
+ */
+async function signRound(page, context, pass, outDir, name) {
+    const data = JSON.parse(await readFile(path.join(ROOT, 'elysicester', 'data', 'signs.json'), 'utf8'));
+    const coverage = await page.evaluate(() => window.elysicesterDebug.signCoverage);
+    const results = [];
+    let navViolations = [];
+    for (const sign of data.signs) {
+        if (pass.hasTouch) {
+            await page.evaluate((wanted) => {
+                window.elysicesterDebug.rig.setDrifting(false);
+                window.elysicesterDebug.signs.focusSign(wanted);
+            }, sign);
+        } else {
+            await page.evaluate((id) => {
+                window.elysicesterDebug.rig.setDrifting(false);
+                document.querySelector(`#signs-list button[data-sign="${id}"]`).focus();
+            }, sign.id);
+        }
+        await cameraSettled(page);
+        await page.waitForTimeout(250);
+        // While a sign's entry has focus, the whole list is showing: scan it once.
+        if (!pass.hasTouch && !results.length) navViolations = await scanElement(page, 'points');
+        let spot = await page.evaluate((id) => window.elysicesterDebug.signs.screenPositions().find((entry) => entry.id === id), sign.id);
+        if (pass.hasTouch && spot) {
+            // Let go of the programmatic focus, then tap the plate like a visitor.
+            await page.evaluate(() => window.elysicesterDebug.signs.hide());
+            await touch(context, page, [{ x: spot.x, y: spot.y }]);
+            await page.waitForTimeout(300);
+            spot = await page.evaluate((id) => window.elysicesterDebug.signs.screenPositions().find((entry) => entry.id === id), sign.id);
+        }
+        const state = await page.evaluate(() => {
+            const label = document.getElementById('sign-label');
+            const words = label.querySelector('.sign-words');
+            return {
+                shown: window.elysicesterDebug.signs.shownId(),
+                readerOpen: document.getElementById('reader').open,
+                words: words?.textContent ?? null,
+                lang: words?.getAttribute('lang') ?? null,
+                gloss: label.querySelector('.sign-gloss')?.textContent ?? null,
+            };
+        });
+        const { width, height } = pass.viewport;
+        if (spot?.inFront) {
+            const clip = {
+                x: Math.max(0, Math.min(width - 460, spot.x - 230)),
+                y: Math.max(0, Math.min(height - 300, spot.y - 170)),
+                width: Math.min(460, width),
+                height: 300,
+            };
+            await page.screenshot({ path: path.join(outDir, `${name}-sign-${sign.id}.png`), clip });
+        }
+        if (state.readerOpen) {
+            await page.keyboard.press('Escape');
+            await page.waitForTimeout(250);
+        }
+        const problems = [];
+        if (!spot?.inFront || !spot.visible) problems.push('the plate is hidden in its own view');
+        if (state.shown !== sign.id) problems.push(`the words shown were ${state.shown}${state.readerOpen ? ' (a reading point took the tap)' : ''}`);
+        if (state.words !== (sign.danaeam ?? '· · ·')) problems.push(`the words read ${JSON.stringify(state.words)}`);
+        if (state.lang !== (sign.danaeam === null ? null : 'art-x-danaeam')) problems.push(`lang was ${state.lang}`);
+        if (state.gloss !== (sign.gloss ?? null)) problems.push(`the gloss read ${JSON.stringify(state.gloss)}`);
+        results.push({ id: sign.id, ok: problems.length === 0, problems, spot });
+    }
+    await page.evaluate(() => {
+        document.activeElement?.blur();
+        window.elysicesterDebug.signs.hide();
+    });
+    const glyphProblems = [];
+    if (!coverage?.fontsLoaded) glyphProblems.push('the fonts did not load');
+    for (const font of coverage?.fonts ?? []) {
+        if (font.missing.length) glyphProblems.push(`${font.font} lacks ${font.missing.join(' ')}`);
+    }
+    return { coverage, glyphProblems, results, navViolations, navScanned: !pass.hasTouch };
+}
+
+/** In the still, the signs are plain words in the list: each marked as Danæam, glossed only where the site glosses it. */
+async function stillSignCheck(page) {
+    const data = JSON.parse(await readFile(path.join(ROOT, 'elysicester', 'data', 'signs.json'), 'utf8'));
+    const shown = await page.evaluate(() => [...document.querySelectorAll('#signs-list [data-sign]')].map((node) => ({
+        id: node.dataset.sign,
+        tag: node.tagName,
+        words: node.querySelector('.sign-words')?.textContent ?? null,
+        lang: node.querySelector('.sign-words')?.getAttribute('lang') ?? null,
+        gloss: node.querySelector('.sign-gloss')?.textContent ?? null,
+    })));
+    const results = data.signs.map((sign) => {
+        const entry = shown.find((candidate) => candidate.id === sign.id);
+        const problems = [];
+        if (!entry) problems.push('not in the list');
+        else {
+            if (entry.tag === 'BUTTON') problems.push('still a button with nothing to do');
+            if (entry.words !== (sign.danaeam ?? '· · ·')) problems.push(`the words read ${JSON.stringify(entry.words)}`);
+            if (entry.lang !== (sign.danaeam === null ? null : 'art-x-danaeam')) problems.push(`lang was ${entry.lang}`);
+            if (entry.gloss !== (sign.gloss ?? null)) problems.push(`the gloss read ${JSON.stringify(entry.gloss)}`);
+        }
+        return { id: sign.id, ok: problems.length === 0, problems };
+    });
+    return { results, glyphProblems: [], navViolations: await scanElement(page, 'points'), navScanned: true };
 }
 
 async function stillClickRound(page, fragments, outDir, name) {
@@ -565,9 +679,11 @@ try {
                     const end = await rigAngles(page);
                     result.stillness = { drifted: Math.abs(end.theta - start.theta) > 1e-4 };
                 }
+                if (pass.signs !== false) result.signs = await signRound(page, context, pass, outDir, name);
                 if (!quick) result.pointer = await pointerRound(page, context, pass, ordered, outDir, name);
-            } else if (!quick) {
-                result.pointer = await stillClickRound(page, ordered, outDir, name);
+            } else {
+                result.signs = await stillSignCheck(page);
+                if (!quick) result.pointer = await stillClickRound(page, ordered, outDir, name);
             }
 
             if (!quick && pass.keyboard) result.keyboard = await keyboardRound(page, ordered);
@@ -601,15 +717,27 @@ try {
             const passage = result.threshold.passage;
             const crossing = `threshold ${result.threshold.sequence}${passage?.frames ? ` (${passage.frames} frames, ${passage.linesShown} lines${passage.skipped ? `, skipped, landed ${result.threshold.skipToDone} ms after skip` : ''})` : ''} ${result.threshold.ok ? 'ok' : 'NOT OK'}`;
             const sound = result.sound ? `sound ${result.sound.ok ? 'ok' : 'NOT OK'}` : '';
-            process.stdout.write(`${name.padEnd(8)} ${result.mode.padEnd(6)} ${problems === 0 ? 'clean' : `${problems} problem(s)`}  ${[crossing, sound, info, orbit, still, pointer, keys, axe, kept].filter(Boolean).join(' · ')}\n`);
+            const navSerious = (result.signs?.navViolations ?? []).filter((violation) => SERIOUS.has(violation.impact)).length;
+            const signs = result.signs
+                ? `signs ${summarise(result.signs.results)}${result.signs.coverage ? `, glyphs ${result.signs.glyphProblems.length ? 'MISSING' : 'all held'}` : ''}${result.signs.navScanned ? `, list axe serious ${navSerious}` : ''}`
+                : '';
+            process.stdout.write(`${name.padEnd(8)} ${result.mode.padEnd(6)} ${problems === 0 ? 'clean' : `${problems} problem(s)`}  ${[crossing, sound, info, orbit, still, signs, pointer, keys, axe, kept].filter(Boolean).join(' · ')}\n`);
             for (const line of [...result.messages, ...result.failures]) process.stdout.write(`    ${line}\n`);
             for (const line of [...result.threshold.problems, ...(result.reentered?.problems ?? []).map((text) => `on return: ${text}`), ...(result.sound?.problems ?? [])]) {
                 process.stdout.write(`    not ok: ${line}\n`);
             }
+            for (const line of result.signs?.glyphProblems ?? []) process.stdout.write(`    glyphs: ${line}\n`);
+            for (const entry of (result.signs?.results ?? []).filter((item) => !item.ok)) {
+                process.stdout.write(`    sign not ok: ${entry.id} — ${entry.problems.join('; ')}\n`);
+            }
+            for (const font of result.signs?.coverage?.fonts ?? []) {
+                if (font.probeMissing.length) process.stdout.write(`    note: ${font.font} lacks ${font.probeMissing.join(' ')} (no sign uses them)\n`);
+            }
             for (const entry of [...(result.pointer ?? []), ...(result.keyboard ?? [])].filter((item) => !item.ok)) {
                 process.stdout.write(`    not ok: ${JSON.stringify(entry)}\n`);
             }
-            const minor = [...(result.pointer ?? []), ...(result.keyboard ?? [])].flatMap((entry) => entry.violations ?? []);
+            const minor = [...(result.pointer ?? []), ...(result.keyboard ?? [])].flatMap((entry) => entry.violations ?? [])
+                .concat(result.signs?.navViolations ?? []);
             for (const violation of new Map(minor.map((item) => [item.id, item])).values()) {
                 process.stdout.write(`    axe ${violation.impact}: ${violation.id} — ${violation.help}\n`);
             }

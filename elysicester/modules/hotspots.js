@@ -165,8 +165,10 @@ function glowTexture() {
  * @param {HTMLElement} options.label - a floating caption for the lit point
  * @param {boolean} options.reducedMotion
  * @param {(fragment: object) => void} options.onPick
+ * @param {(x: number, y: number, pointDistance: number) => boolean} [options.yieldTap] - lets
+ *   something the tap landed squarely on (a sign) keep a tap that only grazed a point
  */
-export function createHotspots({ stage, fragments, read, places, label, reducedMotion, onPick }) {
+export function createHotspots({ stage, fragments, read, places, label, reducedMotion, onPick, yieldTap }) {
     const { scene, camera, canvas, renderer, rig } = stage;
     const entries = fragments.map((fragment, index) => ({
         fragment,
@@ -226,7 +228,7 @@ export function createHotspots({ stage, fragments, read, places, label, reducedM
         return raycaster.intersectObjects(occluders, false).length === 0;
     }
 
-    /** The closest point to (x, y) within radius that the city doesn't hide. */
+    /** The closest point to (x, y) within radius that the city doesn't hide: { entry, distance }. */
     function nearest(x, y, radius) {
         const candidates = [];
         for (const entry of entries) {
@@ -236,7 +238,7 @@ export function createHotspots({ stage, fragments, read, places, label, reducedM
             if (distance < radius) candidates.push({ entry, distance });
         }
         candidates.sort((a, b) => a.distance - b.distance);
-        return candidates.find(({ entry }) => visible(entry))?.entry ?? null;
+        return candidates.find(({ entry }) => visible(entry)) ?? null;
     }
 
     function setLit(entry) {
@@ -250,14 +252,15 @@ export function createHotspots({ stage, fragments, read, places, label, reducedM
     }
 
     rig.onTap((x, y, pointerType) => {
-        const entry = nearest(x, y, PICK_RADIUS[pointerType] ?? PICK_RADIUS.touch);
-        if (entry) onPick(entry.fragment);
+        const found = nearest(x, y, PICK_RADIUS[pointerType] ?? PICK_RADIUS.touch);
+        if (!found || yieldTap?.(x, y, found.distance)) return;
+        onPick(found.entry.fragment);
     });
 
     let hoverCandidate = null;
     canvas.addEventListener('pointermove', (event) => {
         if (event.pointerType !== 'mouse' || event.buttons) return;
-        const entry = nearest(event.clientX, event.clientY, PICK_RADIUS.mouse);
+        const entry = nearest(event.clientX, event.clientY, PICK_RADIUS.mouse)?.entry ?? null;
         if (entry === hoverCandidate) return;
         hoverCandidate = entry;
         canvas.style.cursor = entry ? 'pointer' : '';

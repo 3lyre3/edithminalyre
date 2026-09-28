@@ -239,6 +239,84 @@ a:focus-visible {
     pointer-events: none;
 }
 
+/*
+ * A sign's words, floated over its plate: the Danæam above, and beneath it the
+ * site's gloss where the site gives one.
+ */
+.sign-label {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 31;
+    transform: translate(-50%, calc(-100% - 10px));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 3px 12px 5px;
+    line-height: 1.25;
+    white-space: nowrap;
+    background: rgba(8, 7, 11, 0.82);
+    border: 1px solid var(--smoke);
+    pointer-events: none;
+}
+
+.sign-label[hidden] {
+    display: none;
+}
+
+.sign-words {
+    font-family: var(--font-display);
+    font-size: 21px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    color: var(--honey);
+}
+
+.sign-gloss {
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-style: italic;
+    color: var(--pale);
+}
+
+/* The signs in the list: words, then gloss, on one line. */
+.signs-title {
+    margin: 12px 0 4px;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 17px;
+    letter-spacing: 0.08em;
+    color: var(--bone);
+}
+
+.signs-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.sign-link {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0 0.6em;
+    padding: 1px 0;
+    color: inherit;
+    text-align: left;
+    background: none;
+    border: 0;
+    cursor: pointer;
+}
+
+.sign-link .sign-words {
+    font-size: 18px;
+}
+
+.sign-link:hover .sign-words,
+.sign-link:focus-visible .sign-words {
+    color: var(--ivory);
+}
+
 /* Top right: the sound switch, and the way back to the whole city. */
 .controls {
     position: fixed;

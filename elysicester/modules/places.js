@@ -7,7 +7,8 @@
  * turquoise flags and tram-wires, the Steel Garden, the golden bridgework and
  * its spires, the sky-grottos, the sea-wall balcony, the glass gas station and
  * the glitching edge. Anchors are returned by id so reading points, the camera
- * rig and later tiers can find each place.
+ * rig and later tiers can find each place; mounts, by name, tell signs.js where
+ * each plaque, board, banner and marker hangs.
  *
  * Nothing here is decoration for its own sake: each shape answers a line in
  * Numbers by Paint (Episodes 1 and 3) or President Oedipus.
@@ -164,6 +165,36 @@ function frame(pieces, at) {
     return pieces;
 }
 
+const UP = new Vector3(0, 1, 0);
+
+/** A point given in a frame's own terms (x, y, z, turned by ry), in the world's. */
+function inFrame(x, y, z, at) {
+    return new Vector3(x, y, z).applyAxisAngle(UP, at.ry ?? 0).add(new Vector3(at.x ?? 0, at.y ?? 0, at.z ?? 0));
+}
+
+/** The sea-wall's outward face direction at z (it bends a little with the shore). */
+function wallNormal(z) {
+    const slope = (wallX(z + 0.01) - wallX(z - 0.01)) / 0.02;
+    return new Vector3(1, 0, -slope).normalize();
+}
+
+/**
+ * Where a sign can hang. signs.js reads these by name ("place/slot") and fits
+ * each plate to its words.
+ *   position   centre of the plate
+ *   normal     the way its face looks
+ *   height     plate height (it narrows if the words are long)
+ *   maxWidth   widest the plate may be
+ *   style      plaque | cafe | banner | door | board | marker | gate
+ *   twoSided   the words read from behind too
+ *   roll       a lean, in radians
+ *   stand      { kind: 'post' | 'posts', base } — legs from the plate down to y = base
+ *   sway       the plate flutters (a banner)
+ */
+function mount(mounts, name, spec) {
+    mounts.set(name, { twoSided: false, roll: 0, stand: null, sway: false, ...spec });
+}
+
 // =============================================================================
 // City fabric: wall, pavements, houses, signal-towers
 // =============================================================================
@@ -177,7 +208,7 @@ function wallEnds() {
     return [north, south];
 }
 
-function buildWall(buckets) {
+function buildWall(buckets, mounts) {
     const [north, south] = wallEnds();
     const thickness = 1.3;
     const courses = [[SEA_LEVEL - 0.5, 0.6, 0], [0.6, 1.9, 0.05], [1.9, 3.1, 0]];
@@ -208,7 +239,18 @@ function buildWall(buckets) {
         paint(pose(new TorusGeometry(1.35, 0.26, 6, 16, Math.PI), { y: 3.1, ry: Math.PI / 2 }), GOLDS[0]),
         cone(0.28, 1.1, 6, { y: 4.9 }, GOLDS[3]),
     ];
-    for (const piece of frame(gate, { x: gateX, z: GATE_Z, ry })) buckets.add('gold', piece);
+    const gateFrame = { x: gateX, z: GATE_Z, ry };
+    for (const piece of frame(gate, gateFrame)) buckets.add('gold', piece);
+
+    // The city's name hangs in the arch, read from the waterfront and the avenue alike.
+    mount(mounts, 'gate/name', {
+        position: inFrame(0, 3.62, 0, gateFrame),
+        normal: inFrame(1, 0, 0, { ry }),
+        height: 0.42,
+        maxWidth: 1.1,
+        style: 'gate',
+        twoSided: true,
+    });
 }
 
 function buildPavements(buckets) {
@@ -328,10 +370,17 @@ function buildSignalTowers(buckets) {
 // =============================================================================
 
 /** The sun-dock that unfurls from the golden wall onto the water. */
-function buildSunDock({ buckets, place }) {
+function buildSunDock({ buckets, place, mounts }) {
     const z = place.position[2];
     const face = wallX(z);
     const y = SEA_LEVEL + 0.34;
+    mount(mounts, 'sun-dock/plaque', {
+        position: new Vector3(face + 0.05, 2.5, z),
+        normal: wallNormal(z),
+        height: 0.62,
+        maxWidth: 4.4,
+        style: 'plaque',
+    });
     buckets.add('gold', paint(pose(new CylinderGeometry(3.2, 3.2, 0.2, 28, 1, false, 0, Math.PI), { x: face + 0.05, y, z }), 0xecb450));
     const rays = 11;
     for (let index = 0; index < rays; index += 1) {
@@ -345,7 +394,7 @@ function buildSunDock({ buckets, place }) {
 }
 
 /** Three brick-red, steepled cafés at the head of the jetty, facing out like actors. */
-function buildCafes({ buckets, place }) {
+function buildCafes({ buckets, place, mounts }) {
     const z = place.position[2];
     for (const [z0, z1] of [[z - 5.2, z - 1.7], [z - 1.7, z + 1.7], [z + 1.7, z + 4.9]]) {
         const zm = (z0 + z1) / 2;
@@ -387,6 +436,14 @@ function buildCafes({ buckets, place }) {
         const at = { x: cx, y: 0.3, z: cz, ry };
         for (const piece of frame(pieces, at)) buckets.add('brick', piece);
         for (const piece of frame(glows, at)) buckets.add('glow', piece);
+        // A board above the awning, under the gable.
+        mount(mounts, `jetty-cafes/cafe-${index + 1}`, {
+            position: inFrame(0, 2.03, 1.09, at),
+            normal: inFrame(0, 0, 1, { ry }),
+            height: 0.44,
+            maxWidth: 2.0,
+            style: 'cafe',
+        });
     });
 }
 
@@ -435,7 +492,7 @@ function distanceToSegment(point, a, b) {
  * Turquoise flags ribboning the skies above gangways, balconies and
  * crisscrossing tram-wires, frayed and blackened where they touch the lines.
  */
-function buildFlags({ buckets, place, random, byId }) {
+function buildFlags({ buckets, place, random, byId, mounts }) {
     const [cx, cy, cz] = place.position;
     const base = groundY(cx, cz);
     const poleTop = base + 6.9;
@@ -444,6 +501,27 @@ function buildFlags({ buckets, place, random, byId }) {
         buckets.add('steel', cylinder(0.08, 0.11, 7.1, 6, { x, y: groundY(x, z) + 3.5, z }, STEEL_DARK));
         buckets.add('steel', box(0.9, 0.08, 0.08, { x, y: poleTop, z, ry: 0.6 }, STEEL_DARK));
     }
+
+    // A banner hung from a rod between the two seaward poles, looking out to the water.
+    const [east1, east2] = [poles[1], poles[2]];
+    const rodY = poleTop - 0.7;
+    const span = new Vector3(east2[0] - east1[0], 0, east2[1] - east1[1]);
+    const rodLength = span.length();
+    span.normalize();
+    const facing = new Vector3(span.z, 0, -span.x);
+    const middle = new Vector3((east1[0] + east2[0]) / 2, rodY, (east1[1] + east2[1]) / 2);
+    buckets.add('steel', cylinder(0.035, 0.035, rodLength, 5, {
+        x: middle.x, y: rodY, z: middle.z, rx: Math.PI / 2, ry: Math.atan2(span.x, span.z),
+    }, STEEL_DARK));
+    mount(mounts, 'flags/banner', {
+        position: middle.clone().add(new Vector3(0, -0.46, 0)).addScaledVector(facing, 0.03),
+        normal: facing,
+        height: 0.84,
+        maxWidth: 3.6,
+        style: 'banner',
+        twoSided: true,
+        sway: true,
+    });
     const wires = [[0, 2], [1, 3], [0, 1], [2, 3], [3, 0]].map(([from, to]) => [
         new Vector3(poles[from][0], poleTop, poles[from][1]),
         new Vector3(poles[to][0], poleTop, poles[to][1]),
@@ -517,9 +595,26 @@ function buildFlags({ buckets, place, random, byId }) {
  * The Steel Garden: bird statues overgrown with the moss the small dogs bring,
  * and one steel sycamore, caked bluish-green, writhing up into the flags.
  */
-function buildSteelGarden({ buckets, place, random }) {
+function buildSteelGarden({ buckets, place, random, mounts }) {
     const [cx, , cz] = place.position;
     const floorY = groundY(cx, cz) + 0.08;
+    // The garden's name on a post at its seaward rim; the gift's word on the albatross's plinth.
+    mount(mounts, 'steel-garden/plaque', {
+        position: new Vector3(cx + 3.9, floorY + 0.95, cz + 1.2),
+        normal: new Vector3(1, 0, 0),
+        height: 0.5,
+        maxWidth: 1.6,
+        style: 'plaque',
+        twoSided: true,
+        stand: { kind: 'post', base: floorY + 0.1 },
+    });
+    mount(mounts, 'steel-garden/gift', {
+        position: new Vector3(cx, floorY + 0.62, cz + 2.7 + 0.535),
+        normal: new Vector3(0, 0, 1),
+        height: 0.3,
+        maxWidth: 0.75,
+        style: 'plaque',
+    });
     const mossy = (strength) => (x, y, z, color) => {
         color.set(STEEL).lerp(MOSS, Math.max(0, Math.min(1, (noise2(x * 1.6 + y * 0.5, z * 1.6 - y * 0.4) - 0.45) * strength)));
     };
@@ -610,8 +705,21 @@ function buildSteelGarden({ buckets, place, random }) {
 }
 
 /** The golden bridgework: spires, bridges curling spire to spire, floating stairs. */
-function buildBridgework({ buckets, place, random }) {
+function buildBridgework({ buckets, place, random, mounts }) {
     const [px, , pz] = place.position;
+    // A plaque on two legs at the foot of the bridgework, looking down the avenue to the gate.
+    const plaqueX = px + 3.3;
+    const plaqueZ = pz + 0.8;
+    const ground = groundY(plaqueX, plaqueZ);
+    mount(mounts, 'bridge/plaque', {
+        position: new Vector3(plaqueX, ground + 1.15, plaqueZ),
+        normal: new Vector3(1, 0, 0),
+        height: 0.6,
+        maxWidth: 3.0,
+        style: 'plaque',
+        twoSided: true,
+        stand: { kind: 'posts', base: ground - 0.05 },
+    });
     const spires = [
         [2.0, -4.5, 11], [0.0, 0.5, 13], [-1.5, -5.5, 15], [-3.0, -0.5, 17], [-0.5, 4.5, 12],
         [-5.0, -4.0, 19], [-6.0, 1.0, 21], [-4.0, 5.0, 15], [-7.5, -2.0, 23], [1.5, 5.8, 10], [-7.0, 4.2, 18],
@@ -672,7 +780,7 @@ function buildBridgework({ buckets, place, random }) {
  * The sky-grottos: the hanging mountain with its cold white arches, a thin
  * yellow door buried in its far pits, and the foyer-rock that crosses to it.
  */
-function buildSkyGrottos({ buckets, place, random, extras, animated, materials }) {
+function buildSkyGrottos({ buckets, place, random, extras, animated, materials, mounts }) {
     const [px, py, pz] = place.position;
     const centre = new Vector3(px - 6.8, py + 3.8, pz - 2.4);
     const roughen = (geometry, amount, seed) => {
@@ -717,6 +825,13 @@ function buildSkyGrottos({ buckets, place, random, extras, animated, materials }
     const doorAt = new Vector3(centre.x + 1.8, centre.y - 0.9, centre.z + 5.7);
     buckets.add('stone', box(1.2, 2.1, 0.7, { x: doorAt.x, y: doorAt.y, z: doorAt.z - 0.25 }, SHADOW));
     buckets.add('glow', box(0.42, 1.5, 0.06, { x: doorAt.x, y: doorAt.y - 0.1, z: doorAt.z + 0.12 }, DOOR));
+    mount(mounts, 'sky-grottos/door', {
+        position: new Vector3(doorAt.x, doorAt.y + 1.3, doorAt.z + 0.16),
+        normal: new Vector3(0, 0, 1),
+        height: 0.34,
+        maxWidth: 0.9,
+        style: 'door',
+    });
     for (let root = 0; root < 5; root += 1) {
         const start = new Vector3(doorAt.x + 0.16, doorAt.y - 0.1, doorAt.z + 0.16);
         const bend = start.clone().add(new Vector3(random.range(0.1, 0.5), random.range(-0.5, 0.4), random.range(0.1, 0.4)));
@@ -745,9 +860,17 @@ function buildSkyGrottos({ buckets, place, random, extras, animated, materials }
 }
 
 /** Cassandra's lookout: a balcony on the sea-wall above the breaking sea. */
-function buildSeaWall({ buckets, place }) {
+function buildSeaWall({ buckets, place, mounts }) {
     const z = place.position[2];
     const face = wallX(z);
+    const plaqueZ = z + 2.1;
+    mount(mounts, 'sea-wall/plaque', {
+        position: new Vector3(wallX(plaqueZ) + 0.09, 1.25, plaqueZ),
+        normal: wallNormal(plaqueZ),
+        height: 0.6,
+        maxWidth: 1.8,
+        style: 'plaque',
+    });
     buckets.add('gold', paint(pose(new CylinderGeometry(1.25, 1.25, 0.18, 18, 1, false, 0, Math.PI), { x: face + 0.02, y: 2.5, z }), GOLDS[3]));
     buckets.add('gold', paint(pose(new TorusGeometry(1.2, 0.05, 4, 18, Math.PI), { x: face, y: 3.1, z, rx: -Math.PI / 2, rz: -Math.PI / 2 }), GOLDS[0]));
     for (let post = 0; post <= 4; post += 1) {
@@ -758,9 +881,17 @@ function buildSeaWall({ buckets, place }) {
 }
 
 /** The one building in Elysicester that isn't gold: all glass, lit cold inside. */
-function buildGasStation({ buckets, place }) {
+function buildGasStation({ buckets, place, mounts }) {
     const [x, , z] = place.position;
     const y = groundY(x, z);
+    mount(mounts, 'gas-station/board', {
+        position: new Vector3(x + 3.25, y + 3.42, z + 0.5),
+        normal: new Vector3(1, 0, 0),
+        height: 0.6,
+        maxWidth: 3.0,
+        style: 'board',
+        twoSided: true,
+    });
     buckets.add('dimGold', groundStrip(x - 2.9, z - 7, x - 2.9, z + 7, 2.0, PAVE));
     buckets.add('dimGold', groundStrip(x + 2.9, z - 7, x + 2.9, z + 7, 2.0, PAVE));
     buckets.add('glass', box(3.4, 2.4, 2.2, { x, y: y + 1.2, z }, 0xcfeaf2));
@@ -783,9 +914,22 @@ function buildGasStation({ buckets, place }) {
 }
 
 /** The edge: a star fence along the rim with a gap to drive through, and the world glitching. */
-function buildEdge({ buckets, place, random }) {
+function buildEdge({ buckets, place, random, mounts }) {
     const [px, , pz] = place.position;
     const centre = Math.atan2(pz, px);
+    // A crooked marker in the water by the gap in the fence, facing back toward the city.
+    const markAngle = centre + 0.017;
+    const markRadius = rimRadius(markAngle) - 1.3;
+    mount(mounts, 'edge/marker', {
+        position: new Vector3(Math.cos(markAngle) * markRadius, SEA_LEVEL + 1.3, Math.sin(markAngle) * markRadius),
+        normal: new Vector3(-Math.cos(markAngle), 0, -Math.sin(markAngle)),
+        height: 0.42,
+        maxWidth: 1.3,
+        style: 'marker',
+        twoSided: true,
+        roll: -0.12,
+        stand: { kind: 'post', base: SEA_LEVEL - 0.5 },
+    });
     const starShape = new Shape();
     for (let point = 0; point < 12; point += 1) {
         const radius = point % 2 ? 0.1 : 0.28;
@@ -839,15 +983,16 @@ const BUILDERS = {
 /**
  * Build the city into the buckets, letting a frame through between steps.
  * @param {() => Promise<void>} [pause] - yields to the browser between steps
- * @returns {Promise<{ anchors: Map<string, Vector3>, extras: object[], update: (time: number) => void }>}
+ * @returns {Promise<{ anchors: Map<string, Vector3>, mounts: Map<string, object>, extras: object[], update: (time: number) => void }>}
  */
 export async function buildPlaces(buckets, placeData, materials, pause = async () => {}) {
     const random = createRandom(239);
     const byId = new Map(placeData.places.map((place) => [place.id, place]));
     const extras = [];
     const animated = [];
+    const mounts = new Map();
 
-    buildWall(buckets);
+    buildWall(buckets, mounts);
     buildPavements(buckets);
     await pause();
     buildHouses(buckets, random, byId);
@@ -858,7 +1003,7 @@ export async function buildPlaces(buckets, placeData, materials, pause = async (
     for (const place of placeData.places.filter((entry) => entry.tier === 1)) {
         const builder = BUILDERS[place.id];
         if (builder) {
-            builder({ buckets, place, random, byId, extras, animated, materials });
+            builder({ buckets, place, random, byId, extras, animated, materials, mounts });
             await pause();
         }
         anchors.set(place.id, new Vector3().fromArray(place.position));
@@ -866,6 +1011,7 @@ export async function buildPlaces(buckets, placeData, materials, pause = async (
 
     return {
         anchors,
+        mounts,
         extras,
         update(time) {
             for (const step of animated) step(time);

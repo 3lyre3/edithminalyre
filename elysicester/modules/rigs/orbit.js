@@ -192,14 +192,15 @@ export class OrbitRig {
     /**
      * Ease toward a place. With a point (a reading point's position), the camera
      * centres that point instead of the place's anchor; with an azimuth (degrees),
-     * it comes round to that side.
+     * it comes round to that side; with a reach ({ distance, height }), it comes
+     * that close (to read a sign, say) instead of the place's own distance.
      */
-    focus(placeId, point = null, azimuth = null) {
+    focus(placeId, point = null, azimuth = null, reach = null) {
         const place = this.places.get(placeId);
         if (!place) return false;
-        const { focus } = place;
+        const focus = { ...place.focus, ...(reach ?? {}) };
         const position = point ?? place.position;
-        const facing = azimuth ?? focus.azimuth;
+        const facing = azimuth ?? place.focus.azimuth;
         const theta = facing === undefined || facing === null ? Math.atan2(position.x, position.z) : MathUtils.degToRad(facing);
         this.goal.target.copy(position);
         this.goal.radius = focus.distance;

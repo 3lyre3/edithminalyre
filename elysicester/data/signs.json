@@ -1,4 +1,135 @@
 {
   "schema": 1,
-  "signs": []
+  "signs": [
+    {
+      "id": "sun-dock-welcome",
+      "place": "sun-dock",
+      "mount": "sun-dock/plaque",
+      "danaeam": "Yáe dúe saílturn",
+      "gloss": "the sun to welcome",
+      "provenance": "faerish/guideworde.html — the example under saílturn — welcome",
+      "entry": "saílturn — welcome · 'Yáe dúe saílturn' — the sun to welcome.",
+      "status": "draft"
+    },
+    {
+      "id": "cafe-coffee",
+      "place": "jetty-cafes",
+      "mount": "jetty-cafes/cafe-1",
+      "danaeam": "Cafi",
+      "gloss": "coffee",
+      "provenance": "faerish/guideworde.html — the entry Cafi — coffee (a loanword)",
+      "entry": "Cafi — coffee · loanword",
+      "status": "draft"
+    },
+    {
+      "id": "cafe-cafe",
+      "place": "jetty-cafes",
+      "mount": "jetty-cafes/cafe-2",
+      "danaeam": "Cafiarmaí",
+      "gloss": "café",
+      "provenance": "faerish/guideworde.html — the English index: café — Cafiarmaí",
+      "entry": "café — Cafiarmaí",
+      "status": "draft"
+    },
+    {
+      "id": "cafe-tea",
+      "place": "jetty-cafes",
+      "mount": "jetty-cafes/cafe-3",
+      "danaeam": "Sî",
+      "gloss": "tea",
+      "provenance": "faerish/guideworde.html — the entry Sî — tea",
+      "entry": "Sî — tea",
+      "status": "draft"
+    },
+    {
+      "id": "flags-delight",
+      "place": "flags",
+      "mount": "flags/banner",
+      "danaeam": "Ai’ai!",
+      "gloss": "delight-word",
+      "provenance": "faerish/guideworde.html — the entry Ai’ai! — delight-word",
+      "entry": "Ai’ai! — delight-word",
+      "status": "draft"
+    },
+    {
+      "id": "steel-garden-garden",
+      "place": "steel-garden",
+      "mount": "steel-garden/plaque",
+      "danaeam": "Gârty",
+      "gloss": "garden",
+      "provenance": "faerish/guideworde.html — the English index: garden — Gârty",
+      "entry": "garden — Gârty",
+      "status": "draft"
+    },
+    {
+      "id": "steel-garden-gift",
+      "place": "steel-garden",
+      "mount": "steel-garden/gift",
+      "danaeam": "Gil",
+      "gloss": "the unreturnable gift",
+      "provenance": "faerish/guideworde.html — the entry Gil — the unreturnable gift",
+      "entry": "Gil — the unreturnable gift",
+      "status": "draft"
+    },
+    {
+      "id": "bridge-solar",
+      "place": "bridge",
+      "mount": "bridge/plaque",
+      "danaeam": "yálénëách Brëch",
+      "gloss": "a solar bridge",
+      "provenance": "faerish/guideworde.html — the example under Brëch — bridge",
+      "entry": "Brëch — bridge · 'yálénëách Brëch' — a solar bridge.",
+      "status": "draft"
+    },
+    {
+      "id": "sky-grottos-notice",
+      "place": "sky-grottos",
+      "mount": "sky-grottos/door",
+      "danaeam": "Air",
+      "gloss": "notice!",
+      "provenance": "faerish/guideworde.html — the entry Air — notice!",
+      "entry": "Air — notice!",
+      "status": "draft"
+    },
+    {
+      "id": "sea-wall-ocean",
+      "place": "sea-wall",
+      "mount": "sea-wall/plaque",
+      "danaeam": "Amár",
+      "gloss": "ocean",
+      "provenance": "faerish/guideworde.html — the entry Amár — ocean",
+      "entry": "Amár — ocean",
+      "status": "draft"
+    },
+    {
+      "id": "gas-station-power",
+      "place": "gas-station",
+      "mount": "gas-station/board",
+      "danaeam": "fultós",
+      "gloss": "power",
+      "provenance": "faerish/guideworde.html — the English index: power — fultós",
+      "entry": "power — fultós",
+      "status": "draft"
+    },
+    {
+      "id": "edge-worldnt",
+      "place": "edge",
+      "mount": "edge/marker",
+      "danaeam": "Hthom’t",
+      "gloss": "worldn’t",
+      "provenance": "faerish/guideworde.html — the entry Hthom — World, its liturgic case: Hthom’t “worldn’t”",
+      "entry": "Hthom — World · may swallow whole clauses in the special liturgic case \"Hth’-…-’om\": Hthom’t “worldn’t”",
+      "status": "draft"
+    },
+    {
+      "id": "gate-name",
+      "place": "jetty-cafes",
+      "mount": "gate/name",
+      "where": "The city gate",
+      "danaeam": null,
+      "gloss": null,
+      "needs": "Elysicester’s own name in Danæam, for the plate that hangs in the city gate",
+      "status": "draft"
+    }
+  ]
 }
