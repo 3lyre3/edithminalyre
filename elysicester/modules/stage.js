@@ -25,6 +25,7 @@ import {
     WebGLRenderer,
 } from 'three';
 import { Buckets, createMaterials, flutter } from './kit.js';
+import { inscriptionTexture } from './extras.js';
 import { createInk } from './ink.js';
 import { buildIsland } from './island.js';
 import { stagePaper } from './paper.js';
@@ -105,14 +106,15 @@ export function fitRenderer(renderer, canvas) {
  * @param {boolean} options.reducedMotion
  * @param {boolean} options.debug
  * @param {() => void} [options.onLost] - called if the WebGL context is lost
+ * @param {Set<string>} [options.extras] - the optional extras asked for (extras.js); none, unless asked
  */
-export async function createStage({ renderer, canvas, data, reducedMotion, debug, onLost }) {
+export async function createStage({ renderer, canvas, data, reducedMotion, debug, onLost, extras = new Set() }) {
     const scene = new Scene();
     scene.fog = new FogExp2(0x3a2440, 0.0034);
     const camera = new PerspectiveCamera(35, 1, 0.5, 900);
 
     const edge = data.places.places.find((place) => place.id === 'edge');
-    const sky = createSky({ sunDirection: SUN_DIRECTION });
+    const sky = createSky({ sunDirection: SUN_DIRECTION, inscription: extras.has('sky') ? await inscriptionTexture() : null });
     const sea = createSea({ sunDirection: SUN_DIRECTION, edgeAngle: Math.atan2(edge.position[2], edge.position[0]) });
     scene.add(sky.mesh, sea.mesh);
 
@@ -134,7 +136,7 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
     await pause();
     buildIsland(buckets);
     await pause();
-    const places = await buildPlaces(buckets, data.places, materials, pause);
+    const places = await buildPlaces(buckets, data.places, materials, pause, extras, reducedMotion);
     await pause();
     for (const mesh of buckets.build(materials, { turquoise: ['sway'] }).values()) scene.add(mesh);
     for (const extra of places.extras) scene.add(extra);

@@ -6,7 +6,8 @@
  * the sun hangs just under it. Faint stars above; below the horizon the dusk
  * thickens into haze. Around the island, wherever the eye stands, a soft gold
  * glow: Elysicester lit like the one moon Elysium needs. Colours are linear;
- * the ink pass tone-maps them.
+ * the ink pass tone-maps them. As an extra (extras.js), words can be written
+ * round the sky, just above the far horizon.
  */
 
 // =============================================================================
@@ -38,6 +39,9 @@ const fragmentShader = /* glsl */ `
     uniform float time;
     uniform vec3 haloDirection;
     uniform float haloWidth;
+    #ifdef INSCRIPTION
+    uniform sampler2D inscription;
+    #endif
 
     varying vec3 vDirection;
 
@@ -90,6 +94,17 @@ const fragmentShader = /* glsl */ `
         float reach = (1.0 - dot(direction, haloDirection)) / max(haloWidth, 1e-4);
         color += vec3(1.0, 0.7, 0.34) * exp(-max(reach - 0.6, 0.0) * 2.2) * 0.045;
 
+        #ifdef INSCRIPTION
+        // An extra (?extras=sky): THIS IS NOT THE WORLD, round the sky just above the far horizon,
+        // repeated all the way round, so it reads from wherever the eye stands.
+        float band = (height - INSCRIPTION_LOW) / INSCRIPTION_HEIGHT;
+        if (band > 0.0 && band < 1.0) {
+            float around = atan(direction.z, direction.x) * (INSCRIPTION_COPIES / 6.28318531);
+            float letter = texture2D(inscription, vec2(fract(around), band)).a;
+            color += vec3(1.0, 0.84, 0.56) * letter * INSCRIPTION_STRENGTH;
+        }
+        #endif
+
         gl_FragColor = vec4(color, 1.0);
     }
 `;
@@ -101,18 +116,31 @@ const fragmentShader = /* glsl */ `
 /**
  * @param {object} options
  * @param {import('three').Vector3} options.sunDirection - where the hidden sun lies
+ * @param {import('three').Texture | null} [options.inscription] - an extra: words to write round the sky
  */
-export function createSky({ sunDirection }) {
+export function createSky({ sunDirection, inscription = null }) {
     const uniforms = {
         sunDirection: { value: sunDirection.clone().normalize() },
         time: { value: 0 },
         haloDirection: { value: new Vector3(0, -1, 0) },
         haloWidth: { value: 0.03 },
     };
+    const defines = {};
+    if (inscription) {
+        uniforms.inscription = { value: inscription };
+        Object.assign(defines, {
+            INSCRIPTION: '',
+            INSCRIPTION_LOW: '0.042',
+            INSCRIPTION_HEIGHT: '0.034',
+            INSCRIPTION_COPIES: '12.0',
+            INSCRIPTION_STRENGTH: '0.08',
+        });
+    }
     const material = new ShaderMaterial({
         uniforms,
         vertexShader,
         fragmentShader,
+        defines,
         side: BackSide,
         depthWrite: false,
     });

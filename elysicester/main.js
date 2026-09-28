@@ -11,7 +11,8 @@
  * Intermaze flies until the city is ready and a minimum passage has played
  * (under reduced motion, the card crossfades instead), and the city lifts out
  * of a dark veil. If anything fails, the city arrives as a still and its
- * points as a list; the reader works either way.
+ * points as a list; the reader works either way. The optional extras
+ * (extras.js) appear only when the address asks for them.
  */
 
 // =============================================================================
@@ -19,8 +20,9 @@
 // =============================================================================
 
 import { createAudio } from './modules/audio.js';
+import { speak, wantedExtras } from './modules/extras.js';
 import { createHotspots, createPointList } from './modules/hotspots.js';
-import { createReader } from './modules/reader.js';
+import { WORKS, createReader } from './modules/reader.js';
 import { createSignList, createSignOverlay } from './modules/signs.js';
 import { createRenderer, createStage, fitRenderer } from './modules/stage.js';
 import { markRead, readFragments, rememberSound, soundWanted } from './modules/state.js';
@@ -41,6 +43,8 @@ const root = document.documentElement;
 const params = new URLSearchParams(window.location.search);
 const debug = params.has('debug');
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+/** The optional extras (extras.js): none, unless the address asks, as ?extras=sky,shadow,door,voice. */
+const extras = wantedExtras();
 const byId = (id) => document.getElementById(id);
 if (debug) window.elysicesterDebug = {};
 
@@ -200,7 +204,7 @@ async function boot() {
     let building;
     if (hasWebGL2()) {
         renderer = createRenderer(canvas);
-        building = createStage({ renderer, canvas, data: { places: placeData, paper, signs: signData }, reducedMotion, debug, onLost: showStill })
+        building = createStage({ renderer, canvas, data: { places: placeData, paper, signs: signData }, reducedMotion, debug, onLost: showStill, extras })
             .then((built) => {
                 stage = built;
                 hotspots = createHotspots({
@@ -249,6 +253,7 @@ async function boot() {
     }
     if (debug) window.elysicesterDebug.threshold = passage;
     pointsNav.inert = false;
+    if (extras.has('voice')) speak(readable.filter((fragment) => fragment.status === 'approved'), WORKS);
 
     if (stage) {
         const home = byId('home-view');

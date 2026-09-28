@@ -31,6 +31,7 @@ import {
     Group,
     IcosahedronGeometry,
     Mesh,
+    MeshBasicMaterial,
     PlaneGeometry,
     Shape,
     SphereGeometry,
@@ -38,6 +39,8 @@ import {
     TubeGeometry,
     Vector3,
 } from 'three';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { doorCanOpen, doorOpen, shadowTexture } from './extras.js';
 import {
     SEA_LEVEL,
     createRandom,
@@ -81,6 +84,8 @@ const WINDOW = light(0xffc46a, 3.0);
 const LAMP = light(0xffd28a, 4.2);
 const COOL = light(0xd4fff4, 2.6);
 const DOOR = light(0xffd23a, 2.6);
+/** What lies beyond the yellow door, when it stands open (an extra). */
+const BEYOND = light(0xfff4d0, 4.6);
 const STAR = light(0xfff0c0, 4.4);
 const GLITCH = [light(0xff3ad8, 3.0), light(0x3afff0, 3.0)];
 
@@ -475,7 +480,7 @@ function buildSunDock({ buckets, place, mounts }) {
 }
 
 /** Three brick-red, steepled cafés at the head of the jetty, facing out like actors. */
-function buildCafes({ buckets, place, mounts }) {
+function buildCafes({ buckets, place, mounts, extras, animated, wanted }) {
     const z = place.position[2];
     for (const [z0, z1] of [[z - 5.2, z - 1.7], [z - 1.7, z + 1.7], [z + 1.7, z + 4.9]]) {
         const zm = (z0 + z1) / 2;
@@ -525,6 +530,26 @@ function buildCafes({ buckets, place, mounts }) {
             maxWidth: 2.0,
             style: 'cafe',
         });
+        // As an extra (extras.js): on the last café's outer wall, a shadow, with no one there to cast it.
+        if (index === 2 && wanted.has('shadow')) {
+            const figure = new PlaneGeometry(1.05, 2.1);
+            figure.translate(0, 1.05, 0);
+            const shade = new Mesh(figure, new MeshBasicMaterial({
+                map: shadowTexture(),
+                color: 0x1c0e1a,
+                transparent: true,
+                opacity: 0.6,
+                depthWrite: false,
+            }));
+            shade.name = 'cafe-shadow';
+            shade.position.copy(inFrame(-1.1 - 0.015, 0.02, 0.2, at));
+            shade.rotation.y = ry - Math.PI / 2;
+            extras.push(shade);
+            // It shifts its weight, now and then, as a body waiting would.
+            animated.push((time) => {
+                shade.rotation.z = Math.sin(time * 0.45) * 0.018 + Math.sin(time * 0.17 + 1.3) * 0.01;
+            });
+        }
     });
 }
 
@@ -862,7 +887,7 @@ function buildBridgework({ buckets, place, random, mounts }) {
  * The sky-grottos: the hanging mountain with its cold white arches, a thin
  * yellow door buried in its far pits, and the foyer-rock that crosses to it.
  */
-function buildSkyGrottos({ buckets, place, random, extras, animated, materials, mounts }) {
+function buildSkyGrottos({ buckets, place, random, extras, animated, materials, mounts, wanted, still }) {
     const [px, py, pz] = place.position;
     const centre = new Vector3(px - 6.8, py + 3.8, pz - 2.4);
     const roughen = (geometry, amount, seed) => {
@@ -906,7 +931,17 @@ function buildSkyGrottos({ buckets, place, random, extras, animated, materials, 
 
     const doorAt = new Vector3(centre.x + 1.8, centre.y - 0.9, centre.z + 5.7);
     buckets.add('stone', box(1.2, 2.1, 0.7, { x: doorAt.x, y: doorAt.y, z: doorAt.z - 0.25 }, SHADOW));
-    buckets.add('glow', box(0.42, 1.5, 0.06, { x: doorAt.x, y: doorAt.y - 0.1, z: doorAt.z + 0.12 }, DOOR));
+    // As an extra (extras.js), the door can open: a leaf on its hinge, the knob's roots with it, light beyond.
+    const hinge = doorCanOpen(wanted) ? new Group() : null;
+    if (hinge) {
+        hinge.name = 'yellow-door';
+        // (The leaf stands a hair forward of where the door is drawn otherwise, so the light fits behind it.)
+        hinge.position.set(doorAt.x - 0.21, doorAt.y - 0.1, doorAt.z + 0.15);
+        buckets.add('glow', box(0.42, 1.5, 0.02, { x: doorAt.x, y: doorAt.y - 0.1, z: doorAt.z + 0.11 }, BEYOND));
+        hinge.add(new Mesh(box(0.42, 1.5, 0.06, { x: 0.21 }, DOOR), materials.glow));
+    } else {
+        buckets.add('glow', box(0.42, 1.5, 0.06, { x: doorAt.x, y: doorAt.y - 0.1, z: doorAt.z + 0.12 }, DOOR));
+    }
     mount(mounts, 'sky-grottos/door', {
         position: new Vector3(doorAt.x, doorAt.y + 1.3, doorAt.z + 0.16),
         normal: new Vector3(0, 0, 1),
@@ -914,11 +949,23 @@ function buildSkyGrottos({ buckets, place, random, extras, animated, materials, 
         maxWidth: 0.9,
         style: 'door',
     });
+    const knobRoots = [];
     for (let root = 0; root < 5; root += 1) {
         const start = new Vector3(doorAt.x + 0.16, doorAt.y - 0.1, doorAt.z + 0.16);
         const bend = start.clone().add(new Vector3(random.range(0.1, 0.5), random.range(-0.5, 0.4), random.range(0.1, 0.4)));
         const end = bend.clone().add(new Vector3(random.range(0.2, 0.7), random.range(-0.9, 0.2), random.range(-0.2, 0.4)));
-        buckets.add('stone', taperedTube([start, bend, end], 0.05, 0.015, 0x4a3426, 8, 4));
+        if (hinge) knobRoots.push(taperedTube([start, bend, end].map((point) => point.sub(hinge.position)), 0.05, 0.015, 0x4a3426, 8, 4));
+        else buckets.add('stone', taperedTube([start, bend, end], 0.05, 0.015, 0x4a3426, 8, 4));
+    }
+    if (hinge) {
+        hinge.add(new Mesh(mergeGeometries(knobRoots.map((root) => root.index ? root.toNonIndexed() : root), false), materials.stone));
+        extras.push(hinge);
+        // It opens slowly, a little after the visitor arrives (at once, where motion is reduced).
+        const open = doorOpen(wanted);
+        animated.push((time) => {
+            const opening = !open ? 0 : still ? 1 : Math.min(1, Math.max(0, (time - 2.5) / 6));
+            hinge.rotation.y = -1.25 * opening * opening * (3 - 2 * opening);
+        });
     }
 
     // The foyer-rock hovers between the spire-tops and the mountain, entryway shining.
@@ -1065,9 +1112,11 @@ const BUILDERS = {
 /**
  * Build the city into the buckets, letting a frame through between steps.
  * @param {() => Promise<void>} [pause] - yields to the browser between steps
+ * @param {Set<string>} [wanted] - the optional extras asked for (extras.js); none, unless asked
+ * @param {boolean} [still] - motion is reduced: what moves, arrives
  * @returns {Promise<{ anchors: Map<string, Vector3>, mounts: Map<string, object>, extras: object[], houses: { built: number, cleared: number }, update: (time: number) => void }>}
  */
-export async function buildPlaces(buckets, placeData, materials, pause = async () => {}) {
+export async function buildPlaces(buckets, placeData, materials, pause = async () => {}, wanted = new Set(), still = false) {
     const random = createRandom(239);
     const byId = new Map(placeData.places.map((place) => [place.id, place]));
     const extras = [];
@@ -1085,7 +1134,7 @@ export async function buildPlaces(buckets, placeData, materials, pause = async (
     for (const place of placeData.places.filter((entry) => entry.tier === 1)) {
         const builder = BUILDERS[place.id];
         if (builder) {
-            builder({ buckets, place, random, byId, extras, animated, materials, mounts });
+            builder({ buckets, place, random, byId, extras, animated, materials, mounts, wanted, still });
             await pause();
         }
         anchors.set(place.id, new Vector3().fromArray(place.position));
