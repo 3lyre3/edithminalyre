@@ -12,11 +12,9 @@
 
 import {
     BufferGeometry,
-    CatmullRomCurve3,
     Color,
     ConeGeometry,
     Float32BufferAttribute,
-    TubeGeometry,
     Vector3,
 } from 'three';
 import {
@@ -30,6 +28,7 @@ import {
     paint,
     pose,
     rimRadius,
+    taperedTube,
     wallX,
 } from './kit.js';
 
@@ -44,8 +43,9 @@ const UNDERSIDE_RINGS = 11;
 const PAVEMENT = new Color(0x9a7440);
 const PAVEMENT_DARK = new Color(0x6a5030);
 const RIM_STONE = new Color(0x5a4640);
-const STRATA = [0x7a5c5c, 0x8e6c5a, 0x665068, 0x9a7a5e, 0x584860].map((hex) => new Color(hex));
-const DEEP_ROCK = new Color(0x2e2438);
+/** The rock's own strata are drawn by its material (kit.js); these only tint them. */
+const ROCK_TINT = new Color(0xfff2e6);
+const ROCK_TINT_COOL = new Color(0xe6e2f4);
 const ROOT = new Color(0x3a2a22);
 
 // =============================================================================
@@ -181,11 +181,10 @@ function buildRock() {
         rings.push(row);
     }
 
+    // The strata are laid by the "rock" material itself, per pixel (kit.js); the vertex colour
+    // only tints them, warmer toward the sun-facing west and a little cooler under the sea side.
     return stitch(rings, new Vector3(0, -2, 0), (vertex, centroid, color) => {
-        const depth = -centroid.y;
-        const band = Math.floor((depth + 1.5 * noise2(centroid.x * 0.2, centroid.z * 0.2)) / 1.7);
-        color.copy(STRATA[((band % STRATA.length) + STRATA.length) % STRATA.length]);
-        color.lerp(DEEP_ROCK, Math.min(0.7, depth / (CLIFF_DEPTH + UNDERSIDE_DEPTH) * 0.8));
+        color.copy(ROCK_TINT).lerp(ROCK_TINT_COOL, Math.min(1, Math.max(0, centroid.x / 30 + 0.5)));
     });
 }
 
@@ -212,15 +211,7 @@ function buildHangings(random) {
     }
     for (const spike of spikes) {
         spike.computeVertexNormals();
-        const position = spike.attributes.position;
-        const colors = new Float32Array(position.count * 3);
-        const color = new Color();
-        for (let index = 0; index < position.count; index += 1) {
-            const depth = -position.getY(index);
-            color.copy(STRATA[index % STRATA.length]).lerp(DEEP_ROCK, Math.min(0.8, depth / 30));
-            colors.set([color.r, color.g, color.b], index * 3);
-        }
-        spike.setAttribute('color', new Float32BufferAttribute(colors, 3));
+        paint(spike, ROCK_TINT);
     }
 
     const roots = [];
@@ -238,8 +229,8 @@ function buildHangings(random) {
             z += random.range(-1.4, 1.4);
             y -= random.range(2.2, 4.2);
         }
-        const root = new TubeGeometry(new CatmullRomCurve3(points), 18, random.range(0.07, 0.15), 4, false);
-        roots.push(paint(root, ROOT));
+        // Thick where it leaves the rock, drawn out to a thread: a root, not a wire.
+        roots.push(taperedTube(points, random.range(0.26, 0.4), 0.03, ROOT, 24, 5));
     }
     return { spikes, roots };
 }
@@ -250,13 +241,14 @@ function buildHangings(random) {
 
 /**
  * Add the island's pieces to the buckets: the paved top to "dimGold", the
- * rock and its hangings to "stone".
+ * rock and its spikes to "rock" (which lays their strata), the roots to
+ * "stone".
  */
 export function buildIsland(buckets) {
     const random = createRandom(2021);
     buckets.add('dimGold', buildGround());
-    buckets.add('stone', buildRock());
+    buckets.add('rock', buildRock());
     const { spikes, roots } = buildHangings(random);
-    for (const spike of spikes) buckets.add('stone', spike);
+    for (const spike of spikes) buckets.add('rock', spike);
     for (const root of roots) buckets.add('stone', root, { passable: true });
 }

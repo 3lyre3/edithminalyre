@@ -24,7 +24,7 @@ import {
     Vector3,
     WebGLRenderer,
 } from 'three';
-import { Buckets, createMaterials, flutter } from './kit.js';
+import { Buckets, createMaterials, duskLight, flutter } from './kit.js';
 import { inscriptionTexture } from './extras.js';
 import { createInk } from './ink.js';
 import { buildIsland } from './island.js';
@@ -110,7 +110,8 @@ export function fitRenderer(renderer, canvas) {
  */
 export async function createStage({ renderer, canvas, data, reducedMotion, debug, onLost, extras = new Set() }) {
     const scene = new Scene();
-    scene.fog = new FogExp2(0x3a2440, 0.0034);
+    // Thin enough that the gold still shines through at the whole city's distance.
+    scene.fog = new FogExp2(0x4a2c4c, 0.0024);
     const camera = new PerspectiveCamera(35, 1, 0.5, 900);
 
     const edge = data.places.places.find((place) => place.id === 'edge');
@@ -129,6 +130,13 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
     scene.add(new HemisphereLight(0x9a86c8, 0x6a4450, 0.75), key, sunset, seaFill, underglow);
 
     const materials = createMaterials();
+    // Dusk on the city: warm edges toward the sunken sun, gold's glint, and the last light up high.
+    duskLight(materials.gold, { sun: SUN_DIRECTION, rim: 0.55, shine: 0.35, tip: 0.3, tipFrom: 9, tipTo: 30 });
+    duskLight(materials.bricking, { sun: SUN_DIRECTION, rim: 0.45, shine: 0.15 });
+    duskLight(materials.brick, { sun: SUN_DIRECTION, rim: 0.45, tip: 0.2, tipFrom: 4, tipTo: 12 });
+    duskLight(materials.stone, { sun: SUN_DIRECTION, rim: 0.4, tip: 0.28, tipFrom: 20, tipTo: 48 });
+    duskLight(materials.rock, { sun: SUN_DIRECTION, rim: 0.35 });
+    duskLight(materials.copper, { sun: SUN_DIRECTION, rim: 0.4, shine: 0.3 });
     const wind = { value: 0 };
     flutter(materials.turquoise, wind);
     flutter(materials.sign, wind);

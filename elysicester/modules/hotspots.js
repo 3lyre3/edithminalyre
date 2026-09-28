@@ -69,10 +69,10 @@ const fragmentShader = /* glsl */ `
 
     void main() {
         vec4 glow = texture2D(map, gl_PointCoord);
-        vec3 unread = vec3(2.6, 2.0, 1.15);
-        vec3 seen = vec3(0.55, 0.48, 0.42);
+        vec3 unread = vec3(2.7, 1.9, 0.95);
+        vec3 seen = vec3(0.55, 0.47, 0.4);
         vec3 color = mix(unread, seen, vRead);
-        color = mix(color, vec3(3.4, 3.0, 2.2), vLit);
+        color = mix(color, vec3(3.6, 3.0, 2.0), vLit);
         gl_FragColor = vec4(color * glow.rgb, glow.a);
     }
 `;
@@ -146,10 +146,12 @@ function glowTexture() {
     canvas.width = size;
     canvas.height = size;
     const context = canvas.getContext('2d');
+    // A small bright core in a wide, faint halo: a point of light, not a ball of it.
     const gradient = context.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
     gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
-    gradient.addColorStop(0.18, 'rgba(255, 255, 255, 0.9)');
-    gradient.addColorStop(0.42, 'rgba(255, 255, 255, 0.28)');
+    gradient.addColorStop(0.1, 'rgba(255, 255, 255, 0.95)');
+    gradient.addColorStop(0.2, 'rgba(255, 255, 255, 0.42)');
+    gradient.addColorStop(0.45, 'rgba(255, 255, 255, 0.13)');
     gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
     context.fillStyle = gradient;
     context.fillRect(0, 0, size, size);
@@ -203,8 +205,8 @@ export function createHotspots({ stage, fragments, read, places, label, reducedM
     points.renderOrder = 5;
     scene.add(points);
 
-    // Glass and cloth don't hide a point; the sky and sea never stand in front of one.
-    const occluders = scene.children.filter((child) => child instanceof Mesh && !['sky', 'sea', 'glass', 'turquoise'].includes(child.name));
+    // Glass and cloth don't hide a point; the sky and sea never stand in front of one, nor a passing hum.
+    const occluders = scene.children.filter((child) => child instanceof Mesh && !['sky', 'sea', 'glass', 'turquoise', 'hums'].includes(child.name));
     const raycaster = new Raycaster();
     const projected = new Vector3();
     const drawingBuffer = new Vector2();

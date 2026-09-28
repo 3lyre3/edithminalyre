@@ -27,7 +27,7 @@ import { FIELD_SCALE } from './solids-field.js';
 // =============================================================================
 
 /** The meshes the camera keeps out of: all but the sky, the sea's shader, the flags and the lights. */
-const SOLID_MESHES = new Set(['gold', 'dimGold', 'brick', 'stone', 'steel', 'glass', 'arch', 'copper', 'signs']);
+const SOLID_MESHES = new Set(['gold', 'bricking', 'dimGold', 'brick', 'stone', 'rock', 'steel', 'glass', 'arch', 'copper', 'signs']);
 /** Pieces standing on their own: the foyer-rock (it bobs a little, well within the camera's clearance). */
 const SOLID_GROUPS = new Set(['foyer-rock']);
 /** Beyond the grid, everything is air this far from anything. */

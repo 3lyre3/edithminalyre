@@ -53,6 +53,7 @@ import {
     paintBy,
     pose,
     rimRadius,
+    taperedTube,
     wallX,
 } from './kit.js';
 
@@ -60,7 +61,11 @@ import {
 // Constants
 // =============================================================================
 
-const GOLDS = [0xeacb7a, 0xdfbc6a, 0xd2ab5a, 0xf2dc96];
+const GOLDS = [0xecc46c, 0xe0b45c, 0xd4a24e, 0xf4d488];
+/** The sea-wall's golden bricking: its body, the course that stands out a little, and its merlons. */
+const WALL_GOLD = 0xe2bc68;
+const WALL_GOLD_BAND = 0xd6aa56;
+const WALL_GOLD_TOP = 0xecc978;
 const GOLD_ROOFS = [0xb46a30, 0x9a582a, 0xc27a38];
 /** Now and then a roof of another metal or clay: dark bronze, rose tile, old brick, verdigris. */
 const ROOF_ACCENTS = [0x6e4428, 0xa8563a, 0x8e3f2c, 0x5e8c7a];
@@ -82,6 +87,8 @@ const DOG_COATS = [0x6a4a32, 0xd8c8a8, 0x3a2e2a];
 const SHADOW = 0x140e12;
 
 const WINDOW = light(0xffc46a, 3.0);
+/** A window lit lower, by a lamp further in. */
+const WINDOW_LOW = light(0xff9e4a, 2.1);
 const LAMP = light(0xffd28a, 4.2);
 const COOL = light(0xd4fff4, 2.6);
 const DOOR = light(0xffd23a, 2.6);
@@ -116,26 +123,6 @@ function ball(radius, at, color, widthSegments = 10, heightSegments = 7) {
 
 function tube(points, radius, color, segments = 20, radial = 5) {
     return paint(new TubeGeometry(new CatmullRomCurve3(points), segments, radius, radial, false), color);
-}
-
-/** A tube that narrows along its length, for trunks, branches and roots. */
-function taperedTube(points, fromRadius, toRadius, color, segments = 24, radial = 6) {
-    const curve = new CatmullRomCurve3(points);
-    const geometry = new TubeGeometry(curve, segments, 1, radial, false);
-    const position = geometry.attributes.position;
-    const centre = new Vector3();
-    const vertex = new Vector3();
-    for (let ring = 0; ring <= segments; ring += 1) {
-        curve.getPointAt(ring / segments, centre);
-        const radius = fromRadius + (toRadius - fromRadius) * (ring / segments);
-        for (let side = 0; side <= radial; side += 1) {
-            const index = ring * (radial + 1) + side;
-            vertex.fromBufferAttribute(position, index).sub(centre).multiplyScalar(radius).add(centre);
-            position.setXYZ(index, vertex.x, vertex.y, vertex.z);
-        }
-    }
-    geometry.computeVertexNormals();
-    return paint(geometry, color);
 }
 
 /** A gable roof: a triangle extruded along the house's depth. */
@@ -231,13 +218,14 @@ function buildWall(buckets, mounts) {
         const length = Math.hypot(wallX(z1) - wallX(z0), z1 - z0) + 0.04;
         const ry = Math.atan2(wallX(z1) - wallX(z0), z1 - z0);
         const at = { x: wallX(zm) - thickness / 2, z: zm, ry };
+        // One gold for the whole wall: the bricking material lays each brick its own shade of it.
         const pieces = courses.map(([bottom, top, jut], course) => box(
-            thickness + jut * 2, top - bottom, length, { y: (bottom + top) / 2 }, GOLDS[(index + course) % GOLDS.length],
+            thickness + jut * 2, top - bottom, length, { y: (bottom + top) / 2 }, course === 1 ? WALL_GOLD_BAND : WALL_GOLD,
         ));
         for (const offset of [-length / 4, length / 4]) {
-            pieces.push(box(thickness * 0.7, 0.55, length * 0.28, { y: 3.37, z: offset }, GOLDS[(index + 1) % GOLDS.length]));
+            pieces.push(box(thickness * 0.7, 0.55, length * 0.28, { y: 3.37, z: offset }, WALL_GOLD_TOP));
         }
-        for (const piece of frame(pieces, at)) buckets.add('gold', piece);
+        for (const piece of frame(pieces, at)) buckets.add('bricking', piece);
     }
 
     // The gate where the avenue meets the waterfront: two pillars and an arch.
@@ -283,6 +271,18 @@ function clearZones(byId) {
         (x, z) => Math.abs(x - 4) < 2.0 && z > -15 && z < 12,
         (x, z) => Math.hypot(x + 7.6, z + 17.6) < 5,
     ];
+}
+
+/**
+ * Whether a window (of the house at x, z; on row, on its front or its side) is
+ * lit at dusk, and in what light: null for dark. A hash of where it is, so the
+ * same windows are lit on every visit.
+ */
+function windowLight(x, z, row, side) {
+    const seed = Math.sin(x * 12.9898 + z * 78.233 + row * 37.719 + side * 19.13) * 43758.5453;
+    const chance = seed - Math.floor(seed);
+    if (chance > 0.4) return null;
+    return chance < 0.14 ? WINDOW_LOW : WINDOW;
 }
 
 /**
@@ -366,14 +366,24 @@ function addHouse(buckets, random, x, z, height, style, detail) {
             litRows.add(row);
         }
     }
+    // At dusk, a good many of the other windows are lit too: which ones is fixed by where the house
+    // stands (a hash, not the random streams, so every house keeps its shape and place).
     const rows = Math.max(1, Math.floor((tall - 0.6) / 1.5));
     for (let row = 0; row < rows; row += 1) {
         const y = 1.1 + row * 1.5;
         const face = faceAt(y);
         if (y + 0.25 > face.top) continue;
-        if (!litRows.has(row)) pieces.push(box(0.24, 0.4, 0.04, { x: face.half * 0.52 * (row % 2 ? 1 : -1), y, z: face.front }, darkWindow));
+        if (!litRows.has(row)) {
+            const front = { x: face.half * 0.52 * (row % 2 ? 1 : -1), y, z: face.front };
+            const glowing = windowLight(x, z, row, 0);
+            if (glowing) glows.push(box(0.24, 0.4, 0.04, front, glowing));
+            else pieces.push(box(0.24, 0.4, 0.04, front, darkWindow));
+        }
         if (detail() < 0.6) {
-            pieces.push(box(0.04, 0.4, 0.24, { x: face.half + 0.02, y, z: face.centreZ + detail.range(-face.depthHalf * 0.4, face.depthHalf * 0.4) }, darkWindow));
+            const side = { x: face.half + 0.02, y, z: face.centreZ + detail.range(-face.depthHalf * 0.4, face.depthHalf * 0.4) };
+            const glowing = windowLight(x, z, row, 1);
+            if (glowing) glows.push(box(0.04, 0.4, 0.24, side, glowing));
+            else pieces.push(box(0.04, 0.4, 0.24, side, darkWindow));
         }
     }
 

@@ -1,8 +1,11 @@
 /**
- * extras.js — the optional extras, each behind a flag that starts off.
+ * extras.js — the extras, each behind a flag of its own.
  *
- * Nothing here happens unless the address asks for it, as ?extras=sky,shadow
- * (any of the names below, comma-separated) or ?extras=all:
+ * They began off, one flag each, until they'd been seen; now they're part of
+ * the city, and every one of them is on for everyone except door-open. The
+ * address can still choose: ?extras=none turns them all off, ?extras=sky,hums
+ * (any of the names below, comma-separated) gives exactly those, and
+ * ?extras=all,door-open gives them all with the door opened whatever the hour.
  *
  *   sky        THIS IS NOT THE WORLD, inscribed round the sky, as Elm's
  *              milestone plates are titled
@@ -30,6 +33,8 @@ import { CanvasTexture, LinearFilter, RepeatWrapping } from 'three';
 // =============================================================================
 
 export const EXTRAS = Object.freeze(['sky', 'shadow', 'door', 'door-open', 'voice', 'hums']);
+/** What every visitor gets unless the address says otherwise: all but door-open. */
+export const DEFAULT_EXTRAS = Object.freeze(EXTRAS.filter((name) => name !== 'door-open'));
 
 /** The words inscribed round the sky, as Elm's milestone pages have them. */
 export const INSCRIPTION = 'THIS IS NOT THE WORLD';
@@ -42,12 +47,16 @@ const DUSK_UNTIL = 21;
 // Which extras, and when
 // =============================================================================
 
-/** Which extras the address asks for (a Set of names; empty unless asked). "all" is every one but door-open. */
+/**
+ * Which extras to build (a Set of names). With no ?extras= in the address, the
+ * defaults; with one, exactly the names it lists ("all" standing for the
+ * defaults, and "none", like any word that names nothing, adding nothing).
+ */
 export function wantedExtras(search = window.location.search) {
     const asked = new URLSearchParams(search).get('extras');
-    if (!asked) return new Set();
+    if (asked === null) return new Set(DEFAULT_EXTRAS);
     const names = asked.split(',').map((name) => name.trim().toLowerCase()).filter(Boolean);
-    const all = names.includes('all') ? EXTRAS.filter((name) => name !== 'door-open') : [];
+    const all = names.includes('all') ? DEFAULT_EXTRAS : [];
     return new Set([...all, ...names.filter((name) => EXTRAS.includes(name))]);
 }
 

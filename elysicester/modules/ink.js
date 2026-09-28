@@ -8,6 +8,12 @@
  * wobble a little like a hand's, lays a faint paper fibre over everything
  * (the page adds the site's own grain above), and darkens the corners a
  * touch. Under reduced motion the lines and fibre hold still.
+ *
+ * Before the ink, whatever gives off light (windows, lamps, the reading
+ * points, the door, the far islands' lights) lends a soft glow to the air
+ * round it: the brightest of the render is gathered at a quarter and an
+ * eighth of the size, blurred, and laid back under the lines. Only true
+ * lights reach the threshold; lit gold and the dusk don't.
  */
 
 // =============================================================================
@@ -47,6 +53,9 @@ const fragmentShader = /* glsl */ `
 
     uniform sampler2D tColor;
     uniform sampler2D tDepth;
+    uniform sampler2D tGlowNear;
+    uniform sampler2D tGlowFar;
+    uniform float glowStrength;
     uniform vec2 resolution;
     uniform float cameraNear;
     uniform float cameraFar;
@@ -95,6 +104,7 @@ const fragmentShader = /* glsl */ `
         float edge = smoothstep(0.012, 0.045, fold);
 
         vec3 color = texture2D(tColor, vUv).rgb;
+        color += (texture2D(tGlowNear, vUv).rgb * 0.55 + texture2D(tGlowFar, vUv).rgb * 0.75) * glowStrength;
         color = toneMapping(color);
         color = linearToOutputTexel(vec4(color, 1.0)).rgb;
         color = mix(color, inkColor, edge * inkStrength);
@@ -106,6 +116,64 @@ const fragmentShader = /* glsl */ `
         vec2 centred = vUv - 0.5;
         color *= 1.0 - dot(centred, centred) * 0.6;
 
+        gl_FragColor = vec4(color, 1.0);
+    }
+`;
+
+/** Gather what gives off light: four taps of the render, only what passes the threshold (with a soft knee). */
+const gatherShader = /* glsl */ `
+    uniform sampler2D tSource;
+    uniform vec2 texel;
+    uniform float threshold;
+    uniform float knee;
+
+    varying vec2 vUv;
+
+    vec3 bright(vec3 color) {
+        float luma = dot(color, vec3(0.2126, 0.7152, 0.0722));
+        float soft = clamp(luma - threshold + knee, 0.0, 2.0 * knee);
+        soft = soft * soft / (4.0 * knee + 1e-4);
+        return color * (max(soft, luma - threshold) / max(luma, 1e-4));
+    }
+
+    void main() {
+        vec3 sum = bright(texture2D(tSource, vUv + texel * vec2(-1.0, -1.0)).rgb);
+        sum += bright(texture2D(tSource, vUv + texel * vec2(1.0, -1.0)).rgb);
+        sum += bright(texture2D(tSource, vUv + texel * vec2(-1.0, 1.0)).rgb);
+        sum += bright(texture2D(tSource, vUv + texel * vec2(1.0, 1.0)).rgb);
+        gl_FragColor = vec4(sum * 0.25, 1.0);
+    }
+`;
+
+/** Halve again: four taps, averaged. */
+const shrinkShader = /* glsl */ `
+    uniform sampler2D tSource;
+    uniform vec2 texel;
+
+    varying vec2 vUv;
+
+    void main() {
+        vec3 sum = texture2D(tSource, vUv + texel * vec2(-1.0, -1.0)).rgb;
+        sum += texture2D(tSource, vUv + texel * vec2(1.0, -1.0)).rgb;
+        sum += texture2D(tSource, vUv + texel * vec2(-1.0, 1.0)).rgb;
+        sum += texture2D(tSource, vUv + texel * vec2(1.0, 1.0)).rgb;
+        gl_FragColor = vec4(sum * 0.25, 1.0);
+    }
+`;
+
+/** A nine-tap Gaussian along one direction, in five linear taps. */
+const blurShader = /* glsl */ `
+    uniform sampler2D tSource;
+    uniform vec2 direction;
+
+    varying vec2 vUv;
+
+    void main() {
+        vec3 color = texture2D(tSource, vUv).rgb * 0.2270270270;
+        color += texture2D(tSource, vUv + direction * 1.3846153846).rgb * 0.3162162162;
+        color += texture2D(tSource, vUv - direction * 1.3846153846).rgb * 0.3162162162;
+        color += texture2D(tSource, vUv + direction * 3.2307692308).rgb * 0.0702702703;
+        color += texture2D(tSource, vUv - direction * 3.2307692308).rgb * 0.0702702703;
         gl_FragColor = vec4(color, 1.0);
     }
 `;
@@ -128,9 +196,28 @@ export function createInk(renderer, { reducedMotion }) {
         depthTexture: new DepthTexture(size.x, size.y),
     });
 
+    // The glow: a quarter-size pair and an eighth-size pair of targets, blurred back and forth.
+    const glowTarget = () => new WebGLRenderTarget(1, 1, { type: canFloat ? HalfFloatType : UnsignedByteType, depthBuffer: false });
+    const near = [glowTarget(), glowTarget()];
+    const far = [glowTarget(), glowTarget()];
+    const pass = (fragment, extra) => new ShaderMaterial({
+        uniforms: { tSource: { value: null }, texel: { value: new Vector2() }, direction: { value: new Vector2() }, ...extra },
+        vertexShader,
+        fragmentShader: fragment,
+        depthTest: false,
+        depthWrite: false,
+    });
+    // Without float targets nothing is brighter than white, so the threshold sits just under it.
+    const gather = pass(gatherShader, { threshold: { value: canFloat ? 1.25 : 0.92 }, knee: { value: canFloat ? 0.5 : 0.08 } });
+    const shrink = pass(shrinkShader);
+    const blur = pass(blurShader);
+
     const uniforms = {
         tColor: { value: target.texture },
         tDepth: { value: target.depthTexture },
+        tGlowNear: { value: near[0].texture },
+        tGlowFar: { value: far[0].texture },
+        glowStrength: { value: 1 },
         resolution: { value: size.clone() },
         cameraNear: { value: 0.5 },
         cameraFar: { value: 900 },
@@ -154,12 +241,32 @@ export function createInk(renderer, { reducedMotion }) {
     scene.add(quad);
     const camera = new OrthographicCamera(-1, 1, 1, -1, 0, 1);
 
+    /** One full-screen pass: a material, what it reads, and where it draws. */
+    function draw(passMaterial, source, into, setup) {
+        passMaterial.uniforms.tSource.value = source.texture;
+        setup?.(passMaterial.uniforms, source);
+        quad.material = passMaterial;
+        renderer.setRenderTarget(into);
+        renderer.render(scene, camera);
+    }
+
+    function glow() {
+        draw(gather, target, near[0], (u) => u.texel.value.set(1 / size.x, 1 / size.y));
+        draw(blur, near[0], near[1], (u, from) => u.direction.value.set(1 / from.width, 0));
+        draw(blur, near[1], near[0], (u, from) => u.direction.value.set(0, 1 / from.height));
+        draw(shrink, near[0], far[0], (u, from) => u.texel.value.set(1 / from.width, 1 / from.height));
+        draw(blur, far[0], far[1], (u, from) => u.direction.value.set(1 / from.width, 0));
+        draw(blur, far[1], far[0], (u, from) => u.direction.value.set(0, 1 / from.height));
+    }
+
     return {
         target,
         /** Match the drawing buffer; lines stay a little over one CSS pixel wide, like a fine nib. */
         resize() {
             renderer.getDrawingBufferSize(size);
             target.setSize(size.x, size.y);
+            for (const glowAt of near) glowAt.setSize(Math.max(1, Math.floor(size.x / 4)), Math.max(1, Math.floor(size.y / 4)));
+            for (const glowAt of far) glowAt.setSize(Math.max(1, Math.floor(size.x / 8)), Math.max(1, Math.floor(size.y / 8)));
             uniforms.resolution.value.copy(size);
             uniforms.lineWidth.value = Math.max(1.3, renderer.getPixelRatio() * 1.15);
         },
@@ -173,12 +280,15 @@ export function createInk(renderer, { reducedMotion }) {
             }
             renderer.setRenderTarget(target);
             renderer.render(sceneToDraw, sceneCamera);
+            glow();
+            quad.material = material;
             renderer.setRenderTarget(null);
             renderer.render(scene, camera);
         },
         dispose() {
             target.dispose();
-            material.dispose();
+            for (const glowAt of [...near, ...far]) glowAt.dispose();
+            for (const passMaterial of [material, gather, shrink, blur]) passMaterial.dispose();
             triangle.dispose();
         },
     };
