@@ -196,9 +196,9 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
     for (const extra of places.extras) scene.add(extra);
     // Where things stand close, the dark gathers: a worker finds where, from the city as built, while the
     // flight plays (hollows.js); the materials learn to read its map now, before they're compiled.
-    // Walking as the shadow (walk.js): still a prototype, only where the address asks (?walk). The hollows'
-    // worker marks where its walls stand, at a body's height, for it to walk by.
-    const walking = new URLSearchParams(window.location.search).has('walk');
+    // Walking as the shadow (walk.js), for everyone (?walk=off leaves it out, and the shadow stays on its café
+    // wall). The hollows' worker marks where the walls stand, at a body's height, for it to walk by.
+    const walking = new URLSearchParams(window.location.search).get('walk') !== 'off';
     const hollowMap = createHollows(meshes, { reducedMotion, walls: walking });
     for (const key of HOLLOWED) hollows(materials[key], hollowMap);
     const walk = walking ? createWalk({ light: KEY_DIRECTION, reducedMotion }) : null;

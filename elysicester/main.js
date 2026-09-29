@@ -219,6 +219,11 @@ async function boot() {
                     yieldTap: (x, y, pointDistance) => (stage.walk?.claimsTap(x, y) ?? false)
                         || (signOverlay?.claimsTap(x, y, pointDistance) ?? false),
                 });
+                // The shadow hears a tap first; a reading point nearer the tap than the shadow keeps it, and so
+                // does a sign the tap lands squarely on.
+                stage.walk?.yieldsTo((x, y, pointerType) => (signOverlay?.claimsTap(x, y, Infinity)
+                    ? 0
+                    : hotspots.nearestDistance(x, y, pointerType)));
                 signOverlay = createSignOverlay({
                     stage,
                     label: byId('sign-label'),

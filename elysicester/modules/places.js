@@ -525,8 +525,8 @@ function buildHouses(buckets, random, byId) {
         placed.push([x, z]);
     }
 
-    // As many again as the streets cleared, built in the room between them, from a stream of their own (so
-    // nothing else in the city moves): the city stays as full, only now there are ways through it.
+    // As many again as the streets cleared, as far as there's room for them between the streets (there is for
+    // most: fifteen of twenty-two), from a stream of their own, so nothing else in the city moves.
     const infill = createRandom(4247);
     let added = 0;
     for (let attempt = 0; attempt < 4000 && added < streets; attempt += 1) {

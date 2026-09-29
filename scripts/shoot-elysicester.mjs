@@ -653,6 +653,10 @@ async function keyboardRound(page, fragments) {
         const focused = await page.evaluate(() => document.activeElement?.dataset?.fragment ?? null);
         await page.keyboard.press('Enter');
         const inspected = await inspectOpen(page, fragment, null);
+        // The focus comes home in a queued task, which slow frames can hold back: wait for it (a little) before
+        // judging, and before the next Tab, which would otherwise be undone by it.
+        await page.waitForFunction((id) => document.activeElement?.dataset?.fragment === id, fragment.id, { timeout: 4000 }).catch(() => {});
+        inspected.activeAfter = await page.evaluate(() => document.activeElement?.dataset?.fragment ?? document.activeElement?.tagName ?? null);
         const focusReturned = inspected.activeAfter === fragment.id;
         results.push({ id: fragment.id, ok: focused === fragment.id && inspected.matched && inspected.closed && focusReturned, focused, focusReturned, ...inspected });
         await page.keyboard.press('Tab');
@@ -781,7 +785,8 @@ try {
     if (process.argv.includes('--stills')) {
         for (const still of STILLS) {
             const session = await openPass(chromium, PASSES[still.pass]);
-            await session.page.goto(`${origin}/elysicester/?debug=1`, { waitUntil: 'load' });
+            // (The still is for those who can't walk the city: its shadow keeps to the café wall there.)
+            await session.page.goto(`${origin}/elysicester/?debug=1&walk=off`, { waitUntil: 'load' });
             const { mode } = await enter(session.page, session.context, PASSES[still.pass], { begin: 'click', then: 'skip' });
             if (mode !== 'live') throw new Error(`${still.pass}: the scene did not go live (${mode})`);
             await hideChrome(session.page);

@@ -291,6 +291,13 @@ export function createHotspots({ stage, fragments, read, places, label, reducedM
         light(fragment) {
             setLit(fragment ? entries.find((entry) => entry.fragment.id === fragment.id) ?? null : null);
         },
+        /**
+         * How near (x, y) is to the nearest point the city doesn't hide, within a tap's reach (CSS px); Infinity
+         * if none is. (The shadow walk asks, so a tap meant for the words is never taken as the shadow's.)
+         */
+        nearestDistance(x, y, pointerType) {
+            return nearest(x, y, PICK_RADIUS[pointerType] ?? PICK_RADIUS.touch)?.distance ?? Infinity;
+        },
         /** Where a fragment's point stands in the scene. */
         positionOf(id) {
             return entries.find((entry) => entry.fragment.id === id)?.position ?? null;

@@ -1,14 +1,14 @@
 /**
  * walk.js — walking the city as the shadow.
  *
- * In the still city, a shadow with no one there to cast it stands on the last
- * café's outer wall (the shadow of Numbers by Paint, Episode 3). Here it has
- * stepped down to the end of the jetty, looking out to sea: a ring breathes on
- * the boards at its feet, and now and then it lifts an arm and beckons. Tap it
- * (or the "walk as the shadow" button), and it's yours to walk: it lies long
- * across the paving, away from the sunken sun, and folds up any wall it comes
- * to, as a shadow does. Tap it again (or press Escape) to let go, and it stays
- * where it was left.
+ * A shadow with no one there to cast it stands on the last café's outer wall
+ * (the shadow of Numbers by Paint, Episode 3). Here it has stepped down to the
+ * end of the jetty, looking out to sea: a ring breathes on the boards at its
+ * feet, and now and then it lifts an arm and beckons. Tap it (or the "walk as
+ * the shadow" button), and it's yours to walk: it turns to face the city, lies
+ * long across the paving, away from the sunken sun, and folds up any wall it
+ * comes to, as a shadow does. Tap it again (or press Escape) to let go, and it
+ * stays where it was left. (With ?walk=off it keeps to its wall.)
  *
  * Nobody is ever drawn. An invisible walker stands in the dusk light, and only
  * its shadow is drawn: each frame the walker alone is rendered, as depth, from
@@ -18,10 +18,10 @@
  *
  * It's steered as the messenger is in Messenger: on a phone, a thumb set down
  * anywhere and dragged (a soft joystick appears under it); on a computer, the
- * arrow keys or WASD, or the mouse held and dragged. The camera follows from
- * the sun's side (so it sees the walls the shadow climbs), comes round behind
- * the way the walker goes, and rises over whatever would hide it. The ground
- * is the island's own (its rise and fall known exactly); past the wall, the
+ * arrow keys or WASD, or the mouse held and dragged. The camera follows above
+ * and behind where the one casting it would be, comes round behind them as
+ * they turn, and rises over whatever would hide them. The ground is the
+ * island's own (its rise and fall known exactly); past the wall, the
  * waterfront's decks; walls and houses stop it, by the hollows' map of where
  * walls stand at a body's height.
  */
@@ -34,7 +34,9 @@ import {
     AdditiveBlending,
     BoxGeometry,
     Color,
+    CylinderGeometry,
     DepthTexture,
+    Frustum,
     Group,
     MathUtils,
     Matrix4,
@@ -45,6 +47,7 @@ import {
     Raycaster,
     RingGeometry,
     Scene,
+    Sphere,
     SphereGeometry,
     Vector2,
     Vector3,
@@ -57,14 +60,18 @@ import { SEA_LEVEL, alsoBeforeCompile, groundY, onLand } from './kit.js';
 // Constants
 // =============================================================================
 
+/** How much smaller than a person's full height the figure is made, to sit in the city (Elm: "smaller"). */
+const FIGURE = 0.72;
+/** The figure's height, and so how long its shadow lies on flat ground (for finding it under a tap). */
+const TALL = 1.87 * FIGURE;
 /** Walking: the fastest pace (units a second), how quickly it gets there, and a stride's length. */
-const PACE = 2.8;
+const PACE = 2.5;
 const GETS_GOING = 7;
-const STRIDE = 0.62;
+const STRIDE = 0.5;
 /** How high a step may rise or drop (a kerb, the cafés' platform), and the body's girth against walls. */
 const STEP = 0.5;
 /** (A shadow's girth: it may come close to a wall, only never through one.) */
-const GIRTH = 0.12;
+const GIRTH = 0.1;
 /**
  * Blocked, a step tries turning aside (radians) at a shortened stride: straight first, then either way, at
  * last almost square to the way it was going, so it slides round a spire it walks straight into.
@@ -75,17 +82,16 @@ const FEEL = [[0, 0], [GIRTH, 0], [-GIRTH, 0], [0, GIRTH], [0, -GIRTH]];
 /** How near the rim of the island (or the land's edge at the wall) the walker may come. */
 const EDGE = 0.35;
 /**
- * The camera, walking: how far back it stands (a little further on a screen held upright, where there's less
- * room across), how steeply it looks down (its angle from straight overhead: over the rooftops and the flags'
- * strings), and how quickly it comes round behind the way the walker goes (by the sideways part of its going,
- * so walking straight at the camera never whirls it round). It stays on the sun's side, though, within
- * SUN_SIDE of it (radians): the walls a shadow climbs are the ones the sun lights, which face the sun, so from
- * its side the camera always sees them.
+ * The camera, walking, stands above and behind where the one casting the shadow would be (Elm's ask): how far
+ * back (a little further on a screen held upright, where there's less room across), how steeply it looks down
+ * (its angle from straight overhead), where on the figure it looks (as a share of its height), and how quickly
+ * it comes round behind the way the walker goes (by the sideways part of its going, so walking straight at the
+ * camera never whirls it round).
  */
-const FOLLOW = 12;
-const FOLLOW_PHI = 0.56;
+const FOLLOW = 8;
+const FOLLOW_PHI = 0.95;
+const LOOK_AT = 0.6;
 const CHASE = 1.0;
-const SUN_SIDE = 1.2;
 /**
  * When a wall, a gable or a pole-top stands between the camera and the shadow, it rises over it, in so many
  * steps, up to this angle from straight overhead. (It never dives in closer: under an arch, it keeps the view
@@ -96,7 +102,7 @@ const RISE_TOP = 0.14;
 /** How long a lower view must stay clear before the camera settles back down to it (seconds). */
 const SETTLE = 0.9;
 /** The open air the camera keeps about itself, walking, so no pole-top or gable ever fills the view. */
-const LENS_ROOM = 2.2;
+const LENS_ROOM = 1.6;
 /** How far ahead of the walker the camera looks, in seconds of its going (room to see where it's going). */
 const LEAD = 0.45;
 /** How near the camera, walking, a pole, a crossbar, a wire or a flag goes undrawn (walkerClears). */
@@ -106,6 +112,8 @@ const STICK_START = 10;
 const STICK_REACH = 58;
 /** How near a tap must land to the shadow on the ground to take hold of it (CSS px). */
 const TAP_REACH = { mouse: 22, pen: 26, touch: 36 };
+/** Which way the city lies from the jetty (a heading: 0 faces +z, and this faces west, toward the gate). */
+const TOWARD_CITY = -Math.PI / 2;
 /** The keys that walk, and which way. */
 const WAYS = {
     ArrowUp: 'up', KeyW: 'up', ArrowDown: 'down', KeyS: 'down',
@@ -114,17 +122,18 @@ const WAYS = {
 
 /** The walker's shadow map: its size in texels, and how much of the light's view it covers (world units). */
 const MAP_SIZE = 512;
-const MAP_REACH = 1.45;
+const MAP_REACH = 1.1;
 /**
  * How far behind the walker (along the light) its shadow can fall: as far as a dusk shadow of its height
  * reaches, and no further, so it never lands again behind a wall that has already caught it.
  */
-const SHADOW_REACH = 4.4;
+const SHADOW_REACH = 3.3;
 /** Where the light's camera stands, back along the light from the walker, and how deep it sees. */
 const LIGHT_BACK = 16;
 const LIGHT_FAR = LIGHT_BACK + SHADOW_REACH + 2;
-/** The walker's height, and so how long its shadow lies on flat ground (for finding it under a tap). */
-const TALL = 1.85;
+/** The ring breathing at its feet, while it waits: inner and outer radius. */
+const RING_INNER = 0.34;
+const RING_OUTER = 0.44;
 /** Waiting to be taken, it beckons every so often (seconds), for so long. */
 const BECKON_EVERY = 7.5;
 const BECKON_FOR = 2.2;
@@ -149,43 +158,55 @@ function limb(material, width, length, depth) {
 }
 
 /**
- * A figure about as tall as the shadow on the café wall, jointed at the hips,
- * knees, shoulders and elbows, so its shadow walks as a person's does.
+ * A slight figure, jointed at the hips, knees, shoulders and elbows, so its
+ * shadow walks as a person's does: drawn at a person's full height, then made
+ * the city's size (FIGURE). No one in particular: shoulders hardly broader
+ * than the hips, a coat falling straight to above the knee, a round head with
+ * a little hair about it, so the shadow is neither a man's nor a woman's.
  */
 function buildBody() {
     const material = new MeshBasicMaterial({ color: 0x000000 });
     const body = new Group();
-    const torso = new Mesh(new BoxGeometry(0.38, 0.62, 0.2), material);
-    torso.position.y = 1.23;
+    const figure = new Group();
+    figure.scale.setScalar(FIGURE);
+    body.add(figure);
+    const torso = new Mesh(new BoxGeometry(0.31, 0.58, 0.19), material);
+    torso.position.y = 1.25;
+    const coat = new Mesh(new CylinderGeometry(0.16, 0.2, 0.5, 10), material);
+    coat.scale.z = 0.72;
+    coat.position.y = 0.76;
+    const neck = new Mesh(new BoxGeometry(0.09, 0.12, 0.09), material);
+    neck.position.y = 1.59;
     const head = new Mesh(new SphereGeometry(0.125, 12, 8), material);
-    head.position.y = 1.72;
-    const neck = new Mesh(new BoxGeometry(0.1, 0.12, 0.1), material);
-    neck.position.y = 1.58;
-    body.add(torso, head, neck);
+    head.position.y = 1.73;
+    const hair = new Mesh(new SphereGeometry(0.138, 12, 8), material);
+    hair.scale.set(1.05, 0.9, 1);
+    hair.position.set(0, 1.755, -0.02);
+    figure.add(torso, coat, neck, head, hair);
 
     const legs = [-1, 1].map((side) => {
-        const hip = limb(material, 0.14, 0.45, 0.15);
-        hip.position.set(side * 0.1, 0.93, 0);
-        const knee = limb(material, 0.12, 0.44, 0.13);
+        const hip = limb(material, 0.12, 0.45, 0.13);
+        hip.position.set(side * 0.085, 0.93, 0);
+        const knee = limb(material, 0.105, 0.44, 0.115);
         knee.position.y = -0.45;
-        const foot = new Mesh(new BoxGeometry(0.11, 0.06, 0.26), material);
-        foot.position.set(0, -0.44, 0.05);
+        const foot = new Mesh(new BoxGeometry(0.1, 0.05, 0.22), material);
+        foot.position.set(0, -0.44, 0.04);
         knee.add(foot);
         hip.add(knee);
-        body.add(hip);
+        figure.add(hip);
         return { hip, knee };
     });
     const arms = [-1, 1].map((side) => {
-        const shoulder = limb(material, 0.09, 0.3, 0.09);
-        shoulder.position.set(side * 0.235, 1.5, 0);
+        const shoulder = limb(material, 0.075, 0.29, 0.075);
+        shoulder.position.set(side * 0.19, 1.5, 0);
         shoulder.rotation.z = side * 0.06;
-        const elbow = limb(material, 0.08, 0.3, 0.08);
-        elbow.position.y = -0.3;
+        const elbow = limb(material, 0.07, 0.29, 0.07);
+        elbow.position.y = -0.29;
         shoulder.add(elbow);
-        body.add(shoulder);
+        figure.add(shoulder);
         return { shoulder, elbow };
     });
-    return { body, legs, arms };
+    return { body, legs, arms, coat };
 }
 
 // =============================================================================
@@ -257,6 +278,11 @@ function shortest(angle) {
     return angle - Math.PI * 2 * Math.round(angle / (Math.PI * 2));
 }
 
+/** The camera's angle round the walker (as the rig counts it) that puts it behind one facing `heading`. */
+function behindOf(heading) {
+    return Math.atan2(-Math.sin(heading), -Math.cos(heading));
+}
+
 function ignoresKeys(event) {
     if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return true;
     const target = event.target;
@@ -278,7 +304,7 @@ export function createWalk({ light, reducedMotion }) {
     const lightTheta = Math.atan2(toLight.x, toLight.z);
     const shadowWay = new Vector3(-toLight.x, 0, -toLight.z).normalize();
     const shadowLength = TALL / Math.tan(Math.asin(toLight.y));
-    const { body, legs, arms } = buildBody();
+    const { body, legs, arms, coat } = buildBody();
     const scene = new Scene();
     scene.add(body);
 
@@ -323,13 +349,21 @@ export function createWalk({ light, reducedMotion }) {
     let followTheta = lightTheta;
     let rise = 0;
     let settling = 0;
+    // Waiting at the jetty's end, it faces the sea; taken there, it turns to face the city (the heading it turns to).
+    let turnsToCity = false;
+    let turning = null;
     const rises = new Array(RISE_STEPS + 1).fill(0);
     const sightAt = new Array(RISE_STEPS + 1).fill(0);
     const clearAt = new Array(RISE_STEPS + 1).fill(true);
     const lead = new Vector3();
     const ahead = new Vector3();
     const sightFrom = new Vector3();
+    const sight = new Sphere();
+    const view = new Frustum();
+    const seen = new Matrix4();
+    const inverse = new Matrix4();
     let claimed = null;
+    let rivals = null;
     let ring = null;
     let label = null;
     let hovering = false;
@@ -370,11 +404,13 @@ export function createWalk({ light, reducedMotion }) {
                 elbow.rotation.x = -(0.35 + 0.45 * (0.5 + 0.5 * Math.sin(elapsed * 8))) * beckon;
             }
         }
+        // The coat's hem swings a little with the stride.
+        coat.rotation.x = swing * 0.1;
         // Standing, it shifts its weight now and then, as the shadow on the wall does; walking, it bobs.
         const sway = reducedMotion ? 0 : (Math.sin(elapsed * 0.45) * 0.018 + Math.sin(elapsed * 0.17 + 1.3) * 0.01) * (1 - state.moving);
         body.rotation.set(0, state.heading, sway);
         body.position.copy(state.position);
-        if (!reducedMotion) body.position.y += Math.abs(Math.sin(state.stride)) * 0.035 * state.moving;
+        if (!reducedMotion) body.position.y += Math.abs(Math.sin(state.stride)) * 0.035 * FIGURE * state.moving;
     }
 
     /** The floor under (x, z): the island's ground, off its edges; past the wall, a deck; or null. */
@@ -494,22 +530,20 @@ export function createWalk({ light, reducedMotion }) {
     }
 
     /**
-     * The camera stands back and above the shadow (centring it, and looking a little ahead of where the walker
-     * goes), and comes round behind the walker as it turns, so a street is looked along rather than across. If
-     * something stands between it and the shadow, it rises over it at once, and settles back down only once
-     * the lower view has stayed clear a while.
+     * The camera stands above and behind where the one casting the shadow would be, looking at them (and a
+     * little ahead of where they go), and comes round behind them as they turn, so a street is looked along
+     * rather than across. If something stands between it and the walker, it rises over it at once, and settles
+     * back down only once the lower view has stayed clear a while.
      */
     function follow(dt) {
         const aspect = camera.aspect || 1;
         if (!reducedMotion && state.moving > 0.2) {
-            const behind = Math.atan2(-Math.sin(state.heading), -Math.cos(state.heading));
-            followTheta += Math.sin(shortest(behind - followTheta)) * CHASE * state.moving * dt;
-            followTheta = lightTheta + MathUtils.clamp(shortest(followTheta - lightTheta), -SUN_SIDE, SUN_SIDE);
+            followTheta += Math.sin(shortest(behindOf(state.heading) - followTheta)) * CHASE * state.moving * dt;
         }
         lead.lerp(ahead.copy(velocity).multiplyScalar(reducedMotion ? 0 : LEAD), 1 - Math.exp(-2.5 * dt));
-        const target = rig.goal.target.copy(state.position).addScaledVector(shadowWay, shadowLength * 0.5).add(lead);
-        target.y += 0.4;
-        // (Where the shadow climbs a wall its middle may be in the wall: the sight is felt for from out of it.)
+        const target = rig.goal.target.copy(state.position).add(lead);
+        target.y += TALL * LOOK_AT;
+        // (Close against a wall, the one casting it may be all but in it: the sight is felt for from out of it.)
         sightFrom.copy(target);
         if (solids?.available) solids.push(sightFrom, 0.3);
         const theta = rig.now.theta + shortest(followTheta - rig.now.theta);
@@ -547,9 +581,9 @@ export function createWalk({ light, reducedMotion }) {
         rig.gliding = false;
     }
 
-    /** Where on the screen the shadow lies (flat ground: from the feet out along the shadow). */
-    function onShadow(x, y, pointerType) {
-        if (!state.present || !camera) return false;
+    /** How far (x, y) is on screen from the shadow (CSS px): flat ground, from the feet out along the shadow. */
+    function shadowDistance(x, y) {
+        if (!state.present || !camera) return Infinity;
         const rect = canvas.getBoundingClientRect();
         const toScreen = (point) => {
             const projected = point.clone().project(camera);
@@ -559,19 +593,38 @@ export function createWalk({ light, reducedMotion }) {
         tip.copy(state.position).addScaledVector(shadowWay, shadowLength);
         const a = toScreen(feet);
         const b = toScreen(tip);
-        if (!a.front && !b.front) return false;
+        if (!a.front && !b.front) return Infinity;
         const abx = b.x - a.x;
         const aby = b.y - a.y;
         const t = MathUtils.clamp(((x - a.x) * abx + (y - a.y) * aby) / Math.max(abx * abx + aby * aby, 1e-6), 0, 1);
-        const reach = TAP_REACH[pointerType] ?? TAP_REACH.touch;
-        return Math.hypot(a.x + abx * t - x, a.y + aby * t - y) < reach;
+        return Math.hypot(a.x + abx * t - x, a.y + aby * t - y);
+    }
+
+    /**
+     * How near a tap (or the pointer) at (x, y) is to something that takes or lets go of the shadow (CSS px):
+     * the shadow on the ground, within a finger's reach; and, while it waits, the ring at its feet (as large as
+     * it's drawn, and a little more) or the shadow on the café wall. Infinity if it's on none of them.
+     */
+    function tapDistance(x, y, pointerType) {
+        let best = Infinity;
+        const along = shadowDistance(x, y);
+        if (along < (TAP_REACH[pointerType] ?? TAP_REACH.touch)) best = along;
+        if (!state.walking) {
+            if (ring?.visible && camera) {
+                const on = ringOnScreen();
+                const fromCentre = Math.hypot(x - on.x, y - on.y);
+                if (on.front && fromCentre < on.radius + 10) best = Math.min(best, Math.max(0, fromCentre - on.radius * 0.5));
+            }
+            if (onWallShadow(x, y)) best = 0;
+        }
+        return best;
     }
 
     /** Where the ring at its feet is on screen (CSS px): its centre, how wide it's drawn, and whether it's in front. */
     function ringOnScreen() {
         const rect = canvas.getBoundingClientRect();
         const centre = feet.copy(state.position).project(camera);
-        side.setFromMatrixColumn(camera.matrixWorld, 0).multiplyScalar(0.56 * (ring?.scale.x ?? 1));
+        side.setFromMatrixColumn(camera.matrixWorld, 0).multiplyScalar(RING_OUTER * (ring?.scale.x ?? 1));
         const edge = tip.copy(state.position).add(side).project(camera);
         return {
             x: rect.left + ((centre.x + 1) / 2) * rect.width,
@@ -579,13 +632,6 @@ export function createWalk({ light, reducedMotion }) {
             radius: Math.hypot(((edge.x - centre.x) / 2) * rect.width, ((edge.y - centre.y) / 2) * rect.height),
             front: centre.z < 1 && Math.abs(centre.x) < 0.95 && Math.abs(centre.y) < 0.95,
         };
-    }
-
-    /** Whether (x, y) is on the ring breathing at its feet, as large as it's drawn (and a little more). */
-    function onRing(x, y) {
-        if (!ring?.visible || !camera) return false;
-        const on = ringOnScreen();
-        return on.front && Math.hypot(x - on.x, y - on.y) < on.radius + 10;
     }
 
     /** Whether a tap lands on the shadow on the café wall (while it's still there to be taken). */
@@ -663,9 +709,10 @@ export function createWalk({ light, reducedMotion }) {
             if (parts.pierEnd) {
                 walk.place(parts.pierEnd.x, parts.pierEnd.z, Math.PI / 2, parts.pierEnd.y);
                 if (wallShadow) wallShadow.visible = false;
+                turnsToCity = true;
             }
             if (parts.scene) {
-                ring = new Mesh(new RingGeometry(0.44, 0.56, 40), new MeshBasicMaterial({
+                ring = new Mesh(new RingGeometry(RING_INNER, RING_OUTER, 40), new MeshBasicMaterial({
                     color: new Color(0xffc878).multiplyScalar(1.5),
                     transparent: true,
                     opacity: 0.5,
@@ -686,7 +733,7 @@ export function createWalk({ light, reducedMotion }) {
             document.body.append(label);
             canvas.addEventListener('pointermove', (event) => {
                 if (event.pointerType !== 'mouse' || event.buttons) return;
-                const over = !state.walking && state.present && (onShadow(event.clientX, event.clientY, 'mouse') || onRing(event.clientX, event.clientY));
+                const over = !state.walking && state.present && Number.isFinite(tapDistance(event.clientX, event.clientY, 'mouse'));
                 if (over === hovering) return;
                 hovering = over;
                 canvas.style.cursor = over ? 'pointer' : '';
@@ -761,16 +808,24 @@ export function createWalk({ light, reducedMotion }) {
             window.addEventListener('blur', () => keys.clear());
 
             rig.onTap((x, y, pointerType) => {
-                if (state.walking && onShadow(x, y, pointerType)) {
-                    claimed = { x, y };
-                    walk.letGo();
-                } else if (!state.walking && (onWallShadow(x, y) || onShadow(x, y, pointerType) || onRing(x, y))) {
-                    claimed = { x, y };
-                    walk.take();
-                } else {
-                    claimed = null;
-                }
+                claimed = null;
+                const mine = tapDistance(x, y, pointerType);
+                if (!Number.isFinite(mine)) return;
+                // A reading point nearer the tap than the shadow keeps it: the words come first.
+                if ((rivals?.(x, y, pointerType) ?? Infinity) < mine) return;
+                claimed = { x, y };
+                if (state.walking) walk.letGo();
+                else walk.take();
             });
+        },
+
+        /**
+         * Let the words have a tap that lands nearer them than the shadow: `nearest(x, y, pointerType)` gives
+         * how far (CSS px) the nearest rival for it is (a reading point the city doesn't hide; a sign the tap
+         * lands squarely on counts as no distance at all), or Infinity.
+         */
+        yieldsTo(nearest) {
+            rivals = nearest;
         },
 
         /**
@@ -781,9 +836,16 @@ export function createWalk({ light, reducedMotion }) {
             return Boolean(claimed && claimed.x === x && claimed.y === y);
         },
 
-        /** Take the shadow: from its wall the first time, from wherever it was left after that. */
+        /**
+         * Take the shadow, wherever it waits. The first time, at the jetty's end, it turns from the sea to face
+         * the city, the way in; after that it keeps the way it was left facing. The camera comes round behind it.
+         */
         take() {
             if (state.walking || !rig) return;
+            if (turnsToCity) {
+                turnsToCity = false;
+                turning = TOWARD_CITY;
+            }
             if (!state.present) {
                 if (wallShadow) {
                     // The shadow on the wall is a body's, standing just out from it (the wall faces the sunken
@@ -804,7 +866,7 @@ export function createWalk({ light, reducedMotion }) {
             state.walking = true;
             rig.handsOff = true;
             rig.setDrifting(false);
-            followTheta = rig.now.theta;
+            followTheta = behindOf(turning ?? state.heading);
             rise = 0;
             settling = 0;
             lead.set(0, 0, 0);
@@ -848,6 +910,10 @@ export function createWalk({ light, reducedMotion }) {
             }
             // While a passage is open, the walker waits (and the camera is the reader's).
             if (document.querySelector('dialog[open]')) return;
+            if (turning !== null) {
+                state.heading += reducedMotion ? shortest(turning - state.heading) : shortest(turning - state.heading) * (1 - Math.exp(-5 * dt));
+                if (Math.abs(shortest(turning - state.heading)) < 0.01 || velocity.lengthSq() > 0.05) turning = null;
+            }
             stepWalker(dt);
             follow(dt);
         },
@@ -877,10 +943,22 @@ export function createWalk({ light, reducedMotion }) {
                 label.hidden = state.walking || !on.front || !(hovering || near);
                 if (!label.hidden) label.style.translate = `${Math.round(on.x)}px ${Math.round(on.y - on.radius * 0.6 + 12)}px`;
             }
+            // Out of the camera's sight (the walker, and the shadow it throws), there's nothing of it to draw:
+            // the city's surfaces skip it altogether, and its map isn't drawn.
+            if (camera) {
+                sight.center.copy(state.position).addScaledVector(shadowWay, shadowLength * 0.5);
+                sight.center.y += TALL * 0.5;
+                sight.radius = shadowLength * 0.5 + TALL;
+                camera.updateMatrixWorld();
+                seen.multiplyMatrices(camera.projectionMatrix, inverse.copy(camera.matrixWorld).invert());
+                view.setFromProjectionMatrix(seen);
+                uniforms.walkerOn.value = view.intersectsSphere(sight) ? 1 : 0;
+                if (!uniforms.walkerOn.value) return;
+            }
             pose(elapsed);
             body.updateMatrixWorld(true);
             centre.copy(state.position);
-            centre.y += 0.95;
+            centre.y += TALL * 0.5;
             eye.position.copy(centre).addScaledVector(toLight, LIGHT_BACK);
             eye.up.set(0, 1, 0);
             eye.lookAt(centre);
