@@ -33,6 +33,7 @@ import { buildIsland } from './island.js';
 import { stagePaper } from './paper.js';
 import { buildPlaces } from './places.js';
 import { OrbitRig } from './rigs/orbit.js';
+import { WALKER_GLSL, createWalk, walkerClears, walkerShadow } from './walk.js';
 import { createSea } from './sea.js';
 import { createSigns } from './signs.js';
 import { createSky } from './sky.js';
@@ -195,8 +196,18 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
     for (const extra of places.extras) scene.add(extra);
     // Where things stand close, the dark gathers: a worker finds where, from the city as built, while the
     // flight plays (hollows.js); the materials learn to read its map now, before they're compiled.
-    const hollowMap = createHollows(meshes, { reducedMotion });
+    // Walking as the shadow (walk.js): still a prototype, only where the address asks (?walk). The hollows'
+    // worker marks where its walls stand, at a body's height, for it to walk by.
+    const walking = new URLSearchParams(window.location.search).has('walk');
+    const hollowMap = createHollows(meshes, { reducedMotion, walls: walking });
     for (const key of HOLLOWED) hollows(materials[key], hollowMap);
+    const walk = walking ? createWalk({ light: KEY_DIRECTION, reducedMotion }) : null;
+    if (walk) {
+        for (const key of [...HOLLOWED, 'rock']) walkerShadow(materials[key], walk);
+        walkerClears(materials.steel, walk);
+        walkerClears(materials.turquoise, walk, 1.5);
+        sea.receiveWalker(WALKER_GLSL, walk.uniforms);
+    }
     await pause();
     const signs = await createSigns({ data: data.signs, mounts: places.mounts, material: materials.sign, renderer });
     signs.mesh.castShadow = true;
@@ -248,6 +259,18 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
     // until it's ready, the camera orbits free.
     await pause();
     const solids = createSolids(scene);
+    walk?.attach({
+        rig,
+        camera,
+        canvas,
+        solids,
+        hollowMap,
+        meshes,
+        wallShadow: scene.getObjectByName('cafe-shadow'),
+        pierEnd: places.pierEnd,
+        scene,
+        controls: document.querySelector('.controls'),
+    });
     solids.ready.then((ok) => {
         if (!ok) return;
         rig.setSolids(solids);
@@ -287,6 +310,7 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         }
 
         renderer.info.reset();
+        walk?.update(dt);
         rig.update(dt);
         sky.update(elapsed, camera);
         sea.update(elapsed);
@@ -299,6 +323,7 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
             renderer.shadowMap.needsUpdate = true;
             shadowsDrawn = true;
         }
+        walk?.render(renderer, elapsed);
         ink.render(scene, camera, elapsed, rig.home.radius / Math.max(rig.now.radius, 1e-3));
 
         const { calls, triangles, points, lines } = renderer.info.render;
@@ -324,6 +349,8 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         signs,
         solids,
         canvas,
+        /** Walking as the shadow (walk.js), where the address asks for it; else null. */
+        walk,
         start() {
             if (running) return;
             running = true;
@@ -348,6 +375,6 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         },
     };
 
-    if (debug) Object.assign(window.elysicesterDebug ??= {}, { info: () => stage.info(), rig, stage, solids, houses: places.houses, pixelRatio: () => renderer.getPixelRatio(), hollows: hollowMap });
+    if (debug) Object.assign(window.elysicesterDebug ??= {}, { info: () => stage.info(), rig, stage, solids, houses: places.houses, pixelRatio: () => renderer.getPixelRatio(), hollows: hollowMap, walk });
     return stage;
 }

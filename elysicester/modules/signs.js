@@ -463,8 +463,8 @@ export function createSignOverlay({ stage, label, isBusy }) {
     // A tap sees through glass; a reading view shouldn't be taken through it, nor past another
     // sign standing in front (the rays stop short of the plate being read, so it never blocks itself).
     // The hums flit about, and block nothing; nor do the verti-pool's water and the footlights' wash.
-    const occluders = scene.children.filter((child) => child instanceof Mesh && !['sky', 'sea', 'glass', 'turquoise', 'signs', 'hums', 'verti-pool', 'footlight-wash'].includes(child.name));
-    const viewBlockers = scene.children.filter((child) => child instanceof Mesh && !['sky', 'sea', 'turquoise', 'hums', 'verti-pool', 'footlight-wash'].includes(child.name));
+    const occluders = scene.children.filter((child) => child instanceof Mesh && !['sky', 'sea', 'glass', 'turquoise', 'signs', 'hums', 'verti-pool', 'footlight-wash', 'walk-ring'].includes(child.name));
+    const viewBlockers = scene.children.filter((child) => child instanceof Mesh && !['sky', 'sea', 'turquoise', 'hums', 'verti-pool', 'footlight-wash', 'walk-ring'].includes(child.name));
     // The flags aren't solid to the camera (it may pass through cloth), but a view seen through them is crowded.
     const cloth = scene.children.filter((child) => child instanceof Mesh && child.name === 'turquoise');
 

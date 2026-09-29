@@ -23,6 +23,7 @@ import {
     BoxGeometry,
     BufferGeometry,
     CatmullRomCurve3,
+    CircleGeometry,
     Color,
     ConeGeometry,
     CylinderGeometry,
@@ -264,10 +265,73 @@ function buildWall(buckets, mounts) {
     });
 }
 
+/**
+ * The city's streets: paved ways the houses stand back from, so that from above
+ * it reads as a city, and there's room to walk in it (walk.js). Each is a line
+ * of points (x, z) and a width. The avenue runs in from the gate in the sea-wall
+ * past the bridgework to the western cliff; the high street crosses it at the
+ * flags' crossroads and runs the city's length; two loops go round the
+ * bridgework, north under the sky-grottos by the signal-towers, south by the
+ * gas station.
+ */
+const STREETS = [
+    { points: [[8.1, GATE_Z], [-13, GATE_Z], [-25.5, -3.4]], width: 2.4 },
+    { points: [[4, -25], [4, 12], [3.6, 24.5]], width: 2.2 },
+    { points: [[-13, GATE_Z], [-15.5, -9.5], [-10.5, -13.5], [-3, -13.5], [4, -15]], width: 2.0 },
+    { points: [[4, 12.2], [-2, 11.3], [-9, 9], [-13.5, 3], [-13, GATE_Z]], width: 2.0 },
+];
+
+/** How far (x, z) lies outside the nearest street's edge (negative: in the street). */
+function streetGap(x, z) {
+    let nearest = Infinity;
+    for (const { points, width } of STREETS) {
+        for (let index = 0; index < points.length - 1; index += 1) {
+            const [ax, az] = points[index];
+            const [bx, bz] = points[index + 1];
+            const abx = bx - ax;
+            const abz = bz - az;
+            const t = Math.max(0, Math.min(1, ((x - ax) * abx + (z - az) * abz) / (abx * abx + abz * abz)));
+            nearest = Math.min(nearest, Math.hypot(ax + abx * t - x, az + abz * t - z) - width / 2);
+        }
+    }
+    return nearest;
+}
+
+/** Whether a house's footprint (centre, width, depth, turn) would stand in a street, or too near its edge. */
+function standsInStreet(x, z, width, depth, turn) {
+    const cos = Math.cos(turn);
+    const sin = Math.sin(turn);
+    for (const u of [-0.5, 0, 0.5]) {
+        for (const v of [-0.5, 0, 0.5]) {
+            const lx = u * width;
+            const lz = v * depth;
+            if (streetGap(x + lx * cos + lz * sin, z - lx * sin + lz * cos) < 0.25) return true;
+        }
+    }
+    return false;
+}
+
 function buildPavements(buckets) {
-    buckets.add('dimGold', groundStrip(-13, GATE_Z, wallX(GATE_Z) - 0.8, GATE_Z, 2.4, PAVE));
-    buckets.add('dimGold', groundStrip(4, -15, 4, 12, 2.0, PAVE));
-    buckets.add('dimGold', groundStrip(-13, GATE_Z, -18, -10, 1.8, PAVE));
+    for (const { points, width } of STREETS) {
+        for (let index = 0; index < points.length - 1; index += 1) {
+            const [ax, az] = points[index];
+            const [bx, bz] = points[index + 1];
+            buckets.add('dimGold', groundStrip(ax, az, bx, bz, width, PAVE));
+        }
+        // Where a street bends, a round paving closes the corner.
+        for (const [x, z] of points.slice(1, -1)) {
+            const joint = new CircleGeometry(width / 2, 12);
+            joint.rotateX(-Math.PI / 2);
+            const position = joint.attributes.position;
+            for (let index = 0; index < position.count; index += 1) {
+                const px = position.getX(index) + x;
+                const pz = position.getZ(index) + z;
+                position.setXYZ(index, px, groundY(px, pz) + 0.052, pz);
+            }
+            joint.computeVertexNormals();
+            buckets.add('dimGold', paint(joint, PAVE));
+        }
+    }
 }
 
 /** Zones the houses keep out of, so the named places have room. */
@@ -306,7 +370,7 @@ function windowLight(x, z, row, side) {
  * or verdigris roofs, doors, dark windows among the lit ones, chimneys and
  * balconies.
  */
-function addHouse(buckets, random, x, z, height, style, detail) {
+function addHouse(buckets, random, x, z, height, style, detail, { keepsTheStreets = true } = {}) {
     const w = random.range(1.6, 2.7);
     const d = random.range(1.6, 2.7);
     const ry = random.pick([0, 0.07, -0.05, Math.PI / 2, 0.12]);
@@ -316,6 +380,10 @@ function addHouse(buckets, random, x, z, height, style, detail) {
     const tower = detail() < 0.12;
     const width = tower ? w * 0.62 : w;
     const depth = tower ? d * 0.62 : d;
+    // A house that would stand in a street is drawn from the streams all the same (so every other house and
+    // place keeps its look), but never built: the streets stay open.
+    const inStreet = keepsTheStreets && standsInStreet(x, z, width + 0.24, depth + 0.24, ry);
+    if (inStreet) buckets = UNBUILT;
     const tall = tower ? height + detail.range(2.6, 4.6) : height;
     const wall = new Color(wallBase).offsetHSL(detail.range(-0.012, 0.012), detail.range(-0.08, 0.04), detail.range(-0.07, 0.05));
     const roof = detail() < 0.24 ? ROOF_ACCENTS[Math.floor(detail() * ROOF_ACCENTS.length)] : roofBase;
@@ -407,8 +475,11 @@ function addHouse(buckets, random, x, z, height, style, detail) {
     const at = { x, y: groundY(x, z) - 0.05, z, ry };
     for (const piece of frame(pieces, at)) buckets.add('gold', piece);
     for (const piece of frame(glows, at)) buckets.add('glow', piece);
-    return { w, d };
+    return { w, d, built: buckets !== UNBUILT };
 }
+
+/** Where a house goes that is drawn but not built. */
+const UNBUILT = { add() {} };
 
 function buildHouses(buckets, random, byId) {
     const zones = clearZones(byId);
@@ -421,9 +492,12 @@ function buildHouses(buckets, random, byId) {
     const steady = Object.assign(() => 0.99, { range: (low, high) => (low + high) / 2, pick: (list) => list[0] });
     const [fx, , fz] = byId.get('flags').position;
     const pair = [[fx - 2.6, fz - 4.4, 6.4], [fx + 2.4, fz - 4.6, 5.8]];
+    const standing = [];
     for (const [x, z, height] of pair) {
-        addHouse(buckets, random, x, z, height, 'gable', steady);
+        // (These two flank the high street under their gangway, where it crosses: they stand whatever.)
+        addHouse(buckets, random, x, z, height, 'gable', steady, { keepsTheStreets: false });
         placed.push([x, z]);
+        standing.push([x, z]);
     }
     const gangY = groundY(fx, fz - 4.5) + 5.1;
     buckets.add('gold', box(5.2, 0.16, 0.9, { x: fx - 0.1, y: gangY, z: fz - 4.5 }, GOLDS[1]));
@@ -432,8 +506,8 @@ function buildHouses(buckets, random, byId) {
     // A house that would crowd the Steel Garden's rim is still drawn from the stream (so every other
     // house keeps its place and its look) but never built: the garden has room round it to be seen.
     const [gx, , gz] = byId.get('steel-garden').position;
-    const unbuilt = { add() {} };
     let cleared = 0;
+    let streets = 0;
     const styles = ['gable', 'gable', 'pyramid', 'dome', 'flat'];
     for (let attempt = 0; attempt < 2600 && placed.length < 80; attempt += 1) {
         const x = random.range(-26, 8);
@@ -445,10 +519,30 @@ function buildHouses(buckets, random, byId) {
         const height = random.range(1.8, 3.4) + westness * random.range(1.5, 4.5);
         const crowds = Math.hypot(x - gx, z - gz) < GARDEN_ROOM;
         if (crowds) cleared += 1;
-        addHouse(crowds ? unbuilt : buckets, random, x, z, height, styles[Math.floor(random() * styles.length)], detail);
+        const { built } = addHouse(crowds ? UNBUILT : buckets, random, x, z, height, styles[Math.floor(random() * styles.length)], detail);
+        if (!crowds && !built) streets += 1;
+        if (built) standing.push([x, z]);
         placed.push([x, z]);
     }
-    return { built: placed.length - cleared, cleared };
+
+    // As many again as the streets cleared, built in the room between them, from a stream of their own (so
+    // nothing else in the city moves): the city stays as full, only now there are ways through it.
+    const infill = createRandom(4247);
+    let added = 0;
+    for (let attempt = 0; attempt < 4000 && added < streets; attempt += 1) {
+        const x = infill.range(-26, 8);
+        const z = infill.range(-27, 27);
+        if (!onLand(x, z, 2.2) || zones.some((inside) => inside(x, z))) continue;
+        if (Math.hypot(x - gx, z - gz) < GARDEN_ROOM || streetGap(x, z) < 1.2) continue;
+        if (standing.some(([px, pz]) => Math.hypot(px - x, pz - z) < 3.0)) continue;
+        const westness = Math.min(1, Math.max(0, -x / 24));
+        const height = infill.range(1.8, 3.4) + westness * infill.range(1.5, 4.5);
+        const { built } = addHouse(buckets, infill, x, z, height, styles[Math.floor(infill() * styles.length)], infill);
+        if (!built) continue;
+        standing.push([x, z]);
+        added += 1;
+    }
+    return { built: standing.length, cleared, streets, infill: added };
 }
 
 /** The signal-towers: twisted fins of a pod of monstrous, copper dolphins. */
@@ -507,12 +601,19 @@ function buildSunDock({ buckets, place, mounts }) {
     }
 }
 
-/** Three brick-red, steepled cafés at the head of the jetty, facing out like actors. */
+/**
+ * Three brick-red, steepled cafés at the head of the jetty, facing out like
+ * actors: two to one side and one to the other, parted by an aisle down the
+ * stage's middle, so the way from the jetty to the gate in the wall runs
+ * straight between them.
+ */
 function buildCafes({ buckets, place, mounts, extras, animated, wanted }) {
     const z = place.position[2];
-    for (const [z0, z1] of [[z - 5.2, z - 1.7], [z - 1.7, z + 1.7], [z + 1.7, z + 4.9]]) {
+    // Their stage: a platform out from the wall, with an apron before the cafés (where the footlights stand)
+    // wide enough to walk, running on past the last café's outer wall toward the sun-dock.
+    for (const [z0, z1] of [[z - 8.2, z - 4.4], [z - 4.4, z - 1.0], [z - 1.0, z + 2.4], [z + 2.4, z + 5.8]]) {
         const zm = (z0 + z1) / 2;
-        buckets.add('dimGold', box(3.8, 1.3, z1 - z0 + 0.12, { x: wallX(zm) + 1.8, y: -0.35, z: zm }, PAVE));
+        buckets.add('dimGold', box(5.2, 1.3, z1 - z0 + 0.12, { x: wallX(zm) + 2.5, y: -0.35, z: zm }, PAVE));
     }
 
     const jettyStart = wallX(z) + 3.6;
@@ -527,7 +628,8 @@ function buildCafes({ buckets, place, mounts, extras, animated, wanted }) {
     }
 
     const audience = new Vector3(21, 0, z);
-    const cafes = [[-3.3, 0], [0, 0.55], [3.3, 0]];
+    // [along the wall from the jetty's line, out from the wall]: the aisle between the second and third.
+    const cafes = [[-6.3, 0], [-3.0, 0.35], [3.0, 0.35]];
     // "Angled to shine up every face, no café less equal": footlights before each, as on a stage, and the
     // warm wash they throw up its front. The wash is one additive sheet for all three.
     const washes = [];
@@ -600,6 +702,8 @@ function buildCafes({ buckets, place, mounts, extras, animated, wanted }) {
     }));
     footlit.name = 'footlight-wash';
     extras.push(footlit);
+    // Where the jetty ends, out over the water, on its boards (the walk's shadow waits there, walk.js).
+    return { pierEnd: new Vector3(jettyEnd - 0.9, 0.19, z) };
 }
 
 /** A pennant string or ribbon, with per-vertex "sway" so the flags can flutter. */
@@ -651,7 +755,8 @@ function buildFlags({ buckets, place, random, byId, mounts }) {
     const [cx, cy, cz] = place.position;
     const base = groundY(cx, cz);
     const poleTop = base + 6.9;
-    const poles = [[cx - 4.2, cz - 2.6], [cx + 3.0, cz - 2.2], [cx + 3.4, cz + 3.6], [cx - 3.2, cz + 3.2]];
+    // The four poles stand at the crossroads' corners, clear of the avenue and the high street.
+    const poles = [[cx - 4.2, cz - 0.4], [cx + 2.0, cz - 0.6], [cx + 3.4, cz + 3.6], [cx - 3.2, cz + 3.2]];
     for (const [x, z] of poles) {
         buckets.add('steel', cylinder(0.08, 0.11, 7.1, 6, { x, y: groundY(x, z) + 3.5, z }, STEEL_DARK));
         buckets.add('steel', box(0.9, 0.08, 0.08, { x, y: poleTop, z, ry: 0.6 }, STEEL_DARK));
@@ -1257,7 +1362,7 @@ function holdsFast(geometry) {
 function buildShoreWeed(buckets) {
     const random = createRandom(8080);
     const [north, south] = wallEnds();
-    const clear = (z) => !((z > -7 && z < 0.8) || (z > 1.4 && z < 8.8));
+    const clear = (z) => !((z > -11.6 && z < 2.8) || (z > 1.4 && z < 8.8));
     for (let cluster = 0; cluster < 24; cluster += 1) {
         const z = random.range(north + 1.2, south - 1.2);
         const x = wallX(z) + random.range(0.08, 0.3);
@@ -1492,6 +1597,8 @@ export async function buildPlaces(buckets, placeData, materials, pause = async (
         mounts,
         extras,
         houses,
+        /** The end of the jetty, on its boards: where the walk's shadow waits (walk.js). */
+        pierEnd: built.get('jetty-cafes')?.pierEnd ?? null,
         update(time) {
             for (const step of animated) step(time);
         },

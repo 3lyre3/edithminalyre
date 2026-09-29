@@ -182,10 +182,6 @@ function standingHeights(triangles, upwards, width, depth) {
     return { standing, dropped, fullest };
 }
 
-// =============================================================================
-// The map
-// =============================================================================
-
 /** Soften a layer in place: a box blur across, then down (done twice over, a gentle tent). */
 function soften(values, width, depth, scratch) {
     const span = REACH * 2 + 1;
@@ -214,18 +210,80 @@ function soften(values, width, depth, scratch) {
     }
 }
 
+// =============================================================================
+// Where a body can't pass
+// =============================================================================
+
+/** The cell size of the walls map (as the pieces are laid), and the band of height a walker's body fills. */
+export const WALLS_CELL = CELL;
+/** (Below this, a walker steps over: a kerb, a deck's edge, the garden's rim, a footlight, a dog asleep.) */
+const BODY_FROM = 0.6;
+const BODY_TO = 1.8;
+
+/**
+ * The walls a body can't pass through, cell by cell (1 where one stands): every
+ * steep face that reaches into a walker's height above the ground (a kerb or a
+ * deck's edge lies below it; eaves and bridges above), laid along its length
+ * at half a cell's spacing. Walls are thin from above, a line of cells; a body
+ * never crosses one in a stride.
+ */
+function wallCells(triangles, upwards, width, depth) {
+    const walls = new Uint8Array(width * depth);
+    const { x0, z0 } = HOLLOW_REGION;
+    const step = CELL * 0.5;
+    const mark = (x, z) => {
+        const col = Math.floor((x - x0) / CELL);
+        const row = Math.floor((z - z0) / CELL);
+        if (col >= 0 && row >= 0 && col < width && row < depth) walls[row * width + col] = 1;
+    };
+    for (let t = 0; t < upwards.length; t += 1) {
+        if (Math.abs(upwards[t]) > 0.5) continue;
+        const i = t * 9;
+        const ay = triangles[i + 1];
+        const by = triangles[i + 4];
+        const cy = triangles[i + 7];
+        const ax = triangles[i];
+        const az = triangles[i + 2];
+        const ground = groundY((ax + triangles[i + 3] + triangles[i + 6]) / 3, (az + triangles[i + 5] + triangles[i + 8]) / 3);
+        if (Math.max(ay, by, cy) < ground + BODY_FROM || Math.min(ay, by, cy) > ground + BODY_TO) continue;
+        const ux = triangles[i + 3] - ax;
+        const uz = triangles[i + 5] - az;
+        const vx = triangles[i + 6] - ax;
+        const vz = triangles[i + 8] - az;
+        const along = Math.max(1, Math.ceil(Math.hypot(ux, uz) / step));
+        const across = Math.max(1, Math.ceil(Math.hypot(vx, vz) / step));
+        for (let a = 0; a <= along; a += 1) {
+            const s = a / along;
+            const reach = 1 - s;
+            const count = Math.max(1, Math.ceil(reach * across));
+            for (let b = 0; b <= count; b += 1) {
+                const r = (b / count) * reach;
+                mark(ax + ux * s + vx * r, az + uz * s + vz * r);
+            }
+        }
+    }
+    return walls;
+}
+
+// =============================================================================
+// The map
+// =============================================================================
+
 /**
  * Lay the map.
  * @param {object} input
  * @param {Float32Array} input.triangles - the standing pieces' triangles, world positions, nine numbers each
  * @param {Float32Array} input.upwards - each triangle's normal's upward part (the mean of its vertices')
- * @returns {{ data: Uint8Array, ms: number, dropped: number, fullest: number }} data: RGBA, HOLLOW_ACROSS × HOLLOW_DOWN
+ * @param {boolean} [input.walls] - also mark where walls stand at a body's height (for walking, walk.js)
+ * @returns {{ data: Uint8Array, walls: Uint8Array | null, wallsAcross: number, ms: number, dropped: number, fullest: number }}
+ *   data: RGBA, HOLLOW_ACROSS × HOLLOW_DOWN; walls: WALLS_CELL cells over HOLLOW_REGION, wallsAcross wide
  */
-export function buildHollowData({ triangles, upwards }) {
+export function buildHollowData({ triangles, upwards, walls: wantsWalls = false }) {
     const started = performance.now();
     const per = Math.round(HOLLOW_TEXEL / CELL);
     const width = HOLLOW_ACROSS * per;
     const depth = HOLLOW_DOWN * per;
+    const walls = wantsWalls ? wallCells(triangles, upwards, width, depth) : null;
     const { standing, dropped, fullest } = standingHeights(triangles, upwards, width, depth);
 
     // Each texel holds, per height, how much of its two by two cells stands taller than that height.
@@ -249,5 +307,5 @@ export function buildHollowData({ triangles, upwards }) {
         soften(layer, HOLLOW_ACROSS, HOLLOW_DOWN, scratch);
         for (let texel = 0; texel < texels; texel += 1) data[texel * 4 + channel] = Math.round(Math.min(1, layer[texel]) * 255);
     }
-    return { data, ms: performance.now() - started, dropped, fullest };
+    return { data, walls, wallsAcross: width, ms: performance.now() - started, dropped, fullest };
 }

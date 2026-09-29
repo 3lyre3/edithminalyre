@@ -197,5 +197,19 @@ export function createSea({ sunDirection, edgeAngle, horizonDip = { value: 0.16 
         warmAt(x, z, reach) {
             uniforms.warmth.value.set(x, z, reach);
         },
+        /**
+         * Let the walk's shadow fall on the water too (walk.js): its GLSL (which defines
+         * walkerShade(world)) and its uniforms. Called before the water is first drawn.
+         */
+        receiveWalker(glsl, walkerUniforms) {
+            Object.assign(uniforms, walkerUniforms);
+            material.fragmentShader = material.fragmentShader
+                .replace('    void main() {', `${glsl}\n\n    void main() {`)
+                .replace('gl_FragColor = vec4(color, 1.0);', [
+                    'color = mix(color, color * vec3(0.3, 0.26, 0.36), walkerShade(vWorld) * 0.72);',
+                    '        gl_FragColor = vec4(color, 1.0);',
+                ].join('\n'));
+            material.needsUpdate = true;
+        },
     };
 }

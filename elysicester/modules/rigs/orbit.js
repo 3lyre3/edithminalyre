@@ -89,6 +89,8 @@ export class OrbitRig {
         this.placed = false;
         this.gliding = false;
         this.held = 0;
+        /** True while something else steers (walk.js): drags and the arrow keys are then its, not the rig's. */
+        this.handsOff = false;
         this.nominal = new Vector3();
         this.resolved = new Vector3();
         this.offset = new Vector3();
@@ -118,6 +120,12 @@ export class OrbitRig {
         listen(element, 'pointermove', (event) => {
             const pointer = this.pointers.get(event.pointerId);
             if (!pointer) return;
+            // While something else steers the camera (walking as the shadow), a drag is its to use.
+            if (this.handsOff) {
+                pointer.x = event.clientX;
+                pointer.y = event.clientY;
+                return;
+            }
             if (event.clientX !== pointer.x || event.clientY !== pointer.y) this.takeOver();
             const rect = element.getBoundingClientRect();
             if (this.pointers.size === 1) {
@@ -156,7 +164,7 @@ export class OrbitRig {
         }, { passive: false });
 
         listen(window, 'keydown', (event) => {
-            if (ignoresKeys(event)) return;
+            if (ignoresKeys(event) || this.handsOff) return;
             if (event.key.startsWith('Arrow')) {
                 this.keys.add(event.key);
                 event.preventDefault();
@@ -251,6 +259,7 @@ export class OrbitRig {
 
     update(dt) {
         this.idle += dt;
+        if (this.handsOff) this.keys.clear();
         const turn = (this.keys.has('ArrowLeft') ? 1 : 0) - (this.keys.has('ArrowRight') ? 1 : 0);
         const tilt = (this.keys.has('ArrowUp') ? 1 : 0) - (this.keys.has('ArrowDown') ? 1 : 0);
         if (turn || tilt) {
@@ -268,7 +277,12 @@ export class OrbitRig {
         this.now.phi += (this.goal.phi - this.now.phi) * k;
 
         this.positionOf(this.now, this.nominal);
-        if (this.solids?.available) {
+        if (this.solids?.available && this.handsOff) {
+            // Something else steers (walk.js) and has already chosen where the view is clear from: the
+            // camera is only kept out of anything solid, never held back on its way there.
+            this.solids.push(this.resolved.copy(this.nominal), CLEARANCE);
+            this.camera.position.copy(this.resolved);
+        } else if (this.solids?.available) {
             // Slide from where the camera was to where it's going (or, under reduced motion, cut
             // there and step out of anything solid).
             if (this.reducedMotion || !this.placed) this.solids.push(this.resolved.copy(this.nominal), CLEARANCE);

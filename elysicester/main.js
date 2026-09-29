@@ -215,7 +215,9 @@ async function boot() {
                     label: byId('point-label'),
                     reducedMotion,
                     onPick: (fragment) => open(fragment, null),
-                    yieldTap: (x, y, pointDistance) => signOverlay?.claimsTap(x, y, pointDistance) ?? false,
+                    // A tap on the shadow is the shadow's (walk.js); one squarely on a sign is the sign's.
+                    yieldTap: (x, y, pointDistance) => (stage.walk?.claimsTap(x, y) ?? false)
+                        || (signOverlay?.claimsTap(x, y, pointDistance) ?? false),
                 });
                 signOverlay = createSignOverlay({
                     stage,
@@ -257,7 +259,10 @@ async function boot() {
 
     if (stage) {
         const home = byId('home-view');
-        home.addEventListener('click', () => stage.rig.toHome());
+        home.addEventListener('click', () => {
+            stage.walk?.letGo();
+            stage.rig.toHome();
+        });
         stage.onFrame(() => {
             const away = !stage.rig.atHome;
             if (home.hidden === away) home.hidden = !away;

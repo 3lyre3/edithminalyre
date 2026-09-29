@@ -400,6 +400,41 @@ a:focus-visible {
 }
 
 /*
+ * Walking as the shadow (walk.js): where a thumb comes down and drags, a soft
+ * ring appears under it, and a knob that follows it, as in Messenger. The ring
+ * is placed by its centre (translate); it never takes a pointer itself.
+ */
+.walk-stick {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 40;
+    width: 116px;
+    height: 116px;
+    margin: -58px 0 0 -58px;
+    border: 1px solid rgba(255, 236, 206, 0.34);
+    border-radius: 50%;
+    background: rgba(255, 236, 206, 0.08);
+    pointer-events: none;
+}
+
+.walk-stick[hidden] {
+    display: none;
+}
+
+.walk-stick-knob {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 46px;
+    height: 46px;
+    margin: -23px 0 0 -23px;
+    border-radius: 50%;
+    background: rgba(255, 236, 206, 0.42);
+    box-shadow: 0 0 10px rgba(5, 5, 6, 0.35);
+}
+
+/*
  * The threshold. First the Mega-Screen: a dark screen in the red desert air,
  * enormous italic letters rolling in from the right, a short step left with
  * each flicker (the flicker stays gentle, under three a second). Then, above

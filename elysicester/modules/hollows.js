@@ -81,8 +81,9 @@ function standingTriangles(meshes) {
  * @param {Map<string, import('three').Mesh>} meshes - by bucket, as Buckets.build returns them
  * @param {object} [options]
  * @param {boolean} [options.reducedMotion] - the darkness arrives at once rather than coming in
+ * @param {boolean} [options.walls] - also mark where walls stand at a body's height (walking, walk.js)
  */
-export function createHollows(meshes, { reducedMotion = false } = {}) {
+export function createHollows(meshes, { reducedMotion = false, walls = false } = {}) {
     const data = new Uint8Array(HOLLOW_ACROSS * HOLLOW_DOWN * 4);
     const texture = new DataTexture(data, HOLLOW_ACROSS, HOLLOW_DOWN, RGBAFormat, UnsignedByteType);
     texture.magFilter = LinearFilter;
@@ -104,6 +105,9 @@ export function createHollows(meshes, { reducedMotion = false } = {}) {
         available: false,
         build: null,
         ready: null,
+        /** Where walls stand at a body's height (1 per WALLS_CELL cell over HOLLOW_REGION), once laid, if asked for. */
+        walls: null,
+        wallsAcross: 0,
         /** True once the map is laid (or can't be) and the darkness has fully come in: for the local checks. */
         get settled() {
             return answered && strength.value === target;
@@ -118,6 +122,8 @@ export function createHollows(meshes, { reducedMotion = false } = {}) {
     const lay = (result, started, where) => {
         data.set(result.data);
         texture.needsUpdate = true;
+        hollowMap.walls = result.walls;
+        hollowMap.wallsAcross = result.wallsAcross;
         hollowMap.available = true;
         hollowMap.build = { where, ms: result.ms, total: performance.now() - started, dropped: result.dropped, fullest: result.fullest };
         target = wanted;
@@ -128,7 +134,7 @@ export function createHollows(meshes, { reducedMotion = false } = {}) {
         const started = performance.now();
         // Without a worker, the map is laid here instead: a moment's work, once.
         const here = () => {
-            lay(buildHollowData(standingTriangles(meshes)), started, 'main thread');
+            lay(buildHollowData({ ...standingTriangles(meshes), walls }), started, 'main thread');
             resolve(true);
         };
         let worker;
@@ -149,7 +155,7 @@ export function createHollows(meshes, { reducedMotion = false } = {}) {
                 if (!answered) here();
             });
         }
-        const input = standingTriangles(meshes);
+        const input = { ...standingTriangles(meshes), walls };
         worker.postMessage(input, [input.triangles.buffer, input.upwards.buffer]);
     });
     return hollowMap;
