@@ -22,6 +22,9 @@ const RIM_WAVES = [
     [9, 0.014, 4.0],
 ];
 
+/** The rim is drawn as a polygon of this many sides: the rock's top edge (island.js), and the sea's (sea.js). */
+export const RIM_SEGMENTS = 144;
+
 /** The golden sea-wall runs north–south near this x; the sea lies east of it. */
 const WALL_BASE_X = 9;
 

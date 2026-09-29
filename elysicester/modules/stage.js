@@ -136,9 +136,8 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
     scene.fog = new FogExp2(0x4a2c4c, 0.0024);
     const camera = new PerspectiveCamera(35, 1, 0.5, 900);
 
-    const edge = data.places.places.find((place) => place.id === 'edge');
     const sky = createSky({ sunDirection: SUN_DIRECTION, inscription: extras.has('sky') ? await inscriptionTexture() : null });
-    const sea = createSea({ sunDirection: SUN_DIRECTION, edgeAngle: Math.atan2(edge.position[2], edge.position[0]), horizonDip: sky.horizonDip });
+    const sea = createSea({ sunDirection: SUN_DIRECTION, horizonDip: sky.horizonDip });
     scene.add(sky.mesh, sea.mesh);
 
     const key = new DirectionalLight(0xffd6a0, 2.5);

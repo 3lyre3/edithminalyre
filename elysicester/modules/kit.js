@@ -45,6 +45,7 @@ export {
     CURTAIN_EDGE,
     CURTAIN_LEAST,
     ISLAND_RADIUS,
+    RIM_SEGMENTS,
     SEA_LEVEL,
     UNDERSIDE_DEPTH,
     aroundNoise,

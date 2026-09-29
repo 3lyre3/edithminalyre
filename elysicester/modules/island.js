@@ -23,6 +23,7 @@ import {
 import {
     CLIFF_DEPTH,
     CURTAIN_EDGE,
+    RIM_SEGMENTS,
     SEA_LEVEL,
     bellyDepth,
     createRandom,
@@ -41,7 +42,7 @@ import {
 // Constants
 // =============================================================================
 
-const SEGMENTS = 144;
+const SEGMENTS = RIM_SEGMENTS;
 const GROUND_RINGS = 16;
 /** Rings down the curtain (cliff's foot to the ragged edge), and in across the belly (edge to the middle). */
 const CURTAIN_RINGS = 7;

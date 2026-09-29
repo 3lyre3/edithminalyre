@@ -6,21 +6,37 @@
  * the golden bricking's reflection, broken by the swell. Breakers burst
  * silver and violet along the wall ("the sea erupts in bursts of silver and
  * violet, tumbling up the golden bricking", Numbers by Paint, Episode 1); the
- * swell is drawn as light crest lines drifting in; near the rim the water
- * stops behaving like water and breaks into flickering blocks, the place where
- * the world glitches. Colours are linear; the ink pass tone-maps them.
+ * swell is drawn as light crest lines drifting in. At the rim the swell dies
+ * away and the water ends flush with the rock's edge, in one smooth line: its
+ * sheet is built out to the rim's own corners (Elm wanted the island's edge
+ * smooth, so the world's glitching is left to the shards floating off it, in
+ * places.js). Colours are linear; the ink pass tone-maps them.
  */
 
 // =============================================================================
 // Imports
 // =============================================================================
 
-import { Color, Mesh, PlaneGeometry, ShaderMaterial, UniformsLib, UniformsUtils, Vector3 } from 'three';
-import { ISLAND_RADIUS, SEA_LEVEL, rimRadiusGLSL, wallXGLSL } from './kit.js';
+import { BufferGeometry, Color, Float32BufferAttribute, Mesh, ShaderMaterial, UniformsLib, UniformsUtils, Vector3 } from 'three';
+import { RIM_SEGMENTS, SEA_LEVEL, rimRadius, rimRadiusGLSL, wallX, wallXGLSL } from './kit.js';
 import { DUSK_GLSL } from './sky.js';
+
+// =============================================================================
+// Constants
+// =============================================================================
 
 /** The top of the sea-wall's face above the water (its merlons stand higher, but gapped). */
 const WALL_TOP = 3.1;
+
+/** The water tucks this far in under the sea-wall's face. */
+const UNDER_WALL = 0.2;
+
+/** The water's sheet: rows from the wall's foot out to the rim, and the pieces each side of the rim is cut into. */
+const ROWS = 40;
+const CUTS = 3;
+
+/** Within this much of the rim the swell dies away, so the water lies flat against the rock's edge. */
+const CALM = 2.2;
 
 // =============================================================================
 // Shaders
@@ -33,6 +49,8 @@ const vertexShader = /* glsl */ `
     varying vec3 vNormal;
 
     #include <fog_pars_vertex>
+
+    ${rimRadiusGLSL()}
 
     void addWave(vec2 p, vec2 direction, float frequency, float speed, float amplitude, inout float height, inout vec2 slope) {
         float phase = dot(direction, p) * frequency + time * speed;
@@ -47,9 +65,11 @@ const vertexShader = /* glsl */ `
         addWave(world.xz, normalize(vec2(-1.0, 0.25)), 0.55, 1.1, 0.09, height, slope);
         addWave(world.xz, normalize(vec2(-0.7, -0.7)), 0.95, 1.6, 0.045, height, slope);
         addWave(world.xz, normalize(vec2(-0.3, 0.95)), 1.5, 2.2, 0.025, height, slope);
-        world.y += height;
+        // The swell dies away toward the rim: the water meets the rock's edge flat, and exactly at its height.
+        float calm = smoothstep(0.0, ${CALM.toFixed(2)}, rimRadius(atan(world.z, world.x)) - length(world.xz));
+        world.y += height * calm;
         vWorld = world;
-        vNormal = normalize(vec3(-slope.x, 1.0, -slope.y));
+        vNormal = normalize(vec3(-slope.x * calm, 1.0, -slope.y * calm));
         vec4 mvPosition = viewMatrix * vec4(world, 1.0);
         gl_Position = projectionMatrix * mvPosition;
         #include <fog_vertex>
@@ -58,7 +78,6 @@ const vertexShader = /* glsl */ `
 
 const fragmentShader = /* glsl */ `
     uniform float time;
-    uniform float edgeAngle;
     uniform vec3 sunDirection;
     uniform float horizonDip;
     uniform vec3 deepColor;
@@ -72,7 +91,6 @@ const fragmentShader = /* glsl */ `
 
     #include <fog_pars_fragment>
 
-    ${rimRadiusGLSL()}
     ${wallXGLSL()}
     ${DUSK_GLSL}
 
@@ -82,20 +100,21 @@ const fragmentShader = /* glsl */ `
         return fract((p3.x + p3.y) * p3.z);
     }
 
+    // Smooth value noise (0 to 1), for edges that waver without breaking into blocks.
+    float smoothNoise(vec2 p) {
+        vec2 cell = floor(p);
+        vec2 f = fract(p);
+        vec2 u = f * f * (3.0 - 2.0 * f);
+        float a = hash12(cell);
+        float b = hash12(cell + vec2(1.0, 0.0));
+        float c = hash12(cell + vec2(0.0, 1.0));
+        float d = hash12(cell + vec2(1.0, 1.0));
+        return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);
+    }
+
     void main() {
         float fromWall = vWorld.x - wallX(vWorld.z);
-        if (fromWall < -0.2) discard;
-
-        float angle = atan(vWorld.z, vWorld.x);
-        float toRim = rimRadius(angle) - length(vWorld.xz);
-        // The glitch is strongest at the edge place and only simmers elsewhere on the rim.
-        float fromEdge = mod(angle - edgeAngle + 3.14159265, 6.28318531) - 3.14159265;
-        float nearEdge = exp(-pow(fromEdge / 0.35, 2.0));
-        float reach = 0.5 + 1.8 * nearEdge;
-        vec2 block = floor(vWorld.xz * 1.5);
-        float tick = floor(time * 6.0);
-        if (toRim < 0.0) discard;
-        if (toRim < reach && hash12(block + tick * 0.371) > 0.35 + (toRim / reach) * 0.65) discard;
+        if (fromWall < -${UNDER_WALL.toFixed(2)}) discard;
 
         vec3 normal = normalize(vNormal);
         vec3 view = normalize(cameraPosition - vWorld);
@@ -131,20 +150,16 @@ const fragmentShader = /* glsl */ `
         float crestLine = smoothstep(0.9, 0.95, swell) * (1.0 - smoothstep(0.97, 1.0, swell));
         color = mix(color, mix(mix(violet, silver, 0.35) * 0.8, vec3(1.3, 0.85, 0.42), warm), crestLine * (0.4 + 0.35 * warm));
 
-        // Breakers: flat, drawn shapes of silver and violet bursting along the wall's foot.
+        // Breakers: flat, drawn shapes of silver and violet bursting along the wall's foot, their edges
+        // wavering smoothly as the water moves.
         float travel = sin(vWorld.z * 0.7 + time * 0.9 + 2.0 * sin(vWorld.z * 0.23 + time * 0.37));
         float burst = smoothstep(0.35, 1.0, travel);
         float field = exp(-max(fromWall, 0.0) * 0.5) * (0.4 + 0.75 * burst);
-        field += (hash12(floor(vWorld.xz * 4.0) + tick) - 0.5) * 0.14;
+        field += (smoothNoise(vWorld.xz * 2.2 + vec2(time * 0.5, -time * 0.35)) - 0.5) * 0.14;
         float fringe = smoothstep(0.34, 0.38, field);
         float crest = smoothstep(0.62, 0.66, field);
         color = mix(color, violet, fringe * 0.85);
         color = mix(color, silver, crest);
-
-        float band = smoothstep(reach + 0.4, 0.0, toRim);
-        float flash = step(0.82 - 0.12 * nearEdge, hash12(block * 1.7 + tick));
-        vec3 glitch = mix(vec3(0.95, 0.2, 0.85), vec3(0.2, 0.95, 0.9), hash12(block + 3.1));
-        color = mix(color, glitch, band * flash * (0.35 + 0.5 * nearEdge));
 
         gl_FragColor = vec4(color, 1.0);
         #include <fog_fragment>
@@ -155,24 +170,96 @@ const fragmentShader = /* glsl */ `
 // Main Code
 // =============================================================================
 
+/** A corner of the rim's polygon as the rock draws it (island.js): segment `index`, any whole number (it wraps). */
+function rimCorner(index) {
+    const angle = (index / RIM_SEGMENTS) * Math.PI * 2;
+    const radius = rimRadius(angle);
+    return [Math.cos(angle) * radius, Math.sin(angle) * radius];
+}
+
+/** How far a point on the rim stands east of the line the water tucks in to (the wall's face, less UNDER_WALL). */
+function eastOfWall([x, z]) {
+    return x - (wallX(z) - UNDER_WALL);
+}
+
+/**
+ * The water's sheet, from the wall's foot out to the rim. Its outer edge runs through the rock's own corners
+ * (each side cut in CUTS along its straight line), so the water ends exactly where the rock's edge is: one
+ * clean line, which the ink pass's samples smooth. Each column runs out from the island's middle, from where
+ * it meets the wall's line to the rim, in ROWS; at either end the rim meets the wall and the column closes to
+ * a point.
+ */
+function waterSheet() {
+    // The rim, corner by corner, round the sea's side (east, where x is greatest), cut along each side.
+    const rim = [];
+    for (let index = -RIM_SEGMENTS / 2; index < RIM_SEGMENTS / 2; index += 1) {
+        const from = rimCorner(index);
+        const to = rimCorner(index + 1);
+        for (let cut = 0; cut < CUTS; cut += 1) {
+            const t = cut / CUTS;
+            rim.push([from[0] + (to[0] - from[0]) * t, from[1] + (to[1] - from[1]) * t]);
+        }
+    }
+    rim.push(rimCorner(RIM_SEGMENTS / 2));
+
+    // The run of it east of the wall's line, closed at either end exactly where the rim crosses that line.
+    const inside = rim.map((point) => eastOfWall(point) > 0);
+    const first = inside.indexOf(true);
+    const last = inside.lastIndexOf(true);
+    const crossing = (outside, within) => {
+        let [a, b] = [0, 1];
+        for (let step = 0; step < 30; step += 1) {
+            const middle = (a + b) / 2;
+            const point = [outside[0] + (within[0] - outside[0]) * middle, outside[1] + (within[1] - outside[1]) * middle];
+            if (eastOfWall(point) > 0) b = middle;
+            else a = middle;
+        }
+        return [outside[0] + (within[0] - outside[0]) * b, outside[1] + (within[1] - outside[1]) * b];
+    };
+    const edge = [crossing(rim[first - 1], rim[first]), ...rim.slice(first, last + 1), crossing(rim[last + 1], rim[last])];
+
+    // Each column: from where the line out from the middle meets the wall's line, out to its point on the rim.
+    const positions = [];
+    for (const [x, z] of edge) {
+        const out = Math.hypot(x, z);
+        const [dx, dz] = [x / out, z / out];
+        let [near, far] = [0, out];
+        for (let step = 0; step < 30; step += 1) {
+            const middle = (near + far) / 2;
+            if (eastOfWall([dx * middle, dz * middle]) > 0) far = middle;
+            else near = middle;
+        }
+        for (let row = 0; row <= ROWS; row += 1) {
+            const along = far + ((out - far) * row) / ROWS;
+            positions.push(dx * along, SEA_LEVEL, dz * along);
+        }
+    }
+    const indices = [];
+    for (let column = 0; column < edge.length - 1; column += 1) {
+        for (let row = 0; row < ROWS; row += 1) {
+            const a = column * (ROWS + 1) + row;
+            const b = a + ROWS + 1;
+            // Wound to face up (the columns go round with the angle, the rows outward).
+            indices.push(a, b, a + 1, a + 1, b, b + 1);
+        }
+    }
+    const geometry = new BufferGeometry();
+    geometry.setAttribute('position', new Float32BufferAttribute(positions, 3));
+    geometry.setIndex(indices);
+    return geometry;
+}
+
 /**
  * @param {object} options
  * @param {import('three').Vector3} options.sunDirection
- * @param {number} options.edgeAngle - where on the rim the edge place is (radians, atan2(z, x))
  */
-export function createSea({ sunDirection, edgeAngle, horizonDip = { value: 0.16 } }) {
-    const west = 7.4;
-    const east = ISLAND_RADIUS * 1.08;
-    const extent = ISLAND_RADIUS * 1.1;
-    const geometry = new PlaneGeometry(east - west, extent * 2, 48, 120);
-    geometry.rotateX(-Math.PI / 2);
-    geometry.translate((west + east) / 2, SEA_LEVEL, 0);
+export function createSea({ sunDirection, horizonDip = { value: 0.16 } }) {
+    const geometry = waterSheet();
 
     const uniforms = UniformsUtils.merge([
         UniformsLib.fog,
         {
             time: { value: 0 },
-            edgeAngle: { value: edgeAngle },
             sunDirection: { value: sunDirection.clone().normalize() },
             deepColor: { value: new Color(0x1a1040) },
             wallGold: { value: new Color(0xd8a44c) },
