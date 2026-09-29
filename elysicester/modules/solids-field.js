@@ -23,7 +23,7 @@
 // Imports
 // =============================================================================
 
-import { CLIFF_DEPTH, SEA_LEVEL, UNDERSIDE_DEPTH, groundY, rimRadius, wallX } from './shape.js';
+import { CLIFF_DEPTH, CURTAIN_EDGE, CURTAIN_LEAST, SEA_LEVEL, UNDERSIDE_DEPTH, groundY, rimRadius, wallX } from './shape.js';
 
 // =============================================================================
 // Constants
@@ -69,9 +69,9 @@ function withSea(triangles) {
 
 /**
  * The island's certain rock, column by column: well inside the cliff and the
- * underside however island.js's noise falls (the least striation, 0.895, the
- * least taper, 0.85, and the least sag, 0.75, less a margin), and a little
- * under the ground and the sea.
+ * underside however island.js's noise falls (the least striation, 0.895; the
+ * belly's edge drawn in, and hanging no lower than the curtain's least fall,
+ * CURTAIN_LEAST; less a margin), and a little under the ground and the sea.
  */
 function certainRock(origin, dims, voxel) {
     const [nx, , nz] = dims;
@@ -84,11 +84,12 @@ function certainRock(origin, dims, voxel) {
             if (radius > 34) continue;
             const rim = rimRadius(Math.atan2(cz, cx)) * 0.985 * 0.895;
             if (radius >= rim * 0.95) continue;
-            const tapered = rim * 0.85 * 0.95;
+            // The belly's edge, at its least: in the curtain's band, only the cliff is certain.
+            const edge = (rimRadius(Math.atan2(cz, cx)) * CURTAIN_EDGE * 0.895) * 0.95;
             let bottom = -CLIFF_DEPTH;
-            if (radius < tapered) {
-                const t = 1 - Math.pow(radius / tapered, 1 / 1.35);
-                bottom = -(CLIFF_DEPTH + UNDERSIDE_DEPTH * 0.75 * Math.pow(t, 1.1));
+            if (radius < edge) {
+                const u = 1 - Math.pow(radius / edge, 1 / 0.85);
+                bottom = -(CLIFF_DEPTH + (CURTAIN_LEAST + (UNDERSIDE_DEPTH - CURTAIN_LEAST) * (1 - (1 - u) * (1 - u))) * 0.9);
             }
             core[(z * nx + x) * 2] = bottom;
             core[(z * nx + x) * 2 + 1] = (cx > wallX(cz) ? SEA_LEVEL : groundY(cx, cz)) - 0.3;

@@ -42,12 +42,18 @@ import { CLIFF_DEPTH, UNDERSIDE_DEPTH } from './shape.js';
 
 export {
     CLIFF_DEPTH,
+    CURTAIN_EDGE,
+    CURTAIN_LEAST,
     ISLAND_RADIUS,
     SEA_LEVEL,
     UNDERSIDE_DEPTH,
+    aroundNoise,
+    bellyDepth,
     createRandom,
+    curtainDrop,
     fbm2,
     groundY,
+    groundYGLSL,
     noise2,
     onLand,
     rimRadius,
@@ -293,9 +299,9 @@ export function createMaterials() {
         dimGold: hatched(bricks(toon({ emissive: 0x3a2a0c, emissiveIntensity: 0.4 }), { length: 1.1, height: 0.5 })),
         brick: toon({}),
         stone: toon({}),
-        /** The island's underside: striated rock, like the floating islands in Elm's cosmology plate. */
-        rock: strata(toon({}), {
-            strata: [0x7c5e5c, 0x86665a, 0x76606a, 0x8e705e, 0x6e5c64],
+        /** The island's underside (and the hanging mountain): rock striated top to bottom, as Elm draws her islands. */
+        rock: striated(toon({}), {
+            colors: [0x7c5e5c, 0x86665a, 0x76606a, 0x8e705e, 0x6e5c64],
             deep: 0x2e2438,
             reach: CLIFF_DEPTH + UNDERSIDE_DEPTH,
         }),
@@ -376,7 +382,7 @@ export function duskLight(material, { sun, rim = 0, shine = 0, tip = 0, tipFrom 
  * program by its onBeforeCompile's source, and a wrapper's source is always
  * the same).
  */
-function alsoBeforeCompile(material, name, change) {
+export function alsoBeforeCompile(material, name, change) {
     const before = material.onBeforeCompile;
     const key = material.customProgramCacheKey();
     material.onBeforeCompile = (shader, renderer) => {
@@ -387,62 +393,100 @@ function alsoBeforeCompile(material, name, change) {
 }
 
 /**
- * The rock's strata, laid per pixel rather than per triangle, so the bands
- * wander smoothly across the facets (a band per triangle drew saw-teeth). The
- * bands follow a slow noise, run through five rock colours, and darken toward
- * the underside's deepest point; the vertex colour still tints them, so a
+ * The rock, striated top to bottom, as Elm's pencil draws her islands'
+ * undersides: fine strokes falling down the rock, each broken and pressed in
+ * its own way, a darker cleft now and then, the rock's colours laid in long
+ * vertical streaks, and all of it darkening toward the belly's lowest point.
+ * The strokes are counted round the island's middle, so they fall straight
+ * down the curtain and gather toward the middle of the belly, as a pencil's
+ * would; and they're let go before they crowd, so from far off the rock is a
+ * wash, not a moiré. Laid per pixel; the vertex colour still tints it, so a
  * piece can be warmer or cooler than the rest.
  * @param {import('three').Material} material
  * @param {object} options
- * @param {number[]} options.strata - the bands' colours (hex), top down, repeating
+ * @param {number[]} options.colors - the streaks' colours (hex), repeating
  * @param {number} options.deep - the colour the deepest rock goes to
  * @param {number} options.reach - how deep (below y = 0) the rock goes
  */
-export function strata(material, { strata: colors, deep, reach }) {
-    const bands = colors.map((hex) => new Color(hex));
-    alsoBeforeCompile(material, `strata${bands.length}`, (shader) => {
-        shader.uniforms.strataColors = { value: bands };
-        shader.uniforms.strataDeep = { value: new Color(deep) };
-        shader.uniforms.strataReach = { value: reach };
+export function striated(material, { colors, deep, reach }) {
+    const streaks = colors.map((hex) => new Color(hex));
+    // Streaks and strokes are counted in whole numbers per turn (multiples of the colours), so a turn closes.
+    const count = streaks.length;
+    const mean = streaks.reduce((sum, color) => sum.add(color), new Color(0, 0, 0)).multiplyScalar(1 / count);
+    alsoBeforeCompile(material, `striae${count}`, (shader) => {
+        shader.uniforms.striaeColors = { value: streaks };
+        shader.uniforms.striaeMean = { value: mean };
+        shader.uniforms.striaeDeep = { value: new Color(deep) };
+        shader.uniforms.striaeReach = { value: reach };
         shader.vertexShader = shader.vertexShader
-            .replace('#include <common>', '#include <common>\nvarying vec3 vStrataPosition;')
-            .replace('#include <begin_vertex>', '#include <begin_vertex>\nvStrataPosition = (modelMatrix * vec4(transformed, 1.0)).xyz;');
+            .replace('#include <common>', '#include <common>\nvarying vec3 vStriaePosition;\nvarying vec3 vStriaeNormal;')
+            .replace('#include <begin_vertex>', [
+                '#include <begin_vertex>',
+                'vStriaePosition = (modelMatrix * vec4(transformed, 1.0)).xyz;',
+                'vStriaeNormal = mat3(modelMatrix) * objectNormal;',
+            ].join('\n'));
         shader.fragmentShader = shader.fragmentShader
             .replace('#include <common>', [
                 '#include <common>',
-                `uniform vec3 strataColors[${bands.length}];`,
-                'uniform vec3 strataDeep;',
-                'uniform float strataReach;',
-                'varying vec3 vStrataPosition;',
-                'float strataHash(vec2 p) {',
+                `uniform vec3 striaeColors[${count}];`,
+                'uniform vec3 striaeMean;',
+                'uniform vec3 striaeDeep;',
+                'uniform float striaeReach;',
+                'varying vec3 vStriaePosition;',
+                'varying vec3 vStriaeNormal;',
+                'float striaeHash(vec2 p) {',
                 '    vec3 p3 = fract(vec3(p.xyx) * 0.1031);',
                 '    p3 += dot(p3, p3.yzx + 33.33);',
                 '    return fract((p3.x + p3.y) * p3.z);',
                 '}',
-                'float strataNoise(vec2 p) {',
+                'float striaeNoise(vec2 p) {',
                 '    vec2 i = floor(p);',
                 '    vec2 f = fract(p);',
                 '    vec2 u = f * f * (3.0 - 2.0 * f);',
-                '    return mix(mix(strataHash(i), strataHash(i + vec2(1.0, 0.0)), u.x),',
-                '        mix(strataHash(i + vec2(0.0, 1.0)), strataHash(i + vec2(1.0, 1.0)), u.x), u.y);',
+                '    return mix(mix(striaeHash(i), striaeHash(i + vec2(1.0, 0.0)), u.x),',
+                '        mix(striaeHash(i + vec2(0.0, 1.0)), striaeHash(i + vec2(1.0, 1.0)), u.x), u.y);',
+                '}',
+                '/** Strokes counted round the middle: how much ink a family of them lays here (0 to 1). */',
+                'float striaeStrokes(float around, float turnWidth, float perTurn, vec3 p, float wanders, float sway, float nib, float breaks, float seed) {',
+                '    // They waver with the rock (a noise of where they are, so a turn closes with no seam).',
+                '    float u = around * perTurn + (striaeNoise(p.xz * 0.35 + vec2(p.y * wanders, seed)) - 0.5) * sway;',
+                '    float id = floor(u);',
+                '    float h = striaeHash(vec2(id, seed));',
+                '    float pixel = max(turnWidth * perTurn, 1e-4);',
+                '    float width = nib * (0.7 + 0.6 * h);',
+                '    float line = 1.0 - smoothstep(width, width + pixel, abs(fract(u) - 0.5));',
+                '    // Each is broken along its length, into strokes of its own length.',
+                '    float present = smoothstep(breaks, breaks + 0.22, striaeNoise(vec2(id * 0.53 + seed, p.y * (0.1 + 0.28 * h) + h * 19.0)));',
+                '    // Let go before they crowd (under about three pixels apart).',
+                '    float drawn = 1.0 - smoothstep(0.22, 0.45, pixel);',
+                '    return line * present * drawn * (0.55 + 0.45 * h);',
                 '}',
             ].join('\n'))
             .replace('#include <color_fragment>', [
                 '#include <color_fragment>',
                 '{',
-                '    float depth = -vStrataPosition.y;',
-                '    float wander = strataNoise(vStrataPosition.xz * 0.18) * 2.4 + strataNoise(vStrataPosition.xz * 0.6 + 7.0) * 0.6;',
-                '    float laid = (depth + wander) / 1.7;',
-                '    // Bands of uneven thickness, as rock lays them down.',
-                '    laid += 0.32 * sin(laid * 2.3 + 1.1);',
-                '    float band = floor(laid);',
-                `    int index = int(mod(band, ${bands.length}.0));`,
-                `    int next = int(mod(band + 1.0, ${bands.length}.0));`,
-                '    // Each band meets the next along a soft line a nib wide, never a stair of facets.',
-                '    float edge = smoothstep(1.0 - max(fwidth(laid), 0.02) * 1.5, 1.0, fract(laid));',
-                '    vec3 rock = mix(strataColors[index], strataColors[next], edge);',
-                '    rock = mix(rock, strataDeep, min(0.7, max(depth, 0.0) / strataReach * 0.8));',
-                '    diffuseColor.rgb *= rock;',
+                '    vec3 p = vStriaePosition;',
+                '    float depth = -p.y;',
+                '    float around = atan(p.z, p.x) / 6.28318530718;',
+                '    // How far a pixel reaches round the middle (across the half-turn seam, the short way round).',
+                '    vec2 stride = vec2(dFdx(around), dFdy(around));',
+                '    stride -= floor(stride + 0.5);',
+                '    float turnWidth = abs(stride.x) + abs(stride.y);',
+                '    // Long vertical streaks of the rock\'s colours, meeting softly.',
+                `    float streak = around * ${count * 18}.0 + striaeNoise(p.xz * 0.12 + vec2(p.y * 0.05, 3.0)) * 1.6;`,
+                '    float band = floor(streak);',
+                `    int index = int(mod(band, ${count}.0));`,
+                `    int next = int(mod(band + 1.0, ${count}.0));`,
+                '    vec3 rock = mix(striaeColors[index], striaeColors[next], smoothstep(0.55, 1.0, fract(streak)));',
+                '    // Fine strokes, many; and a darker cleft now and then, longer and wandering further.',
+                '    float ink = striaeStrokes(around, turnWidth, 520.0, p, 0.3, 0.4, 0.1, 0.4, 3.7) * 0.3;',
+                '    ink = max(ink, striaeStrokes(around, turnWidth, 65.0, p, 0.09, 1.0, 0.022, 0.5, 11.3) * 0.55);',
+                '    // The pencil falls down the rock\'s sides; on faces turned to the ground it lies quieter.',
+                '    float hanging = smoothstep(0.35, 0.85, -normalize(vStriaeNormal).y);',
+                '    rock = mix(rock, striaeMean, hanging * 0.7);',
+                '    ink *= 1.0 - 0.65 * hanging;',
+                '    rock = mix(rock, striaeDeep, min(0.72, max(depth, 0.0) / striaeReach * 0.85));',
+                '    diffuseColor.rgb *= rock * (1.0 - ink);',
                 '}',
             ].join('\n'));
     });

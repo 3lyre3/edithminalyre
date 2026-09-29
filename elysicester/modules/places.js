@@ -1026,7 +1026,7 @@ function buildSkyGrottos({ buckets, place, random, extras, animated, materials, 
         flat.computeVertexNormals();
         return flat;
     };
-    // The mountain is the island's kin, a floating rock: the "rock" material lays its strata, and
+    // The mountain is the island's kin, a floating rock: the "rock" material draws its striae, and
     // this only tints them, paler up top and deepening toward the point it hangs from.
     const rock = (x, y, z, color) => color.set(0xfff4ee).lerp(new Color(0x857a96), Math.min(1, Math.max(0, (centre.y - y) / 11)));
 

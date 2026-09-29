@@ -193,6 +193,8 @@ async function settle(page) {
     const mode = await page.evaluate(() => document.documentElement.dataset.mode);
     if (mode === 'live') {
         await page.waitForFunction(() => (window.elysicesterDebug?.info().calls ?? 0) > 0, null, { timeout: LOAD_TIMEOUT });
+        // The hollows' map is laid by a worker and its darkness comes in over a second: pictures wait for it.
+        await page.waitForFunction(() => window.elysicesterDebug?.hollows?.settled ?? true, null, { timeout: LOAD_TIMEOUT }).catch(() => {});
         await page.waitForTimeout(1500);
     } else {
         await page.waitForTimeout(500);

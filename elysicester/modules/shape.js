@@ -28,9 +28,19 @@ const WALL_BASE_X = 9;
 /** Height of the Elysian Sea's surface on the island. */
 export const SEA_LEVEL = -0.6;
 
-/** How far the cliff drops below the rim, and how much deeper the rock's underside hangs. */
+/** How far the cliff drops below the rim, and how much deeper the rock's underside hangs (its belly's lowest point). */
 export const CLIFF_DEPTH = 3.4;
-export const UNDERSIDE_DEPTH = 22;
+export const UNDERSIDE_DEPTH = 17;
+
+/**
+ * The underside, as Elm draws her islands: below the cliff a curtain of rock
+ * falls steeply, narrowing a little, to a ragged edge (lobed, scalloped, and
+ * here and there a long drip); within the edge a broad belly bows down to its
+ * lowest point under the middle. The edge stands in to this much of the rim's
+ * radius, and falls at least CURTAIN_LEAST below the cliff's foot.
+ */
+export const CURTAIN_EDGE = 0.84;
+export const CURTAIN_LEAST = 4.5;
 
 // =============================================================================
 // Outline and waterfront
@@ -49,6 +59,29 @@ export function rimRadiusGLSL() {
         .map(([frequency, amplitude, phase]) => `${amplitude.toFixed(4)} * sin(${frequency.toFixed(1)} * angle + ${phase.toFixed(4)})`)
         .join(' + ');
     return `float rimRadius(float angle) { return ${ISLAND_RADIUS.toFixed(1)} * (1.0 + ${terms}); }`;
+}
+
+/** Noise round the island that comes back to itself: the same at an angle as a full turn on (no seam). */
+export function aroundNoise(angle, turns, seed) {
+    return noise2(Math.cos(angle) * turns + seed, Math.sin(angle) * turns - seed * 0.7);
+}
+
+/** How far below the cliff's foot the curtain's ragged edge hangs, at an angle round the island. */
+export function curtainDrop(angle) {
+    const lobes = aroundNoise(angle, 0.9, 3.1);
+    const scallops = aroundNoise(angle, 3.6, 7.7);
+    const drip = aroundNoise(angle, 11, 1.3);
+    return CURTAIN_LEAST + 5 * lobes + 1.6 * scallops + 8 * drip ** 4;
+}
+
+/**
+ * How deep (below y = 0) the belly hangs at a fraction of the rim's radius, within the edge: from the edge's
+ * own depth, bowing down toward UNDERSIDE_DEPTH below the cliff's foot at the middle.
+ */
+export function bellyDepth(angle, fraction) {
+    const edge = curtainDrop(angle);
+    const u = 1 - Math.pow(Math.min(1, fraction / CURTAIN_EDGE), 1 / 0.85);
+    return CLIFF_DEPTH + edge + (UNDERSIDE_DEPTH - edge) * (1 - (1 - u) * (1 - u));
 }
 
 /** x of the sea-wall's face at a given z. */
@@ -70,6 +103,39 @@ export function onLand(x, z, margin = 0) {
 export function groundY(x, z) {
     const rise = Math.max(0, -x - 4) * 0.055;
     return rise + 0.25 * fbm2(x * 0.08 + 3.1, z * 0.08 - 1.7, 2) - 0.12;
+}
+
+/**
+ * The same ground in GLSL (ES 3.00), bit for bit the same noise: its hash is
+ * done in 32-bit unsigned integers, as Math.imul and >>> do it here, so a
+ * shader knows how high any point stands above the ground under it.
+ */
+export function groundYGLSL() {
+    return [
+        'float groundHash(float x, float y) {',
+        '    // (Lifted clear of zero before the cast, then lowered again in unsigned arithmetic: the',
+        '    // same bits as a negative int32, without leaning on how a driver casts one.)',
+        '    uint h = (uint(int(x) + 4096) - 4096u) * 374761393u + (uint(int(y) + 4096) - 4096u) * 668265263u;',
+        '    h = (h ^ (h >> 13u)) * 1274126177u;',
+        '    h ^= h >> 16u;',
+        '    return float(h) / 4294967296.0;',
+        '}',
+        'float groundNoise(vec2 p) {',
+        '    vec2 i = floor(p);',
+        '    vec2 f = p - i;',
+        '    vec2 s = f * f * (3.0 - 2.0 * f);',
+        '    float a = groundHash(i.x, i.y);',
+        '    float b = groundHash(i.x + 1.0, i.y);',
+        '    float c = groundHash(i.x, i.y + 1.0);',
+        '    float d = groundHash(i.x + 1.0, i.y + 1.0);',
+        '    return a + (b - a) * s.x + (c - a) * s.y + (a - b - c + d) * s.x * s.y;',
+        '}',
+        'float groundY(vec2 xz) {',
+        '    vec2 p = vec2(xz.x * 0.08 + 3.1, xz.y * 0.08 - 1.7);',
+        '    float fbm = (0.5 * groundNoise(p) + 0.25 * groundNoise(p * 2.0)) / 0.75;',
+        '    return max(0.0, -xz.x - 4.0) * 0.055 + 0.25 * fbm - 0.12;',
+        '}',
+    ].join('\n');
 }
 
 // =============================================================================

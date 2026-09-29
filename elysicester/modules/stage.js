@@ -27,6 +27,7 @@ import {
 } from 'three';
 import { Buckets, createMaterials, duskLight, flutter, wallX } from './kit.js';
 import { inscriptionTexture } from './extras.js';
+import { HOLLOWED, createHollows, hollows } from './hollows.js';
 import { createInk } from './ink.js';
 import { buildIsland } from './island.js';
 import { stagePaper } from './paper.js';
@@ -185,12 +186,17 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
     const dock = data.places.places.find((place) => place.id === 'sun-dock');
     if (dock) sea.warmAt(wallX(dock.position[2]) + 1.6, dock.position[2], 6.5);
     await pause();
-    for (const mesh of buckets.build(materials, { turquoise: ['sway'], weed: ['sway'] }).values()) {
+    const meshes = buckets.build(materials, { turquoise: ['sway'], weed: ['sway'] });
+    for (const mesh of meshes.values()) {
         mesh.castShadow = CASTS_SHADOW.has(mesh.name);
         mesh.receiveShadow = TAKES_SHADOW.has(mesh.name);
         scene.add(mesh);
     }
     for (const extra of places.extras) scene.add(extra);
+    // Where things stand close, the dark gathers: a worker finds where, from the city as built, while the
+    // flight plays (hollows.js); the materials learn to read its map now, before they're compiled.
+    const hollowMap = createHollows(meshes, { reducedMotion });
+    for (const key of HOLLOWED) hollows(materials[key], hollowMap);
     await pause();
     const signs = await createSigns({ data: data.signs, mounts: places.mounts, material: materials.sign, renderer });
     signs.mesh.castShadow = true;
@@ -285,6 +291,7 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         sky.update(elapsed, camera);
         sea.update(elapsed);
         places.update(elapsed);
+        hollowMap.update(dt);
         wisp.update(elapsed);
         paper.update(camera);
         wind.value = elapsed;
@@ -341,6 +348,6 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         },
     };
 
-    if (debug) Object.assign(window.elysicesterDebug ??= {}, { info: () => stage.info(), rig, stage, solids, houses: places.houses, pixelRatio: () => renderer.getPixelRatio() });
+    if (debug) Object.assign(window.elysicesterDebug ??= {}, { info: () => stage.info(), rig, stage, solids, houses: places.houses, pixelRatio: () => renderer.getPixelRatio(), hollows: hollowMap });
     return stage;
 }
