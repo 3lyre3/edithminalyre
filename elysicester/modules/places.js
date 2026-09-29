@@ -757,10 +757,12 @@ function buildSunDock({ buckets, place, mounts }) {
 function buildCafes({ buckets, place, mounts, extras, animated, wanted }) {
     const z = place.position[2];
     // Their stage: a platform out from the wall, with an apron before the cafés (where the footlights stand)
-    // wide enough to walk, running on past the last café's outer wall toward the sun-dock.
-    for (const [z0, z1] of [[z - 8.2, z - 4.4], [z - 4.4, z - 1.0], [z - 1.0, z + 2.4], [z + 2.4, z + 5.8]]) {
+    // wide enough to walk, running on past the last café's outer wall toward the sun-dock. Its north end is
+    // broader and longer, so the two northern cafés stand free with a walk all round each (a playtester's
+    // shadow kept being caught in the narrow ways between them, the wall and the water).
+    for (const [z0, z1, width] of [[z - 8.9, z - 4.4, 6.2], [z - 4.4, z - 1.0, 5.2], [z - 1.0, z + 2.4, 5.2], [z + 2.4, z + 5.8, 5.2]]) {
         const zm = (z0 + z1) / 2;
-        buckets.add('dimGold', box(5.2, 1.3, z1 - z0 + 0.12, { x: wallX(zm) + 2.5, y: -0.35, z: zm }, PAVE));
+        buckets.add('dimGold', box(width, 1.3, z1 - z0 + 0.12, { x: wallX(zm) + width / 2 - 0.1, y: -0.35, z: zm }, PAVE));
     }
 
     const jettyStart = wallX(z) + 3.6;
@@ -775,8 +777,9 @@ function buildCafes({ buckets, place, mounts, extras, animated, wanted }) {
     }
 
     const audience = new Vector3(21, 0, z);
-    // [along the wall from the jetty's line, out from the wall]: the aisle between the second and third.
-    const cafes = [[-6.3, 0], [-3.0, 0.35], [3.0, 0.35]];
+    // [along the wall from the jetty's line, out from the wall]: the aisle between the second and third. (The
+    // northern two stand well out from the wall, with room to walk behind them.)
+    const cafes = [[-6.6, 0.75], [-3.0, 1.0], [3.0, 0.35]];
     // "Angled to shine up every face, no café less equal": footlights before each, as on a stage, and the
     // warm wash they throw up its front. The wash is one additive sheet for all three.
     const washes = [];

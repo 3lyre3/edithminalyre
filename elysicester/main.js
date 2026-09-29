@@ -218,9 +218,19 @@ async function boot() {
     const reader = createReader({
         dialog: byId('reader'),
         places,
-        onClose: () => stage?.rig.setDrifting(true),
+        // (Walking, the camera is the shadow's: it doesn't drift off when a passage closes.)
+        onClose: () => {
+            if (!stage?.walk?.state.walking) stage?.rig.setDrifting(true);
+        },
         onward,
         onOnward: (next) => open(next, undefined),
+        // "walk from here": the shadow set down at the passage's place (the nearest floor to its point), and taken.
+        canWalk: () => Boolean(stage?.walk),
+        onWalkFrom: (fragment) => {
+            const point = hotspots?.positionOf(fragment.id);
+            const [x, , z] = point ? [point.x, point.y, point.z] : places.get(fragment.place).position;
+            stage?.walk?.walkFrom(x, z);
+        },
     });
     createSignList({
         list: byId('signs-list'),

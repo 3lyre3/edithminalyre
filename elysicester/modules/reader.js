@@ -6,8 +6,9 @@
  * work and section it comes from, a "read on" link to the full text (naming
  * the page it opens at, where there is one), any links the place hosts (they
  * open in a new tab, so the city is still there to come back to), and, at its
- * foot, the thread on: "on to" the nearest place not yet read, and a quiet
- * count of how many have been. Esc closes it, and focus returns to whatever
+ * foot, the thread on: "on to" the nearest place not yet read, "walk from
+ * here" (as the shadow, from this place), and a quiet count of how many have
+ * been read. Esc closes it, and focus returns to whatever
  * opened it. A tap outside it closes it, and if the tap was on one of the
  * corner controls or links, that answers too (one tap, not two).
  */
@@ -64,8 +65,10 @@ function inSentence(label) {
  * @param {(fragment: object) => { next: object | null, read: number, total: number }} [options.onward] - where
  *   the thread goes on from a fragment, and how many of all there are to read have been
  * @param {(fragment: object) => void} [options.onOnward] - follow the thread to that fragment
+ * @param {(fragment: object) => boolean} [options.canWalk] - whether the shadow can walk from a fragment's place
+ * @param {(fragment: object) => void} [options.onWalkFrom] - walk as the shadow from there ("walk from here")
  */
-export function createReader({ dialog, places, onClose, onward, onOnward }) {
+export function createReader({ dialog, places, onClose, onward, onOnward, canWalk, onWalkFrom }) {
     const placeName = dialog.querySelector('[data-reader-place]');
     const body = dialog.querySelector('[data-reader-text]');
     const source = dialog.querySelector('[data-reader-source]');
@@ -75,13 +78,23 @@ export function createReader({ dialog, places, onClose, onward, onOnward }) {
     const alsoList = dialog.querySelector('[data-reader-also-list]');
     const onwardLine = dialog.querySelector('[data-reader-onward]');
     const onButton = dialog.querySelector('[data-reader-on]');
+    const walkButton = dialog.querySelector('[data-reader-walk]');
     const count = dialog.querySelector('[data-reader-count]');
     let returnTo = null;
     let next = null;
+    let current = null;
 
     dialog.querySelector('[data-reader-close]').addEventListener('click', () => dialog.close());
     onButton?.addEventListener('click', () => {
         if (next) onOnward?.(next);
+    });
+    // Walking from here, the view is the shadow's: focus doesn't go back to where the reading began.
+    walkButton?.addEventListener('click', () => {
+        if (!current) return;
+        const from = current;
+        returnTo = null;
+        dialog.close();
+        onWalkFrom?.(from);
     });
     // A click on the backdrop closes the panel, but only if the press began there too:
     // the click that follows the very tap that opened the panel must not close it again.
@@ -120,6 +133,7 @@ export function createReader({ dialog, places, onClose, onward, onOnward }) {
          */
         open(fragment, opener) {
             const place = places.get(fragment.place);
+            current = fragment;
             if (opener !== undefined) returnTo = opener ?? null;
             placeName.textContent = place?.label ?? '';
             body.replaceChildren();
@@ -165,6 +179,7 @@ export function createReader({ dialog, places, onClose, onward, onOnward }) {
                     count.textContent = `${way.read} of ${way.total} read`;
                 }
             }
+            if (walkButton) walkButton.hidden = !(canWalk?.(fragment) ?? false);
 
             if (!dialog.open) dialog.showModal();
             body.focus({ preventScroll: true });

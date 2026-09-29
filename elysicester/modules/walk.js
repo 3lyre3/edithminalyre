@@ -81,6 +81,9 @@ const SLIPS = [[0, 1], [0.45, 0.9], [-0.45, 0.9], [0.95, 0.7], [-0.95, 0.7], [1.
 const FEEL = [[0, 0], [GIRTH, 0], [-GIRTH, 0], [0, GIRTH], [0, -GIRTH]];
 /** How near the rim of the island (or the land's edge at the wall) the walker may come. */
 const EDGE = 0.35;
+/** "walk from here": how far about a place to look for somewhere to stand (in rings this far apart). */
+const STAND_SEARCH = 8;
+const STAND_STEP = 0.3;
 /**
  * The camera, walking, stands above and behind where the one casting the shadow would be (Elm's ask): how far
  * back (a little further on a screen held upright, where there's less room across), how steeply it looks down
@@ -356,6 +359,8 @@ export function createWalk({ light, reducedMotion }) {
     // Waiting at the jetty's end, it faces the sea; taken there, it turns to face the city (the heading it turns to).
     let turnsToCity = false;
     let turning = null;
+    /** The end of the jetty, where the shadow first waits (and where R takes it back to). */
+    let pier = null;
     const rises = new Array(RISE_STEPS + 1).fill(0);
     const sightAt = new Array(RISE_STEPS + 1).fill(0);
     const clearAt = new Array(RISE_STEPS + 1).fill(true);
@@ -439,6 +444,21 @@ export function createWalk({ light, reducedMotion }) {
             if (walls[row * across + col]) return true;
         }
         return false;
+    }
+
+    /** The nearest place about (x, z) a body can stand (floor there, no wall within its girth), or null. */
+    function standingNear(x, z) {
+        for (let radius = 0; radius <= STAND_SEARCH; radius += STAND_STEP) {
+            const around = radius === 0 ? 1 : Math.max(8, Math.round((radius * Math.PI * 2) / STAND_STEP));
+            for (let k = 0; k < around; k += 1) {
+                const angle = (k / around) * Math.PI * 2;
+                const px = x + Math.cos(angle) * radius;
+                const pz = z + Math.sin(angle) * radius;
+                if (floorAt(px, pz) === null || blocked(px, pz)) continue;
+                return { x: px, z: pz };
+            }
+        }
+        return null;
     }
 
     /** Whether the walls map marks the cell at (x, z) itself as a wall. */
@@ -760,6 +780,7 @@ export function createWalk({ light, reducedMotion }) {
                 walk.place(parts.pierEnd.x, parts.pierEnd.z, Math.PI / 2, parts.pierEnd.y);
                 if (wallShadow) wallShadow.visible = false;
                 turnsToCity = true;
+                pier = parts.pierEnd.clone();
             }
             if (parts.scene) {
                 ring = new Mesh(new RingGeometry(RING_INNER, RING_OUTER, 40), new MeshBasicMaterial({
@@ -846,6 +867,12 @@ export function createWalk({ light, reducedMotion }) {
                     event.preventDefault();
                     return;
                 }
+                // R (or Home): back to the end of the jetty, wherever the shadow has got to.
+                if (event.code === 'KeyR' || event.key === 'Home') {
+                    walk.backToPier();
+                    event.preventDefault();
+                    return;
+                }
                 const way = WAYS[event.code];
                 if (!way) return;
                 keys.add(way);
@@ -929,7 +956,47 @@ export function createWalk({ light, reducedMotion }) {
                 button.textContent = 'let go';
                 button.setAttribute('aria-pressed', 'true');
             }
-            announce('You are the shadow. Arrow keys or WASD to walk; Escape to let go.');
+            announce('You are the shadow. Arrow keys or WASD to walk; R to go back to the jetty; Escape to let go.');
+        },
+
+        /**
+         * Back to the end of the jetty (R, or Home), facing the city again, wherever the shadow has got to: a
+         * way out of any corner. The camera comes round behind it, across the city.
+         */
+        backToPier() {
+            if (!pier) return;
+            walk.place(pier.x, pier.z, TOWARD_CITY, pier.y);
+            turning = null;
+            followTheta = behindOf(TOWARD_CITY);
+            velocity.set(0, 0, 0);
+            lead.set(0, 0, 0);
+            rise = 0;
+            settling = 0;
+            if (!state.walking) walk.take();
+            announce('Back at the end of the jetty.');
+        },
+
+        /**
+         * Walk from a place (a passage's "walk from here"): the shadow set down on the nearest floor it can
+         * stand on, near (x, z), facing (x, z) if it had to stand off from it, and taken. False if there's
+         * nowhere to stand near enough.
+         */
+        walkFrom(x, z) {
+            const stand = standingNear(x, z);
+            if (!stand) return false;
+            const away = Math.hypot(x - stand.x, z - stand.z);
+            const heading = away > 0.6 ? Math.atan2(x - stand.x, z - stand.z) : Math.atan2(-stand.x, -stand.z);
+            walk.place(stand.x, stand.z, heading);
+            turnsToCity = false;
+            turning = null;
+            followTheta = behindOf(heading);
+            velocity.set(0, 0, 0);
+            lead.set(0, 0, 0);
+            rise = 0;
+            settling = 0;
+            if (!state.walking) walk.take();
+            announce('You walk from here.');
+            return true;
         },
 
         /** Let go: the shadow stays where it stands, and the view is the visitor's again. */
