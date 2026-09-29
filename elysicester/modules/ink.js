@@ -9,6 +9,14 @@
  * (the page adds the site's own grain above), and darkens the corners a
  * touch. Under reduced motion the lines and fibre hold still.
  *
+ * The pen lifts, too, in a few places, as a hand's does (Elm, of Messenger:
+ * "breaking the solid boundary lines in a few spots to create a more natural
+ * sense of materiality"): each line is traced back to the surface it belongs
+ * to, and there a noise in the world leaves rare gaps, eases the pressure a
+ * little, and lets the brightest glint eat into it. The breaks stay on the
+ * things drawn, so they never crawl as the eye moves. ?lines=whole draws every
+ * line unbroken.
+ *
  * Before the ink, whatever gives off light (windows, lamps, the reading
  * points, the door, the far islands' lights) lends a soft glow to the air
  * round it: the brightest of the render is gathered at a quarter and an
@@ -26,6 +34,7 @@ import {
     DepthTexture,
     Float32BufferAttribute,
     HalfFloatType,
+    Matrix4,
     Mesh,
     OrthographicCamera,
     Scene,
@@ -65,6 +74,9 @@ const fragmentShader = /* glsl */ `
     uniform float grainAmount;
     uniform float grainSeed;
     uniform float boil;
+    uniform mat4 projectionInverse;
+    uniform mat4 cameraWorld;
+    uniform float lineBreaks;
 
     varying vec2 vUv;
 
@@ -72,6 +84,25 @@ const fragmentShader = /* glsl */ `
         vec3 p3 = fract(vec3(p.xyx) * 0.1031);
         p3 += dot(p3, p3.yzx + 33.33);
         return fract((p3.x + p3.y) * p3.z);
+    }
+
+    float hash13(vec3 p) {
+        p = fract(p * 0.1031);
+        p += dot(p, p.zyx + 31.32);
+        return fract((p.x + p.y) * p.z);
+    }
+
+    /** Value noise in the world, so what it marks belongs to the thing drawn and doesn't crawl. */
+    float noise3(vec3 p) {
+        vec3 i = floor(p);
+        vec3 f = fract(p);
+        vec3 u = f * f * (3.0 - 2.0 * f);
+        return mix(
+            mix(mix(hash13(i), hash13(i + vec3(1.0, 0.0, 0.0)), u.x),
+                mix(hash13(i + vec3(0.0, 1.0, 0.0)), hash13(i + vec3(1.0, 1.0, 0.0)), u.x), u.y),
+            mix(mix(hash13(i + vec3(0.0, 0.0, 1.0)), hash13(i + vec3(1.0, 0.0, 1.0)), u.x),
+                mix(hash13(i + vec3(0.0, 1.0, 1.0)), hash13(i + vec3(1.0, 1.0, 1.0)), u.x), u.y),
+            u.z);
     }
 
     float noise(vec2 p) {
@@ -107,7 +138,39 @@ const fragmentShader = /* glsl */ `
         color += (texture2D(tGlowNear, vUv).rgb * 0.55 + texture2D(tGlowFar, vUv).rgb * 0.75) * glowStrength;
         color = toneMapping(color);
         color = linearToOutputTexel(vec4(color, 1.0)).rgb;
-        color = mix(color, inkColor, edge * inkStrength);
+
+        // The pen lifts, here and there, as a hand's does. Where a line is, find the surface it belongs
+        // to (the nearest of the taps) back in the world; there, a slow noise leaves gaps in the line
+        // and varies how hard the pen presses, so the breaks stay on the thing and never crawl as the
+        // eye moves. Light eats into the line where the surface beside it is brightest, and an outer
+        // contour (a big step in depth) holds more firmly than a crease within.
+        float ink = edge * inkStrength;
+        if (ink > 0.002 && lineBreaks > 0.0) {
+            float nearest = max(max(max(left, right), max(up, down)), centre);
+            vec4 ray = projectionInverse * vec4(uv * 2.0 - 1.0, -1.0, 1.0);
+            ray.xyz /= ray.w;
+            vec3 viewPosition = ray.xyz * ((-1.0 / nearest) / ray.z);
+            vec3 world = (cameraWorld * vec4(viewPosition, 1.0)).xyz;
+            float away = 1.0 / nearest;
+            // Three sizes of gap, from fine close to broad far off, so a gap stays a pen-lift on screen
+            // (a few pixels to a couple of dozen) at every distance; between sizes, they blend.
+            float mid = smoothstep(6.0, 14.0, away);
+            float far = smoothstep(28.0, 60.0, away);
+            float gaps = mix(mix(noise3(world * 7.0), noise3(world * 2.6 + 11.0), mid), noise3(world * 0.7 + 17.0), far);
+            float pressure = mix(mix(noise3(world * 2.4 + 5.0), noise3(world * 0.9 + 29.0), mid), noise3(world * 0.25 + 23.0), far);
+            // A line is drawn whole unless the pen lifts: rare, clean gaps (the lowest of the noise), a
+            // little rarer on an outer contour; the pressure varies it only gently; and only the very
+            // brightest glint eats into it. (Multiplied together, stronger versions of these thinned
+            // whole outlines away.)
+            float silhouette = smoothstep(0.12, 0.45, fold);
+            float lift = mix(0.3, 0.26, silhouette);
+            float kept = smoothstep(lift - 0.05, lift, gaps);
+            float pressed = 0.8 + 0.2 * smoothstep(0.3, 0.7, pressure);
+            float lit = smoothstep(0.84, 0.98, dot(color, vec3(0.299, 0.587, 0.114)));
+            float drawn = kept * pressed * (1.0 - 0.7 * lit);
+            ink *= mix(1.0, drawn, lineBreaks);
+        }
+        color = mix(color, inkColor, ink);
 
         float grain = hash12(floor(gl_FragCoord.xy) + grainSeed * 17.0) - 0.5;
         float fibre = noise(gl_FragCoord.xy * vec2(0.9, 0.05) + 3.7) - 0.5;
@@ -228,6 +291,11 @@ export function createInk(renderer, { reducedMotion }) {
         grainAmount: { value: 0.025 },
         grainSeed: { value: 0 },
         boil: { value: 0 },
+        // Where the lines break (and the pen's pressure) is worked out in the world, from these.
+        projectionInverse: { value: new Matrix4() },
+        cameraWorld: { value: new Matrix4() },
+        // 1: the pen lifts here and there; 0: every line whole (?lines=whole).
+        lineBreaks: { value: new URLSearchParams(window.location.search).get('lines') === 'whole' ? 0 : 1 },
     };
     const material = new ShaderMaterial({ uniforms, vertexShader, fragmentShader, depthTest: false, depthWrite: false });
 
@@ -274,6 +342,8 @@ export function createInk(renderer, { reducedMotion }) {
         render(sceneToDraw, sceneCamera, time) {
             uniforms.cameraNear.value = sceneCamera.near;
             uniforms.cameraFar.value = sceneCamera.far;
+            uniforms.projectionInverse.value.copy(sceneCamera.projectionMatrixInverse);
+            uniforms.cameraWorld.value.copy(sceneCamera.matrixWorld);
             if (!reducedMotion) {
                 uniforms.grainSeed.value = Math.floor(time * 20) % 97;
                 uniforms.boil.value = Math.floor(time * 3) * 13.1 % 97;

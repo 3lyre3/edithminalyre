@@ -18,6 +18,7 @@ import {
     FogExp2,
     HemisphereLight,
     NeutralToneMapping,
+    PCFShadowMap,
     PerspectiveCamera,
     Scene,
     Vector2,
@@ -46,6 +47,16 @@ const SUN_DIRECTION = new Vector3(-0.82, 0.1, -0.4).normalize();
 /** Dusk light is soft and comes from everywhere; the key falls low from the south-west. */
 const KEY_DIRECTION = new Vector3(-0.35, 0.5, 0.8).normalize();
 const MAX_PIXEL_RATIO = 2;
+/** The dusk's shadows: one map, square round the island, drawn once. */
+const SHADOW_MAP = 1024;
+const SHADOW_REACH = 40;
+/**
+ * What throws a shadow (the city's solid pieces and its cloth), and what a shadow falls on: only the
+ * ground, its streets and plazas and platforms. A low dusk light across the walls and roofs themselves
+ * striped them with the shadow map's own grain; across the paving it lays the long shadows cleanly.
+ */
+const CASTS_SHADOW = new Set(['gold', 'bricking', 'brick', 'stone', 'rock', 'steel', 'copper', 'arch', 'turquoise', 'amethyst']);
+const TAKES_SHADOW = new Set(['dimGold']);
 /**
  * A safety net for slower phones: if frames run slower than this (seconds) for a sustained stretch,
  * the drawing buffer steps down a quarter at a time, never below 1. It only ever steps down, so it can't
@@ -130,6 +141,20 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
 
     const key = new DirectionalLight(0xffd6a0, 2.5);
     key.position.copy(KEY_DIRECTION).multiplyScalar(60);
+    // The dusk throws long shadows across the paving. The city stands still, so they're drawn once
+    // (shadowMap.autoUpdate off): after that they cost only a look-up per pixel of ground. Shadowed
+    // ground keeps the sky's lilac and the sunset's warmth, so the shadows fall cool, not black.
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = PCFShadowMap;
+    renderer.shadowMap.autoUpdate = false;
+    key.castShadow = true;
+    key.shadow.mapSize.set(SHADOW_MAP, SHADOW_MAP);
+    Object.assign(key.shadow.camera, { left: -SHADOW_REACH, right: SHADOW_REACH, top: SHADOW_REACH, bottom: -SHADOW_REACH, near: 1, far: 170 });
+    // Offsets enough that no face shadows itself in stripes (acne), at the low angle a dusk light falls.
+    key.shadow.bias = -0.0012;
+    key.shadow.normalBias = 0.12;
+    key.target.position.set(-2, 2, 0);
+    scene.add(key.target);
     const sunset = new DirectionalLight(0xff9a50, 0.9);
     sunset.position.copy(SUN_DIRECTION).multiplyScalar(60);
     const seaFill = new DirectionalLight(0x8c90ff, 0.5);
@@ -160,10 +185,15 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
     const dock = data.places.places.find((place) => place.id === 'sun-dock');
     if (dock) sea.warmAt(wallX(dock.position[2]) + 1.6, dock.position[2], 6.5);
     await pause();
-    for (const mesh of buckets.build(materials, { turquoise: ['sway'], weed: ['sway'] }).values()) scene.add(mesh);
+    for (const mesh of buckets.build(materials, { turquoise: ['sway'], weed: ['sway'] }).values()) {
+        mesh.castShadow = CASTS_SHADOW.has(mesh.name);
+        mesh.receiveShadow = TAKES_SHADOW.has(mesh.name);
+        scene.add(mesh);
+    }
     for (const extra of places.extras) scene.add(extra);
     await pause();
     const signs = await createSigns({ data: data.signs, mounts: places.mounts, material: materials.sign, renderer });
+    signs.mesh.castShadow = true;
     scene.add(signs.mesh);
     await pause();
 
@@ -221,6 +251,9 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
 
     const frameListeners = [];
     const readout = debug ? createReadout() : null;
+    // The shadows are drawn by the stage's own first frame (not before: the Intermaze shares the renderer,
+    // and would spend the one update on a scene with no shadows in it).
+    let shadowsDrawn = false;
     let running = false;
     let last = 0;
     let elapsed = 0;
@@ -255,6 +288,10 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         wisp.update(elapsed);
         paper.update(camera);
         wind.value = elapsed;
+        if (!shadowsDrawn) {
+            renderer.shadowMap.needsUpdate = true;
+            shadowsDrawn = true;
+        }
         ink.render(scene, camera, elapsed);
 
         const { calls, triangles, points, lines } = renderer.info.render;

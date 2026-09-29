@@ -225,7 +225,7 @@ export function createMaterials() {
         /** The sea-wall's golden bricking. */
         bricking: bricks(toon({ emissive: 0x8a7424, emissiveIntensity: 0.28 })),
         /** The ground and its paving (streets, platforms, the jetty): flagstones, in the bricking's bond. */
-        dimGold: bricks(toon({ emissive: 0x3a2a0c, emissiveIntensity: 0.4 }), { length: 1.1, height: 0.5 }),
+        dimGold: hatched(bricks(toon({ emissive: 0x3a2a0c, emissiveIntensity: 0.4 }), { length: 1.1, height: 0.5 })),
         brick: toon({}),
         stone: toon({}),
         /** The island's underside: striated rock, like the floating islands in Elm's cosmology plate. */
@@ -379,6 +379,49 @@ export function strata(material, { strata: colors, deep, reach }) {
                 '    rock = mix(rock, strataDeep, min(0.7, max(depth, 0.0) / strataReach * 0.8));',
                 '    diffuseColor.rgb *= rock;',
                 '}',
+            ].join('\n'));
+    });
+    return material;
+}
+
+/**
+ * Shadows drawn, not only darkened: where the key light's shadow falls on
+ * this material, the pen hatches it in fine parallel strokes, as an engraver
+ * shades (the shadow itself is drawn once, by stage.js). The strokes keep an
+ * even width on screen and are let go before they crowd, so far off the shadow
+ * is a plain wash; near, it is lines. Only the first directional light's
+ * shadow is read (the key: three.js puts shadow-casting lights first).
+ * @param {import('three').Material} material
+ * @param {object} [options]
+ * @param {number} [options.spacing] - between strokes, in world units
+ * @param {number} [options.angle] - the strokes' direction across the ground (radians)
+ * @param {number} [options.ink] - how dark a stroke is laid (0 to 1)
+ */
+export function hatched(material, { spacing = 0.2, angle = 0.8, ink = 0.55 } = {}) {
+    alsoBeforeCompile(material, 'hatched', (shader) => {
+        shader.uniforms.hatchAcross = { value: new Vector2(Math.cos(angle), Math.sin(angle)).divideScalar(spacing) };
+        shader.uniforms.hatchInk = { value: ink };
+        shader.vertexShader = shader.vertexShader
+            .replace('#include <common>', '#include <common>\nvarying vec3 vHatchPosition;')
+            .replace('#include <begin_vertex>', '#include <begin_vertex>\nvHatchPosition = (modelMatrix * vec4(transformed, 1.0)).xyz;');
+        shader.fragmentShader = shader.fragmentShader
+            .replace('#include <common>', '#include <common>\nuniform vec2 hatchAcross;\nuniform float hatchInk;\nvarying vec3 vHatchPosition;')
+            .replace('#include <opaque_fragment>', [
+                '#if defined( USE_SHADOWMAP ) && NUM_DIR_LIGHT_SHADOWS > 0',
+                '{',
+                '    float inLight = getShadow( directionalShadowMap[ 0 ], directionalLightShadows[ 0 ].shadowMapSize, 1.0,',
+                '        directionalLightShadows[ 0 ].shadowBias, directionalLightShadows[ 0 ].shadowRadius, vDirectionalShadowCoord[ 0 ] );',
+                '    float shade = smoothstep(0.75, 0.25, inLight) * float( receiveShadow );',
+                '    float across = dot(vHatchPosition.xz, hatchAcross);',
+                '    // A stroke wavers a little along its length, as a hand-laid line does.',
+                '    across += sin(dot(vHatchPosition.xz, vec2(-hatchAcross.y, hatchAcross.x)) * 1.7) * 0.08;',
+                '    float width = max(fwidth(across), 1e-4);',
+                '    float stroke = 1.0 - smoothstep(0.0, width * 1.2 + 0.12, abs(fract(across) - 0.5));',
+                '    float drawn = 1.0 - smoothstep(0.18, 0.4, width);',
+                '    outgoingLight *= 1.0 - shade * stroke * drawn * hatchInk;',
+                '}',
+                '#endif',
+                '#include <opaque_fragment>',
             ].join('\n'));
     });
     return material;
