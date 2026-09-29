@@ -466,6 +466,8 @@ async function inspectOpen(page, fragment, shot) {
     if (shot) await page.screenshot({ path: shot });
     const violations = state.open ? await scanReader(page) : [];
     await page.keyboard.press('Escape');
+    // The dialog's close (and the focus it hands back) comes in a queued task: wait for it, then settle.
+    await page.waitForFunction(() => !document.getElementById('reader').open, null, { timeout: 4000 }).catch(() => {});
     await page.waitForTimeout(250);
     const after = await readerState(page);
     return { matched, closed: !after.open, activeAfter: after.active, violations };
@@ -652,6 +654,9 @@ async function keyboardRound(page, fragments) {
         const focusReturned = inspected.activeAfter === fragment.id;
         results.push({ id: fragment.id, ok: focused === fragment.id && inspected.matched && inspected.closed && focusReturned, focused, focusReturned, ...inspected });
         await page.keyboard.press('Tab');
+        // Under SwiftShader's slow frames the Tab can be answered late: wait until focus has moved on
+        // (a visitor's next key never comes within milliseconds of the last).
+        await page.waitForFunction((id) => (document.activeElement?.dataset?.fragment ?? null) !== id, fragment.id, { timeout: 4000 }).catch(() => {});
     }
     return results;
 }
