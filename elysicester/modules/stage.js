@@ -210,6 +210,8 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
             walkerSees(materials[key], walk);
         }
         sea.receiveWalker(WALKER_GLSL, walk.uniforms);
+        // The sun-dock is light on the water: where the shadow stands on it, its silhouette is cut from the light.
+        if (places.sunLight) Object.assign(places.sunLight.material.uniforms, walk.uniforms);
     }
     await pause();
     const signs = await createSigns({ data: data.signs, mounts: places.mounts, material: materials.sign, renderer });
@@ -271,6 +273,7 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         meshes,
         wallShadow: scene.getObjectByName('cafe-shadow'),
         pierEnd: places.pierEnd,
+        floors: places.floors,
         scene,
         controls: document.querySelector('.controls'),
     });
@@ -313,7 +316,8 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         }
 
         renderer.info.reset();
-        walk?.update(dt);
+        // (The walker keeps its pace on a slow screen, down to ten frames a second, in steps no longer than the rest.)
+        walk?.update(dt, Math.min(0.1, real));
         rig.update(dt);
         sky.update(elapsed, camera);
         sea.update(elapsed);

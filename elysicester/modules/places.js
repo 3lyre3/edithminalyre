@@ -33,22 +33,29 @@ import {
     Float32BufferAttribute,
     Group,
     IcosahedronGeometry,
+    MathUtils,
+    Matrix4,
     Mesh,
     MeshBasicMaterial,
     PlaneGeometry,
     Quaternion,
+    Raycaster,
     ShaderMaterial,
     Shape,
     SphereGeometry,
     TorusGeometry,
     TubeGeometry,
+    Vector2,
     Vector3,
+    Vector4,
 } from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { doorCanOpen, doorOpen, shadowTexture } from './extras.js';
 import { createHums } from './hums.js';
+import { WALKER_GLSL } from './walk.js';
 import {
     SEA_LEVEL,
+    alsoBeforeCompile,
     createRandom,
     groundY,
     light,
@@ -106,6 +113,13 @@ const STAR = light(0xfff0c0, 4.4);
 const GLITCH = [light(0xff3ad8, 3.0), light(0x3afff0, 3.0)];
 
 const GATE_Z = -3.2;
+/**
+ * The north end of the cafés' platform (buildCafes), where the steps up to the sea-wall's balcony begin
+ * (buildSeaWall); and, under the balcony, how far it stops short, and from where along it.
+ */
+const PLATFORM_NORTH = -12.16;
+const PLATFORM_NOTCH_Z = -11.7;
+const PLATFORM_NOTCH_X = 9.4;
 /** How far a building's edges are cut back to catch the light (a hand's breadth, at the city's scale). */
 const BEVEL = 0.07;
 /** No house stands nearer the Steel Garden's middle than this (its disc is 4.3 across the radius). */
@@ -724,11 +738,102 @@ function buildSignalTowers(buckets) {
 // The named places
 // =============================================================================
 
-/** The sun-dock that unfurls from the golden wall onto the water. */
-function buildSunDock({ buckets, place, mounts }) {
+/** The sun-dock's half-sun: its radius, its rays (long and short by turns), and how high its light lies on the water. */
+const SUN_DISC = 3.2;
+const SUN_RAYS = 11;
+const SUN_LONG = 5.6;
+const SUN_SHORT = 4.4;
+const SUN_LIGHT_Y = SEA_LEVEL + 0.42;
+/** Where a body stands on it (the old gold disc's top), and how far in from its rim. */
+const SUN_FLOOR_Y = SEA_LEVEL + 0.44;
+const SUN_KEEP = 0.25;
+/** How long after the city arrives it begins to unfurl, and how long it takes (seconds). */
+const SUN_UNFURL_FROM = 1.2;
+const SUN_UNFURL_FOR = 5;
+
+const sunVertexShader = /* glsl */ `
+    varying vec3 vWorld;
+    void main() {
+        vec4 world = modelMatrix * vec4(position, 1.0);
+        vWorld = world.xyz;
+        gl_Position = projectionMatrix * viewMatrix * world;
+    }
+`;
+
+const sunFragmentShader = /* glsl */ `
+    uniform float time;
+    uniform float unfurl;
+    uniform vec2 centre;
+    uniform vec3 core;
+    uniform vec3 rim;
+    uniform vec3 rayColor;
+    varying vec3 vWorld;
+    ${WALKER_GLSL}
+    float sunHash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+    float sunNoise(vec2 p) {
+        vec2 i = floor(p);
+        vec2 f = fract(p);
+        vec2 u = f * f * (3.0 - 2.0 * f);
+        return mix(mix(sunHash(i), sunHash(i + vec2(1.0, 0.0)), u.x), mix(sunHash(i + vec2(0.0, 1.0)), sunHash(i + vec2(1.0, 1.0)), u.x), u.y);
+    }
+    void main() {
+        vec2 p = vWorld.xz - centre;
+        float r = length(p);
+        // It unfurls from the wall: first the half-sun grows out over the water, then its rays reach from it.
+        float disc = ${SUN_DISC.toFixed(2)} * smoothstep(0.0, 0.45, unfurl);
+        float reach = smoothstep(0.3, 1.0, unfurl);
+        // Light moving as light on water does.
+        float shimmer = 0.72 + 0.56 * sunNoise(vWorld.xz * 1.6 + vec2(time * 0.35, -time * 0.27));
+        // The half-sun: a soft pool of light, a brighter rim, and faint rings going out from the wall.
+        float pool = 1.0 - smoothstep(disc * 0.7, disc * 1.02, r);
+        float heart = exp(-r * r / (disc * disc * 0.18 + 0.01)) * step(0.05, disc);
+        float edge = exp(-pow((r - disc * 0.97) / 0.11, 2.0)) * step(0.05, disc);
+        float rings = (0.5 + 0.5 * sin(r * 6.5 - time * 1.2)) * (1.0 - smoothstep(0.0, disc + 0.01, r));
+        vec3 color = core * (0.42 * pool + 0.3 * heart + 0.16 * rings) + rim * 0.6 * edge;
+        // The rays, each drawing back and reaching out a little, as if it were still unfurling, and at each
+        // one's tip a mote of light.
+        float rays = 0.0;
+        float motes = 0.0;
+        for (int k = 0; k < ${SUN_RAYS}; k++) {
+            float fk = float(k);
+            float angle = -1.5707963 + (fk + 0.5) * ${(Math.PI / SUN_RAYS).toFixed(6)};
+            vec2 way = vec2(cos(angle), sin(angle));
+            float longest = (mod(fk, 2.0) > 0.5 ? ${SUN_LONG.toFixed(2)} : ${SUN_SHORT.toFixed(2)}) * (0.95 + 0.05 * sin(time * 0.5 + fk * 1.7));
+            float tip = mix(disc, longest, reach);
+            float along = dot(p, way);
+            float across = abs(dot(p, vec2(-way.y, way.x)));
+            float beam = exp(-pow(across / (0.12 + 0.03 * max(along, 0.0)), 2.0));
+            float fade = smoothstep(disc * 0.75, disc * 1.0, along) * (1.0 - smoothstep(mix(disc, tip, 0.62), tip, along));
+            rays += beam * fade * (1.0 - 0.3 * along / ${SUN_LONG.toFixed(2)});
+            vec2 end = p - way * tip;
+            motes += exp(-dot(end, end) / 0.012) * reach;
+        }
+        color += rayColor * (1.1 * rays + 0.9 * motes);
+        color *= shimmer;
+        // Where the walk's shadow stands on it, its silhouette is cut from the light.
+        color *= 1.0 - 0.92 * walkerShade(vWorld);
+        // Fading a little into the distance, as the city does into the dusk.
+        color *= 1.0 - smoothstep(70.0, 160.0, distance(cameraPosition, vWorld));
+        gl_FragColor = vec4(color, 1.0);
+    }
+`;
+
+/**
+ * The sun-dock that unfurls from the golden wall onto the water ("A sun-dock
+ * unfurled from the wall and grew upon the water's surface, awaiting his
+ * arrival"). Not a thing of metal but of light (Elm: "more ethereal"): a
+ * half-sun lying on the sea, its rays reaching out over the water and drawing
+ * back a little, its light moving as light on water does, and at the tip of
+ * each ray a mote of light. It unfurls as the city arrives (under reduced
+ * motion, it's there already). It draws no ink (it writes no depth); the
+ * glow round lights gathers at its rim and its motes. The walk's shadow can
+ * step out onto it, and its silhouette is cut from the light. Returns its floor
+ * for walking (walk.js), and the light itself, for the stage to give the
+ * walk's shadow to.
+ */
+function buildSunDock({ place, mounts, extras, animated, still }) {
     const z = place.position[2];
     const face = wallX(z);
-    const y = SEA_LEVEL + 0.34;
     mount(mounts, 'sun-dock/plaque', {
         position: new Vector3(face + 0.05, 2.5, z),
         normal: wallNormal(z),
@@ -736,34 +841,193 @@ function buildSunDock({ buckets, place, mounts }) {
         maxWidth: 4.4,
         style: 'plaque',
     });
-    buckets.add('gold', paint(pose(new CylinderGeometry(3.2, 3.2, 0.2, 28, 1, false, 0, Math.PI), { x: face + 0.05, y, z }), 0xecb450));
-    const rays = 11;
-    for (let index = 0; index < rays; index += 1) {
-        const angle = -Math.PI / 2 + ((index + 0.5) / rays) * Math.PI;
-        const length = index % 2 ? 5.6 : 4.4;
-        const dx = Math.cos(angle);
-        const dz = Math.sin(angle);
-        buckets.add('gold', box(length, 0.1, 0.34, { x: face + (dx * length) / 2, y: y + 0.03, z: z + (dz * length) / 2, ry: -angle }, index % 2 ? 0xf2c262 : 0xd8983e));
-        buckets.add('glow', ball(0.12, { x: face + dx * (length + 0.05), y: y + 0.12, z: z + dz * (length + 0.05) }, LAMP, 6, 4));
+    const cx = face + 0.05;
+    const geometry = new CircleGeometry(SUN_LONG + 0.5, 72, -Math.PI / 2, Math.PI);
+    geometry.rotateX(-Math.PI / 2);
+    geometry.translate(cx, SUN_LIGHT_Y, z);
+    const uniforms = {
+        time: { value: 0 },
+        unfurl: { value: still ? 1 : 0 },
+        centre: { value: new Vector2(cx, z) },
+        core: { value: new Color(0xffc46a).multiplyScalar(1.7) },
+        rim: { value: new Color(0xffd98e).multiplyScalar(1.7) },
+        rayColor: { value: new Color(0xffb05a).multiplyScalar(1.6) },
+        // (Until the stage gives it the walk's, there's no shadow on it.)
+        walkerDepth: { value: null },
+        walkerMatrix: { value: new Matrix4() },
+        walkerOn: { value: 0 },
+        walkerTexel: { value: new Vector2(1, 1) },
+        walkerReach: { value: 0 },
+    };
+    const light = new Mesh(geometry, new ShaderMaterial({
+        uniforms,
+        vertexShader: sunVertexShader,
+        fragmentShader: sunFragmentShader,
+        transparent: true,
+        blending: AdditiveBlending,
+        depthWrite: false,
+    }));
+    light.name = 'sun-dock-light';
+    light.renderOrder = 2;
+    extras.push(light);
+    let unfurled = still ? 1 : 0;
+    animated.push((time) => {
+        uniforms.time.value = time;
+        if (still) return;
+        const t = MathUtils.clamp((time - SUN_UNFURL_FROM) / SUN_UNFURL_FOR, 0, 1);
+        unfurled = t * t * (3 - 2 * t);
+        uniforms.unfurl.value = unfurled;
+    });
+    // A body may stand on the half-sun (as far as it has unfurled), short of its rim and clear of the wall.
+    const floorAt = (x, zz) => {
+        const radius = SUN_DISC * MathUtils.smoothstep(unfurled, 0, 0.45) - SUN_KEEP;
+        if (radius <= 0 || x < wallX(zz) + 0.2 || Math.hypot(x - cx, zz - z) > radius) return null;
+        return SUN_FLOOR_Y;
+    };
+    return { floor: { floorAt }, light };
+}
+
+/**
+ * The three cafés were built alike but not the same, and have aged apart (Elm: "differences developed over
+ * time as well as smaller original differences in how they were built"). As built: Cafi (coffee), squat and
+ * broad-roofed, with a chimney for its roasting; Cafiarmaí (café), the tallest, its spire slimmer and higher, a
+ * lantern kept lit in its tower; Sî (tea), a little narrower, steep-roofed, its tower crowned with a dome. As
+ * they've aged (how much soot, damp, bleaching, moss, mending and salt): Cafi's bricks sooted from its chimney,
+ * a patch of its side mended in newer brick; Cafiarmaí's north faces and lower roof green with moss; Sî, nearest
+ * the open sea and the sun-dock, bleached by the low sun and salted along its foot. (Their footlights are the same for all:
+ * no café less equal.)
+ */
+const CAFE_BUILDS = [
+    {
+        width: 2.2, height: 2.25, roof: 1.0, tower: 0.7, towerTall: 0.85, spire: 2.0, crown: 'spire', chimney: true, lantern: false,
+        wear: { soot: 0.85, damp: 0.35, bleach: 0.15, moss: 0.1, mend: 1, salt: 0.2, seed: 1.7 },
+    },
+    {
+        width: 2.2, height: 2.6, roof: 1.2, tower: 0.58, towerTall: 1.1, spire: 2.7, crown: 'spire', chimney: false, lantern: true,
+        wear: { soot: 0.25, damp: 0.4, bleach: 0.3, moss: 0.9, mend: 0, salt: 0.3, seed: 4.3 },
+    },
+    {
+        width: 2.05, height: 2.4, roof: 1.35, tower: 0.6, towerTall: 0.95, spire: 0, crown: 'dome', chimney: false, lantern: false,
+        wear: { soot: 0.1, damp: 0.55, bleach: 0.8, moss: 0.25, mend: 0, salt: 0.85, seed: 7.9 },
+    },
+];
+
+const CAFES_WORN_GLSL = /* glsl */ `
+    uniform vec4 cafeAt[3];
+    uniform vec4 cafeWear[3];
+    uniform vec4 cafeMore[3];
+    varying vec3 vWornWorld;
+    varying vec3 vWornNormal;
+    float wornHash(vec2 p) { return fract(sin(dot(p, vec2(41.3, 289.1))) * 45758.5453); }
+    float wornNoise(vec2 p) {
+        vec2 i = floor(p);
+        vec2 f = fract(p);
+        vec2 u = f * f * (3.0 - 2.0 * f);
+        return mix(mix(wornHash(i), wornHash(i + vec2(1.0, 0.0)), u.x), mix(wornHash(i + vec2(0.0, 1.0)), wornHash(i + vec2(1.0, 1.0)), u.x), u.y);
     }
+    // A café's bricks as the years have left them (see CAFE_BUILDS): at: x, z, turn, eaves height;
+    // wear: soot, damp, bleach, moss; more: mend, salt, seed.
+    vec3 cafesWorn(vec3 albedo) {
+        for (int k = 0; k < 3; k++) {
+            vec2 d = vWornWorld.xz - cafeAt[k].xy;
+            if (dot(d, d) > 7.0) continue;
+            float c = cos(cafeAt[k].z);
+            float s = sin(cafeAt[k].z);
+            vec2 lp = vec2(d.x * c - d.y * s, d.x * s + d.y * c);
+            vec3 n = normalize(vWornNormal);
+            vec2 nl = vec2(n.x * c - n.z * s, n.x * s + n.z * c);
+            float upright = 1.0 - smoothstep(0.35, 0.6, abs(n.y));
+            float h = vWornWorld.y - 0.3;
+            float eaves = cafeAt[k].w;
+            vec4 wear = cafeWear[k];
+            vec4 more = cafeMore[k];
+            float seed = more.z;
+            vec3 base = albedo;
+            // Along the face it's on (streaks and lines run along a wall).
+            float along = abs(nl.x) > abs(nl.y) ? lp.y : lp.x;
+            // A brush's mottling, warmer and cooler, over every face.
+            float m = 0.6 * wornNoise(vec2(along * 1.4 + seed, h * 1.1)) + 0.4 * wornNoise(vec2(along * 4.3 - seed, h * 3.7));
+            albedo *= 0.88 + 0.24 * m;
+            albedo *= mix(vec3(0.95, 1.0, 1.06), vec3(1.07, 0.98, 0.9), m);
+            // Soot: streaks running down from the eaves, a darkening gathered under them, and on the roof.
+            float streaks = smoothstep(0.5, 0.85, wornNoise(vec2(along * 5.5 + seed * 3.1, h * 0.45 + seed)));
+            float walls = upright * step(h, eaves + 0.05);
+            float below = smoothstep(eaves * 0.2, eaves, h);
+            albedo *= 1.0 - wear.x * walls * (0.62 * streaks * below + 0.36 * smoothstep(eaves - 0.7, eaves, h));
+            albedo *= 1.0 - wear.x * (1.0 - upright) * (0.25 + 0.4 * wornNoise(vWornWorld.xz * 3.0 + seed));
+            // Damp rising from the platform, and just above it a tide line of salt.
+            float rise = 0.55 + 0.3 * wornNoise(vec2(along * 1.7 + seed, seed));
+            albedo *= 1.0 - wear.y * walls * 0.42 * (1.0 - smoothstep(rise * 0.4, rise, h));
+            float tide = exp(-pow((h - rise - 0.04) / 0.05, 2.0)) * (0.55 + 0.45 * wornNoise(vec2(along * 6.0, seed)));
+            albedo = mix(albedo, vec3(0.9, 0.87, 0.8), more.y * walls * 0.6 * tide);
+            // Bleached where the low sun off the sea strikes (the faces toward it): paler, and still warm.
+            albedo = mix(albedo, albedo * 0.62 + vec3(0.3, 0.2, 0.15), wear.z * max(0.0, n.x) * upright * 0.5);
+            // Moss on the faces turned north, out of the low sun: in fine tufts at the foot of the walls, and
+            // along the roof's eaves.
+            float north = max(0.0, -n.z);
+            float tufts = 0.6 * wornNoise(vec2(along * 5.2 + seed, h * 4.0)) + 0.4 * wornNoise(vec2(along * 11.0 - seed, h * 9.0));
+            float creep = smoothstep(0.52, 0.72, tufts) * (1.0 - smoothstep(0.15, 1.1, h));
+            float eavesMoss = (1.0 - upright) * smoothstep(0.55, 0.72, wornNoise(vWornWorld.xz * 4.5 + seed)) * (1.0 - smoothstep(eaves, eaves + 0.35, h));
+            vec3 green = vec3(0.26, 0.32, 0.18) * (0.8 + 0.4 * m);
+            albedo = mix(albedo, green, wear.w * clamp(north * upright * creep + eavesMoss * (0.3 + 0.7 * north), 0.0, 0.85));
+            // A mended patch in its side: newer brick, clean of the soot, its edges stepping course by course.
+            float side = smoothstep(0.85, 0.95, nl.x) * walls;
+            float course = floor((h - 1.2) / 0.11);
+            float jag = 0.1 * (wornHash(vec2(course, seed)) - 0.5);
+            float mended = step(abs(lp.y - 0.15 - jag * 0.5), 0.3 + jag) * step(abs(h - 1.2), 0.25);
+            albedo = mix(albedo, base * vec3(1.22, 1.06, 0.95) * (0.94 + 0.12 * m), more.x * side * mended);
+        }
+        return albedo;
+    }
+`;
+
+/**
+ * The cafés' bricks, as they've aged: laid on the brick material's colour where each café stands (so nothing
+ * else of brick is touched), before the light falls on it, as a painter weathers a wall (CAFES_WORN_GLSL).
+ * @param {import('three').Material} material - the brick material
+ * @param {{ x: number, z: number, ry: number, eaves: number, wear: object }[]} worn - each café, as built
+ */
+function weatherCafes(material, worn) {
+    const at = worn.map(({ x, z, ry, eaves }) => new Vector4(x, z, ry, eaves));
+    const wear = worn.map(({ wear: w }) => new Vector4(w.soot, w.damp, w.bleach, w.moss));
+    const more = worn.map(({ wear: w }) => new Vector4(w.mend, w.salt, w.seed, 0));
+    alsoBeforeCompile(material, 'cafes-worn', (shader) => {
+        shader.uniforms.cafeAt = { value: at };
+        shader.uniforms.cafeWear = { value: wear };
+        shader.uniforms.cafeMore = { value: more };
+        shader.vertexShader = shader.vertexShader
+            .replace('#include <common>', '#include <common>\nvarying vec3 vWornWorld;\nvarying vec3 vWornNormal;')
+            .replace('#include <begin_vertex>', '#include <begin_vertex>\nvWornWorld = (modelMatrix * vec4(transformed, 1.0)).xyz;\nvWornNormal = normalize(mat3(modelMatrix) * objectNormal);');
+        shader.fragmentShader = shader.fragmentShader
+            .replace('#include <common>', `#include <common>\n${CAFES_WORN_GLSL}`)
+            .replace('#include <color_fragment>', '#include <color_fragment>\ndiffuseColor.rgb = cafesWorn(diffuseColor.rgb);');
+    });
 }
 
 /**
  * Three brick-red, steepled cafés at the head of the jetty, facing out like
  * actors: two to one side and one to the other, parted by an aisle down the
  * stage's middle, so the way from the jetty to the gate in the wall runs
- * straight between them.
+ * straight between them. Each as built and as aged (CAFE_BUILDS).
  */
-function buildCafes({ buckets, place, mounts, extras, animated, wanted }) {
+function buildCafes({ buckets, place, mounts, extras, animated, wanted, materials }) {
     const z = place.position[2];
     // Their stage: a platform out from the wall, with an apron before the cafés (where the footlights stand)
     // wide enough to walk, running on past the last café's outer wall toward the sun-dock. Its north end is
     // broader and longer, so the two northern cafés stand free with a walk all round each (a playtester's
-    // shadow kept being caught in the narrow ways between them, the wall and the water).
-    for (const [z0, z1, width] of [[z - 8.9, z - 4.4, 6.2], [z - 4.4, z - 1.0, 5.2], [z - 1.0, z + 2.4, 5.2], [z + 2.4, z + 5.8, 5.2]]) {
+    // shadow kept being caught in the narrow ways between them, the wall and the water); and there, by the
+    // wall, it stops short of the sea-wall's balcony overhead, where the steps up to it begin (buildSeaWall).
+    const segments = [[PLATFORM_NOTCH_Z, z - 4.4, 6.2], [z - 4.4, z - 1.0, 5.2], [z - 1.0, z + 2.4, 5.2], [z + 2.4, z + 5.8, 5.2]];
+    let platformEast = 0;
+    for (const [z0, z1, width] of segments) {
         const zm = (z0 + z1) / 2;
         buckets.add('dimGold', box(width, 1.3, z1 - z0 + 0.12, { x: wallX(zm) + width / 2 - 0.1, y: -0.35, z: zm }, PAVE));
+        if (!platformEast) platformEast = wallX(zm) + width - 0.1;
     }
+    const northZ0 = PLATFORM_NORTH + 0.06;
+    buckets.add('dimGold', box(platformEast - PLATFORM_NOTCH_X, 1.3, PLATFORM_NOTCH_Z - northZ0 + 0.12, {
+        x: (platformEast + PLATFORM_NOTCH_X) / 2, y: -0.35, z: (northZ0 + PLATFORM_NOTCH_Z) / 2,
+    }, PAVE));
 
     const jettyStart = wallX(z) + 3.6;
     const jettyEnd = 23.5;
@@ -778,38 +1042,62 @@ function buildCafes({ buckets, place, mounts, extras, animated, wanted }) {
 
     const audience = new Vector3(21, 0, z);
     // [along the wall from the jetty's line, out from the wall]: the aisle between the second and third. (The
-    // northern two stand well out from the wall, with room to walk behind them.)
-    const cafes = [[-6.6, 0.75], [-3.0, 1.0], [3.0, 0.35]];
+    // northern two stand well out from the wall, with room to walk behind them; the third is built right back
+    // against it, its back corners in the wall's thickness, so no lane runs behind it: a playtester's shadow
+    // kept being caught in the half-body gap there was.)
+    const cafes = [[-6.6, 0.75], [-3.0, 1.0], [3.0, -1.0]];
     // "Angled to shine up every face, no café less equal": footlights before each, as on a stage, and the
     // warm wash they throw up its front. The wash is one additive sheet for all three.
     const washes = [];
+    const worn = [];
     cafes.forEach(([dz, dx], index) => {
         const cz = z + dz;
         const cx = wallX(cz) + 1.75 + dx;
         const ry = Math.atan2(audience.x - cx, audience.z - cz);
         const brick = BRICK[index];
+        const build = CAFE_BUILDS[index];
+        const { width, height, roof, tower, towerTall, spire } = build;
+        const towerBase = height + roof * 0.6;
+        const towerTop = towerBase + towerTall;
         const pieces = [
-            bevelBox(2.2, 2.4, 2.1, { y: 1.2 }, brick),
-            gable(2.4, 1.15, 2.3, { y: 2.4 }, BRICK_DARK),
-            bevelBox(0.62, 1.0, 0.62, { y: 3.6, z: 0.55 }, brick, 0.04),
-            cone(0.5, 2.3, 4, { y: 5.25, z: 0.55, ry: Math.PI / 4 }, BRICK_DARK),
-            ball(0.12, { y: 6.5, z: 0.55 }, GOLDS[3], 8, 6),
+            bevelBox(width, height, 2.1, { y: height / 2 }, brick),
+            gable(width + 0.2, roof, 2.3, { y: height }, BRICK_DARK),
+            bevelBox(tower, towerTall, tower, { y: towerBase + towerTall / 2, z: 0.55 }, brick, 0.04),
             box(0.7, 1.3, 0.06, { y: 0.65, z: 1.07 }, SHADOW),
-            box(2.5, 0.08, 0.7, { y: 1.62, z: 1.35, rx: 0.25 }, GOLDS[1]),
+            box(width + 0.3, 0.08, 0.7, { y: 1.62, z: 1.35, rx: 0.25 }, GOLDS[1]),
         ];
+        if (build.crown === 'dome') {
+            // Sî's tower is crowned with a little dome and a finial, as a tea-house's is.
+            pieces.push(paint(pose(new SphereGeometry(tower * 0.62, 12, 6, 0, Math.PI * 2, 0, Math.PI / 2), { y: towerTop, z: 0.55 }), BRICK_DARK));
+            pieces.push(cylinder(0.035, 0.05, 0.36, 5, { y: towerTop + tower * 0.62 + 0.14, z: 0.55 }, GOLDS[2]));
+            pieces.push(ball(0.1, { y: towerTop + tower * 0.62 + 0.36, z: 0.55 }, GOLDS[3], 8, 6));
+        } else {
+            pieces.push(cone(tower * 0.8, spire, 4, { y: towerTop + spire / 2, z: 0.55, ry: Math.PI / 4 }, BRICK_DARK));
+            pieces.push(ball(0.12, { y: towerTop + spire + 0.1, z: 0.55 }, GOLDS[3], 8, 6));
+        }
+        // Cafi roasts its coffee: a chimney on the back of its roof (the soot of it is in its bricks).
+        if (build.chimney) {
+            pieces.push(bevelBox(0.3, 0.8, 0.3, { x: width * 0.28, y: height + roof * 0.55, z: -0.6 }, BRICK_DARK, 0.03));
+            pieces.push(box(0.36, 0.06, 0.36, { x: width * 0.28, y: height + roof * 0.55 + 0.42, z: -0.6 }, SHADOW));
+        }
         const glows = [
             box(0.46, 0.6, 0.05, { x: -0.68, y: 1.25, z: 1.08 }, WINDOW),
             box(0.46, 0.6, 0.05, { x: 0.68, y: 1.25, z: 1.08 }, WINDOW),
-            box(0.3, 0.4, 0.05, { y: 3.7, z: 0.88 }, WINDOW),
+            box(0.3, 0.4, 0.05, { y: towerBase + towerTall * 0.6, z: 0.55 + tower / 2 + 0.01 }, WINDOW),
         ];
+        // Cafiarmaí keeps a lantern lit high in its tower, in two narrow lights.
+        if (build.lantern) {
+            for (const side of [-1, 1]) glows.push(box(0.05, 0.34, 0.12, { x: side * (tower / 2 + 0.01), y: towerBase + towerTall * 0.62, z: 0.55 }, WINDOW_LOW));
+        }
         for (const along of [-0.84, -0.28, 0.28, 0.84]) {
             pieces.push(box(0.2, 0.09, 0.14, { x: along, y: 0.05, z: 1.36 }, SHADOW));
             glows.push(box(0.14, 0.04, 0.04, { x: along, y: 0.08, z: 1.29 }, FOOTLIGHT));
         }
-        const wash = new PlaneGeometry(2.2, 2.3, 1, 4);
+        const wash = new PlaneGeometry(width, 2.3, 1, 4);
         wash.translate(0, 1.15, 1.075);
         paintBy(wash, (wx, wy, wz, out) => out.setRGB(0.5, 0.3, 0.12).multiplyScalar(Math.pow(1 - Math.min(1, wy / 2.3), 1.6)));
         const at = { x: cx, y: 0.3, z: cz, ry };
+        worn.push({ x: cx, z: cz, ry, eaves: height, wear: build.wear });
         for (const piece of frame(pieces, at)) buckets.add('brick', piece);
         for (const piece of frame(glows, at)) buckets.add('glow', piece);
         washes.push(frame([wash], at)[0]);
@@ -833,7 +1121,7 @@ function buildCafes({ buckets, place, mounts, extras, animated, wanted }) {
                 depthWrite: false,
             }));
             shade.name = 'cafe-shadow';
-            shade.position.copy(inFrame(-1.1 - 0.015, 0.02, 0.2, at));
+            shade.position.copy(inFrame(-width / 2 - 0.015, 0.02, 0.2, at));
             shade.rotation.y = ry - Math.PI / 2;
             extras.push(shade);
             // It shifts its weight, now and then, as a body waiting would.
@@ -852,6 +1140,7 @@ function buildCafes({ buckets, place, mounts, extras, animated, wanted }) {
     }));
     footlit.name = 'footlight-wash';
     extras.push(footlit);
+    if (materials?.brick) weatherCafes(materials.brick, worn);
     // Where the jetty ends, out over the water, on its boards (the walk's shadow waits there, walk.js).
     return { pierEnd: new Vector3(jettyEnd - 0.9, 0.19, z) };
 }
@@ -1475,10 +1764,13 @@ function buildSkyGrottos({ buckets, place, random, extras, animated, materials, 
     }
 
     const faceX = centre.x + 6.3;
-    for (const [dz, dy] of [[-2.2, 0.3], [0.2, 1.1], [2.4, 0.1]]) {
-        buckets.add('stone', paint(pose(new CylinderGeometry(0.95, 0.95, 0.3, 12, 1, false, 0, Math.PI), { x: faceX - 0.35, y: py + 1.2 + dy, z: pz + dz, rz: Math.PI / 2, ry: Math.PI / 2 }), SHADOW));
-    }
+    // (Three dark half-discs once stood above the arches for the grottos' pits: they hung in the air where the
+    // mountain's face curves away, and read as black shapes rather than caves, so they're gone: Elm's call.)
     buckets.add('stone', box(2.6, 0.5, 7.2, { x: faceX + 0.2, y: py - 0.55, z: pz }, 0x5e4c50));
+    // The arches' ledge stands out on a spur of the mountain's own rock, grown from it (it hung clear of it once).
+    const spur = roughen(new IcosahedronGeometry(1, 1), 0.22, 9.1);
+    pose(spur, { x: centre.x + 3.2, y: py - 1.5, z: centre.z + 2.4, sx: 4.4, sy: 1.15, sz: 4.0 });
+    buckets.add('rock', paintBy(spur, rock));
     for (const dz of [-2.2, 0.2, 2.4]) {
         buckets.add('arch', paint(pose(new TorusGeometry(1.05, 0.17, 6, 18, Math.PI), { x: faceX + 0.4, y: py - 0.3, z: pz + dz, ry: Math.PI / 2 }), WHITE_ARCH));
         for (const side of [-1.05, 1.05]) {
@@ -1486,7 +1778,12 @@ function buildSkyGrottos({ buckets, place, random, extras, animated, materials, 
         }
     }
 
+    // The door stands in a pit: the rock's face is felt for where the pit opens, and the pit sunk into it, so its
+    // dark mouth is all that shows of it, the door within, rather than a dark box standing out from the rock.
     const doorAt = new Vector3(centre.x + 1.8, centre.y - 0.9, centre.z + 5.7);
+    const feel = new Raycaster(new Vector3(doorAt.x, doorAt.y, centre.z + 20), new Vector3(0, 0, -1));
+    const rockFace = feel.intersectObjects([new Mesh(body), new Mesh(under)], false)[0];
+    if (rockFace) doorAt.z = rockFace.point.z - 0.05;
     buckets.add('stone', box(1.2, 2.1, 0.7, { x: doorAt.x, y: doorAt.y, z: doorAt.z - 0.25 }, SHADOW));
     // As an extra (extras.js), the door can open: a leaf on its hinge, the knob's roots with it, light beyond.
     const hinge = doorCanOpen(wanted) ? new Group() : null;
@@ -1545,7 +1842,40 @@ function buildSkyGrottos({ buckets, place, random, extras, animated, materials, 
     });
 }
 
-/** Cassandra's lookout: a balcony on the sea-wall above the breaking sea. */
+/** The balcony's floor: its radius, the height of its top, and how far in from its rim a body keeps. */
+const BALCONY_RADIUS = 1.25;
+const BALCONY_TOP = 2.59;
+const BALCONY_KEEP = 0.2;
+/**
+ * The steps up to it from the cafés' platform: they rise west over the water along the platform's north end, to
+ * a landing that meets the balcony between two of its posts. How many risers, each tread's depth, how wide the
+ * flight is, and how far in from its seaward side a body keeps.
+ */
+const STEPS_RISERS = 10;
+const STEPS_TREAD = 0.311;
+const STEPS_WIDE = 0.8;
+const STEPS_KEEP = 0.12;
+
+/** A thin rod from a to b (a rail, a post), as a box turned to lie along it. */
+function rod(a, b, thickness, color) {
+    const along = new Vector3().subVectors(b, a);
+    const length = along.length();
+    const geometry = new BoxGeometry(thickness, length, thickness);
+    geometry.applyQuaternion(new Quaternion().setFromUnitVectors(UP, along.normalize()));
+    geometry.translate((a.x + b.x) / 2, (a.y + b.y) / 2, (a.z + b.z) / 2);
+    return paint(geometry, color);
+}
+
+/**
+ * Cassandra's lookout: a balcony on the sea-wall above the breaking sea. A
+ * flight of steps climbs to it from the north end of the cafés' platform, over
+ * the water, to a landing that meets it where its rail stands open between two
+ * posts; the platform stops short of the balcony, so nothing is walked beneath
+ * it. (A playtester's shadow kept ending in that corner, under the balcony,
+ * out of the camera's sight: now the corner has a way up, to the place with
+ * the most to read.) Returns the lookout's floor for walking (walk.js): the
+ * steps, the landing and the balcony, each at its height.
+ */
 function buildSeaWall({ buckets, place, mounts }) {
     const z = place.position[2];
     const face = wallX(z);
@@ -1557,13 +1887,82 @@ function buildSeaWall({ buckets, place, mounts }) {
         maxWidth: 1.8,
         style: 'plaque',
     });
-    buckets.add('gold', paint(pose(new CylinderGeometry(1.25, 1.25, 0.18, 18, 1, false, 0, Math.PI), { x: face + 0.02, y: 2.5, z }), GOLDS[3]));
-    buckets.add('gold', paint(pose(new TorusGeometry(1.2, 0.05, 4, 18, Math.PI), { x: face, y: 3.1, z, rx: -Math.PI / 2, rz: -Math.PI / 2 }), GOLDS[0]));
+    const cx = face + 0.02;
+    buckets.add('gold', paint(pose(new CylinderGeometry(BALCONY_RADIUS, BALCONY_RADIUS, 0.18, 18, 1, false, 0, Math.PI), { x: cx, y: 2.5, z }), GOLDS[3]));
+    // The rail, open between the posts at the east and the south-east, where the landing comes in. (Round the
+    // rail, from the south: a quarter-turn is the south-east post, a half-turn the east one.)
+    const RAIL = 1.2;
+    for (const [from, to] of [[0, Math.PI / 4], [Math.PI / 2, Math.PI]]) {
+        const rail = new TorusGeometry(RAIL, 0.05, 4, Math.max(3, Math.round(((to - from) / Math.PI) * 18)), to - from);
+        rail.rotateZ(from);
+        buckets.add('gold', paint(pose(rail, { x: face, y: 3.1, z, rx: -Math.PI / 2, rz: -Math.PI / 2 }), GOLDS[0]));
+    }
+    const postAt = (angle) => new Vector3(face + Math.cos(angle) * RAIL, 2.5, z + Math.sin(angle) * RAIL);
     for (let post = 0; post <= 4; post += 1) {
         const angle = -Math.PI / 2 + (post / 4) * Math.PI;
-        buckets.add('gold', cylinder(0.04, 0.04, 0.6, 4, { x: face + Math.cos(angle) * 1.2, y: 2.8, z: z + Math.sin(angle) * 1.2 }, GOLDS[2]));
+        buckets.add('gold', cylinder(0.04, 0.04, 0.6, 4, { x: face + Math.cos(angle) * RAIL, y: 2.8, z: z + Math.sin(angle) * RAIL }, GOLDS[2]));
     }
     buckets.add('gold', cone(0.9, 1.4, 4, { x: face + 0.6, y: 1.8, z, rx: Math.PI, ry: Math.PI / 4 }, GOLDS[1]));
+
+    // The steps. Their landward side is flush with the platform's north end (buildCafes); the landing reaches
+    // into the balcony's floor; the lowest two treads can be stepped onto from the platform alongside.
+    const platformTop = 0.3;
+    const south = PLATFORM_NORTH;
+    const north = south - STEPS_WIDE;
+    const mid = (south + north) / 2;
+    const top = face + 1.45;
+    const foot = top + (STEPS_RISERS - 1) * STEPS_TREAD;
+    const riser = (BALCONY_TOP - platformTop) / STEPS_RISERS;
+    for (let tread = 1; tread < STEPS_RISERS; tread += 1) {
+        const surface = platformTop + tread * riser;
+        const tall = riser + 0.1;
+        buckets.add('dimGold', box(STEPS_TREAD + 0.02, tall, STEPS_WIDE, { x: foot - (tread - 0.5) * STEPS_TREAD, y: surface - tall / 2, z: mid }, PAVE));
+    }
+    const landingWest = face + 0.7;
+    buckets.add('gold', box(top - landingWest, 0.18, STEPS_WIDE, { x: (top + landingWest) / 2, y: BALCONY_TOP - 0.1, z: mid }, GOLDS[3]));
+    // Stringers under each side, and legs down into the water (passable: a pole the camera may pass).
+    const pitch = Math.atan2(BALCONY_TOP - platformTop, foot - top);
+    const slope = Math.hypot(BALCONY_TOP - platformTop, foot - top);
+    for (const side of [south - 0.03, north + 0.03]) {
+        buckets.add('dimGold', box(slope, 0.3, 0.06, { x: (foot + top) / 2, y: (platformTop + BALCONY_TOP) / 2 - 0.3, z: side, rz: -pitch }, PAVE_DARK));
+    }
+    for (const x of [foot - 0.2, (foot + top) / 2, top + 0.15]) {
+        const under = platformTop + ((foot - x) / (foot - top)) * (BALCONY_TOP - platformTop) - 0.35;
+        for (const side of [south - 0.05, north + 0.05]) {
+            buckets.add('dimGold', cylinder(0.07, 0.08, under - SEA_LEVEL + 0.6, 5, { x, y: (under + SEA_LEVEL - 0.6) / 2, z: side }, PAVE_DARK), { passable: true });
+        }
+    }
+    buckets.add('dimGold', cylinder(0.08, 0.09, BALCONY_TOP - SEA_LEVEL + 0.5, 5, { x: top - 0.1, y: (BALCONY_TOP + SEA_LEVEL - 0.5) / 2 - 0.2, z: north + 0.08 }, PAVE_DARK), { passable: true });
+    // Handrails, the balcony's gold, each side: the seaward one from the foot, the landward one from above the
+    // treads a body steps onto, both running on along the landing to the posts either side of the opening.
+    const hand = 0.62;
+    const onFlight = (x) => platformTop + Math.min(STEPS_RISERS, Math.max(1, Math.ceil((foot - x) / STEPS_TREAD))) * riser;
+    const railPieces = [];
+    for (const [side, from, post] of [[north + 0.06, foot - 0.08, postAt(0)], [south - 0.06, foot - 2.5 * STEPS_TREAD, postAt(Math.PI / 4)]]) {
+        const low = new Vector3(from, onFlight(from) + hand, side);
+        const high = new Vector3(top, BALCONY_TOP + 0.51, side);
+        railPieces.push(rod(low, high, 0.05, GOLDS[0]));
+        railPieces.push(rod(high, new Vector3(post.x, 3.1, post.z), 0.05, GOLDS[0]));
+        for (const at of [low, high]) railPieces.push(rod(new Vector3(at.x, at.y - hand, at.z), at, 0.07, GOLDS[2]));
+    }
+    for (const piece of railPieces) buckets.add('gold', piece, { passable: true });
+
+    // Where a body may stand up here: the treads (by how far along the flight), the landing, and the balcony's
+    // floor, short of its rim and clear of the wall.
+    const floorAt = (x, zz) => {
+        if (zz <= south && zz >= north + STEPS_KEEP && x > top && x <= foot) {
+            const tread = Math.ceil((foot - x) / STEPS_TREAD);
+            // (Past the two lowest treads, a body keeps in from the landward side too: there it's a drop.)
+            if (tread > 2 && zz > south - STEPS_KEEP) return null;
+            return platformTop + Math.min(STEPS_RISERS - 1, Math.max(1, tread)) * riser;
+        }
+        if (zz <= south - STEPS_KEEP && zz >= north + STEPS_KEEP && x > landingWest && x <= top) return BALCONY_TOP;
+        const dx = x - cx;
+        const dz = zz - z;
+        if (dx >= 0 && x >= wallX(zz) + BALCONY_KEEP && Math.hypot(dx, dz) <= BALCONY_RADIUS - BALCONY_KEEP) return BALCONY_TOP;
+        return null;
+    };
+    return { floor: { floorAt } };
 }
 
 /** The one building in Elysicester that isn't gold: all glass, lit cold inside. */
@@ -1933,6 +2332,13 @@ export async function buildPlaces(buckets, placeData, materials, pause = async (
         houses,
         /** The end of the jetty, on its boards: where the walk's shadow waits (walk.js). */
         pierEnd: built.get('jetty-cafes')?.pierEnd ?? null,
+        /**
+         * Floors given exactly, beyond the ground and the waterfront's decks (walk.js): the steps up to the
+         * sea-wall's balcony and the balcony, and the sun-dock's light. Each floorAt(x, z): a height, or null.
+         */
+        floors: [...built.values()].flatMap((result) => (result?.floor ? [result.floor] : [])),
+        /** The sun-dock's light, for the stage to give the walk's shadow to. */
+        sunLight: built.get('sun-dock')?.light ?? null,
         /** What a touch may find, and the words it opens: [{ kind, center, radius, fragment }] (touch.js). */
         touch: [...built.values()].flatMap((result) => result?.touch ?? []),
         update(time) {

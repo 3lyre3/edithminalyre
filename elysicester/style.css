@@ -306,6 +306,17 @@ a:focus-visible {
     pointer-events: none;
 }
 
+/* Beside the walking shadow, the name is a way in: a click reads it. */
+.point-label.is-near {
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+.point-label.is-near:hover {
+    color: var(--honey);
+    border-color: var(--amber);
+}
+
 /*
  * A sign's words, floated over its plate: the Danæam above, and beneath it the
  * site's gloss where the site gives one.

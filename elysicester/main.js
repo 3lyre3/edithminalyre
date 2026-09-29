@@ -212,7 +212,9 @@ async function boot() {
         for (const candidate of pool) {
             if (!next || apart(from, whereIs(candidate)) < apart(from, whereIs(next))) next = candidate;
         }
-        return { next, read: readable.filter((candidate) => read.has(candidate.id)).length, total: readable.length };
+        // (A place read at before is gone "back to", so a thread that comes round again says so.)
+        const returning = Boolean(next) && next.place !== fragment.place && visited.has(next.place);
+        return { next, returning, read: readable.filter((candidate) => read.has(candidate.id)).length, total: readable.length };
     };
     let open = null;
     const reader = createReader({
@@ -293,12 +295,16 @@ async function boot() {
                     yieldTap: (x, y, pointDistance) => (stage.walk?.claimsTap(x, y) ?? false)
                         || (signOverlay?.claimsTap(x, y, pointDistance) ?? false),
                     // A tap no point took may have found something else that answers (touch.js): a ring where
-                    // it was touched, its own sound, then its words.
+                    // it was touched, its own sound, then its words. Walking as the shadow, a tap nothing
+                    // answers walks it there.
                     onMiss: (x, y) => {
                         if (!touch || stage.walk?.claimsTap(x, y) || signOverlay?.claimsTap(x, y, Infinity)) return;
                         const found = touch.find(x, y);
                         const fragment = found ? readable.find((candidate) => candidate.id === found.fragment) : null;
-                        if (!fragment) return;
+                        if (!fragment) {
+                            stage.walk?.walkToward(x, y);
+                            return;
+                        }
                         if (!reducedMotion) hotspots.ripple(found.point);
                         audio.answer(found.kind);
                         window.setTimeout(() => open(fragment, null), TOUCH_PAUSE);
@@ -385,8 +391,16 @@ async function boot() {
                 }
                 if (found !== near) {
                     near = found;
-                    hotspots.light(found);
+                    hotspots.light(found, { pin: true });
                 }
+            });
+            // Its name, while the shadow stands beside it, is a way in too: a click reads it (the list is the
+            // way for keys, as ever).
+            const pointLabel = byId('point-label');
+            pointLabel.addEventListener('click', () => {
+                if (!pointLabel.classList.contains('is-near')) return;
+                const fragment = readable.find((candidate) => candidate.id === pointLabel.dataset.fragment);
+                if (fragment) open(fragment, null);
             });
         }
     }

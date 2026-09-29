@@ -17,13 +17,22 @@
  * drawn once and the walls take no stripes from them.
  *
  * It's steered as the messenger is in Messenger: on a phone, a thumb set down
- * anywhere and dragged (a soft joystick appears under it); on a computer, the
- * arrow keys or WASD, or the mouse held and dragged. The camera follows above
- * and behind where the one casting it would be, comes round behind them as
- * they turn, and rises over whatever would hide them. The ground is the
- * island's own (its rise and fall known exactly); past the wall, the
- * waterfront's decks; walls and houses stop it, by the hollows' map of where
- * walls stand at a body's height.
+ * anywhere and dragged (a soft joystick appears under it), or held still (it
+ * walks toward the place under it), or a tap (it walks there, a ring marking
+ * the spot); on a computer, the arrow keys or WASD, or the mouse held down (it
+ * walks toward the pointer) or clicked (it walks there). Keys and joystick go
+ * by the way the camera is coming round to look, not the way it happens to be
+ * looking as it swings, so the first step after taking the shadow goes where
+ * it's meant to. The camera follows above and behind where the one casting it
+ * would be, comes round behind them as they turn (slowly, when a thumb or the
+ * pointer steers, so what's pointed at stays put), and rises over whatever
+ * would hide them. The ground is the island's own (its rise and fall known
+ * exactly); past the wall, the waterfront's decks, the steps up to the
+ * sea-wall's balcony and the balcony itself, and the sun-dock's light on the
+ * water (their floors given exactly, by places.js); walls and houses stop it, by the hollows' map of where walls
+ * stand at a body's height, and it stands still until that map is laid (so a
+ * slow screen can't let it walk into a wall before the walls are known). R,
+ * or "back to the jetty", takes it back to where it began.
  */
 
 // =============================================================================
@@ -95,6 +104,8 @@ const FOLLOW = 8;
 const FOLLOW_PHI = 0.95;
 const LOOK_AT = 0.6;
 const CHASE = 1.0;
+/** How much of that coming round there is while a thumb or the pointer steers (so a held stick walks straight). */
+const CHASE_POINTING = 0.2;
 /**
  * When a wall, a gable or a pole-top stands between the camera and the shadow, it rises over it, in so many
  * steps, up to this angle from straight overhead (never so far that it looks straight down: whatever still stands
@@ -130,6 +141,19 @@ const STICK_START = 10;
 const STICK_REACH = 58;
 /** How near a tap must land to the shadow on the ground to take hold of it (CSS px). */
 const TAP_REACH = { mouse: 22, pen: 26, touch: 36 };
+/** Walking, how near its feet (a share of TAP_REACH) a tap must land to let go (anywhere else walks it there). */
+const FEET_REACH = 0.7;
+/** A finger held still this long (ms) walks the shadow toward it; and a press this long isn't a tap. */
+const HOLD_AFTER = 250;
+/** Walking to a spot: how near is there, how far off a spot may be (world units), and how long without getting nearer gives up (s). */
+const ARRIVE = 0.3;
+const TARGET_REACH = 30;
+const TARGET_STUCK = 0.9;
+/** The ring marking the spot it walks to: inner and outer radius. */
+const TARGET_INNER = 0.2;
+const TARGET_OUTER = 0.27;
+/** How long (seconds of trying to walk) it waits for the map of walls before walking without it. */
+const WALLS_WAIT = 8;
 /** Which way the city lies from the jetty (a heading: 0 faces +z, and this faces west, toward the gate). */
 const TOWARD_CITY = -Math.PI / 2;
 /** The keys that walk, and which way. */
@@ -379,6 +403,22 @@ export function createWalk({ light, reducedMotion }) {
     let turning = null;
     /** The end of the jetty, where the shadow first waits (and where R takes it back to). */
     let pier = null;
+    /**
+     * Floors given exactly (places.js): the steps up to the sea-wall's balcony and the balcony, and the sun-dock's
+     * light. Each floorAt(x, z): a height, or null.
+     */
+    let floors = [];
+    /** "back to the jetty", shown while walking. */
+    let backButton = null;
+    /** A pointer pressed on the city while walking: { id, type, startX, startY, x, y, time, aimed }. */
+    let press = null;
+    /** The spot it walks to (a tap, or a pointer held down): { x, y, z, held, best, since }, or null. */
+    let destination = null;
+    let targetRing = null;
+    /** How it's being steered this moment: 'keys', 'pointing' (a thumb, the pointer, a spot), or null. */
+    let steeredBy = null;
+    /** Seconds spent trying to walk before the map of walls was laid. */
+    let wallsWaited = 0;
     const rises = new Array(RISE_STEPS + 1).fill(0);
     const sightAt = new Array(RISE_STEPS + 1).fill(0);
     const clearAt = new Array(RISE_STEPS + 1).fill(true);
@@ -408,6 +448,7 @@ export function createWalk({ light, reducedMotion }) {
     const pointer = new Vector2();
     const feet = new Vector3();
     const tip = new Vector3();
+    const aim = new Vector3();
 
     /** Pose the body for this moment: the stride's phase and how much it's walking (0 to 1). */
     function pose(elapsed) {
@@ -439,10 +480,45 @@ export function createWalk({ light, reducedMotion }) {
         if (!reducedMotion) body.position.y += Math.abs(Math.sin(state.stride)) * 0.035 * FIGURE * state.moving;
     }
 
-    /** The floor under (x, z): the island's ground, off its edges; past the wall, a deck; or null. */
-    function floorAt(x, z) {
-        if (onLand(x, z, EDGE)) return groundY(x, z);
-        return decks ? decks(x, z) : null;
+    /** The floor given exactly at (x, z) (the steps, the balcony, the sun-dock's light), or null. */
+    function givenFloor(x, z) {
+        for (const floor of floors) {
+            const height = floor.floorAt(x, z);
+            if (height !== null) return height;
+        }
+        return null;
+    }
+
+    /**
+     * The floor under (x, z): the island's ground, off its edges; past the wall, a deck; or one given exactly
+     * (up the steps to the sea-wall's balcony, the balcony, the sun-dock's light). Where there are two (beside
+     * the steps, where the lowest step or the sun-dock meets the platform), the one nearest `near` (the height
+     * the walker stands at), else the other.
+     */
+    function floorAt(x, z, near) {
+        const low = onLand(x, z, EDGE) ? groundY(x, z) : decks ? decks(x, z) : null;
+        const given = givenFloor(x, z);
+        if (given === null) return low;
+        if (low === null) return given;
+        if (near === undefined) return low;
+        return Math.abs(given - near) < Math.abs(low - near) ? given : low;
+    }
+
+    /**
+     * Whether (x, z) at height y is on a floor given exactly: that floor is its own bound (the wall's face its
+     * only edge), so the map of walls at a body's height above the ground (the balcony's cone stands in it,
+     * beneath the balcony) doesn't hold it there.
+     */
+    function aloft(x, z, y) {
+        return floors.length > 0 && givenFloor(x, z) === y;
+    }
+
+    /** The floor a body could stand on at (x, z) (floor there, no wall within its girth), or null. */
+    function standOn(x, z, near) {
+        const floor = floorAt(x, z, near);
+        if (floor === null) return null;
+        if (aloft(x, z, floor)) return floor;
+        return blocked(x, z) ? null : floor;
     }
 
     /**
@@ -472,8 +548,9 @@ export function createWalk({ light, reducedMotion }) {
                 const angle = (k / around) * Math.PI * 2;
                 const px = x + Math.cos(angle) * radius;
                 const pz = z + Math.sin(angle) * radius;
-                if (floorAt(px, pz) === null || blocked(px, pz)) continue;
-                return { x: px, z: pz };
+                const floor = standOn(px, pz);
+                if (floor === null) continue;
+                return { x: px, z: pz, y: floor };
             }
         }
         return null;
@@ -533,22 +610,44 @@ export function createWalk({ light, reducedMotion }) {
      */
     function tryStep(dx, dz) {
         next.set(state.position.x + dx, state.position.y, state.position.z + dz);
-        const floor = floorAt(next.x, next.z);
+        const floor = floorAt(next.x, next.z, state.position.y);
         if (floor === null || Math.abs(floor - state.position.y) > STEP) return false;
         next.y = floor;
+        if (aloft(next.x, next.z, floor)) return true;
         return !blocked(next.x, next.z) || blocked(state.position.x, state.position.z);
     }
 
-    /** Which way the visitor is steering, in the camera's terms: stick or keys, at most 1. */
+    /**
+     * Which way the visitor is steering (at most PACE): toward a spot, or by stick or keys in the camera's
+     * terms (the way it's coming round to look, so what's "ahead" doesn't swing as it comes).
+     */
     function steering() {
         // (The local checks can steer by the compass instead: { x, z }, at most 1.)
-        if (walk.compass) return wanted.set(walk.compass.x, 0, walk.compass.z).multiplyScalar(PACE);
+        if (walk.compass) {
+            steeredBy = 'keys';
+            return wanted.set(walk.compass.x, 0, walk.compass.z).multiplyScalar(PACE);
+        }
+        if (destination && (stick.active || keys.size)) clearTarget();
+        if (destination) {
+            steeredBy = 'pointing';
+            const dx = destination.x - state.position.x;
+            const dz = destination.z - state.position.z;
+            const distance = Math.hypot(dx, dz);
+            if (distance < ARRIVE) {
+                if (!destination.held) clearTarget();
+                return wanted.set(0, 0, 0);
+            }
+            const pace = PACE * Math.min(1, distance / 0.9);
+            return wanted.set((dx / distance) * pace, 0, (dz / distance) * pace);
+        }
         let across = 0;
         let ahead = 0;
         if (stick.active) {
+            steeredBy = 'pointing';
             across = stick.x;
             ahead = stick.y;
         } else {
+            steeredBy = keys.size ? 'keys' : null;
             across = (keys.has('right') ? 1 : 0) - (keys.has('left') ? 1 : 0);
             ahead = (keys.has('up') ? 1 : 0) - (keys.has('down') ? 1 : 0);
             const length = Math.hypot(across, ahead);
@@ -557,12 +656,47 @@ export function createWalk({ light, reducedMotion }) {
                 ahead /= length;
             }
         }
-        camera.getWorldDirection(forward);
-        forward.y = 0;
-        if (forward.lengthSq() < 1e-8) forward.set(-shadowWay.x, 0, -shadowWay.z);
-        forward.normalize();
+        forward.set(-Math.sin(followTheta), 0, -Math.cos(followTheta));
         right.set(-forward.z, 0, forward.x);
         return wanted.set(0, 0, 0).addScaledVector(right, across).addScaledVector(forward, ahead).multiplyScalar(PACE);
+    }
+
+    /** Where the pointer at (x, y) points on the level the walker stands at (no further off than TARGET_REACH). */
+    function groundUnder(x, y) {
+        if (!camera || !canvas) return null;
+        const rect = canvas.getBoundingClientRect();
+        pointer.set(((x - rect.left) / rect.width) * 2 - 1, -((y - rect.top) / rect.height) * 2 + 1);
+        raycaster.setFromCamera(pointer, camera);
+        const { origin, direction } = raycaster.ray;
+        const level = state.position.y;
+        const flat = Math.hypot(direction.x, direction.z);
+        let along = direction.y < -1e-4 ? (level - origin.y) / direction.y : Infinity;
+        // Looking level or above it, or meeting it far off: as far as a walk may be sent, the way it points.
+        if (!(along > 0) || flat * along > TARGET_REACH * 2) {
+            if (flat < 1e-6) return null;
+            along = (TARGET_REACH * 2) / flat;
+        }
+        const spot = aim.set(origin.x + direction.x * along, level, origin.z + direction.z * along);
+        const away = Math.hypot(spot.x - state.position.x, spot.z - state.position.z);
+        if (away > TARGET_REACH) {
+            spot.x = state.position.x + ((spot.x - state.position.x) / away) * TARGET_REACH;
+            spot.z = state.position.z + ((spot.z - state.position.z) / away) * TARGET_REACH;
+        }
+        return spot;
+    }
+
+    /** Walk to the spot under (x, y): held (while a pointer stays down) or once (a tap). */
+    function aimAt(x, y, held) {
+        const spot = groundUnder(x, y);
+        if (!spot) return false;
+        const floor = floorAt(spot.x, spot.z, state.position.y);
+        const distance = Math.hypot(spot.x - state.position.x, spot.z - state.position.z);
+        destination = { x: spot.x, y: floor ?? spot.y, z: spot.z, held, best: distance, since: 0 };
+        return true;
+    }
+
+    function clearTarget() {
+        destination = null;
     }
 
     function stepWalker(dt) {
@@ -591,6 +725,16 @@ export function createWalk({ light, reducedMotion }) {
         state.stride += (moved / STRIDE) * Math.PI;
         const pace = Math.min(1, moved / Math.max(dt, 1e-3) / (PACE * 0.55));
         state.moving += (pace - state.moving) * (1 - Math.exp(-8 * dt));
+        // Walking to a spot, and getting no nearer for a while (a wall between): it stops there.
+        if (destination && !destination.held) {
+            const distance = Math.hypot(destination.x - state.position.x, destination.z - state.position.z);
+            if (distance < destination.best - 0.05) {
+                destination.best = distance;
+                destination.since = 0;
+            } else if ((destination.since += dt) > TARGET_STUCK) {
+                clearTarget();
+            }
+        }
     }
 
     /**
@@ -625,7 +769,8 @@ export function createWalk({ light, reducedMotion }) {
     function follow(dt) {
         const aspect = camera.aspect || 1;
         if (!reducedMotion && state.moving > 0.2) {
-            followTheta += Math.sin(shortest(behindOf(state.heading) - followTheta)) * CHASE * state.moving * dt;
+            const chase = steeredBy === 'pointing' ? CHASE_POINTING : CHASE;
+            followTheta += Math.sin(shortest(behindOf(state.heading) - followTheta)) * chase * state.moving * dt;
         }
         lead.lerp(ahead.copy(velocity).multiplyScalar(reducedMotion ? 0 : LEAD), 1 - Math.exp(-2.5 * dt));
         const target = rig.goal.target.copy(state.position).add(lead);
@@ -694,23 +839,36 @@ export function createWalk({ light, reducedMotion }) {
     }
 
     /**
-     * How near a tap (or the pointer) at (x, y) is to something that takes or lets go of the shadow (CSS px):
-     * the shadow on the ground, within a finger's reach; and, while it waits, the ring at its feet (as large as
-     * it's drawn, and a little more) or the shadow on the café wall. Infinity if it's on none of them.
+     * How near a tap (or the pointer) at (x, y) is to something that takes or lets go of the shadow (CSS px).
+     * Waiting to be taken: the shadow on the ground, within a finger's reach, the ring at its feet (as large as
+     * it's drawn, and a little more), or the shadow on the café wall. Walking: only its feet (a tap anywhere
+     * else along its shadow walks it there). Infinity if it's on none of them.
      */
     function tapDistance(x, y, pointerType) {
+        const reach = TAP_REACH[pointerType] ?? TAP_REACH.touch;
+        if (state.walking) {
+            if (!camera) return Infinity;
+            const feetAt = feetOnScreen();
+            const away = Math.hypot(x - feetAt.x, y - feetAt.y);
+            return feetAt.front && away < reach * FEET_REACH ? away : Infinity;
+        }
         let best = Infinity;
         const along = shadowDistance(x, y);
-        if (along < (TAP_REACH[pointerType] ?? TAP_REACH.touch)) best = along;
-        if (!state.walking) {
-            if (ring?.visible && camera) {
-                const on = ringOnScreen();
-                const fromCentre = Math.hypot(x - on.x, y - on.y);
-                if (on.front && fromCentre < on.radius + 10) best = Math.min(best, Math.max(0, fromCentre - on.radius * 0.5));
-            }
-            if (onWallShadow(x, y)) best = 0;
+        if (along < reach) best = along;
+        if (ring?.visible && camera) {
+            const on = ringOnScreen();
+            const fromCentre = Math.hypot(x - on.x, y - on.y);
+            if (on.front && fromCentre < on.radius + 10) best = Math.min(best, Math.max(0, fromCentre - on.radius * 0.5));
         }
+        if (onWallShadow(x, y)) best = 0;
         return best;
+    }
+
+    /** Where its feet are on screen (CSS px), and whether they're in front of the camera. */
+    function feetOnScreen() {
+        const rect = canvas.getBoundingClientRect();
+        const at = feet.copy(state.position).project(camera);
+        return { x: rect.left + ((at.x + 1) / 2) * rect.width, y: rect.top + ((1 - at.y) / 2) * rect.height, front: at.z < 1 };
     }
 
     /** Where the ring at its feet is on screen (CSS px): its centre, how wide it's drawn, and whether it's in front. */
@@ -761,6 +919,8 @@ export function createWalk({ light, reducedMotion }) {
         state,
         /** The floor under (x, z), or null (for the local checks). */
         floorAt: (x, z) => floorAt(x, z),
+        /** The floor given exactly at (x, z) (the steps, the balcony, the sun-dock's light), or null (for the local checks). */
+        lookoutAt: (x, z) => givenFloor(x, z),
         /** Whether a wall stops a body at (x, z) (for the local checks). */
         blockedAt: (x, z) => blocked(x, z),
         /** Whether the walls map marks the cell at (x, z) itself (for the local checks). */
@@ -796,6 +956,7 @@ export function createWalk({ light, reducedMotion }) {
         attach(parts) {
             ({ rig, camera, canvas, solids, hollowMap, wallShadow } = parts);
             decks = waterfrontDecks(parts.meshes);
+            floors = parts.floors ?? [];
 
             // The shadow waits at the end of the jetty, looking out to sea (in place of the one on the café
             // wall), a ring breathing on the boards at its feet to say it can be taken.
@@ -818,6 +979,12 @@ export function createWalk({ light, reducedMotion }) {
                 ring.rotation.x = -Math.PI / 2;
                 ring.visible = false;
                 parts.scene.add(ring);
+                // A smaller ring marks the spot a tap (or a pointer held down) walks it to.
+                targetRing = new Mesh(new RingGeometry(TARGET_INNER, TARGET_OUTER, 32), ring.material.clone());
+                targetRing.name = 'walk-target';
+                targetRing.rotation.x = -Math.PI / 2;
+                targetRing.visible = false;
+                parts.scene.add(targetRing);
             }
             label = document.createElement('p');
             label.className = 'point-label walk-label';
@@ -845,6 +1012,16 @@ export function createWalk({ light, reducedMotion }) {
                 button.textContent = 'walk as the shadow';
                 button.addEventListener('click', () => (state.walking ? walk.letGo() : walk.take()));
                 parts.controls.prepend(button);
+                // While walking, a way out of any corner: back to where it began.
+                if (pier) {
+                    backButton = document.createElement('button');
+                    backButton.type = 'button';
+                    backButton.className = 'control';
+                    backButton.hidden = true;
+                    backButton.textContent = 'back to the jetty';
+                    backButton.addEventListener('click', () => walk.backToPier());
+                    button.after(backButton);
+                }
             }
             status = document.createElement('p');
             status.className = 'visually-hidden';
@@ -860,19 +1037,43 @@ export function createWalk({ light, reducedMotion }) {
             stick.view.append(stick.knob);
             document.body.append(stick.view);
 
+            // Walking, a pointer pressed on the city steers: the mouse at once, toward wherever it points while
+            // it's held down; a finger held still, toward the place under it; a finger dragged, the joystick.
             canvas.addEventListener('pointerdown', (event) => {
-                if (!state.walking || stick.id !== null) return;
-                stick.id = event.pointerId;
-                stick.startX = event.clientX;
-                stick.startY = event.clientY;
+                if (!state.walking || press) return;
+                if (event.pointerType === 'mouse' && event.button !== 0) return;
+                press = {
+                    id: event.pointerId,
+                    type: event.pointerType,
+                    startX: event.clientX,
+                    startY: event.clientY,
+                    x: event.clientX,
+                    y: event.clientY,
+                    // (Timed by the page's own clock: an event's timeStamp isn't always on it.)
+                    time: performance.now(),
+                    aimed: false,
+                };
+                if (event.pointerType === 'mouse') press.aimed = aimAt(event.clientX, event.clientY, true);
             });
             canvas.addEventListener('pointermove', (event) => {
-                if (event.pointerId !== stick.id) return;
-                const dx = event.clientX - stick.startX;
-                const dy = event.clientY - stick.startY;
+                if (!press || event.pointerId !== press.id) return;
+                press.x = event.clientX;
+                press.y = event.clientY;
+                if (press.type === 'mouse') {
+                    if (destination?.held || !destination) press.aimed = aimAt(event.clientX, event.clientY, true);
+                    return;
+                }
+                const dx = event.clientX - press.startX;
+                const dy = event.clientY - press.startY;
                 const distance = Math.hypot(dx, dy);
                 if (!stick.active && distance < STICK_START) return;
-                stick.active = true;
+                if (!stick.active) {
+                    stick.id = press.id;
+                    stick.startX = press.startX;
+                    stick.startY = press.startY;
+                    stick.active = true;
+                    clearTarget();
+                }
                 const reach = Math.min(distance, STICK_REACH) / STICK_REACH;
                 stick.x = (dx / Math.max(distance, 1e-6)) * reach;
                 stick.y = -(dy / Math.max(distance, 1e-6)) * reach;
@@ -880,7 +1081,11 @@ export function createWalk({ light, reducedMotion }) {
             });
             for (const type of ['pointerup', 'pointercancel']) {
                 canvas.addEventListener(type, (event) => {
-                    if (event.pointerId === stick.id) releaseStick();
+                    if (!press || event.pointerId !== press.id) return;
+                    press = null;
+                    if (stick.active) releaseStick();
+                    // Let go of a held pointer, and it stops (a tap's spot, set as this tap was heard, it walks on to).
+                    if (destination?.held) clearTarget();
                 });
             }
             window.addEventListener('keydown', (event) => {
@@ -909,6 +1114,11 @@ export function createWalk({ light, reducedMotion }) {
 
             rig.onTap((x, y, pointerType) => {
                 claimed = null;
+                // A press held long enough to steer (or dragged into the joystick) was steering, not a tap.
+                if (state.walking && press && (stick.active || performance.now() - press.time >= HOLD_AFTER)) {
+                    claimed = { x, y };
+                    return;
+                }
                 const mine = tapDistance(x, y, pointerType);
                 if (!Number.isFinite(mine)) return;
                 // A reading point nearer the tap than the shadow keeps it: the words come first.
@@ -934,6 +1144,21 @@ export function createWalk({ light, reducedMotion }) {
          */
         claimsTap(x, y) {
             return Boolean(claimed && claimed.x === x && claimed.y === y);
+        },
+
+        /**
+         * Walking, a tap that nothing else in the city answered (no reading point, sign or touchable thing):
+         * the shadow walks to the spot under it, a ring marking it. False if it isn't walking, or the tap
+         * pointed at nothing it could walk toward.
+         */
+        walkToward(x, y) {
+            if (!state.walking) return false;
+            return aimAt(x, y, false);
+        },
+
+        /** The spot it's walking to, if any (for the local checks): { x, y, z, held } or null. */
+        get destination() {
+            return destination ? { x: destination.x, y: destination.y, z: destination.z, held: destination.held } : null;
         },
 
         /**
@@ -977,10 +1202,12 @@ export function createWalk({ light, reducedMotion }) {
             if (label) label.hidden = true;
             canvas.style.cursor = '';
             velocity.set(0, 0, 0);
+            clearTarget();
             if (button) {
                 button.textContent = 'let go';
                 button.setAttribute('aria-pressed', 'true');
             }
+            if (backButton) backButton.hidden = false;
             announce('You are the shadow. Arrow keys or WASD to walk; R to go back to the jetty; Escape to let go.');
         },
 
@@ -994,6 +1221,7 @@ export function createWalk({ light, reducedMotion }) {
             turning = null;
             followTheta = behindOf(TOWARD_CITY);
             velocity.set(0, 0, 0);
+            clearTarget();
             lead.set(0, 0, 0);
             rise = 0;
             settling = 0;
@@ -1011,11 +1239,12 @@ export function createWalk({ light, reducedMotion }) {
             if (!stand) return false;
             const away = Math.hypot(x - stand.x, z - stand.z);
             const heading = away > 0.6 ? Math.atan2(x - stand.x, z - stand.z) : Math.atan2(-stand.x, -stand.z);
-            walk.place(stand.x, stand.z, heading);
+            walk.place(stand.x, stand.z, heading, stand.y);
             turnsToCity = false;
             turning = null;
             followTheta = behindOf(heading);
             velocity.set(0, 0, 0);
+            clearTarget();
             lead.set(0, 0, 0);
             rise = 0;
             settling = 0;
@@ -1033,6 +1262,8 @@ export function createWalk({ light, reducedMotion }) {
             uniforms.walkSightOn.value = 0;
             keys.clear();
             releaseStick();
+            press = null;
+            clearTarget();
             velocity.set(0, 0, 0);
             rig.goal.radius = Math.max(rig.goal.radius, 18);
             rig.goal.phi = Math.min(rig.goal.phi, 1.1);
@@ -1042,22 +1273,40 @@ export function createWalk({ light, reducedMotion }) {
                 button.textContent = 'walk as the shadow';
                 button.setAttribute('aria-pressed', 'false');
             }
+            if (backButton) backButton.hidden = true;
             announce('You let go of the shadow. It stays where you left it.');
         },
 
-        /** Every frame, before the city is drawn. */
-        update(dt) {
+        /**
+         * Every frame, before the city is drawn.
+         * @param {number} dt - the stage's step (seconds, no more than a twentieth)
+         * @param {number} [walkDt] - the frame's own length (no more than a tenth): the walker keeps its pace on
+         *   a slow screen, in steps no longer than dt
+         */
+        update(dt, walkDt = dt) {
             if (!state.walking) {
                 state.moving += (0 - state.moving) * (1 - Math.exp(-8 * dt));
                 return;
             }
             // While a passage is open, the walker waits (and the camera is the reader's).
             if (document.querySelector('dialog[open]')) return;
+            // Until the map of walls is laid (on a slow machine it can take a while), it stands where it is.
+            if (!hollowMap?.walls && wallsWaited < WALLS_WAIT) {
+                wallsWaited += walkDt;
+                velocity.set(0, 0, 0);
+                follow(dt);
+                return;
+            }
+            // A finger held still a moment walks it toward the place under it.
+            if (press && !press.aimed && !stick.active && press.type !== 'mouse' && performance.now() - press.time >= HOLD_AFTER) {
+                press.aimed = aimAt(press.x, press.y, true);
+            }
             if (turning !== null) {
                 state.heading += reducedMotion ? shortest(turning - state.heading) : shortest(turning - state.heading) * (1 - Math.exp(-5 * dt));
                 if (Math.abs(shortest(turning - state.heading)) < 0.01 || velocity.lengthSq() > 0.05) turning = null;
             }
-            stepWalker(dt);
+            const steps = Math.max(1, Math.ceil(walkDt / 0.05 - 1e-6));
+            for (let step = 0; step < steps; step += 1) stepWalker(walkDt / steps);
             follow(dt);
         },
 
@@ -1068,6 +1317,16 @@ export function createWalk({ light, reducedMotion }) {
          */
         render(renderer, elapsed) {
             if (ring) ring.visible = state.present && !state.walking;
+            if (targetRing) {
+                targetRing.visible = Boolean(destination) && state.walking;
+                if (targetRing.visible) {
+                    const breath = reducedMotion ? 0.5 : 0.5 + 0.5 * Math.sin(elapsed * 3.2);
+                    targetRing.position.set(destination.x, destination.y + 0.03, destination.z);
+                    const far = camera ? Math.max(1, camera.position.distanceTo(targetRing.position) * RING_FAR) : 1;
+                    targetRing.scale.setScalar(far * (1 + 0.1 * breath));
+                    targetRing.material.opacity = 0.3 + 0.3 * breath;
+                }
+            }
             if (!state.present) return;
             if (ring?.visible) {
                 // The ring breathes (holding still, where motion is reduced), and from far off keeps a size
