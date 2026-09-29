@@ -6,9 +6,10 @@
  * work and section it comes from, a "read on" link to the full text (naming
  * the page it opens at, where there is one), any links the place hosts (they
  * open in a new tab, so the city is still there to come back to), and, at its
- * foot, the thread on: "on to" the nearest place not yet read, "walk from
- * here" (as the shadow, from this place), and a quiet count of how many have
- * been read. Esc closes it, and focus returns to whatever
+ * foot, the thread on: "on to" the nearest place not yet read ("back to" a
+ * place read at before, when the thread comes round again), "walk from here"
+ * (as the shadow, from this place), and a quiet count of how many have been
+ * read. Esc closes it, and focus returns to whatever
  * opened it. A tap outside it closes it, and if the tap was on one of the
  * corner controls or links, that answers too (one tap, not two).
  */
@@ -62,8 +63,9 @@ function inSentence(label) {
  * @param {HTMLDialogElement} options.dialog
  * @param {Map<string, object>} options.places - place data by id
  * @param {() => void} [options.onClose]
- * @param {(fragment: object) => { next: object | null, read: number, total: number }} [options.onward] - where
- *   the thread goes on from a fragment, and how many of all there are to read have been
+ * @param {(fragment: object) => { next: object | null, returning: boolean, read: number, total: number }} [options.onward] -
+ *   where the thread goes on from a fragment (and whether that's back to a place read at before), and how many
+ *   of all there are to read have been
  * @param {(fragment: object) => void} [options.onOnward] - follow the thread to that fragment
  * @param {(fragment: object) => boolean} [options.canWalk] - whether the shadow can walk from a fragment's place
  * @param {(fragment: object) => void} [options.onWalkFrom] - walk as the shadow from there ("walk from here")
@@ -175,7 +177,8 @@ export function createReader({ dialog, places, onClose, onward, onOnward, canWal
                     const nextPlace = next ? places.get(next.place) : null;
                     const again = next && next.place === fragment.place;
                     onButton.hidden = !next;
-                    onButton.textContent = !next ? '' : again ? `more from ${inSentence(nextPlace.label)}` : `on to ${inSentence(nextPlace?.label ?? '')}`;
+                    const name = inSentence(nextPlace?.label ?? '');
+                    onButton.textContent = !next ? '' : again ? `more from ${name}` : way.returning ? `back to ${name}` : `on to ${name}`;
                     count.textContent = `${way.read} of ${way.total} read`;
                 }
             }

@@ -243,11 +243,14 @@ export function createHotspots({ stage, fragments, read, places, label, reducedM
     scene.add(points);
 
     // Glass, cloth and water don't hide a point; the sky and sea never stand in front of one, nor a passing hum.
-    const occluders = scene.children.filter((child) => child instanceof Mesh && !['sky', 'sea', 'glass', 'turquoise', 'hums', 'verti-pool', 'footlight-wash', 'walk-ring'].includes(child.name));
+    const occluders = scene.children.filter((child) => child instanceof Mesh && !['sky', 'sea', 'glass', 'turquoise', 'hums', 'verti-pool', 'footlight-wash', 'walk-ring', 'walk-target', 'sun-dock-light'].includes(child.name));
     const raycaster = new Raycaster();
     const projected = new Vector3();
     const drawingBuffer = new Vector2();
     let lit = null;
+    // The point the walking shadow is beside: its name stays up (the pointer passing over another point names
+    // that one for a moment, then gives it back), and the name can be clicked, to read it.
+    let pinned = null;
 
     function screenOf(entry) {
         projected.copy(entry.position).project(camera);
@@ -287,7 +290,13 @@ export function createHotspots({ stage, fragments, read, places, label, reducedM
         if (lit) attribute.setX(lit.index, 1);
         attribute.needsUpdate = true;
         label.hidden = !lit;
-        if (lit) label.textContent = places.get(lit.fragment.place).label;
+        if (lit) {
+            label.textContent = places.get(lit.fragment.place).label;
+            label.dataset.fragment = lit.fragment.id;
+        } else {
+            delete label.dataset.fragment;
+        }
+        label.classList.toggle('is-near', Boolean(lit) && lit === pinned);
     }
 
     rig.onTap((x, y, pointerType) => {
@@ -320,12 +329,12 @@ export function createHotspots({ stage, fragments, read, places, label, reducedM
         if (entry === hoverCandidate) return;
         hoverCandidate = entry;
         canvas.style.cursor = entry ? 'pointer' : '';
-        setLit(entry);
+        setLit(entry ?? pinned);
     });
     canvas.addEventListener('pointerleave', () => {
         hoverCandidate = null;
         canvas.style.cursor = '';
-        setLit(null);
+        setLit(pinned);
     });
 
     const isRead = (entry) => geometry.attributes.aRead.getX(entry.index) === 1;
@@ -378,9 +387,14 @@ export function createHotspots({ stage, fragments, read, places, label, reducedM
         },
         /** The city's solid surfaces, as the points are hidden by them (touch.js feels along the same). */
         occluders,
-        /** Light a point (from the list's focus) or none. */
-        light(fragment) {
-            setLit(fragment ? entries.find((entry) => entry.fragment.id === fragment.id) ?? null : null);
+        /**
+         * Light a point (from the list's focus) or none. Pinned (the walking shadow is beside it), it stays lit
+         * as the pointer passes over the city, and its name can be clicked.
+         */
+        light(fragment, { pin = false } = {}) {
+            const entry = fragment ? entries.find((candidate) => candidate.fragment.id === fragment.id) ?? null : null;
+            if (pin || !entry) pinned = pin ? entry : null;
+            setLit(entry);
         },
         /**
          * How near (x, y) is to the nearest point the city doesn't hide, within a tap's reach (CSS px); Infinity

@@ -156,6 +156,8 @@ const fragmentShader = /* glsl */ `
         float burst = smoothstep(0.35, 1.0, travel);
         float field = exp(-max(fromWall, 0.0) * 0.5) * (0.4 + 0.75 * burst);
         field += (smoothNoise(vWorld.xz * 2.2 + vec2(time * 0.5, -time * 0.35)) - 0.5) * 0.14;
+        // Beneath the sun-dock's light the water lies calm: the breakers don't burst there.
+        field *= 1.0 - 0.9 * exp(-dot(fromDock, fromDock) / 14.0) * step(0.01, warmth.z);
         float fringe = smoothstep(0.34, 0.38, field);
         float crest = smoothstep(0.62, 0.66, field);
         color = mix(color, violet, fringe * 0.85);
