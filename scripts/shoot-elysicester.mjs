@@ -64,6 +64,8 @@ const NO_WEBGL_ARGS = ['--disable-webgl', '--disable-3d-apis'];
 const LOAD_TIMEOUT = 90_000;
 /** The rig's own tap limit (rigs/orbit.js TAP_TIME): a longer press is no tap. */
 const TAP_LIMIT = 800;
+/** How many times a round presses again after a press too slow to be a tap (the phone pass draws ~1 frame a second). */
+const PRESSES = 6;
 const SERIOUS = new Set(['serious', 'critical']);
 
 const MIME = {
@@ -507,7 +509,7 @@ async function pointerRound(page, context, pass, fragments, outDir, name) {
         // and still opened nothing fails at once.
         let inspected = null;
         let slowPresses = 0;
-        for (let attempt = 0; attempt < 3; attempt += 1) {
+        for (let attempt = 0; attempt < PRESSES; attempt += 1) {
             const press = await pressAt(page, context, pass, { x: spot.x, y: spot.y });
             inspected = await inspectOpen(page, fragment, path.join(outDir, `${name}-panel-${fragment.id}.png`));
             if (inspected.matched || press < TAP_LIMIT) break;
@@ -551,7 +553,7 @@ async function signRound(page, context, pass, outDir, name) {
             // Let go of the programmatic focus, then tap the plate like a visitor (again, if the press was
             // too slow to be a tap: see pressAt).
             const tapped = { x: spot.x, y: spot.y };
-            for (let attempt = 0; attempt < 3; attempt += 1) {
+            for (let attempt = 0; attempt < PRESSES; attempt += 1) {
                 await page.evaluate(() => window.elysicesterDebug.signs.hide());
                 const press = await pressAt(page, context, pass, tapped);
                 await page.waitForTimeout(300);
