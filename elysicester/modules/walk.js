@@ -97,11 +97,24 @@ const LOOK_AT = 0.6;
 const CHASE = 1.0;
 /**
  * When a wall, a gable or a pole-top stands between the camera and the shadow, it rises over it, in so many
- * steps, up to this angle from straight overhead. (It never dives in closer: under an arch, it keeps the view
- * least hidden until the walker is through.)
+ * steps, up to this angle from straight overhead (never so far that it looks straight down: whatever still stands
+ * in the way is cut away instead, below). It never dives in closer: under an arch, it keeps the view least hidden
+ * until the walker is through.
  */
 const RISE_STEPS = 4;
-const RISE_TOP = 0.14;
+const RISE_TOP = 0.5;
+/**
+ * Walking, the camera keeps a little open air about its lens in everything (so it never stands inside a box),
+ * and when even its highest rise can't see the walker, whatever stands between them is cut away (walkerSees):
+ * a tunnel about the line of sight, narrow at the lens and widening toward the walker, stopping this far short
+ * of them, so the walls the shadow climbs beside them stay whole. (The ground is never cut.)
+ */
+const SIGHT_LENS = 1.1;
+const SIGHT_NEAR = 0.7;
+const SIGHT_FAR = 1.5;
+const SIGHT_KEEP = 2.4;
+/** Once cut, the way stays open this long after the view comes clear (so it doesn't flicker at an edge). */
+const SIGHT_HOLD = 0.6;
 /** And with each step up it stands this much further back (a share of its distance), well above the rooftops. */
 const RISE_PULL = 0.28;
 /** How long a lower view must stay clear before the camera settles back down to it (seconds). */
@@ -332,6 +345,9 @@ export function createWalk({ light, reducedMotion }) {
         walkerReach: { value: SHADOW_REACH / (LIGHT_FAR - 0.5) },
         // How near the camera the thin things aren't drawn (walkerClears): only while walking.
         walkClear: { value: 0 },
+        // The one casting the shadow, and whether what stands between them and the camera is cut away (walkerSees).
+        walkSight: { value: new Vector3() },
+        walkSightOn: { value: 0 },
     };
 
     const state = {
@@ -356,6 +372,8 @@ export function createWalk({ light, reducedMotion }) {
     let followTheta = lightTheta;
     let rise = 0;
     let settling = 0;
+    /** How much longer the way to the walker stays cut open (seconds; see SIGHT_HOLD). */
+    let sightHeld = 0;
     // Waiting at the jetty's end, it faces the sea; taken there, it turns to face the city (the heading it turns to).
     let turnsToCity = false;
     let turning = null;
@@ -612,6 +630,8 @@ export function createWalk({ light, reducedMotion }) {
         lead.lerp(ahead.copy(velocity).multiplyScalar(reducedMotion ? 0 : LEAD), 1 - Math.exp(-2.5 * dt));
         const target = rig.goal.target.copy(state.position).add(lead);
         target.y += TALL * LOOK_AT;
+        uniforms.walkSight.value.copy(state.position);
+        uniforms.walkSight.value.y += TALL * 0.5;
         // (Close against a wall, the one casting it may be all but in it: the sight is felt for from out of it.)
         sightFrom.copy(target);
         if (solids?.available) solids.push(sightFrom, 0.3);
@@ -647,6 +667,9 @@ export function createWalk({ light, reducedMotion }) {
         rig.goal.phi = rises[rise];
         rig.goal.theta = theta;
         rig.goal.radius = reach * (1 + RISE_PULL * rise);
+        // Still hidden at the view chosen: cut the way open (and keep it open a moment once it clears).
+        sightHeld = sightAt[rise] < 1 ? SIGHT_HOLD : Math.max(0, sightHeld - dt);
+        uniforms.walkSightOn.value = sightHeld > 0 ? 2 : 1;
         rig.atHome = false;
         rig.gliding = false;
     }
@@ -946,8 +969,10 @@ export function createWalk({ light, reducedMotion }) {
             followTheta = behindOf(turning ?? state.heading);
             rise = 0;
             settling = 0;
+            sightHeld = 0;
             lead.set(0, 0, 0);
             uniforms.walkClear.value = CLEAR_NEAR;
+            uniforms.walkSightOn.value = 1;
             hovering = false;
             if (label) label.hidden = true;
             canvas.style.cursor = '';
@@ -1005,6 +1030,7 @@ export function createWalk({ light, reducedMotion }) {
             state.walking = false;
             rig.handsOff = false;
             uniforms.walkClear.value = 0;
+            uniforms.walkSightOn.value = 0;
             keys.clear();
             releaseStick();
             velocity.set(0, 0, 0);
@@ -1150,6 +1176,44 @@ export function walkerClears(material, walk, scale = 1) {
         shader.fragmentShader = shader.fragmentShader
             .replace('#include <common>', '#include <common>\nuniform float walkClear;\nvarying vec3 vClearWorld;')
             .replace('void main() {', `void main() {\n    if (distance(vClearWorld, cameraPosition) < walkClear * ${scale.toFixed(2)}) discard;`);
+    });
+    return material;
+}
+
+/**
+ * Cut away, while walking, whatever of a material stands between the camera and the one casting the shadow
+ * (the playtester's roofs, that hid the shadow and sent the camera up to look straight down): a tunnel about
+ * the line of sight, SIGHT_NEAR wide at the lens and SIGHT_FAR toward the walker, ending SIGHT_KEEP short of
+ * them. The cut is clean (a dithered edge set the ink pass drawing round every speck), and the city's ink draws
+ * one line round what's cut, as a drawn cutaway would.
+ * @param {import('three').Material} material
+ * @param {ReturnType<typeof createWalk>} walk
+ */
+export function walkerSees(material, walk) {
+    alsoBeforeCompile(material, 'walker-sees', (shader) => {
+        shader.uniforms.walkSight = walk.uniforms.walkSight;
+        shader.uniforms.walkSightOn = walk.uniforms.walkSightOn;
+        shader.vertexShader = shader.vertexShader
+            .replace('#include <common>', '#include <common>\nvarying vec3 vSightWorld;')
+            .replace('#include <begin_vertex>', '#include <begin_vertex>\nvSightWorld = (modelMatrix * vec4(transformed, 1.0)).xyz;');
+        shader.fragmentShader = shader.fragmentShader
+            .replace('#include <common>', '#include <common>\nuniform vec3 walkSight;\nuniform float walkSightOn;\nvarying vec3 vSightWorld;')
+            .replace('void main() {', [
+                'void main() {',
+                `    if (walkSightOn > 0.5 && distance(vSightWorld, cameraPosition) < ${SIGHT_LENS.toFixed(2)}) discard;`,
+                '    if (walkSightOn > 1.5) {',
+                '        vec3 way = walkSight - cameraPosition;',
+                '        float reach = max(length(way), 1e-3);',
+                '        float along = dot(vSightWorld - cameraPosition, way) / (reach * reach);',
+                `        float stop = 1.0 - ${SIGHT_KEEP.toFixed(2)} / reach;`,
+                '        if (along > 0.0 && along < stop) {',
+                '            float off = distance(vSightWorld, cameraPosition + way * along);',
+                `            float radius = mix(${SIGHT_NEAR.toFixed(2)}, ${SIGHT_FAR.toFixed(2)}, along / max(stop, 1e-3));`,
+                '            radius *= smoothstep(stop, stop - 0.1, along);',
+                '            if (off < radius) discard;',
+                '        }',
+                '    }',
+            ].join('\n'));
     });
     return material;
 }

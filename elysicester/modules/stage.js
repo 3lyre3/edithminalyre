@@ -33,7 +33,7 @@ import { buildIsland } from './island.js';
 import { stagePaper } from './paper.js';
 import { buildPlaces } from './places.js';
 import { OrbitRig } from './rigs/orbit.js';
-import { WALKER_GLSL, createWalk, walkerClears, walkerShadow } from './walk.js';
+import { WALKER_GLSL, createWalk, walkerClears, walkerSees, walkerShadow } from './walk.js';
 import { createSea } from './sea.js';
 import { createSigns } from './signs.js';
 import { createSky } from './sky.js';
@@ -205,6 +205,10 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         for (const key of [...HOLLOWED, 'rock']) walkerShadow(materials[key], walk);
         walkerClears(materials.steel, walk);
         walkerClears(materials.turquoise, walk, 1.5);
+        // Whatever stands between the camera and the walker is cut away as they walk (never the ground or the rock).
+        for (const key of ['gold', 'bricking', 'brick', 'stone', 'steel', 'turquoise', 'copper', 'arch', 'glass', 'amethyst', 'glow', 'sign', 'weed']) {
+            walkerSees(materials[key], walk);
+        }
         sea.receiveWalker(WALKER_GLSL, walk.uniforms);
     }
     await pause();
