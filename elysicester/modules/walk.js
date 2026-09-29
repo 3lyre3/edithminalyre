@@ -99,6 +99,8 @@ const CHASE = 1.0;
  */
 const RISE_STEPS = 4;
 const RISE_TOP = 0.14;
+/** And with each step up it stands this much further back (a share of its distance), well above the rooftops. */
+const RISE_PULL = 0.28;
 /** How long a lower view must stay clear before the camera settles back down to it (seconds). */
 const SETTLE = 0.9;
 /** The open air the camera keeps about itself, walking, so no pole-top or gable ever fills the view. */
@@ -374,6 +376,7 @@ export function createWalk({ light, reducedMotion }) {
     const forward = new Vector3();
     const right = new Vector3();
     const next = new Vector3();
+    const out = new Vector3();
     const probe = new Vector3();
     const side = new Vector3();
     const raycaster = new Raycaster();
@@ -438,6 +441,52 @@ export function createWalk({ light, reducedMotion }) {
         return false;
     }
 
+    /** Whether the walls map marks the cell at (x, z) itself as a wall. */
+    function wallCell(x, z) {
+        const walls = hollowMap?.walls;
+        if (!walls) return false;
+        const col = Math.floor((x - HOLLOW_REGION.x0) / WALLS_CELL);
+        const row = Math.floor((z - HOLLOW_REGION.z0) / WALLS_CELL);
+        if (col < 0 || row < 0 || col >= hollowMap.wallsAcross) return false;
+        return walls[row * hollowMap.wallsAcross + col] === 1;
+    }
+
+    /** Which way is out, from the walls about (x, z): a unit step away from them on the ground, or null. */
+    function wallNormal(x, z) {
+        let sx = 0;
+        let sz = 0;
+        for (const radius of [GIRTH + 0.12, GIRTH + 0.26]) {
+            for (let k = 0; k < 16; k += 1) {
+                const angle = (k / 16) * Math.PI * 2;
+                if (!wallCell(x + Math.cos(angle) * radius, z + Math.sin(angle) * radius)) continue;
+                sx -= Math.cos(angle);
+                sz -= Math.sin(angle);
+            }
+            if (sx || sz) break;
+        }
+        const length = Math.hypot(sx, sz);
+        return length > 1e-6 ? out.set(sx / length, 0, sz / length) : null;
+    }
+
+    /**
+     * Blocked every way it turned, slide along whatever's in the way: the part of the step that goes into the
+     * wall taken out (head on, a step along the wall on the side it leant to), and a hair's push out from it.
+     */
+    function slideAlong(dx, dz) {
+        const normal = wallNormal(state.position.x, state.position.z);
+        if (!normal) return false;
+        const length = Math.hypot(dx, dz);
+        const into = Math.min(0, dx * normal.x + dz * normal.z);
+        let tx = dx - into * normal.x;
+        let tz = dz - into * normal.z;
+        if (Math.hypot(tx, tz) < 0.35 * length) {
+            const lean = dx * -normal.z + dz * normal.x >= 0 ? 1 : -1;
+            tx = -normal.z * lean * 0.6 * length;
+            tz = normal.x * lean * 0.6 * length;
+        }
+        return tryStep(tx + normal.x * 0.015, tz + normal.z * 0.015) || tryStep(tx * 0.5 + normal.x * 0.03, tz * 0.5 + normal.z * 0.03);
+    }
+
     /**
      * Try a step from the walker's place by (dx, dz): true, with `next` set, if
      * there's floor within a step's height and no wall there. (Standing in a
@@ -486,13 +535,13 @@ export function createWalk({ light, reducedMotion }) {
             const dx = velocity.x * dt;
             const dz = velocity.z * dt;
             // Straight on if there's room; else slipping a little to one side or the other (round a pole or a
-            // corner), a little shorter; else along whatever's in the way; else not at all.
+            // corner), a little shorter; else sliding along whatever's in the way; else not at all.
             const slips = SLIPS.some(([turn, reach]) => {
                 const cos = Math.cos(turn) * reach;
                 const sin = Math.sin(turn) * reach;
                 return tryStep(dx * cos - dz * sin, dx * sin + dz * cos);
             });
-            if (slips || (Math.abs(dx) > 1e-6 && tryStep(dx, 0)) || (Math.abs(dz) > 1e-6 && tryStep(0, dz))) {
+            if (slips || slideAlong(dx, dz) || (Math.abs(dx) > 1e-6 && tryStep(dx, 0)) || (Math.abs(dz) > 1e-6 && tryStep(0, dz))) {
                 moved = Math.hypot(next.x - state.position.x, next.z - state.position.z);
                 state.position.copy(next);
             } else {
@@ -553,8 +602,9 @@ export function createWalk({ light, reducedMotion }) {
         let leastHidden = 0;
         for (let index = 0; index <= RISE_STEPS; index += 1) {
             rises[index] = FOLLOW_PHI - ((FOLLOW_PHI - RISE_TOP) * index) / RISE_STEPS;
-            sightAt[index] = sightLine(sightFrom, theta, rises[index], reach);
-            clearAt[index] = sightAt[index] >= reach && roomAt(sightFrom, reach);
+            const back = reach * (1 + RISE_PULL * index);
+            sightAt[index] = sightLine(sightFrom, theta, rises[index], back) / back;
+            clearAt[index] = sightAt[index] >= 1 && roomAt(sightFrom, back);
             if (lowest < 0 && clearAt[index]) lowest = index;
             if (sightAt[index] > sightAt[leastHidden] + 0.05) leastHidden = index;
         }
@@ -576,7 +626,7 @@ export function createWalk({ light, reducedMotion }) {
         }
         rig.goal.phi = rises[rise];
         rig.goal.theta = theta;
-        rig.goal.radius = reach;
+        rig.goal.radius = reach * (1 + RISE_PULL * rise);
         rig.atHome = false;
         rig.gliding = false;
     }

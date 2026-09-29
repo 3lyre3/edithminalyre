@@ -42,6 +42,8 @@ const CLEARANCE = 0.7;
 const LET_GO = 3;
 /** And how many frames it may be held short of a flight's end before it takes the last step anyway. */
 const HOLD_FRAMES = 20;
+/** Where a place's own view is blocked, the turns (radians) tried in order for a clear one: the nearest first. */
+const CLEAR_TURNS = [0, 0.35, -0.35, 0.7, -0.7, 1.05, -1.05, 1.4, -1.4, 1.75, -1.75, 2.1, -2.1, 2.6, -2.6, Math.PI];
 
 /** Half the height and width, in world units, the whole-diorama view must hold. */
 const HALF_HEIGHT = 37;
@@ -250,7 +252,10 @@ export class OrbitRig {
         this.goal.target.copy(position);
         this.goal.radius = focus.distance;
         this.goal.phi = Math.acos(MathUtils.clamp(focus.height / focus.distance, -0.95, 0.95));
-        this.goal.theta = this.now.theta + shortest(theta - this.now.theta);
+        // Looking from the island's middle outward (no side was chosen): if something solid stands between that
+        // view and the point, come round to the nearest side that sees it.
+        const clear = facing === undefined || facing === null ? this.clearTheta(position, theta, this.goal.phi, focus.distance) : theta;
+        this.goal.theta = this.now.theta + shortest(clear - this.now.theta);
         this.atHome = false;
         this.idle = 0;
         this.gliding = true;
@@ -309,6 +314,32 @@ export class OrbitRig {
         }
         this.placed = true;
         this.camera.lookAt(this.now.target);
+    }
+
+    /**
+     * The way round (an angle, nearest to `theta` first) from which a camera `distance` back, at `phi` from
+     * overhead, would see `target` with nothing solid between: felt along the line in the solids field's own
+     * strides. Without the solids yet, or if no side is clear, `theta` itself.
+     */
+    clearTheta(target, theta, phi, distance) {
+        if (!this.solids?.available) return theta;
+        const sinPhi = Math.sin(phi);
+        for (const turn of CLEAR_TURNS) {
+            const way = theta + turn;
+            this.offset.set(sinPhi * Math.sin(way), Math.cos(phi), sinPhi * Math.cos(way));
+            let along = 0.8;
+            let seen = true;
+            for (let stride = 0; stride < 64 && along < distance; stride += 1) {
+                const gap = this.solids.distance(this.probe.copy(target).addScaledVector(this.offset, along));
+                if (gap < 0.2) {
+                    seen = false;
+                    break;
+                }
+                along += Math.max(gap * 0.9, 0.15);
+            }
+            if (seen) return way;
+        }
+        return theta;
     }
 
     /** True once the eased state has all but reached the goal. */

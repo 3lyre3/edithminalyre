@@ -481,7 +481,150 @@ function addHouse(buckets, random, x, z, height, style, detail, { keepsTheStreet
 /** Where a house goes that is drawn but not built. */
 const UNBUILT = { add() {} };
 
-function buildHouses(buckets, random, byId) {
+/**
+ * The grand city (?city=grand; Elm: "what if we aimed for far fewer buildings but much larger?"): a few
+ * broad halls in place of the many small houses, in the vocabulary of her plates' tiny buildings, grown up:
+ * an arcade of dark arches along the foot, storeys of small square windows above it (her dot windows), a
+ * drawn cornice at every storey, and a roof (a gable, a pyramid, a dome with its lantern, or a flat top
+ * behind a parapet); now and then a tower at the front with a spire and a cross.
+ */
+const HALLS = 24;
+const HALL_STOREY = 1.5;
+
+function addHall(buckets, random, x, z, { width, depth, height, style, turn, tower }) {
+    const pieces = [];
+    const glows = [];
+    const wall = new Color(GOLDS[Math.floor(random() * GOLDS.length)])
+        .offsetHSL(random.range(-0.012, 0.012), random.range(-0.07, 0.03), random.range(-0.05, 0.04));
+    const roof = random() < 0.25 ? ROOF_ACCENTS[Math.floor(random() * ROOF_ACCENTS.length)] : GOLD_ROOFS[Math.floor(random() * GOLD_ROOFS.length)];
+    const trim = wall.clone().offsetHSL(0, 0.02, -0.13);
+    const darkWindow = wall.clone().multiplyScalar(0.34);
+    const plinth = 0.45;
+
+    pieces.push(bevelBox(width + 0.3, plinth, depth + 0.3, { y: plinth / 2 }, wall.clone().offsetHSL(0, 0, -0.06)));
+    pieces.push(bevelBox(width, height, depth, { y: height / 2 }, wall));
+    // A drawn line at every storey.
+    for (let y = plinth + HALL_STOREY + 0.3; y < height - 0.5; y += HALL_STOREY) {
+        pieces.push(box(width + 0.08, 0.07, depth + 0.08, { y }, trim));
+    }
+
+    // Round the four faces: the arcade at the foot, the dot windows above.
+    const faces = [
+        { across: width, out: depth / 2 + 0.02, turn: 0 },
+        { across: width, out: depth / 2 + 0.02, turn: Math.PI },
+        { across: depth, out: width / 2 + 0.02, turn: Math.PI / 2 },
+        { across: depth, out: width / 2 + 0.02, turn: -Math.PI / 2 },
+    ];
+    faces.forEach((face, side) => {
+        // A point on this face, `along` it from its middle, at height y, turned to face out.
+        const at = (along, y) => {
+            const c = Math.cos(face.turn);
+            const s = Math.sin(face.turn);
+            return { x: along * c + face.out * s, y, z: -along * s + face.out * c, ry: face.turn };
+        };
+        const bays = Math.max(2, Math.round(face.across / 1.2));
+        const bay = face.across / bays;
+        for (let index = 0; index < bays; index += 1) {
+            const along = -face.across / 2 + bay * (index + 0.5);
+            const lit = windowLight(x + along * 0.37, z + side * 1.7, 0, side + 2);
+            const color = lit ? WINDOW_LOW : SHADOW;
+            const opening = box(0.58, 0.8, 0.05, at(along, plinth + 0.4), color);
+            const top = paint(pose(new CylinderGeometry(0.29, 0.29, 0.05, 10), { ...at(along, plinth + 0.8), rx: Math.PI / 2 }), color);
+            (lit ? glows : pieces).push(opening, top);
+        }
+        const columns = Math.max(1, Math.floor((face.across - 0.5) / 0.72));
+        const spacing = (face.across - 0.5) / columns;
+        let row = 0;
+        for (let y = plinth + HALL_STOREY + 0.75; y + 0.3 < height - 0.35; y += HALL_STOREY, row += 1) {
+            for (let column = 0; column < columns; column += 1) {
+                const along = -face.across / 2 + 0.25 + spacing * (column + 0.5);
+                const glowing = windowLight(x + along, z + y * 0.61 + side * 3.1, row, side);
+                if (glowing) glows.push(box(0.22, 0.3, 0.04, at(along, y), glowing));
+                else pieces.push(box(0.22, 0.3, 0.04, at(along, y), darkWindow));
+            }
+        }
+    });
+
+    // The roof, and under it (but for a flat one) a cornice.
+    let crown = height;
+    if (style !== 'flat') pieces.push(box(width + 0.16, 0.14, depth + 0.16, { y: height - 0.05 }, trim));
+    if (style === 'gable') {
+        const rise = Math.min(width, depth) * 0.42;
+        pieces.push(gable(width + 0.3, rise, depth + 0.3, { y: height }, roof));
+        crown = height + rise;
+    } else if (style === 'pyramid') {
+        const rise = Math.max(width, depth) * 0.5;
+        pieces.push(cone(Math.max(width, depth) * 0.74, rise, 4, { y: height + rise / 2, ry: Math.PI / 4 }, roof));
+        crown = height + rise;
+    } else if (style === 'dome') {
+        const radius = Math.min(width, depth) * 0.38;
+        pieces.push(cylinder(radius * 1.04, radius * 1.04, 0.5, 18, { y: height + 0.25 }, trim));
+        pieces.push(paint(pose(new SphereGeometry(radius, 18, 8, 0, Math.PI * 2, 0, Math.PI / 2), { y: height + 0.5 }), roof));
+        pieces.push(cylinder(0.18, 0.2, 0.55, 8, { y: height + 0.5 + radius + 0.2 }, wall));
+        pieces.push(cone(0.26, 0.7, 8, { y: height + 0.5 + radius + 0.8 }, GOLDS[3]));
+        crown = height + 0.5 + radius + 1.15;
+    } else {
+        pieces.push(box(width + 0.2, 0.26, depth + 0.2, { y: height + 0.13 }, roof));
+        for (const [w, d, px, pz] of [[width + 0.2, 0.14, 0, depth / 2 + 0.03], [width + 0.2, 0.14, 0, -depth / 2 - 0.03], [0.14, depth + 0.2, width / 2 + 0.03, 0], [0.14, depth + 0.2, -width / 2 - 0.03, 0]]) {
+            pieces.push(box(w, 0.36, d, { x: px, y: height + 0.44, z: pz }, trim));
+        }
+        crown = height + 0.6;
+    }
+
+    // Now and then a tower at the front, with a spire and a cross, as her plates' tiny buildings have.
+    if (tower) {
+        const rise = 1.8;
+        const at = { z: depth / 2 - 0.55 };
+        pieces.push(bevelBox(1.0, crown - height + rise, 1.0, { ...at, y: height + (crown - height + rise) / 2 }, wall.clone().offsetHSL(0, 0, 0.03)));
+        const base = crown + rise;
+        pieces.push(box(1.12, 0.12, 1.12, { ...at, y: base }, trim));
+        pieces.push(cone(0.46, 3.0, 8, { ...at, y: base + 1.5 }, roof));
+        pieces.push(box(0.07, 0.62, 0.07, { ...at, y: base + 3.25 }, GOLDS[3]));
+        pieces.push(box(0.34, 0.07, 0.07, { ...at, y: base + 3.36 }, GOLDS[3]));
+        glows.push(box(0.2, 0.34, 0.04, { x: 0, y: crown + rise * 0.55, z: depth / 2 - 0.03 }, WINDOW));
+    }
+
+    const at = { x, y: groundY(x, z) - 0.05, z, ry: turn };
+    for (const piece of frame(pieces, at)) buckets.add('gold', piece);
+    for (const piece of frame(glows, at)) buckets.add('glow', piece);
+}
+
+/**
+ * The grand city's halls, from a stream of their own, where there's room between the streets and the places.
+ * (Where one stands between a reading point and its camera, the camera comes round to a clear side: orbit.js.)
+ */
+function buildHalls(buckets, byId, zones, standing) {
+    const random = createRandom(5171);
+    const [gx, , gz] = byId.get('steel-garden').position;
+    const halls = [];
+    const styles = ['gable', 'flat', 'dome', 'pyramid', 'gable', 'flat'];
+    for (let attempt = 0; attempt < 8000 && halls.length < HALLS; attempt += 1) {
+        const x = random.range(-26, 8);
+        const z = random.range(-27, 27);
+        // The great halls take their room first; later, smaller ones fill what room is left between them.
+        const later = Math.min(1, attempt / 5000);
+        const width = random.range(3.2 - 0.6 * later, 5.4 - 1.6 * later);
+        const depth = random.range(3.2 - 0.6 * later, 5.4 - 1.6 * later);
+        const turn = random.pick([0, 0, Math.PI / 2, 0.05, -0.05]);
+        const reach = Math.hypot(width, depth) / 2;
+        if (!onLand(x, z, reach + 1.0)) continue;
+        const corners = [[0, 0], [0.5, 0.5], [0.5, -0.5], [-0.5, 0.5], [-0.5, -0.5]].map(([u, v]) => [x + u * width, z + v * depth]);
+        if (corners.some(([cx, cz]) => zones.some((inside) => inside(cx, cz)))) continue;
+        if (Math.hypot(x - gx, z - gz) < GARDEN_ROOM + reach * 0.6) continue;
+        if (standsInStreet(x, z, width + 0.9, depth + 0.9, turn)) continue;
+        if (standing.some(([px, pz]) => Math.hypot(px - x, pz - z) < reach + 2.0)) continue;
+        if (halls.some((hall) => Math.hypot(hall.x - x, hall.z - z) < reach + hall.reach + 0.7)) continue;
+        const westness = Math.min(1, Math.max(0, -x / 24));
+        const height = random.range(4.2, 6.2) + westness * random.range(2, 5.5);
+        const style = styles[Math.floor(random() * styles.length)];
+        const tower = style !== 'dome' && random() < 0.3;
+        addHall(buckets, random, x, z, { width, depth, height, style, turn, tower });
+        halls.push({ x, z, reach });
+    }
+    return halls.length;
+}
+
+function buildHouses(buckets, random, byId, { grand = false } = {}) {
     const zones = clearZones(byId);
     const placed = [];
     // The houses' finer variety draws on a stream of its own, so the shared one runs as before.
@@ -519,11 +662,14 @@ function buildHouses(buckets, random, byId) {
         const height = random.range(1.8, 3.4) + westness * random.range(1.5, 4.5);
         const crowds = Math.hypot(x - gx, z - gz) < GARDEN_ROOM;
         if (crowds) cleared += 1;
-        const { built } = addHouse(crowds ? UNBUILT : buckets, random, x, z, height, styles[Math.floor(random() * styles.length)], detail);
-        if (!crowds && !built) streets += 1;
+        // In the grand city the small houses are drawn from the stream all the same (so every place keeps its
+        // look), but none is built: the halls stand in their stead.
+        const { built } = addHouse(crowds || grand ? UNBUILT : buckets, random, x, z, height, styles[Math.floor(random() * styles.length)], detail);
+        if (!crowds && !built && !grand) streets += 1;
         if (built) standing.push([x, z]);
         placed.push([x, z]);
     }
+    if (grand) return { built: standing.length, cleared, streets: 0, infill: 0, halls: buildHalls(buckets, byId, zones, standing) };
 
     // As many again as the streets cleared, as far as there's room for them between the streets (there is for
     // most: fifteen of twenty-two), from a stream of their own, so nothing else in the city moves.
@@ -1568,7 +1714,9 @@ export async function buildPlaces(buckets, placeData, materials, pause = async (
     buildWall(buckets, mounts);
     buildPavements(buckets);
     await pause();
-    const houses = buildHouses(buckets, random, byId);
+    // ?city=grand: far fewer buildings, much larger (Elm's idea), to set beside the city of small houses.
+    const grand = new URLSearchParams(globalThis.location?.search ?? '').get('city') === 'grand';
+    const houses = buildHouses(buckets, random, byId, { grand });
     await pause();
     buildSignalTowers(buckets);
 
