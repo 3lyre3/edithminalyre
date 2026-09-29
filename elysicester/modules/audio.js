@@ -6,7 +6,8 @@
  * that opens and closes like surf, its loudness swelling with each wave. And
  * now and then, somewhere along the wall, a wave breaks ("the sea erupts in
  * bursts of silver and violet", Numbers by Paint, Episode 1): a short hiss that
- * sweeps down and dies away, a little to one side or the other. Sound is off
+ * sweeps down and dies away, a little to one side or the other. Things the
+ * visitor touches answer softly in their own voices (answer). Sound is off
  * unless the visitor switches it on, and the choice is remembered. The
  * AudioContext is only ever made inside a visitor's gesture, as browsers ask.
  */
@@ -74,6 +75,77 @@ function breaker(context, output, noise) {
         gain.connect(output);
     }
     source.start(now, Math.random() * Math.max(0, noise.duration - length), length);
+}
+
+/**
+ * A touch answered, softly, in the thing's own voice: the steel sycamore's leaves rustle, a bird statue rings
+ * like struck metal, a small dog's feet patter, and the rock's underside gives a deep swell.
+ */
+function answer(context, output, noise, kind) {
+    const now = context.currentTime;
+    const envelope = (gain, peak, rise, fall) => {
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.exponentialRampToValueAtTime(peak, now + rise);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + rise + fall);
+    };
+    if (kind === 'tree') {
+        // Three quick, bright brushes of noise, one on another.
+        for (let brush = 0; brush < 3; brush += 1) {
+            const at = now + brush * 0.09;
+            const source = context.createBufferSource();
+            source.buffer = noise;
+            const band = context.createBiquadFilter();
+            band.type = 'bandpass';
+            band.frequency.value = 3200 + brush * 700;
+            band.Q.value = 1.4;
+            const gain = context.createGain();
+            gain.gain.setValueAtTime(0.0001, at);
+            gain.gain.exponentialRampToValueAtTime(0.22, at + 0.03);
+            gain.gain.exponentialRampToValueAtTime(0.0001, at + 0.32);
+            source.connect(band).connect(gain).connect(output);
+            source.start(at, Math.random() * (noise.duration - 0.4), 0.4);
+        }
+    } else if (kind === 'statue') {
+        // Struck metal: a few inharmonic partials, the higher dying first.
+        for (const [ratio, level, fall] of [[1, 0.16, 2.2], [1.58, 0.1, 1.6], [2.37, 0.07, 1.1], [3.35, 0.04, 0.7]]) {
+            const tone = context.createOscillator();
+            tone.frequency.value = 523 * ratio;
+            const gain = context.createGain();
+            envelope(gain, level, 0.005, fall);
+            tone.connect(gain).connect(output);
+            tone.start(now);
+            tone.stop(now + fall + 0.05);
+        }
+    } else if (kind === 'dog') {
+        // A little patter: two soft, low taps.
+        for (const step of [0, 0.11]) {
+            const tone = context.createOscillator();
+            tone.frequency.setValueAtTime(190, now + step);
+            tone.frequency.exponentialRampToValueAtTime(120, now + step + 0.07);
+            const gain = context.createGain();
+            gain.gain.setValueAtTime(0.0001, now + step);
+            gain.gain.exponentialRampToValueAtTime(0.2, now + step + 0.01);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + step + 0.09);
+            tone.connect(gain).connect(output);
+            tone.start(now + step);
+            tone.stop(now + step + 0.12);
+        }
+    } else {
+        // The underside: a deep swell, rising and settling.
+        const warmth = context.createBiquadFilter();
+        warmth.type = 'lowpass';
+        warmth.frequency.value = 160;
+        const gain = context.createGain();
+        envelope(gain, 0.3, 0.7, 1.6);
+        for (const frequency of [49, 73.5]) {
+            const tone = context.createOscillator();
+            tone.frequency.value = frequency;
+            tone.connect(warmth);
+            tone.start(now);
+            tone.stop(now + 2.4);
+        }
+        warmth.connect(gain).connect(output);
+    }
 }
 
 function build(context) {
@@ -184,6 +256,11 @@ export function createAudio() {
             window.setTimeout(() => {
                 if (!on) context.suspend();
             }, 1500);
+        },
+        /** A touch answered (touch.js): 'tree', 'statue', 'dog' or 'underside'. Silent unless the sound is on. */
+        answer(kind) {
+            if (!on || !context || context.state !== 'running') return;
+            answer(context, master, noise, kind);
         },
         /** "off" until started; then the context's own state. */
         get state() {

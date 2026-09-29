@@ -84,6 +84,14 @@
       "focus": { "distance": 18, "height": 6 }
     },
     {
+      "id": "underside",
+      "tier": 1,
+      "district": "beneath",
+      "label": "The underside",
+      "position": [4, -25, 3],
+      "focus": { "distance": 30, "height": -9.7 }
+    },
+    {
       "id": "blue-beach",
       "tier": 2,
       "district": "mainland",

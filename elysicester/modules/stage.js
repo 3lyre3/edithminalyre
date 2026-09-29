@@ -350,6 +350,8 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         canvas,
         /** Walking as the shadow (walk.js), where the address asks for it; else null. */
         walk,
+        /** What a touch may find in the city, and the words each opens (places.js; touch.js reads it). */
+        touch: places.touch,
         start() {
             if (running) return;
             running = true;

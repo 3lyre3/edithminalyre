@@ -2,18 +2,21 @@
  * threshold.js — the way in: the Mega-Screen, then the Intermaze.
  *
  * The Mega-Screen's title card comes first: a dark screen across which
- * enormous italic letters roll in from the right, a short step left with each
+ * enormous letters roll in from the right, a short step left with each
  * flicker, spelling INSERT BLUTIX (Numbers by Paint, Episode 1, p. 29). One tap
  * or keypress begins, and that same gesture unlocks sound if the visitor has
  * switched it on.
  *
  * Then the Intermaze: a flight through shifting, mirror-coloured depths and
  * blue-red mirror-gates ringed with nodes, after the wheel at the centre of
- * Elm's cosmology plate. It doubles as the loading screen: it ends once the
- * city is ready and a minimum passage has played. A tap or Esc skips it (the
- * city still has to be ready). On the way, E's inner voice surfaces a line at a
- * time. Under reduced motion there is no flight; the card crossfades to the
- * city.
+ * Elm's cosmology plate, drawn in characters as ASCII art is (Elm's ask): each
+ * cell of a grid takes the maze's colour at its middle, and a character as
+ * dense as that colour is bright. In front of it stand the solid, round bars
+ * of the Heltix's caged chassis, and the rail E leans against. The flight
+ * doubles as the loading screen: it ends once the city is ready and a minimum
+ * passage has played. A tap or Esc skips it (the city still has to be ready).
+ * On the way, E's inner voice surfaces a line at a time. Under reduced motion
+ * there is no flight; the card crossfades to the city.
  */
 
 // =============================================================================
@@ -22,7 +25,9 @@
 
 import {
     BufferGeometry,
+    CanvasTexture,
     Float32BufferAttribute,
+    LinearFilter,
     Mesh,
     OrthographicCamera,
     Scene,
@@ -34,14 +39,30 @@ import {
 // Constants
 // =============================================================================
 
-/** Each of E's lines stays long enough to read: a base, plus a little for every word. */
-const LINE_BASE = 0.7;
-const LINE_PER_WORD = 0.24;
-const LINE_MIN = 1.2;
-const LINE_MAX = 3.4;
+/** Each of E's lines stays long enough to read (and re-read): a base, plus a little for every word. */
+const LINE_BASE = 1.0;
+const LINE_PER_WORD = 0.3;
+const LINE_MIN = 1.6;
+const LINE_MAX = 4.6;
 const FADE_IN = 0.8;
 const FADE_OUT = 0.45;
 const CROSSFADE_MS = 900;
+
+/**
+ * The Intermaze's characters: at least this many rows down the screen and columns across it (so a phone held
+ * upright still draws the tunnel finely enough to see its shape), each cell this wide for its height.
+ */
+const ROWS = 44;
+const COLUMNS = 48;
+const CELL_ASPECT = 0.6;
+
+/** The characters it may be drawn in (measured, then ranked from sparsest to densest), and how many ranks. */
+const CHARACTERS = ` .'\`,:;-~_^"=+!<>*icvxzuoaeX#%&@`;
+const RANKS = 16;
+
+/** A character's cell in the atlas, in pixels. */
+const GLYPH_WIDTH = 40;
+const GLYPH_HEIGHT = 64;
 
 const vertexShader = /* glsl */ `
     void main() {
@@ -53,6 +74,9 @@ const fragmentShader = /* glsl */ `
     uniform float time;
     uniform vec2 resolution;
     uniform float fade;
+    uniform sampler2D glyphs;
+    uniform float glyphCount;
+    uniform vec2 cell;
 
     float hash12(vec2 p) {
         vec3 p3 = fract(vec3(p.xyx) * 0.1031);
@@ -65,9 +89,8 @@ const fragmentShader = /* glsl */ `
         return 0.5 + 0.5 * cos(6.2831853 * (vec3(0.0, 0.1, 0.2) + t));
     }
 
-    void main() {
-        vec2 p = (gl_FragCoord.xy - 0.5 * resolution) / resolution.y;
-        vec2 uv = gl_FragCoord.xy / resolution;
+    // The Intermaze at a point of the view (centred, in screen heights).
+    vec3 maze(vec2 p) {
         float r = length(p);
         float a = atan(p.y, p.x);
 
@@ -95,23 +118,63 @@ const fragmentShader = /* glsl */ `
 
         // The pale nether ahead, and the dark of the well at the edges of sight.
         color += vec3(0.95, 0.9, 1.0) * exp(-r * 9.0) * 0.9;
-        color *= 0.3 + 0.7 * smoothstep(1.2, 0.2, r);
+        return color * (0.3 + 0.7 * smoothstep(1.2, 0.2, r));
+    }
 
-        // The bars of the Heltix's caged chassis, two to each side, swaying a little;
-        // and the rail E leans against, low across the view, with a glint along its top.
+    // One round iron bar of the chassis, across its width (s from -1 to 1), lit from the nether ahead on
+    // the side toward the middle of the view (inward: +1 or -1). Returns its colour and how much of the
+    // pixel it covers (w: its edge's softness, in the same units as s).
+    vec4 bar(float s, float inward, float w, vec3 behind) {
+        float cover = smoothstep(1.0 + w, 1.0 - w, abs(s));
+        float c = clamp(s, -1.0, 1.0);
+        vec2 normal = vec2(c, sqrt(1.0 - c * c));
+        vec2 light = normalize(vec2(0.75 * inward, 0.65));
+        float diffuse = max(dot(normal, light), 0.0);
+        float shine = pow(max(dot(normal, normalize(light + vec2(0.0, 1.0))), 0.0), 28.0);
+        // Gunmetal with a body to it (so the whole bar reads against the dark, not only its lit side), the
+        // maze's colours caught along the lit side, a hard shine, and a little of the glow on the far edge.
+        vec3 iron = vec3(0.16, 0.14, 0.19) * (0.35 + 0.95 * diffuse) + behind * 0.16 * diffuse;
+        iron += vec3(0.95, 0.88, 1.0) * shine * 0.65;
+        iron += behind * 0.1 * smoothstep(0.55, 0.9, -c * inward);
+        // A drawn edge, as the city's ink has.
+        iron *= 1.0 - 0.8 * smoothstep(0.8, 0.99, abs(s));
+        return vec4(iron, cover);
+    }
+
+    void main() {
+        vec2 uv = gl_FragCoord.xy / resolution;
+
+        // The maze, in characters: each cell takes its colour at the cell's middle, and a character as dense
+        // as that colour is bright; a faint glow of the colour behind, so the tunnel's shape still carries.
+        vec2 cellIndex = floor(gl_FragCoord.xy / cell);
+        vec2 middle = (cellIndex + 0.5) * cell;
+        vec3 tone = maze((middle - 0.5 * resolution) / resolution.y);
+        float bright = clamp(dot(tone, vec3(0.3, 0.55, 0.15)), 0.0, 1.0);
+        float rank = min(glyphCount - 1.0, floor(pow(bright, 0.8) * glyphCount));
+        vec2 inCell = fract(gl_FragCoord.xy / cell);
+        float ink = texture2D(glyphs, vec2((rank + inCell.x) / glyphCount, inCell.y)).a;
+        vec3 color = tone * 0.06 + (tone * 1.25 + 0.03) * ink;
+
+        // The bars of the Heltix's caged chassis, two to each side, swaying a little: solid and round,
+        // slimmer on a tall, narrow screen.
+        float aspect = resolution.x / resolution.y;
+        float across = uv.x * aspect;
         float pixel = 1.0 / resolution.y;
-        float sway = 0.004 * sin(time * 0.7);
-        float barWidth = 0.0045 * resolution.y / resolution.x;
-        float bars = 0.0;
+        float barHalf = 0.016 * min(1.0, aspect * 1.15);
+        float sway = 0.004 * sin(time * 0.7) * aspect;
         for (int index = 0; index < 4; index++) {
-            float x = index < 2 ? 0.05 + 0.13 * float(index) : 0.95 - 0.13 * float(index - 2);
-            bars = max(bars, smoothstep(barWidth + pixel, barWidth, abs(uv.x - x - sway)));
+            float at = (index < 2 ? 0.05 + 0.13 * float(index) : 0.95 - 0.13 * float(index - 2)) * aspect + sway;
+            vec4 iron = bar((across - at) / barHalf, index < 2 ? 1.0 : -1.0, pixel / barHalf, tone);
+            color = mix(color, iron.rgb, iron.a);
         }
+
+        // The rail E leans against, low across the view: round too, lit from above, a glint along its top.
         float railY = 0.085;
-        float rail = smoothstep(0.011 + pixel, 0.011, abs(uv.y - railY));
-        float glint = smoothstep(0.0025 + pixel, 0.0, abs(uv.y - railY - 0.008)) * (0.55 + 0.45 * sin(uv.x * 9.0 - time * 1.3));
-        color = mix(color, vec3(0.03, 0.02, 0.05), clamp(bars * 0.92 + rail, 0.0, 1.0));
-        color += vec3(0.85, 0.68, 0.36) * glint * 0.5;
+        float railHalf = 0.019;
+        float t = (uv.y - railY) / railHalf;
+        vec4 rail = bar(t, 1.0, pixel / railHalf, tone);
+        float glint = smoothstep(0.25, 0.0, abs(t - 0.62)) * (0.55 + 0.45 * sin(uv.x * 9.0 - time * 1.3));
+        color = mix(color, rail.rgb + vec3(0.85, 0.68, 0.36) * glint * 0.5, rail.a);
 
         color += (hash12(floor(gl_FragCoord.xy) + floor(time * 20.0)) - 0.5) * 0.05;
         gl_FragColor = vec4(color * fade, 1.0);
@@ -130,6 +193,56 @@ function secondsFor(line) {
 }
 
 /**
+ * The characters the Intermaze is drawn in, as a strip of white glyphs on nothing, sparsest first. Each
+ * candidate is drawn and its ink measured (fonts differ from one device to the next), then RANKS of them are
+ * chosen at even steps of ink, from none to the densest.
+ */
+function glyphAtlas() {
+    const font = `600 ${Math.round(GLYPH_HEIGHT * 0.78)}px ui-monospace, "SFMono-Regular", "Cascadia Mono", Consolas, "DejaVu Sans Mono", monospace`;
+    const draw = (context, character, x) => {
+        context.fillText(character, x + GLYPH_WIDTH / 2, GLYPH_HEIGHT / 2 + GLYPH_HEIGHT * 0.04);
+    };
+    const probe = document.createElement('canvas');
+    probe.width = GLYPH_WIDTH;
+    probe.height = GLYPH_HEIGHT;
+    const measure = probe.getContext('2d', { willReadFrequently: true });
+    measure.font = font;
+    measure.textAlign = 'center';
+    measure.textBaseline = 'middle';
+    measure.fillStyle = '#fff';
+    const inked = [...new Set(CHARACTERS)].map((character) => {
+        measure.clearRect(0, 0, GLYPH_WIDTH, GLYPH_HEIGHT);
+        draw(measure, character, 0);
+        const alpha = measure.getImageData(0, 0, GLYPH_WIDTH, GLYPH_HEIGHT).data;
+        let ink = 0;
+        for (let index = 3; index < alpha.length; index += 4) ink += alpha[index];
+        return { character, ink };
+    }).sort((a, b) => a.ink - b.ink);
+    const densest = inked[inked.length - 1].ink || 1;
+    const chosen = [];
+    for (let rank = 0; rank < RANKS; rank += 1) {
+        const want = (densest * rank) / (RANKS - 1);
+        const nearest = inked.reduce((best, entry) => (Math.abs(entry.ink - want) < Math.abs(best.ink - want) ? entry : best));
+        if (!chosen.includes(nearest.character)) chosen.push(nearest.character);
+    }
+
+    const canvas = document.createElement('canvas');
+    canvas.width = GLYPH_WIDTH * chosen.length;
+    canvas.height = GLYPH_HEIGHT;
+    const context = canvas.getContext('2d');
+    context.font = font;
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.fillStyle = '#fff';
+    chosen.forEach((character, index) => draw(context, character, index * GLYPH_WIDTH));
+    const texture = new CanvasTexture(canvas);
+    texture.minFilter = LinearFilter;
+    texture.magFilter = LinearFilter;
+    texture.generateMipmaps = false;
+    return { texture, count: chosen.length };
+}
+
+/**
  * @param {object} options
  * @param {HTMLElement} options.root - <html>, which carries data-threshold
  * @param {HTMLElement} options.card - the Mega-Screen section
@@ -137,9 +250,12 @@ function secondsFor(line) {
  * @param {HTMLElement} options.voice - where E's lines surface
  * @param {() => void} [options.onBegin] - runs inside the beginning gesture itself
  *   (so sound may start, as browsers ask), before `begun` resolves
+ * @param {boolean} [options.returning] - back within the same visit: no card and
+ *   no flight; begun at once, with no gesture (so any sound waits for the
+ *   visitor's first touch); see comeBack
  */
-export function createThreshold({ root, card, begin, voice, onBegin }) {
-    root.dataset.threshold = 'card';
+export function createThreshold({ root, card, begin, voice, onBegin, returning = false }) {
+    root.dataset.threshold = returning ? 'returning' : 'card';
     let resolveBegun;
     const begun = new Promise((resolve) => {
         resolveBegun = resolve;
@@ -170,7 +286,13 @@ export function createThreshold({ root, card, begin, voice, onBegin }) {
         start();
     }
     begin.addEventListener('click', start);
-    document.addEventListener('keydown', onKey, true);
+    if (returning) {
+        started = true;
+        card.hidden = true;
+        resolveBegun();
+    } else {
+        document.addEventListener('keydown', onKey, true);
+    }
 
     const say = (line, seconds) => {
         voice.textContent = line;
@@ -187,8 +309,15 @@ export function createThreshold({ root, card, begin, voice, onBegin }) {
     };
 
     return {
-        /** Resolves on the first tap, click or keypress. */
+        /** Resolves on the first tap, click or keypress (at once, coming back within the same visit). */
         begun,
+
+        /** Coming back within the same visit: wait for the city, then step aside (it lifts from the dark). */
+        async comeBack({ ready }) {
+            await ready.catch(() => {});
+            leave();
+            return { frames: 0, skipped: false, linesShown: 0, returning: true };
+        },
 
         /**
          * Fly the Intermaze until the city is ready and the passage is done.
@@ -202,7 +331,16 @@ export function createThreshold({ root, card, begin, voice, onBegin }) {
             root.dataset.threshold = 'flight';
             card.classList.add('is-leaving');
             const size = new Vector2();
-            const uniforms = { time: { value: 0 }, resolution: { value: size }, fade: { value: 0 } };
+            const cell = new Vector2();
+            const atlas = glyphAtlas();
+            const uniforms = {
+                time: { value: 0 },
+                resolution: { value: size },
+                fade: { value: 0 },
+                glyphs: { value: atlas.texture },
+                glyphCount: { value: atlas.count },
+                cell: { value: cell },
+            };
             const material = new ShaderMaterial({ uniforms, vertexShader, fragmentShader, depthTest: false, depthWrite: false });
             const triangle = new BufferGeometry();
             triangle.setAttribute('position', new Float32BufferAttribute([-1, -1, 0, 3, -1, 0, -1, 3, 0], 3));
@@ -241,6 +379,9 @@ export function createThreshold({ root, card, begin, voice, onBegin }) {
                     const t = (now - began) / 1000;
                     fit?.();
                     renderer.getDrawingBufferSize(size);
+                    // At least ROWS of characters down the screen and COLUMNS across (never under 12 pixels tall).
+                    const tall = Math.max(12, Math.min(size.y / ROWS, size.x / (COLUMNS * CELL_ASPECT)));
+                    cell.set(tall * CELL_ASPECT, tall);
                     uniforms.time.value = t;
                     if (endingAt === null && (skipped || t >= passage) && isReady) endingAt = t;
                     uniforms.fade.value = endingAt === null
@@ -268,6 +409,7 @@ export function createThreshold({ root, card, begin, voice, onBegin }) {
             window.removeEventListener('pointerdown', skip, true);
             material.dispose();
             triangle.dispose();
+            atlas.texture.dispose();
             leave();
             return { frames, skipped, linesShown: shown + 1 };
         },

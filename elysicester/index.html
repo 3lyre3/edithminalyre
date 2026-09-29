@@ -24,7 +24,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;1,300;1,400&amp;family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&amp;display=swap" rel="stylesheet">
     <title>Elysicester – Edith Mina Lyre</title>
-    <link rel="stylesheet" href="v/a10fc71616/style.css">
+    <script>
+        // Back within the same visit (modules/state.js keeps it): no card, not even for a moment before the city.
+        try { if (sessionStorage.getItem('elysicester:crossed') === 'yes') document.documentElement.dataset.returning = ''; } catch (error) {}
+    </script>
+    <link rel="stylesheet" href="v/b73bf89ea6/style.css">
     <noscript><style>.threshold, .veil, .controls { display: none; }</style></noscript>
     <script type="importmap">
     {
@@ -34,17 +38,17 @@
         }
     }
     </script>
-    <script type="module" src="v/a10fc71616/main.js"></script>
+    <script type="module" src="v/b73bf89ea6/main.js"></script>
 </head>
 <body>
     <nav class="plainly" aria-label="Leave the diorama">
-        <a href="https://digital.library.adelaide.edu.au/server/api/core/bitstreams/9cbedc1a-5eac-4ee5-b909-320c83028bba/content" rel="noopener">read plainly</a>
+        <a href="https://digital.library.adelaide.edu.au/server/api/core/bitstreams/9cbedc1a-5eac-4ee5-b909-320c83028bba/content" target="_blank" rel="noopener">Numbers by Paint<span class="visually-hidden"> (the book, opens in a new tab)</span></a>
         <span class="sep" aria-hidden="true">·</span>
         <a href="/">d&uacute;rrync</a>
     </nav>
 
     <div class="controls">
-        <button type="button" id="sound-toggle" class="control" aria-pressed="false">sound off</button>
+        <button type="button" id="sound-toggle" class="control" aria-pressed="false">sound: off</button>
         <button type="button" id="home-view" class="control" hidden>the whole city</button>
     </div>
 
@@ -100,6 +104,10 @@
                 <h3 id="reader-also-title" class="reader-also-title">also here</h3>
                 <ul data-reader-also-list></ul>
             </section>
+            <p class="reader-onward" data-reader-onward hidden>
+                <button type="button" class="reader-on" data-reader-on></button>
+                <span class="reader-count" data-reader-count></span>
+            </p>
         </article>
     </dialog>
 

@@ -10,9 +10,12 @@
  * keypress begins: sound starts if the visitor has chosen it, then the
  * Intermaze flies until the city is ready and a minimum passage has played
  * (under reduced motion, the card crossfades instead), and the city lifts out
- * of a dark veil. If anything fails, the city arrives as a still and its
- * points as a list; the reader works either way. The optional extras
- * (extras.js) appear only when the address asks for them.
+ * of a dark veil. Coming back within the same visit (Back, a reload) skips
+ * the card and the flight: the city lifts from the dark as soon as it's ready.
+ * If anything fails, the city arrives as a still and its points as a list;
+ * the reader works either way, and each passage leads on to the nearest place
+ * not yet read. The optional extras (extras.js) appear only when the address
+ * asks for them.
  */
 
 // =============================================================================
@@ -25,8 +28,9 @@ import { createHotspots, createPointList } from './modules/hotspots.js';
 import { WORKS, createReader } from './modules/reader.js';
 import { createSignList, createSignOverlay } from './modules/signs.js';
 import { createRenderer, createStage, fitRenderer } from './modules/stage.js';
-import { markRead, readFragments, rememberSound, soundWanted } from './modules/state.js';
+import { crossedThisVisit, markRead, readFragments, rememberCrossed, rememberSound, soundWanted } from './modules/state.js';
 import { createThreshold } from './modules/threshold.js';
+import { createTouch } from './modules/touch.js';
 
 // =============================================================================
 // Constants
@@ -34,6 +38,12 @@ import { createThreshold } from './modules/threshold.js';
 
 const PROMPT_FRAGMENT = 'nbp-e1-mega-screen-1';
 const VOICE_FRAGMENTS = ['nbp-e3-intermaze-1', 'nbp-e3-intermaze-2'];
+
+/** Walking as the shadow, a reading point within this of its head names its place. */
+const NEAR_POINT = 3.2;
+
+/** A touched thing answers (its ring, its sound), and this long after, its words open (ms). */
+const TOUCH_PAUSE = 450;
 
 // =============================================================================
 // Main Code
@@ -81,12 +91,12 @@ function showStill() {
     }
 }
 
-/** The sound switch: off unless chosen; the choice is remembered. */
+/** The sound switch: off unless chosen; the choice is remembered. It says what the sound is now ("sound: off"). */
 function wireSound(audio) {
     const toggle = byId('sound-toggle');
     const show = (on) => {
         toggle.setAttribute('aria-pressed', String(on));
-        toggle.textContent = on ? 'sound on' : 'sound off';
+        toggle.textContent = on ? 'sound: on' : 'sound: off';
     };
     show(soundWanted());
     toggle.addEventListener('click', () => {
@@ -129,6 +139,7 @@ async function boot() {
     const audio = createAudio();
     wireSound(audio);
     if (debug) window.elysicesterDebug.audio = audio;
+    const returning = crossedThisVisit();
     const threshold = createThreshold({
         root,
         card: byId('threshold'),
@@ -138,10 +149,27 @@ async function boot() {
             if (debug) window.elysicesterDebug.begunAt = performance.now();
             if (soundWanted()) audio.start();
         },
+        returning,
     });
     // Until the city is entered, its reading points wait behind the card.
     const pointsNav = byId('points');
     pointsNav.inert = true;
+    if (returning) {
+        // Back within the same visit: no card, only the dark the city will lift out of (held by the veil
+        // now, rather than by the page's first paint). Sound, if chosen, starts at the visitor's first touch
+        // (browsers ask for one).
+        byId('veil').classList.add('is-dark');
+        delete root.dataset.returning;
+        if (soundWanted()) {
+            const wake = () => {
+                window.removeEventListener('pointerdown', wake, true);
+                window.removeEventListener('keydown', wake, true);
+                if (soundWanted()) audio.start();
+            };
+            window.addEventListener('pointerdown', wake, true);
+            window.addEventListener('keydown', wake, true);
+        }
+    }
 
     const [placeData, fragmentData, paper, signData] = await Promise.all([
         loadData('places'), loadData('fragments'), loadData('paper'), loadData('signs'),
@@ -158,7 +186,42 @@ async function boot() {
     let stage = null;
     let hotspots = null;
     let signOverlay = null;
-    const reader = createReader({ dialog: byId('reader'), places, onClose: () => stage?.rig.setDrifting(true) });
+
+    // The thread on from a passage: the nearest place none of whose passages has been read yet; failing
+    // that, the nearest unread passage at another place, then here; once every one has been read, simply the
+    // nearest other place. It never ends, and nothing leads off first (Elm: nothing definite yet, no opening
+    // or closing).
+    const whereIs = (fragment) => {
+        const point = hotspots?.positionOf(fragment.id);
+        return point ? [point.x, point.y, point.z] : places.get(fragment.place).position;
+    };
+    const apart = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
+    const onward = (fragment) => {
+        const from = whereIs(fragment);
+        const others = readable.filter((candidate) => candidate.id !== fragment.id);
+        const unread = others.filter((candidate) => !read.has(candidate.id));
+        const visited = new Set(readable.filter((candidate) => read.has(candidate.id)).map((candidate) => candidate.place));
+        const pools = [
+            unread.filter((candidate) => !visited.has(candidate.place)),
+            unread.filter((candidate) => candidate.place !== fragment.place),
+            unread,
+            others.filter((candidate) => candidate.place !== fragment.place),
+        ];
+        const pool = pools.find((candidates) => candidates.length) ?? [];
+        let next = null;
+        for (const candidate of pool) {
+            if (!next || apart(from, whereIs(candidate)) < apart(from, whereIs(next))) next = candidate;
+        }
+        return { next, read: readable.filter((candidate) => read.has(candidate.id)).length, total: readable.length };
+    };
+    let open = null;
+    const reader = createReader({
+        dialog: byId('reader'),
+        places,
+        onClose: () => stage?.rig.setDrifting(true),
+        onward,
+        onOnward: (next) => open(next, undefined),
+    });
     createSignList({
         list: byId('signs-list'),
         signs: signData.signs,
@@ -174,7 +237,7 @@ async function boot() {
         stage.rig.focus(fragment.place, hotspots?.positionOf(fragment.id), fragment.facing ?? null);
     };
     let list = null;
-    const open = (fragment, opener) => {
+    open = (fragment, opener) => {
         read.add(fragment.id);
         markRead(fragment.id);
         list.markRead(fragment.id);
@@ -207,6 +270,7 @@ async function boot() {
         building = createStage({ renderer, canvas, data: { places: placeData, paper, signs: signData }, reducedMotion, debug, onLost: showStill, extras })
             .then((built) => {
                 stage = built;
+                let touch = null;
                 hotspots = createHotspots({
                     stage,
                     fragments: readable,
@@ -218,7 +282,19 @@ async function boot() {
                     // A tap on the shadow is the shadow's (walk.js); one squarely on a sign is the sign's.
                     yieldTap: (x, y, pointDistance) => (stage.walk?.claimsTap(x, y) ?? false)
                         || (signOverlay?.claimsTap(x, y, pointDistance) ?? false),
+                    // A tap no point took may have found something else that answers (touch.js): a ring where
+                    // it was touched, its own sound, then its words.
+                    onMiss: (x, y) => {
+                        if (!touch || stage.walk?.claimsTap(x, y) || signOverlay?.claimsTap(x, y, Infinity)) return;
+                        const found = touch.find(x, y);
+                        const fragment = found ? readable.find((candidate) => candidate.id === found.fragment) : null;
+                        if (!fragment) return;
+                        if (!reducedMotion) hotspots.ripple(found.point);
+                        audio.answer(found.kind);
+                        window.setTimeout(() => open(fragment, null), TOUCH_PAUSE);
+                    },
                 });
+                touch = createTouch({ stage, occluders: hotspots.occluders });
                 // The shadow hears a tap first; a reading point nearer the tap than the shadow keeps it, and so
                 // does a sign the tap lands squarely on.
                 stage.walk?.yieldsTo((x, y, pointerType) => (signOverlay?.claimsTap(x, y, Infinity)
@@ -252,12 +328,17 @@ async function boot() {
         }
     };
     let passage;
-    if (renderer && !reducedMotion) {
+    if (returning) {
+        passage = await threshold.comeBack({ ready: built });
+        liftVeil(arrive);
+    } else if (renderer && !reducedMotion) {
         passage = await threshold.fly({ renderer, ready: built, lines, fit: () => fitRenderer(renderer, canvas) });
         liftVeil(arrive);
     } else {
         passage = await threshold.crossfade({ ready: built.then(arrive) });
     }
+    rememberCrossed();
+    hotspots?.welcome();
     if (debug) window.elysicesterDebug.threshold = passage;
     pointsNav.inert = false;
     if (extras.has('voice')) speak(readable.filter((fragment) => fragment.status === 'approved'), WORKS);
@@ -272,6 +353,32 @@ async function boot() {
             const away = !stage.rig.atHome;
             if (home.hidden === away) home.hidden = !away;
         });
+
+        // Walking as the shadow, a reading point close by names its place (a tap on it reads it, as ever).
+        if (stage.walk && hotspots) {
+            let near = null;
+            stage.onFrame(() => {
+                const walker = stage.walk.state;
+                let found = null;
+                if (walker.walking) {
+                    let best = NEAR_POINT;
+                    for (const fragment of readable) {
+                        const point = hotspots.positionOf(fragment.id);
+                        if (!point) continue;
+                        const head = walker.position.y + 1.2;
+                        const away = Math.hypot(point.x - walker.position.x, point.y - head, point.z - walker.position.z);
+                        if (away < best) {
+                            best = away;
+                            found = fragment;
+                        }
+                    }
+                }
+                if (found !== near) {
+                    near = found;
+                    hotspots.light(found);
+                }
+            });
+        }
     }
     // If the card held focus (it has gone now), land it on the city's name.
     const focused = document.activeElement;

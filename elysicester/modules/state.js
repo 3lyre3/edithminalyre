@@ -7,6 +7,10 @@
  *
  *   elysicester:read   JSON array of fragment ids the visitor has opened
  *   elysicester:sound  "on" or "off" (sound is off unless chosen)
+ *
+ * One more, in sessionStorage (this tab's visit only): elysicester:crossed,
+ * "yes" once the threshold has been crossed, so coming back within the same
+ * visit (Back, a reload, a link home and in again) lands straight in the city.
  */
 
 // =============================================================================
@@ -18,6 +22,7 @@ const PREFIX = 'elysicester:';
 export const KEYS = Object.freeze({
     read: `${PREFIX}read`,
     sound: `${PREFIX}sound`,
+    crossed: `${PREFIX}crossed`,
 });
 
 // =============================================================================
@@ -62,4 +67,22 @@ export function soundWanted() {
 
 export function rememberSound(on) {
     save(KEYS.sound, on ? 'on' : 'off');
+}
+
+/** Whether the threshold has already been crossed in this tab's visit. */
+export function crossedThisVisit() {
+    try {
+        return window.sessionStorage.getItem(KEYS.crossed) === 'yes';
+    } catch {
+        return false;
+    }
+}
+
+/** Remember, for the rest of this tab's visit, that the threshold has been crossed. */
+export function rememberCrossed() {
+    try {
+        window.sessionStorage.setItem(KEYS.crossed, 'yes');
+    } catch {
+        // No memory of it, then: the next return crosses again.
+    }
 }

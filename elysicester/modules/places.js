@@ -1002,10 +1002,14 @@ function buildFlags({ buckets, place, random, byId, mounts }) {
 /**
  * The Steel Garden: bird statues overgrown with the moss the small dogs bring,
  * and one steel sycamore, caked bluish-green, writhing up into the flags.
+ * Returns what a touch may find here (the sycamore, the statues, the dogs), each
+ * with the garden's words that tell of it (Elm: things that look touchable
+ * should answer).
  */
 function buildSteelGarden({ buckets, place, random, mounts }) {
     const [cx, , cz] = place.position;
     const floorY = groundY(cx, cz) + 0.08;
+    const touch = [];
     // The garden's name on a post at its seaward rim; the gift's word on the albatross's plinth.
     mount(mounts, 'steel-garden/plaque', {
         position: new Vector3(cx + 3.9, floorY + 0.95, cz + 1.2),
@@ -1034,6 +1038,8 @@ function buildSteelGarden({ buckets, place, random, mounts }) {
         [0, 0, 0], [0.5, 1.8, 0.3], [-0.3, 3.6, 0.6], [0.4, 5.4, -0.2], [-0.1, 7.0, 0.3], [0.7, 8.6, -0.3],
     ].map(([x, y, z]) => new Vector3(cx + x, floorY + y, cz + z));
     buckets.add('steel', paintBy(taperedTube(trunkPoints, 0.46, 0.1, 0xffffff, 30, 7), mossy(3.4)));
+    const sycamore = 'nbp-e3-steel-garden-2';
+    for (const point of trunkPoints) touch.push({ kind: 'tree', center: point.clone(), radius: 0.75, fragment: sycamore });
     const branchStarts = [0.35, 0.5, 0.62, 0.74, 0.86];
     const trunk = new CatmullRomCurve3(trunkPoints);
     branchStarts.forEach((t, index) => {
@@ -1043,15 +1049,18 @@ function buildSteelGarden({ buckets, place, random, mounts }) {
         const end = start.clone().add(new Vector3(Math.cos(angle) * reach, 1.2 + random() * 1.3, Math.sin(angle) * reach));
         const middle = start.clone().lerp(end, 0.5).add(new Vector3(0, -0.3, 0));
         buckets.add('steel', paintBy(taperedTube([start, middle, end], 0.14, 0.04, 0xffffff, 10, 5), mossy(3.4)));
-        const foliage = new IcosahedronGeometry(0.75 + random() * 0.45, 0);
+        const leafSize = 0.75 + random() * 0.45;
+        const foliage = new IcosahedronGeometry(leafSize, 0);
         buckets.add('steel', paintBy(pose(foliage, { x: end.x, y: end.y + 0.3, z: end.z, s: 1 }), (x, y, z, color) => {
             color.set(BLUE_GREEN).offsetHSL(0, 0, (noise2(x * 3, z * 3) - 0.5) * 0.12);
         }));
+        touch.push({ kind: 'tree', center: new Vector3(end.x, end.y + 0.3, end.z), radius: leafSize + 0.15, fragment: sycamore });
     });
     const crown = trunkPoints[trunkPoints.length - 1];
     buckets.add('steel', paintBy(pose(new IcosahedronGeometry(1.1, 0), { x: crown.x, y: crown.y + 0.4, z: crown.z }), (x, y, z, color) => {
         color.set(BLUE_GREEN);
     }));
+    touch.push({ kind: 'tree', center: new Vector3(crown.x, crown.y + 0.4, crown.z), radius: 1.3, fragment: sycamore });
 
     const statues = [
         { kind: 'albatross', angle: Math.PI / 2 },
@@ -1093,6 +1102,10 @@ function buildSteelGarden({ buckets, place, random, mounts }) {
             pieces.push(ball(0.34, { y: 0.06, sx: 1.6, sy: 0.45, sz: 1.3 }, MOSS, 8, 5));
         }
         for (const piece of frame(pieces, { x, y: floorY + 0.1, z, ry: facing })) buckets.add('steel', piece);
+        // (Algae dripped from the albatrosses' wings, the ibises' spear-like beaks, the seagulls' claws: the
+        // garden's second passage names them.)
+        const reach = kind === 'albatross' ? 1.9 : kind === 'ibis' ? 1.2 : 0.9;
+        touch.push({ kind: 'statue', center: new Vector3(x, floorY + 0.1 + raised + 0.8, z), radius: reach, fragment: sycamore });
     }
 
     const dogs = [[7.6, -2.1, 1.2], [cx + 2.9, cz - 3.4, 2.6], [cx - 3.6, cz + 1.6, -0.8]];
@@ -1109,7 +1122,9 @@ function buildSteelGarden({ buckets, place, random, mounts }) {
             pieces.push(cylinder(0.035, 0.035, 0.26, 4, { x: lx, y: 0.13, z: lz }, coat));
         }
         for (const piece of frame(pieces, { x, y: groundY(x, z), z, ry: turn })) buckets.add('brick', piece);
+        touch.push({ kind: 'dog', center: new Vector3(x, groundY(x, z) + 0.4, z), radius: 0.6, fragment: 'nbp-e3-steel-garden-1' });
     });
+    return { touch };
 }
 
 /** The golden bridgework: spires, bridges curling spire to spire, floating stairs. */
@@ -1915,6 +1930,8 @@ export async function buildPlaces(buckets, placeData, materials, pause = async (
         houses,
         /** The end of the jetty, on its boards: where the walk's shadow waits (walk.js). */
         pierEnd: built.get('jetty-cafes')?.pierEnd ?? null,
+        /** What a touch may find, and the words it opens: [{ kind, center, radius, fragment }] (touch.js). */
+        touch: [...built.values()].flatMap((result) => result?.touch ?? []),
         update(time) {
             for (const step of animated) step(time);
         },

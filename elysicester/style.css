@@ -122,12 +122,37 @@ a:focus-visible {
     font-size: 17px;
     letter-spacing: 0.08em;
     color: var(--bone);
-    text-shadow: 0 0 6px rgba(5, 5, 6, 0.95), 0 0 2px rgba(5, 5, 6, 0.95);
+    text-shadow: 0 0 3px rgba(4, 3, 8, 1), 0 0 8px rgba(4, 3, 8, 0.9), 0 0 2px rgba(4, 3, 8, 1);
+}
+
+/* A pool of dusk behind the corner words, so they read over whatever the city (or the maze) puts behind them. */
+.plainly::before,
+.controls::before {
+    content: '';
+    position: absolute;
+    inset: -12px -20px;
+    z-index: -1;
+    background: radial-gradient(closest-side, rgba(4, 3, 8, 0.62), rgba(4, 3, 8, 0.4) 62%, transparent);
+    pointer-events: none;
 }
 
 .plainly .sep {
     margin: 0 0.4em;
     color: var(--stone);
+}
+
+/* On a narrow screen the book's name and dúrrync stand one above the other, clear of the controls opposite. */
+@media (max-width: 560px) {
+    .plainly {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+    }
+
+    .plainly .sep {
+        display: none;
+    }
 }
 
 .diorama {
@@ -382,7 +407,7 @@ a:focus-visible {
     text-decoration: underline;
     text-decoration-thickness: 1px;
     text-underline-offset: 0.2em;
-    text-shadow: 0 0 6px rgba(5, 5, 6, 0.95), 0 0 2px rgba(5, 5, 6, 0.95);
+    text-shadow: 0 0 3px rgba(4, 3, 8, 1), 0 0 8px rgba(4, 3, 8, 0.9), 0 0 2px rgba(4, 3, 8, 1);
     cursor: pointer;
 }
 
@@ -436,7 +461,7 @@ a:focus-visible {
 
 /*
  * The threshold. First the Mega-Screen: a dark screen in the red desert air,
- * enormous italic letters rolling in from the right, a short step left with
+ * enormous upright letters rolling in from the right, a short step left with
  * each flicker (the flicker stays gentle, under three a second). Then, above
  * the flight, E's lines surface one at a time.
  */
@@ -462,6 +487,16 @@ a:focus-visible {
     display: none;
 }
 
+/* Back within the same visit: no card, only the dark the city lifts out of (main.js takes it from there). */
+html[data-returning] .threshold {
+    display: none;
+}
+
+html[data-returning] .veil {
+    opacity: 1;
+    transition: none;
+}
+
 .mega-screen {
     position: relative;
     height: min(64vh, 76vw);
@@ -485,7 +520,6 @@ a:focus-visible {
     display: flex;
     gap: 0.1em;
     font-family: var(--font-display);
-    font-style: italic;
     font-weight: 300;
     font-size: min(54vh, 64vw);
     line-height: 1;
@@ -573,10 +607,11 @@ a:focus-visible {
     animation: voice 1.3s ease both;
 }
 
+/* Quick to arrive and to go, so each line holds at full strength for most of its time. */
 @keyframes voice {
     0% { opacity: 0; }
-    22% { opacity: 1; }
-    76% { opacity: 1; }
+    12% { opacity: 1; }
+    88% { opacity: 1; }
     100% { opacity: 0; }
 }
 
@@ -702,6 +737,52 @@ a:focus-visible {
     margin: 0;
     padding: 0;
     list-style: none;
+}
+
+/* The thread on: the nearest place not yet read, and a quiet count of how many are. */
+.reader-onward {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 6px 1.2em;
+    margin: 20px 0 0;
+    padding-top: 12px;
+    border-top: 1px solid rgba(160, 150, 170, 0.18);
+}
+
+.reader-onward[hidden] {
+    display: none;
+}
+
+.reader-on {
+    padding: 2px 0;
+    font-family: var(--font-display);
+    font-size: 19px;
+    letter-spacing: 0.06em;
+    color: var(--amber);
+    background: none;
+    border: 0;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    cursor: pointer;
+}
+
+.reader-on:hover,
+.reader-on:focus-visible {
+    color: var(--honey);
+}
+
+.reader-on[hidden] {
+    display: none;
+}
+
+.reader-count {
+    font-family: var(--font-display);
+    font-size: 15px;
+    letter-spacing: 0.08em;
+    color: var(--bone);
 }
 
 @media (max-width: 600px) {

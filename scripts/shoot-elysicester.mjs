@@ -22,8 +22,9 @@
  * renderer.info is read through ?debug=1, the view is dragged (mouse, or real
  * touch points), every reading point is opened by pointer (or, in the still,
  * by its link) and by keyboard (Tab, Enter, Esc, and focus must come back),
- * each panel is screenshotted and scanned with axe, and a reload must keep
- * read points dim. Sound must stay off until the toggle turns it on (desktop),
+ * each panel is screenshotted and scanned with axe, and a reload (within the
+ * same visit, so with no card: straight into the city) must keep read points
+ * dim. Sound must stay off until the toggle turns it on (desktop),
  * and a remembered "on" must wait for the beginning gesture (reduced). Every
  * sign is read: its fonts must hold every letter it needs, the camera must find
  * a clear view of its whole face (desktop and reduced reach it from the list,
@@ -327,6 +328,31 @@ async function enter(page, context, pass, { begin, then = 'watch', shots = null,
 }
 
 /**
+ * Coming back within the same visit (a reload): no card and no flight, only the
+ * dark the city lifts out of; then the points are reachable, and nothing of the
+ * threshold is left over.
+ */
+async function comeBack(page) {
+    await page.waitForFunction(() => document.documentElement.dataset.threshold === 'done', null, { timeout: LOAD_TIMEOUT });
+    const mode = await settle(page);
+    const after = await page.evaluate(() => ({
+        log: window.__elysicesterLog ?? [],
+        pointsInert: document.getElementById('points').inert,
+        cardHidden: document.getElementById('threshold').hidden,
+        veilDark: document.getElementById('veil').classList.contains('is-dark'),
+        returningLeft: document.documentElement.hasAttribute('data-returning'),
+    }));
+    const sequence = after.log.filter((entry) => entry.name === 'data-threshold').map((entry) => entry.value).join(' > ');
+    const problems = [];
+    if (sequence !== 'returning > done') problems.push(`sequence was ${sequence}`);
+    if (after.pointsInert) problems.push('the points stayed inert');
+    if (!after.cardHidden) problems.push('the card showed');
+    if (after.veilDark) problems.push('the veil stayed dark');
+    if (after.returningLeft) problems.push('the page still marks itself as returning');
+    return { mode, sequence, problems, ok: problems.length === 0 };
+}
+
+/**
  * The sound switch. Arriving with nothing remembered, sound must be off, turn
  * on with the toggle and off again. Arriving with "on" remembered, it must
  * have waited for the beginning gesture, then be running; the toggle stops it.
@@ -343,19 +369,19 @@ async function soundRound(page, pass, entered) {
         await page.click('#sound-toggle');
         const off = await soundState(page, 'off');
         steps.push({ after: 'toggle', ...off });
-        if (off.state !== 'off' || off.pressed !== 'false' || off.label !== 'sound off') problems.push('the toggle did not turn it off');
+        if (off.state !== 'off' || off.pressed !== 'false' || off.label !== 'sound: off') problems.push('the toggle did not turn it off');
     } else {
         const start = await soundReading(page);
         steps.push({ after: 'arrival', ...start });
-        if (start.state !== 'off' || start.pressed !== 'false' || start.label !== 'sound off') problems.push(`sound was ${start.state} before the toggle`);
+        if (start.state !== 'off' || start.pressed !== 'false' || start.label !== 'sound: off') problems.push(`sound was ${start.state} before the toggle`);
         await page.click('#sound-toggle');
         const on = await soundState(page, 'running');
         steps.push({ after: 'toggle on', ...on });
-        if (on.state !== 'running' || on.pressed !== 'true' || on.label !== 'sound on' || on.stored !== '"on"') problems.push(`the toggle gave ${JSON.stringify(on)}`);
+        if (on.state !== 'running' || on.pressed !== 'true' || on.label !== 'sound: on' || on.stored !== '"on"') problems.push(`the toggle gave ${JSON.stringify(on)}`);
         await page.click('#sound-toggle');
         const off = await soundState(page, 'off');
         steps.push({ after: 'toggle off', ...off });
-        if (off.state !== 'off' || off.pressed !== 'false' || off.label !== 'sound off' || off.stored !== '"off"') problems.push(`the second toggle gave ${JSON.stringify(off)}`);
+        if (off.state !== 'off' || off.pressed !== 'false' || off.label !== 'sound: off' || off.stored !== '"off"') problems.push(`the second toggle gave ${JSON.stringify(off)}`);
     }
     return { steps, problems, ok: problems.length === 0 };
 }
@@ -792,7 +818,8 @@ try {
             const { mode } = await enter(session.page, session.context, PASSES[still.pass], { begin: 'click', then: 'skip' });
             if (mode !== 'live') throw new Error(`${still.pass}: the scene did not go live (${mode})`);
             await hideChrome(session.page);
-            await session.page.waitForTimeout(400);
+            // (Once the arrival's glints have run their course, and before any glints again: hotspots.welcome.)
+            await session.page.waitForTimeout(9000);
             const png = await session.page.locator('#stage').screenshot();
             const webp = Buffer.from(await toWebP(session.page, png, still.width, still.height), 'base64');
             await writeFile(path.join(ROOT, 'elysicester', still.file), webp);
@@ -855,7 +882,7 @@ try {
 
             if (!quick && !pass.extras) {
                 await page.reload({ waitUntil: 'load' });
-                result.reentered = await enter(page, context, pass, { begin: pass.begin, then: 'skip' });
+                result.reentered = await comeBack(page);
                 result.persisted = await page.evaluate(() => ({
                     list: [...document.querySelectorAll('#points a')].filter((link) => link.dataset.read === 'yes').length,
                     total: document.querySelectorAll('#points a').length,
@@ -880,6 +907,7 @@ try {
                 .flatMap((entry) => entry.violations ?? []).filter((violation) => SERIOUS.has(violation.impact));
             const axe = result.pointer ? `axe serious ${serious.length}` : '';
             const kept = result.persisted ? `dim after reload ${result.persisted.list}/${result.persisted.total}${result.persisted.points === null ? '' : ` (points ${result.persisted.points})`}` : '';
+            const back = result.reentered ? (result.reentered.ok ? 'reload lands in the city' : 'RELOAD NOT OK') : '';
             const passage = result.threshold.passage;
             const crossing = `threshold ${result.threshold.sequence}${passage?.frames ? ` (${passage.frames} frames, ${passage.linesShown} lines${passage.skipped ? `, skipped, landed ${result.threshold.skipToDone} ms after skip` : ''})` : ''} ${result.threshold.ok ? 'ok' : 'NOT OK'}`;
             const sound = result.sound ? `sound ${result.sound.ok ? 'ok' : 'NOT OK'}` : '';
@@ -890,7 +918,7 @@ try {
                 : '';
             const extras = result.extras ? `extras ${result.extras.ok ? 'sky, shadow, door, voice and hums all there' : 'NOT OK'}` : '';
             const camera = result.camera ? `camera ${result.camera.ok ? `kept clear (closest ${Math.min(...result.camera.rows.map((row) => row.closest))})` : 'WENT INTO SOMETHING'}` : '';
-            process.stdout.write(`${name.padEnd(8)} ${result.mode.padEnd(6)} ${problems === 0 ? 'clean' : `${problems} problem(s)`}  ${[crossing, sound, info, orbit, still, camera, signs, extras, pointer, keys, axe, kept].filter(Boolean).join(' · ')}\n`);
+            process.stdout.write(`${name.padEnd(8)} ${result.mode.padEnd(6)} ${problems === 0 ? 'clean' : `${problems} problem(s)`}  ${[crossing, sound, info, orbit, still, camera, signs, extras, pointer, keys, axe, back, kept].filter(Boolean).join(' · ')}\n`);
             for (const line of [...result.messages, ...result.failures]) process.stdout.write(`    ${line}\n`);
             for (const line of result.extras?.problems ?? []) process.stdout.write(`    extras not ok: ${line}\n`);
             for (const line of result.camera?.problems ?? []) process.stdout.write(`    camera not ok: ${line}\n`);
