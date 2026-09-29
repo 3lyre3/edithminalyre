@@ -14,6 +14,7 @@
 // =============================================================================
 
 import {
+    BufferGeometry,
     CatmullRomCurve3,
     Color,
     DataTexture,
@@ -105,6 +106,70 @@ export function paintBy(geometry, painter) {
         colors[index * 3 + 2] = color.b;
     }
     geometry.setAttribute('color', new Float32BufferAttribute(colors, 3));
+    return geometry;
+}
+
+/**
+ * A box with every edge chamfered at 45° and every corner cut by a small
+ * triangle, flat-shaded. Each chamfer is its own narrow face, so it catches
+ * the dusk light (or loses it) as a strip along the edge, the way a made
+ * thing's edge does, and the ink draws it as a pair of close lines. Centred on
+ * the origin, like a BoxGeometry; 44 triangles.
+ * @param {number} width
+ * @param {number} height
+ * @param {number} depth
+ * @param {number} bevel - how far each edge is cut back (kept under half of each side)
+ */
+export function chamferedBox(width, height, depth, bevel) {
+    const a = width / 2;
+    const b = height / 2;
+    const c = depth / 2;
+    const e = Math.min(bevel, a * 0.45, b * 0.45, c * 0.45);
+    const triangles = [];
+    const quad = (p, q, r, s) => triangles.push([p, q, r], [p, r, s]);
+    for (const s of [1, -1]) {
+        quad([s * a, b - e, c - e], [s * a, -(b - e), c - e], [s * a, -(b - e), -(c - e)], [s * a, b - e, -(c - e)]);
+        quad([a - e, s * b, c - e], [-(a - e), s * b, c - e], [-(a - e), s * b, -(c - e)], [a - e, s * b, -(c - e)]);
+        quad([a - e, b - e, s * c], [-(a - e), b - e, s * c], [-(a - e), -(b - e), s * c], [a - e, -(b - e), s * c]);
+    }
+    for (const sx of [1, -1]) {
+        for (const sy of [1, -1]) {
+            quad([sx * a, sy * (b - e), c - e], [sx * a, sy * (b - e), -(c - e)], [sx * (a - e), sy * b, -(c - e)], [sx * (a - e), sy * b, c - e]);
+        }
+        for (const sz of [1, -1]) {
+            quad([sx * a, b - e, sz * (c - e)], [sx * a, -(b - e), sz * (c - e)], [sx * (a - e), -(b - e), sz * c], [sx * (a - e), b - e, sz * c]);
+        }
+    }
+    for (const sy of [1, -1]) {
+        for (const sz of [1, -1]) {
+            quad([a - e, sy * b, sz * (c - e)], [-(a - e), sy * b, sz * (c - e)], [-(a - e), sy * (b - e), sz * c], [a - e, sy * (b - e), sz * c]);
+        }
+    }
+    for (const sx of [1, -1]) {
+        for (const sy of [1, -1]) {
+            for (const sz of [1, -1]) {
+                triangles.push([[sx * a, sy * (b - e), sz * (c - e)], [sx * (a - e), sy * b, sz * (c - e)], [sx * (a - e), sy * (b - e), sz * c]]);
+            }
+        }
+    }
+    // Every face turned to look outward (the box is convex about its centre).
+    const positions = [];
+    const p = new Vector3();
+    const q = new Vector3();
+    const r = new Vector3();
+    const normal = new Vector3();
+    for (const [first, second, third] of triangles) {
+        p.fromArray(first);
+        q.fromArray(second);
+        r.fromArray(third);
+        normal.subVectors(q, p).cross(r.clone().sub(p));
+        const centroid = p.clone().add(q).add(r);
+        if (normal.dot(centroid) < 0) positions.push(...first, ...third, ...second);
+        else positions.push(...first, ...second, ...third);
+    }
+    const geometry = new BufferGeometry();
+    geometry.setAttribute('position', new Float32BufferAttribute(positions, 3));
+    geometry.computeVertexNormals();
     return geometry;
 }
 

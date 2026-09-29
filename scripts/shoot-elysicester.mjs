@@ -372,6 +372,23 @@ async function touch(context, page, points) {
     await client.detach();
 }
 
+/**
+ * Press once at a point (a tap, or a click) and say how long the canvas held it, in ms. Under
+ * SwiftShader a simulated press can outlast the rig's tap limit (TAP_LIMIT), since input is answered
+ * only between slow frames; such a press is no tap at all, and the rounds press again.
+ */
+async function pressAt(page, context, pass, point) {
+    await page.evaluate(() => {
+        const canvas = document.getElementById('stage');
+        window.__press = {};
+        canvas.addEventListener('pointerdown', (event) => { window.__press.down = event.timeStamp; }, { once: true });
+        canvas.addEventListener('pointerup', (event) => { window.__press.up = event.timeStamp; }, { once: true });
+    });
+    if (pass.hasTouch) await touch(context, page, [point]);
+    else await page.mouse.click(point.x, point.y);
+    return page.evaluate(() => (window.__press.up ?? Infinity) - (window.__press.down ?? 0));
+}
+
 /** Drag across the canvas: a mouse on desktop, real touch points on touch devices. */
 async function drag(page, context, isTouch, from, to) {
     const steps = Array.from({ length: 12 }, (_, index) => ({
@@ -482,22 +499,13 @@ async function pointerRound(page, context, pass, fragments, outDir, name) {
             results.push({ id: fragment.id, ok: false, why: 'the point is hidden behind the city in its own view', spot });
             continue;
         }
-        // Under SwiftShader a simulated press can outlast the rig's tap limit (it answers input only between
-        // slow frames). Such a press isn't a tap at all, so it's tried again, and said so; a press that was a
-        // tap and still opened nothing fails at once.
+        // A press too slow to be a tap (see pressAt) is tried again, and said so; a press that was a tap
+        // and still opened nothing fails at once.
         let inspected = null;
         let slowPresses = 0;
         for (let attempt = 0; attempt < 3; attempt += 1) {
-            await page.evaluate(() => {
-                const canvas = document.getElementById('stage');
-                window.__press = {};
-                canvas.addEventListener('pointerdown', (event) => { window.__press.down = event.timeStamp; }, { once: true });
-                canvas.addEventListener('pointerup', (event) => { window.__press.up = event.timeStamp; }, { once: true });
-            });
-            if (pass.hasTouch) await touch(context, page, [{ x: spot.x, y: spot.y }]);
-            else await page.mouse.click(spot.x, spot.y);
+            const press = await pressAt(page, context, pass, { x: spot.x, y: spot.y });
             inspected = await inspectOpen(page, fragment, path.join(outDir, `${name}-panel-${fragment.id}.png`));
-            const press = await page.evaluate(() => (window.__press.up ?? Infinity) - (window.__press.down ?? 0));
             if (inspected.matched || press < TAP_LIMIT) break;
             slowPresses += 1;
         }
@@ -534,11 +542,19 @@ async function signRound(page, context, pass, outDir, name) {
         // While a sign's entry has focus, the whole list is showing: scan it once.
         if (!pass.hasTouch && !results.length) navViolations = await scanElement(page, 'points');
         let spot = await page.evaluate((id) => window.elysicesterDebug.signs.screenPositions().find((entry) => entry.id === id), sign.id);
+        let slowPresses = 0;
         if (pass.hasTouch && spot) {
-            // Let go of the programmatic focus, then tap the plate like a visitor.
-            await page.evaluate(() => window.elysicesterDebug.signs.hide());
-            await touch(context, page, [{ x: spot.x, y: spot.y }]);
-            await page.waitForTimeout(300);
+            // Let go of the programmatic focus, then tap the plate like a visitor (again, if the press was
+            // too slow to be a tap: see pressAt).
+            const tapped = { x: spot.x, y: spot.y };
+            for (let attempt = 0; attempt < 3; attempt += 1) {
+                await page.evaluate(() => window.elysicesterDebug.signs.hide());
+                const press = await pressAt(page, context, pass, tapped);
+                await page.waitForTimeout(300);
+                const shown = await page.evaluate(() => window.elysicesterDebug.signs.shownId());
+                if (shown === sign.id || press < TAP_LIMIT) break;
+                slowPresses += 1;
+            }
             spot = await page.evaluate((id) => window.elysicesterDebug.signs.screenPositions().find((entry) => entry.id === id), sign.id);
         }
         const state = await page.evaluate(() => {
@@ -572,7 +588,7 @@ async function signRound(page, context, pass, outDir, name) {
         if (state.words !== (sign.danaeam ?? '· · ·')) problems.push(`the words read ${JSON.stringify(state.words)}`);
         if (state.lang !== (sign.danaeam === null ? null : 'art-x-danaeam')) problems.push(`lang was ${state.lang}`);
         if (state.gloss !== (sign.gloss ?? null)) problems.push(`the gloss read ${JSON.stringify(state.gloss)}`);
-        results.push({ id: sign.id, ok: problems.length === 0, problems, spot });
+        results.push({ id: sign.id, ok: problems.length === 0, problems, spot, ...(slowPresses ? { slowPresses } : {}) });
     }
     await page.evaluate(() => {
         document.activeElement?.blur();
@@ -854,8 +870,9 @@ try {
             const crossing = `threshold ${result.threshold.sequence}${passage?.frames ? ` (${passage.frames} frames, ${passage.linesShown} lines${passage.skipped ? `, skipped, landed ${result.threshold.skipToDone} ms after skip` : ''})` : ''} ${result.threshold.ok ? 'ok' : 'NOT OK'}`;
             const sound = result.sound ? `sound ${result.sound.ok ? 'ok' : 'NOT OK'}` : '';
             const navSerious = (result.signs?.navViolations ?? []).filter((violation) => SERIOUS.has(violation.impact)).length;
+            const slowSigns = result.signs?.results.reduce((sum, entry) => sum + (entry.slowPresses ?? 0), 0) ?? 0;
             const signs = result.signs
-                ? `signs ${summarise(result.signs.results)}${result.signs.coverage ? `, glyphs ${result.signs.glyphProblems.length ? 'MISSING' : 'all held'}` : ''}${result.signs.navScanned ? `, list axe serious ${navSerious}` : ''}`
+                ? `signs ${summarise(result.signs.results)}${slowSigns ? ` (${slowSigns} tap${slowSigns === 1 ? '' : 's'} too slow under SwiftShader, tapped again)` : ''}${result.signs.coverage ? `, glyphs ${result.signs.glyphProblems.length ? 'MISSING' : 'all held'}` : ''}${result.signs.navScanned ? `, list axe serious ${navSerious}` : ''}`
                 : '';
             const extras = result.extras ? `extras ${result.extras.ok ? 'sky, shadow, door, voice and hums all there' : 'NOT OK'}` : '';
             const camera = result.camera ? `camera ${result.camera.ok ? `kept clear (closest ${Math.min(...result.camera.rows.map((row) => row.closest))})` : 'WENT INTO SOMETHING'}` : '';

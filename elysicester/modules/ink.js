@@ -5,7 +5,8 @@
  * pass then tone-maps the colour, lays light ink lines wherever the depth
  * folds (silhouettes and creases: the second difference of inverse depth is
  * zero across any flat plane, so only real edges ink), lets those lines
- * wobble a little like a hand's, lays a faint paper fibre over everything
+ * wobble a little like a hand's (more as the eye comes closer: Lynn's idea, as
+ * a line drawn larger wavers more), lays a faint paper fibre over everything
  * (the page adds the site's own grain above), and darkens the corners a
  * touch. Under reduced motion the lines and fibre hold still.
  *
@@ -45,6 +46,13 @@ import {
 } from 'three';
 
 // =============================================================================
+// Constants
+// =============================================================================
+
+/** The most the lines' wobble is scaled up by, close to the city (at the whole city's distance, 1). */
+const WOBBLE_MOST = 3.2;
+
+// =============================================================================
 // Shaders
 // =============================================================================
 
@@ -77,6 +85,7 @@ const fragmentShader = /* glsl */ `
     uniform mat4 projectionInverse;
     uniform mat4 cameraWorld;
     uniform float lineBreaks;
+    uniform float wobbleScale;
 
     varying vec2 vUv;
 
@@ -123,8 +132,11 @@ const fragmentShader = /* glsl */ `
 
     void main() {
         vec2 texel = lineWidth / resolution;
-        vec2 wobble = vec2(noise(vUv * 24.0 + boil), noise(vUv * 24.0 + boil + 19.7)) - 0.5;
-        vec2 uv = vUv + wobble * texel * 0.55;
+        // The hand's wobble grows as the eye comes closer (and its waves lengthen), as a drawing's line
+        // wavers more the larger it's drawn; from the whole city's distance it's the lightest tremor.
+        float reach = sqrt(wobbleScale);
+        vec2 wobble = vec2(noise(vUv * 24.0 / reach + boil), noise(vUv * 24.0 / reach + boil + 19.7)) - 0.5;
+        vec2 uv = vUv + wobble * texel * 0.55 * wobbleScale;
 
         float centre = inverseDepth(uv);
         float left = inverseDepth(uv - vec2(texel.x, 0.0));
@@ -296,6 +308,8 @@ export function createInk(renderer, { reducedMotion }) {
         cameraWorld: { value: new Matrix4() },
         // 1: the pen lifts here and there; 0: every line whole (?lines=whole).
         lineBreaks: { value: new URLSearchParams(window.location.search).get('lines') === 'whole' ? 0 : 1 },
+        // How much the wobble is scaled up by the eye coming closer (render's zoom; 1 at the whole city).
+        wobbleScale: { value: 1 },
     };
     const material = new ShaderMaterial({ uniforms, vertexShader, fragmentShader, depthTest: false, depthWrite: false });
 
@@ -338,8 +352,13 @@ export function createInk(renderer, { reducedMotion }) {
             uniforms.resolution.value.copy(size);
             uniforms.lineWidth.value = Math.max(1.3, renderer.getPixelRatio() * 1.15);
         },
-        /** Draw the scene through the ink onto the canvas. */
-        render(sceneToDraw, sceneCamera, time) {
+        /**
+         * Draw the scene through the ink onto the canvas. zoom: how far in the eye has come (the whole
+         * city's distance over the camera's own; 1 at the whole city, more as it comes closer).
+         */
+        render(sceneToDraw, sceneCamera, time, zoom = 1) {
+            // Lynn's idea: the wobble scales up as the camera zooms in (to about three times, close to).
+            uniforms.wobbleScale.value = Math.min(WOBBLE_MOST, Math.max(1, zoom ** 0.55));
             uniforms.cameraNear.value = sceneCamera.near;
             uniforms.cameraFar.value = sceneCamera.far;
             uniforms.projectionInverse.value.copy(sceneCamera.projectionMatrixInverse);

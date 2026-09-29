@@ -292,7 +292,7 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
             renderer.shadowMap.needsUpdate = true;
             shadowsDrawn = true;
         }
-        ink.render(scene, camera, elapsed);
+        ink.render(scene, camera, elapsed, rig.home.radius / Math.max(rig.now.radius, 1e-3));
 
         const { calls, triangles, points, lines } = renderer.info.render;
         lastInfo = { calls, triangles, points, lines };

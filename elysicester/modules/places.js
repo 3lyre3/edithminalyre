@@ -52,6 +52,7 @@ import {
     light,
     noise2,
     onLand,
+    chamferedBox,
     paint,
     paintBy,
     pose,
@@ -103,6 +104,8 @@ const STAR = light(0xfff0c0, 4.4);
 const GLITCH = [light(0xff3ad8, 3.0), light(0x3afff0, 3.0)];
 
 const GATE_Z = -3.2;
+/** How far a building's edges are cut back to catch the light (a hand's breadth, at the city's scale). */
+const BEVEL = 0.07;
 /** No house stands nearer the Steel Garden's middle than this (its disc is 4.3 across the radius). */
 const GARDEN_ROOM = 7.2;
 
@@ -112,6 +115,11 @@ const GARDEN_ROOM = 7.2;
 
 function box(w, h, d, at, color) {
     return paint(pose(new BoxGeometry(w, h, d), at), color);
+}
+
+/** A box whose edges are chamfered (kit.js), so they catch the light as made things' edges do. */
+function bevelBox(w, h, d, at, color, bevel = BEVEL) {
+    return paint(pose(chamferedBox(w, h, d, bevel), at), color);
 }
 
 function cylinder(top, bottom, h, segments, at, color) {
@@ -228,7 +236,7 @@ function buildWall(buckets, mounts) {
             thickness + jut * 2, top - bottom, length, { y: (bottom + top) / 2 }, course === 1 ? WALL_GOLD_BAND : WALL_GOLD,
         ));
         for (const offset of [-length / 4, length / 4]) {
-            pieces.push(box(thickness * 0.7, 0.55, length * 0.28, { y: 3.37, z: offset }, WALL_GOLD_TOP));
+            pieces.push(bevelBox(thickness * 0.7, 0.55, length * 0.28, { y: 3.37, z: offset }, WALL_GOLD_TOP, 0.06));
         }
         for (const piece of frame(pieces, at)) buckets.add('bricking', piece);
     }
@@ -320,13 +328,13 @@ function addHouse(buckets, random, x, z, height, style, detail) {
     let roofDepth = depth;
     if (stacked) {
         const lower = tall * 0.58;
-        pieces.push(box(width, lower, depth, { y: lower / 2 }, wall));
+        pieces.push(bevelBox(width, lower, depth, { y: lower / 2 }, wall));
         roofWidth = width * 0.72;
         roofDepth = depth * 0.72;
-        pieces.push(box(roofWidth, tall - lower, roofDepth, { y: lower + (tall - lower) / 2, z: -depth * 0.08 }, wall.clone().offsetHSL(0, 0, 0.03)));
+        pieces.push(bevelBox(roofWidth, tall - lower, roofDepth, { y: lower + (tall - lower) / 2, z: -depth * 0.08 }, wall.clone().offsetHSL(0, 0, 0.03)));
         pieces.push(box(width + 0.12, 0.14, depth + 0.12, { y: lower + 0.07 }, roof));
     } else {
-        pieces.push(box(width, tall, depth, { y: tall / 2 }, wall));
+        pieces.push(bevelBox(width, tall, depth, { y: tall / 2 }, wall));
     }
     const roofZ = stacked ? -depth * 0.08 : 0;
     if (roofStyle === 'gable') {
@@ -529,9 +537,9 @@ function buildCafes({ buckets, place, mounts, extras, animated, wanted }) {
         const ry = Math.atan2(audience.x - cx, audience.z - cz);
         const brick = BRICK[index];
         const pieces = [
-            box(2.2, 2.4, 2.1, { y: 1.2 }, brick),
+            bevelBox(2.2, 2.4, 2.1, { y: 1.2 }, brick),
             gable(2.4, 1.15, 2.3, { y: 2.4 }, BRICK_DARK),
-            box(0.62, 1.0, 0.62, { y: 3.6, z: 0.55 }, brick),
+            bevelBox(0.62, 1.0, 0.62, { y: 3.6, z: 0.55 }, brick, 0.04),
             cone(0.5, 2.3, 4, { y: 5.25, z: 0.55, ry: Math.PI / 4 }, BRICK_DARK),
             ball(0.12, { y: 6.5, z: 0.55 }, GOLDS[3], 8, 6),
             box(0.7, 1.3, 0.06, { y: 0.65, z: 1.07 }, SHADOW),
