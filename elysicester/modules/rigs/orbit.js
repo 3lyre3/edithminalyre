@@ -252,9 +252,9 @@ export class OrbitRig {
         this.goal.target.copy(position);
         this.goal.radius = focus.distance;
         this.goal.phi = Math.acos(MathUtils.clamp(focus.height / focus.distance, -0.95, 0.95));
-        // Looking from the island's middle outward (no side was chosen): if something solid stands between that
-        // view and the point, come round to the nearest side that sees it.
-        const clear = facing === undefined || facing === null ? this.clearTheta(position, theta, this.goal.phi, focus.distance) : theta;
+        // Unless the caller chose the side (a sign's scored view, a passage's own facing): if something solid
+        // stands between the place's view and the point, come round to the nearest side that sees it.
+        const clear = azimuth === undefined || azimuth === null ? this.clearTheta(position, theta, this.goal.phi, focus.distance) : theta;
         this.goal.theta = this.now.theta + shortest(clear - this.now.theta);
         this.atHome = false;
         this.idle = 0;

@@ -174,7 +174,7 @@ function createSteam(count) {
 function girthAt(spire, y) {
     const above = y - spire.base;
     if (above < 0) return 0;
-    if (above <= spire.height) return 0.72 - 0.38 * (above / spire.height) + 0.37;
+    if (above <= spire.height) return (spire.girth ? spire.girth(above / spire.height) : 0.72 - 0.38 * (above / spire.height)) + 0.37;
     const up = (above - spire.height) / 3.6;
     return up > 1 ? 0 : 0.42 * (1 - up);
 }

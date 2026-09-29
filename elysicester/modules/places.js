@@ -36,6 +36,7 @@ import {
     Mesh,
     MeshBasicMaterial,
     PlaneGeometry,
+    Quaternion,
     ShaderMaterial,
     Shape,
     SphereGeometry,
@@ -1122,7 +1123,7 @@ function buildSteelGarden({ buckets, place, random, mounts }) {
 function vertiPool(spire) {
     const from = spire.base + spire.height * 0.42;
     const to = spire.base + spire.height + 0.35;
-    const girth = (y) => 0.72 - 0.38 * Math.min(1, Math.max(0, (y - spire.base) / spire.height)) + 0.3;
+    const girth = (y) => spire.girth((y - spire.base) / spire.height) + 0.3;
     // A tapering sheath: the spire's own taper, a hand's breadth off it.
     const geometry = new CylinderGeometry(girth(to), girth(from), to - from, 18, 12, true);
     geometry.translate(spire.x, (from + to) / 2, spire.z);
@@ -1175,7 +1176,7 @@ function vertiPool(spire) {
     return { object, update: (time) => { uniforms.time.value = time; } };
 }
 
-function buildBridgework({ buckets, place, random, mounts, extras, animated, materials, wanted }) {
+function buildBridgework({ buckets, place, random, mounts, extras, animated, materials, wanted, grand }) {
     const [px, , pz] = place.position;
     // A plaque on two legs at the foot of the bridgework, looking down the avenue to the gate.
     const plaqueX = px + 3.3;
@@ -1190,26 +1191,25 @@ function buildBridgework({ buckets, place, random, mounts, extras, animated, mat
         twoSided: true,
         stand: { kind: 'posts', base: ground - 0.05 },
     });
+    // In the grand city the forest of spires is still drawn from the shared stream (so every place after it keeps
+    // its look), but not built: two great trees of spires stand in its stead (buildGreatSpires).
+    const into = grand ? UNBUILT : buckets;
     const spires = [
         [2.0, -4.5, 11], [0.0, 0.5, 13], [-1.5, -5.5, 15], [-3.0, -0.5, 17], [-0.5, 4.5, 12],
         [-5.0, -4.0, 19], [-6.0, 1.0, 21], [-4.0, 5.0, 15], [-7.5, -2.0, 23], [1.5, 5.8, 10], [-7.0, 4.2, 18],
-    ].map(([dx, dz, height]) => {
-        const x = px + dx;
-        const z = pz + dz;
-        return { x, z, base: groundY(x, z) - 0.05, height };
-    });
+    ].map(([dx, dz, height]) => upright(px + dx, pz + dz, height));
 
     for (const spire of spires) {
         const { x, z, base, height } = spire;
         const gold = GOLDS[Math.floor(random() * GOLDS.length)];
-        buckets.add('gold', cylinder(0.34, 0.72, height, 8, { x, y: base + height / 2, z }, gold));
-        buckets.add('gold', cone(0.42, 3.6, 8, { x, y: base + height + 1.8, z }, GOLDS[3]));
+        into.add('gold', cylinder(0.34, 0.72, height, 8, { x, y: base + height / 2, z }, gold));
+        into.add('gold', cone(0.42, 3.6, 8, { x, y: base + height + 1.8, z }, GOLDS[3]));
         for (const fraction of [0.45, 0.76]) {
             const radius = 0.72 - 0.38 * fraction + 0.3;
-            buckets.add('gold', paint(pose(new TorusGeometry(radius, 0.07, 4, 18), { x, y: base + height * fraction, z, rx: Math.PI / 2 }), GOLDS[2]));
+            into.add('gold', paint(pose(new TorusGeometry(radius, 0.07, 4, 18), { x, y: base + height * fraction, z, rx: Math.PI / 2 }), GOLDS[2]));
         }
         if (random() < 0.8) {
-            buckets.add('glow', box(0.12, 0.5, 0.12, { x: x + 0.52, y: base + height * 0.6, z }, WINDOW));
+            into.add('glow', box(0.12, 0.5, 0.12, { x: x + 0.52, y: base + height * 0.6, z }, WINDOW));
         }
     }
 
@@ -1228,7 +1228,7 @@ function buildBridgework({ buckets, place, random, mounts, extras, animated, mat
         const lift = random.range(0.8, 2.0);
         const m1 = a.clone().lerp(b, 0.33).add(side).add(new Vector3(0, lift, 0));
         const m2 = a.clone().lerp(b, 0.66).sub(side).add(new Vector3(0, lift * 0.7, 0));
-        buckets.add('gold', tube([a, m1, m2, b], 0.16, GOLDS[Math.floor(random() * GOLDS.length)], 26, 6));
+        into.add('gold', tube([a, m1, m2, b], 0.16, GOLDS[Math.floor(random() * GOLDS.length)], 26, 6));
     }
 
     const stairs = [[2, 5, 0.42], [4, 7, 0.55], [9, 0, 0.5]];
@@ -1240,21 +1240,184 @@ function buildBridgework({ buckets, place, random, mounts, extras, animated, mat
         for (let step = 1; step < steps; step += 1) {
             if (step === 3 || step === 4) continue;
             const point = a.clone().lerp(b, step / steps);
-            buckets.add('gold', box(0.9, 0.12, 0.5, { x: point.x, y: point.y, z: point.z, ry }, GOLDS[1]));
+            into.add('gold', box(0.9, 0.12, 0.5, { x: point.x, y: point.y, z: point.z, ry }, GOLDS[1]));
         }
     }
-    // The tallest spire's verti-pool, rising to the inner gate of the sky-grottos.
-    const pool = vertiPool(spires.reduce((tallest, spire) => (spire.height > tallest.height ? spire : tallest)));
+    const standing = grand ? buildGreatSpires(buckets, place) : spires;
+    // The tallest upright spire's verti-pool, rising to the inner gate of the sky-grottos.
+    const pool = vertiPool(standing.filter((spire) => !spire.leans).reduce((tallest, spire) => (spire.height > tallest.height ? spire : tallest)));
     extras.push(pool.object);
     animated.push(pool.update);
 
-    // As an extra (extras.js): a few of the bridgework's countless bronze hums.
+    // As an extra (extras.js): a few of the bridgework's countless bronze hums (by the upright spires).
     if (wanted.has('hums')) {
-        const hums = createHums({ spires, gradientMap: materials.gold.gradientMap });
+        const hums = createHums({ spires: standing.filter((spire) => !spire.leans), gradientMap: materials.gold.gradientMap });
         extras.push(hums.object);
         animated.push(hums.update);
     }
-    return spires;
+    return standing;
+}
+
+/**
+ * An upright spire's measure: where it stands, its foot and height, and (for what winds round it, hangs from it
+ * or hovers by it) a point on its axis and its shaft's girth, each at a share of its height. The forest's spires
+ * taper from 0.72 at the foot to 0.34.
+ */
+function upright(x, z, height, foot = 0.72, top = 0.34) {
+    const base = groundY(x, z) - 0.05;
+    return {
+        x,
+        z,
+        base,
+        height,
+        at: (fraction) => new Vector3(x, base + height * fraction, z),
+        girth: (fraction) => foot + (top - foot) * Math.min(1, Math.max(0, fraction)),
+    };
+}
+
+/** A shaft from `from` to `to` (a tapered cylinder, `foot` to `top` across the radius), in its own gold. */
+function shaftBetween(from, to, foot, top, color, segments = 12) {
+    const way = new Vector3().subVectors(to, from);
+    const length = way.length();
+    const geometry = new CylinderGeometry(top, foot, length, segments);
+    geometry.applyQuaternion(new Quaternion().setFromUnitVectors(new Vector3(0, 1, 0), way.normalize()));
+    geometry.translate((from.x + to.x) / 2, (from.y + to.y) / 2, (from.z + to.z) / 2);
+    return paint(geometry, color);
+}
+
+/** A cone standing on `at`, pointing along `way` (a unit vector). */
+function coneAlong(at, way, radius, height, color) {
+    const geometry = new ConeGeometry(radius, height, 8);
+    geometry.translate(0, height / 2, 0);
+    geometry.applyQuaternion(new Quaternion().setFromUnitVectors(new Vector3(0, 1, 0), way));
+    geometry.translate(at.x, at.y, at.z);
+    return paint(geometry, color);
+}
+
+/**
+ * The grand city's spires (Elm: "perhaps the spires could be fewer too? maybe two or so extra large bases and more
+ * that sort of branch off of those two further up"): two great golden trunks, one either side of the avenue, each
+ * branching higher up into leaning spires (and one or two of those again), every tip a cone; rings at their
+ * joints, lit windows up the trunks, and the golden bridges slung between the branches, the highest of them
+ * passing by the bridgework's reading points. A stream of its own. Returns the trunks (upright, first) and the
+ * branches (leaning), each with its measure.
+ */
+function buildGreatSpires(buckets, place) {
+    const random = createRandom(4481);
+    const [px, py, pz] = place.position;
+    // (The taller keeps its tip under the sky-grottos' view of their first reading point.)
+    const trunks = [
+        upright(px - 2.7, pz - 5.2, 18.5, 1.75, 0.62),
+        upright(px - 3.7, pz + 3.8, 15.5, 1.5, 0.55),
+    ];
+    const branches = [];
+    const golds = (index) => GOLDS[index % GOLDS.length];
+    trunks.forEach((trunk, which) => {
+        const foot = new Vector3(trunk.x, trunk.base, trunk.z);
+        const head = trunk.at(1);
+        buckets.add('gold', shaftBetween(foot, head, trunk.girth(0), trunk.girth(1), golds(which + 1), 16));
+        // A foot that flares into the paving, as a great tree's does.
+        buckets.add('gold', cylinder(trunk.girth(0) * 1.02, trunk.girth(0) * 1.38, 1.1, 16, { x: trunk.x, y: trunk.base + 0.55, z: trunk.z }, golds(which + 2)));
+        buckets.add('gold', cone(trunk.girth(1) * 1.3, 4.6, 10, { x: trunk.x, y: head.y + 2.3, z: trunk.z }, GOLDS[3]));
+        for (const fraction of [0.2, 0.46, 0.72, 0.9]) {
+            const at = trunk.at(fraction);
+            buckets.add('gold', paint(pose(new TorusGeometry(trunk.girth(fraction) + 0.12, 0.11, 5, 24), { x: at.x, y: at.y, z: at.z, rx: Math.PI / 2 }), GOLDS[2]));
+        }
+        for (let window = 0; window < 7; window += 1) {
+            const fraction = 0.12 + window * 0.11;
+            const angle = window * 2.1 + which;
+            const at = trunk.at(fraction);
+            const out = trunk.girth(fraction) + 0.01;
+            buckets.add('glow', box(0.16, 0.5, 0.16, { x: at.x + Math.cos(angle) * out, y: at.y, z: at.z + Math.sin(angle) * out, ry: -angle }, random() < 0.3 ? WINDOW_LOW : WINDOW));
+        }
+
+        // The branches, as a candelabra's: each springs from the trunk's face at a share of its height, reaches
+        // out a little way, and rises from there as a spire of its own; the first of each reaches toward the
+        // bridgework's middle (where its reading points are). Now and then one branches again.
+        const toward = Math.atan2(pz - trunk.z, px - trunk.x);
+        const count = which === 0 ? 4 : 3;
+        for (let index = 0; index < count; index += 1) {
+            const fraction = 0.32 + index * (0.44 / count) + random.range(-0.03, 0.03);
+            const azimuth = index === 0 ? toward : toward + index * ((Math.PI * 2) / count) + random.range(-0.35, 0.35);
+            const outward = new Vector3(Math.cos(azimuth), 0, Math.sin(azimuth));
+            const from = trunk.at(fraction).addScaledVector(outward, trunk.girth(fraction) * 0.6);
+            const arm = (index === 0 ? 3.0 : random.range(2.0, 3.2)) * (which === 0 ? 1 : 0.9);
+            const rise = (index === 0 ? 6.8 : random.range(4.6, 7.4)) * (which === 0 ? 1 : 0.88);
+            const foot = trunk.girth(fraction) * 0.46;
+            const branch = branchOf(buckets, from, outward, arm, rise, foot, 0.26, golds(which + index), random);
+            branches.push({ ...branch, tree: which });
+            if (index > 0 && random() < 0.55) {
+                const split = branch.at(random.range(0.3, 0.5));
+                const turnTo = azimuth + (random() < 0.5 ? 1 : -1) * random.range(0.7, 1.3);
+                const out = new Vector3(Math.cos(turnTo), 0, Math.sin(turnTo));
+                const twig = branchOf(buckets, split.addScaledVector(out, branch.girth(0.4) * 0.6), out, arm * 0.55, rise * 0.55, 0.22, 0.16, golds(which + index + 1), random);
+                branches.push({ ...twig, tree: which });
+            }
+        }
+    });
+
+    // The golden bridges, slung between the branches: within each tree, and across from one to the other (the
+    // highest passing by the middle of the bridgework, where its reading points are).
+    const middle = new Vector3(px, py, pz);
+    const pairs = [];
+    for (let a = 0; a < branches.length; a += 1) {
+        for (let b = a + 1; b < branches.length; b += 1) pairs.push([a, b]);
+    }
+    pairs.sort(([a1, b1], [a2, b2]) => branches[a1].at(0.6).distanceTo(branches[b1].at(0.6)) - branches[a2].at(0.6).distanceTo(branches[b2].at(0.6)));
+    let slung = 0;
+    for (const [a, b] of pairs) {
+        if (slung >= 7) break;
+        const start = branches[a].at(random.range(0.45, 0.75));
+        const end = branches[b].at(random.range(0.45, 0.75));
+        const across = start.distanceTo(end);
+        if (across < 2.5 || across > 11) continue;
+        const lift = random.range(0.6, 1.6);
+        const side = new Vector3(-(end.z - start.z), 0, end.x - start.x).normalize().multiplyScalar(random.range(-0.9, 0.9));
+        const m1 = start.clone().lerp(end, 0.33).add(side).add(new Vector3(0, lift, 0));
+        const m2 = start.clone().lerp(end, 0.66).sub(side).add(new Vector3(0, lift * 0.7, 0));
+        buckets.add('gold', tube([start, m1, m2, end], 0.16, GOLDS[Math.floor(random() * GOLDS.length)], 26, 6));
+        slung += 1;
+    }
+    // The high bridge across the middle: from the tall tree's first branch to the other's, by the reading points.
+    const reachA = branches.find((branch) => branch.tree === 0)?.at(0.78) ?? trunks[0].at(0.85);
+    const reachB = branches.find((branch) => branch.tree === 1)?.at(0.78) ?? trunks[1].at(0.85);
+    buckets.add('gold', tube([reachA, reachA.clone().lerp(middle, 0.6).add(new Vector3(0, 0.8, 0)), middle.clone().lerp(reachB, 0.4).add(new Vector3(0, 0.5, 0)), reachB], 0.18, GOLDS[1], 30, 6));
+    return [...trunks, ...branches];
+}
+
+/**
+ * One branch of a great spire, as a candelabra's: an arm reaching out from `from` along `outward` (rising a
+ * little as it goes), a collar at its elbow, and from there a spire rising (leaning a touch outward), with a lit
+ * window and its cone. Returns the risen spire's measure (from the elbow up).
+ */
+function branchOf(buckets, from, outward, arm, rise, foot, top, color, random) {
+    const elbow = from.clone().addScaledVector(outward, arm).add(new Vector3(0, arm * 0.45, 0));
+    const middle = foot * 0.82;
+    buckets.add('gold', shaftBetween(from, elbow, foot, middle, color, 10));
+    const collar = new TorusGeometry(middle + 0.1, 0.09, 4, 16);
+    collar.rotateX(Math.PI / 2);
+    collar.translate(elbow.x, elbow.y, elbow.z);
+    buckets.add('gold', paint(collar, GOLDS[2]));
+    buckets.add('gold', paint(pose(new SphereGeometry(middle * 1.05, 10, 6), { x: elbow.x, y: elbow.y, z: elbow.z }), color));
+    const way = new Vector3(outward.x * 0.1, 1, outward.z * 0.1).normalize();
+    const tip = elbow.clone().addScaledVector(way, rise);
+    buckets.add('gold', shaftBetween(elbow, tip, middle, top, color, 10));
+    buckets.add('gold', coneAlong(tip, way, top * 1.35, 2.4, GOLDS[3]));
+    if (random() < 0.75) {
+        const lit = elbow.clone().lerp(tip, 0.45);
+        buckets.add('glow', box(0.12, 0.34, 0.12, { x: lit.x + outward.x * (middle * 0.9), y: lit.y, z: lit.z + outward.z * (middle * 0.9), ry: -Math.atan2(outward.z, outward.x) }, WINDOW));
+    }
+    return {
+        leans: true,
+        from: elbow,
+        to: tip,
+        x: tip.x,
+        z: tip.z,
+        base: elbow.y,
+        height: tip.y - elbow.y,
+        at: (fraction) => elbow.clone().lerp(tip, fraction),
+        girth: (fraction) => middle + (top - middle) * Math.min(1, Math.max(0, fraction)),
+    };
 }
 
 /**
@@ -1574,6 +1737,8 @@ function buildShoreWeed(buckets) {
 function buildVines(buckets, spires) {
     const random = createRandom(6161);
     for (const spire of spires) {
+        // (Vines climb the upright spires only.)
+        if (spire.leans) continue;
         const skip = random() < 0.3;
         const climb = spire.height * random.range(0.18, 0.4);
         const turns = random.range(1.1, 2.3);
@@ -1583,7 +1748,7 @@ function buildVines(buckets, spires) {
         for (let step = 0; step <= 28; step += 1) {
             const t = step / 28;
             const y = spire.base + 0.08 + t * climb;
-            const radius = 0.72 - 0.38 * ((y - spire.base) / spire.height) + 0.06;
+            const radius = spire.girth((y - spire.base) / spire.height) + 0.06;
             const angle = phase + t * turns * Math.PI * 2;
             points.push(new Vector3(spire.x + Math.cos(angle) * radius, y, spire.z + Math.sin(angle) * radius));
         }
@@ -1608,7 +1773,6 @@ function buildVines(buckets, spires) {
  */
 function buildRibbons(buckets, spires) {
     const random = createRandom(7070);
-    const shaft = (spire, y) => 0.72 - 0.38 * Math.min(1, Math.max(0, (y - spire.base) / spire.height));
     for (let ribbon = 0; ribbon < 9; ribbon += 1) {
         const a = spires[Math.floor(random() * spires.length)];
         const b = spires[Math.floor(random() * spires.length)];
@@ -1619,14 +1783,14 @@ function buildRibbons(buckets, spires) {
         const width = random.range(0.16, 0.26);
         const color = new Color(GOLDS[Math.floor(random() * GOLDS.length)]).offsetHSL(0, 0.04, 0.02);
         if (a === b) continue;
-        const start = new Vector3(a.x, a.base + a.height * fa, a.z);
-        const end = new Vector3(b.x, b.base + b.height * fb, b.z);
+        const start = a.at(fa);
+        const end = b.at(fb);
         const across = Math.hypot(end.x - start.x, end.z - start.z);
         if (across > 8 || across < 2) continue;
         // From the face of one spire to the face of the other, not their hearts.
         const flat = new Vector3(end.x - start.x, 0, end.z - start.z).normalize();
-        start.addScaledVector(flat, shaft(a, start.y));
-        end.addScaledVector(flat, -shaft(b, end.y));
+        start.addScaledVector(flat, a.girth(fa));
+        end.addScaledVector(flat, -b.girth(fb));
         const segments = 30;
         const positions = [];
         const rim = [];
@@ -1666,19 +1830,22 @@ function buildRibbons(buckets, spires) {
  */
 function buildChute(buckets, spires) {
     const spire = spires[0];
-    const top = new Vector3(spire.x + 0.95, spire.base + spire.height * 0.55, spire.z - 0.35);
-    const floor = groundY(spire.x + 1.9, spire.z - 1.9);
+    // (Laid out for a spire of the forest's girth; a greater one pushes it out by the difference.)
+    const high = spire.girth(0.55) - 0.51;
+    const low = spire.girth(0) - 0.72;
+    const top = new Vector3(spire.x + 0.95 + high, spire.base + spire.height * 0.55, spire.z - 0.35);
+    const floor = groundY(spire.x + 1.9 + low, spire.z - 1.9);
     const points = [
         top,
-        new Vector3(spire.x + 1.7, top.y - 1.4, spire.z - 0.7),
-        new Vector3(spire.x + 2.25, top.y - 3.4, spire.z - 1.35),
-        new Vector3(spire.x + 1.95, floor + 1.0, spire.z - 1.85),
+        new Vector3(spire.x + 1.7 + high, top.y - 1.4, spire.z - 0.7),
+        new Vector3(spire.x + 2.25 + (high + low) / 2, top.y - 3.4, spire.z - 1.35),
+        new Vector3(spire.x + 1.95 + low, floor + 1.0, spire.z - 1.85),
     ];
     buckets.add('amethyst', tube(points, 0.23, AMETHYST, 36, 6));
     // Its mouth at the landing, and the bin it empties into.
     buckets.add('amethyst', paint(pose(new CylinderGeometry(0.42, 0.24, 0.5, 6, 1, true), { x: top.x, y: top.y + 0.2, z: top.z }), AMETHYST));
     buckets.add('gold', box(0.9, 0.12, 0.7, { x: top.x - 0.1, y: top.y - 0.08, z: top.z + 0.05 }, GOLDS[1]));
-    buckets.add('steel', cylinder(0.42, 0.36, 0.8, 10, { x: spire.x + 1.95, y: floor + 0.4, z: spire.z - 1.85 }, BRONZE_BIN));
+    buckets.add('steel', cylinder(0.42, 0.36, 0.8, 10, { x: spire.x + 1.95 + low, y: floor + 0.4, z: spire.z - 1.85 }, BRONZE_BIN));
 }
 
 // =============================================================================
@@ -1714,8 +1881,9 @@ export async function buildPlaces(buckets, placeData, materials, pause = async (
     buildWall(buckets, mounts);
     buildPavements(buckets);
     await pause();
-    // ?city=grand: far fewer buildings, much larger (Elm's idea), to set beside the city of small houses.
-    const grand = new URLSearchParams(globalThis.location?.search ?? '').get('city') === 'grand';
+    // The grand city: far fewer buildings, much larger (Elm's idea, and her choice); ?city=small keeps the city of
+    // small houses and its forest of spires.
+    const grand = new URLSearchParams(globalThis.location?.search ?? '').get('city') !== 'small';
     const houses = buildHouses(buckets, random, byId, { grand });
     await pause();
     buildSignalTowers(buckets);
@@ -1725,7 +1893,7 @@ export async function buildPlaces(buckets, placeData, materials, pause = async (
     for (const place of placeData.places.filter((entry) => entry.tier === 1)) {
         const builder = BUILDERS[place.id];
         if (builder) {
-            built.set(place.id, builder({ buckets, place, random, byId, extras, animated, materials, mounts, wanted, still }));
+            built.set(place.id, builder({ buckets, place, random, byId, extras, animated, materials, mounts, wanted, still, grand }));
             await pause();
         }
         anchors.set(place.id, new Vector3().fromArray(place.position));

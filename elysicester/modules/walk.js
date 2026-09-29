@@ -163,8 +163,10 @@ function limb(material, width, length, depth) {
  * A slight figure, jointed at the hips, knees, shoulders and elbows, so its
  * shadow walks as a person's does: drawn at a person's full height, then made
  * the city's size (FIGURE). No one in particular: shoulders hardly broader
- * than the hips, a coat falling straight to above the knee, a round head with
+ * than the hips, a short jacket flaring a little over them, a round head with
  * a little hair about it, so the shadow is neither a man's nor a woman's.
+ * (The jacket stops at the top of the thighs, so the legs stride free beneath
+ * it: a longer coat hung between them as a slab, Elm saw.)
  */
 function buildBody() {
     const material = new MeshBasicMaterial({ color: 0x000000 });
@@ -174,9 +176,9 @@ function buildBody() {
     body.add(figure);
     const torso = new Mesh(new BoxGeometry(0.31, 0.58, 0.19), material);
     torso.position.y = 1.25;
-    const coat = new Mesh(new CylinderGeometry(0.16, 0.2, 0.5, 10), material);
-    coat.scale.z = 0.72;
-    coat.position.y = 0.76;
+    const coat = new Mesh(new CylinderGeometry(0.165, 0.19, 0.22, 10), material);
+    coat.scale.z = 0.78;
+    coat.position.y = 0.9;
     const neck = new Mesh(new BoxGeometry(0.09, 0.12, 0.09), material);
     neck.position.y = 1.59;
     const head = new Mesh(new SphereGeometry(0.125, 12, 8), material);
@@ -208,7 +210,7 @@ function buildBody() {
         figure.add(shoulder);
         return { shoulder, elbow };
     });
-    return { body, legs, arms, coat };
+    return { body, legs, arms };
 }
 
 // =============================================================================
@@ -306,7 +308,7 @@ export function createWalk({ light, reducedMotion }) {
     const lightTheta = Math.atan2(toLight.x, toLight.z);
     const shadowWay = new Vector3(-toLight.x, 0, -toLight.z).normalize();
     const shadowLength = TALL / Math.tan(Math.asin(toLight.y));
-    const { body, legs, arms, coat } = buildBody();
+    const { body, legs, arms } = buildBody();
     const scene = new Scene();
     scene.add(body);
 
@@ -407,8 +409,6 @@ export function createWalk({ light, reducedMotion }) {
                 elbow.rotation.x = -(0.35 + 0.45 * (0.5 + 0.5 * Math.sin(elapsed * 8))) * beckon;
             }
         }
-        // The coat's hem swings a little with the stride.
-        coat.rotation.x = swing * 0.1;
         // Standing, it shifts its weight now and then, as the shadow on the wall does; walking, it bobs.
         const sway = reducedMotion ? 0 : (Math.sin(elapsed * 0.45) * 0.018 + Math.sin(elapsed * 0.17 + 1.3) * 0.01) * (1 - state.moving);
         body.rotation.set(0, state.heading, sway);
@@ -986,10 +986,11 @@ export function createWalk({ light, reducedMotion }) {
                 ring.material.opacity = 0.28 + 0.36 * breath;
             }
             if (label && camera) {
-                // Its words show while the pointer is over it, or whenever the camera has come near it, just
-                // above the ring.
+                // Its words show while the pointer is over it, or, while it still waits at the jetty's end to be
+                // taken the first time, whenever the camera has come near it: just above the ring. (Let go of
+                // somewhere in the city, it waits unlabelled: the visitor knows it by then.)
                 const on = ringOnScreen();
-                const near = camera.position.distanceTo(state.position) < LABEL_NEAR;
+                const near = turnsToCity && camera.position.distanceTo(state.position) < LABEL_NEAR;
                 label.hidden = state.walking || !on.front || !(hovering || near);
                 if (!label.hidden) label.style.translate = `${Math.round(on.x)}px ${Math.round(on.y - on.radius * 0.6 + 12)}px`;
             }
