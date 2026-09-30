@@ -30,7 +30,7 @@ const IDLE_SECONDS = 8;
 const DRIFT = 0.04;
 const DRAG = 3.2;
 const KEY_TURN = 1.1;
-const EASE = 3.4;
+export const EASE = 3.4;
 const POLAR_MIN = 0.22;
 const POLAR_MAX = 1.95;
 const RADIUS_MIN = 7;
@@ -95,6 +95,10 @@ export class OrbitRig {
         this.handsOff = false;
         /** True while that steering camera may pass into anything, because it comes apart into dust (dust.js). */
         this.passesThrough = false;
+        /** While something else steers, where the wheel, a pinch, and + and − go instead: (factor) => void, or null. */
+        this.handsOffZoom = null;
+        /** Two fingers have been down since the screen was last clear (a pinch is never a tap). */
+        this.pinched = false;
         this.nominal = new Vector3();
         this.resolved = new Vector3();
         this.offset = new Vector3();
@@ -119,13 +123,23 @@ export class OrbitRig {
             this.pointers.set(event.pointerId, {
                 x: event.clientX, y: event.clientY, startX: event.clientX, startY: event.clientY, startTime: event.timeStamp,
             });
+            if (this.pointers.size > 1) this.pinched = true;
             this.idle = 0;
         });
         listen(element, 'pointermove', (event) => {
             const pointer = this.pointers.get(event.pointerId);
             if (!pointer) return;
-            // While something else steers the camera (walking as the shadow), a drag is its to use.
+            // While something else steers the camera (walking as the shadow), a drag is its to use, and a pinch is
+            // handed on to it (handsOffZoom).
             if (this.handsOff) {
+                if (this.pointers.size === 2) {
+                    const [a, b] = [...this.pointers.values()];
+                    const before = Math.hypot(a.x - b.x, a.y - b.y);
+                    pointer.x = event.clientX;
+                    pointer.y = event.clientY;
+                    const after = Math.hypot(a.x - b.x, a.y - b.y);
+                    if (before > 0 && after > 0) this.handsOffZoom?.(before / after);
+                }
                 pointer.x = event.clientX;
                 pointer.y = event.clientY;
                 return;
@@ -150,8 +164,9 @@ export class OrbitRig {
         const release = (event) => {
             const pointer = this.pointers.get(event.pointerId);
             if (!pointer) return;
-            const wasSingle = this.pointers.size === 1;
+            const wasSingle = this.pointers.size === 1 && !this.pinched;
             this.pointers.delete(event.pointerId);
+            if (this.pointers.size === 0) this.pinched = false;
             if (element.hasPointerCapture(event.pointerId)) element.releasePointerCapture(event.pointerId);
             const moved = Math.hypot(event.clientX - pointer.startX, event.clientY - pointer.startY);
             if (event.type === 'pointerup' && wasSingle && moved < TAP_SLOP && event.timeStamp - pointer.startTime < TAP_TIME) {
@@ -163,12 +178,20 @@ export class OrbitRig {
         listen(element, 'wheel', (event) => {
             event.preventDefault();
             const lines = event.deltaMode === 1 ? 16 : 1;
-            this.zoomBy(Math.exp(event.deltaY * lines * 0.0011));
+            const factor = Math.exp(event.deltaY * lines * 0.0011);
+            if (this.handsOff) this.handsOffZoom?.(factor);
+            else this.zoomBy(factor);
             this.idle = 0;
         }, { passive: false });
 
         listen(window, 'keydown', (event) => {
-            if (ignoresKeys(event) || this.handsOff) return;
+            if (ignoresKeys(event)) return;
+            if (this.handsOff) {
+                // (While something else steers, + and − are still the camera's: handed on to it.)
+                if (event.key === '+' || event.key === '=') this.handsOffZoom?.(0.85);
+                else if (event.key === '-' || event.key === '_') this.handsOffZoom?.(1.18);
+                return;
+            }
             if (event.key.startsWith('Arrow')) {
                 this.keys.add(event.key);
                 event.preventDefault();

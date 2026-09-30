@@ -62,12 +62,13 @@ const SHADOW_REACH = 40;
 const CASTS_SHADOW = new Set(['gold', 'bricking', 'brick', 'stone', 'rock', 'steel', 'copper', 'arch', 'turquoise', 'amethyst', 'bridge', 'cloth', 'green', 'weed']);
 const TAKES_SHADOW = new Set(['dimGold', 'green']);
 /**
- * What comes apart into gold dust where the camera passes (a trial, dust.js; ?dust=off): everything that stands.
- * Not the ground (dimGold), the rock, the sea or the sky; the golden bridges keep their own dust (places.js).
+ * What comes apart into gold dust where the camera passes (a trial, dust.js; ?dust=off): everything in the city,
+ * the paving's steps, posts and edges, the rock and the golden bridges too (they keep their own haze as well), so
+ * nothing is left standing inside what has come apart. (Floors at or below the shadow's level stay: dust.js.)
  */
-const DUST_DISSOLVES = ['gold', 'bricking', 'brick', 'stone', 'steel', 'copper', 'turquoise', 'weed', 'amethyst', 'glass', 'arch', 'cloth', 'green', 'sign', 'glow'];
-/** And the things laid on the cafés' walls, which would be left hanging where a wall came apart. */
-const DUST_ON_WALLS = ['cafe-shadow', 'footlight-wash'];
+const DUST_DISSOLVES = ['gold', 'bricking', 'dimGold', 'brick', 'stone', 'rock', 'steel', 'copper', 'turquoise', 'weed', 'amethyst', 'glass', 'arch', 'cloth', 'green', 'sign', 'glow', 'bridge'];
+/** And what's drawn with materials of its own: what's laid on the cafés' walls, the hums, the paper. */
+const DUST_ON_WALLS = ['cafe-shadow', 'footlight-wash', 'hums', 'paper'];
 /**
  * A safety net for slower phones: if frames run slower than this (seconds) for a sustained stretch,
  * the drawing buffer steps down a quarter at a time, never below 1. It only ever steps down, so it can't
@@ -205,12 +206,6 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         scene.add(mesh);
     }
     for (const extra of places.extras) scene.add(extra);
-    if (dust) {
-        for (const name of DUST_ON_WALLS) {
-            const laid = scene.getObjectByName(name);
-            if (laid) dust.dissolve(laid.material);
-        }
-    }
     // The golden bridges' dust, drawn over them where they come apart (places.js): only while walking, or while
     // the camera is among them, as it's nowhere else.
     let bridgeDust = null;
@@ -249,6 +244,12 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
     scene.add(wisp.object);
     const paper = await stagePaper(data.paper, places.anchors);
     scene.add(paper.group);
+    // (What's drawn with materials of its own comes apart too, once it's all in the scene: dust.js.)
+    if (dust) {
+        const own = new Set();
+        for (const name of DUST_ON_WALLS) scene.getObjectByName(name)?.traverse((object) => object.isMesh && own.add(object.material));
+        for (const material of own) dust.dissolve(material);
+    }
 
     const rigPlaces = new Map(data.places.places
         .filter((place) => place.tier === 1)
@@ -302,6 +303,8 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         floors: places.floors,
         bridgeSight: places.bridgeSight,
         dustSight: dust?.sight ?? null,
+        dustTargets: dust?.targets ?? null,
+        dustNear: dust?.near ?? null,
         scene,
         controls: document.querySelector('.controls'),
     });
