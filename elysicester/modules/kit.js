@@ -294,6 +294,8 @@ export function createMaterials() {
     const toon = (options) => new MeshToonMaterial({ gradientMap, vertexColors: true, color: 0xffffff, ...options });
     return {
         gold: toon({ emissive: 0x8a7424, emissiveIntensity: 0.3 }),
+        /** The golden bridges between the buildings (places.js): gold of their own, which comes apart into dust. */
+        bridge: toon({ emissive: 0x8a7424, emissiveIntensity: 0.32, side: DoubleSide }),
         /** The sea-wall's golden bricking. */
         bricking: bricks(toon({ emissive: 0x8a7424, emissiveIntensity: 0.28 })),
         /** The ground and its paving (streets, platforms, the jetty): flagstones, in the bricking's bond. */

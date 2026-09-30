@@ -392,6 +392,8 @@ export function createWalk({ light, reducedMotion }) {
     let floors = [];
     /** "back to the jetty", shown while walking. */
     let backButton = null;
+    /** The golden bridges' sight line (places.js): the walker's middle, and 1 while walking (their gold turns to dust there). */
+    let bridgeSight = null;
     /** A pointer pressed on the city while walking: { id, type, startX, startY, x, y, time, aimed }. */
     let press = null;
     /** The spot it walks to (a tap, or a pointer held down): { x, y, z, held, best, since }, or null. */
@@ -757,6 +759,8 @@ export function createWalk({ light, reducedMotion }) {
         lead.lerp(ahead.copy(velocity).multiplyScalar(reducedMotion ? 0 : LEAD), 1 - Math.exp(-2.5 * dt));
         const target = rig.goal.target.copy(state.position).add(lead);
         target.y += TALL * LOOK_AT;
+        // (No golden bridge stands between the camera and the walker: there, its gold comes apart into dust.)
+        bridgeSight?.set(state.position.x, state.position.y + TALL * 0.5, state.position.z, 1);
         // (Close against a wall, the one casting it may be all but in it: the sight is felt for from out of it.)
         sightFrom.copy(target);
         if (solids?.available) solids.push(sightFrom, 0.3);
@@ -934,6 +938,7 @@ export function createWalk({ light, reducedMotion }) {
             ({ rig, camera, canvas, solids, hollowMap, wallShadow } = parts);
             decks = waterfrontDecks(parts.meshes);
             floors = parts.floors ?? [];
+            bridgeSight = parts.bridgeSight ?? null;
 
             // The shadow waits at the end of the jetty, looking out to sea (in place of the one on the café
             // wall), a ring breathing on the boards at its feet to say it can be taken.
@@ -1234,6 +1239,7 @@ export function createWalk({ light, reducedMotion }) {
             state.walking = false;
             rig.handsOff = false;
             uniforms.walkClear.value = 0;
+            bridgeSight?.setW(0);
             keys.clear();
             releaseStick();
             press = null;
