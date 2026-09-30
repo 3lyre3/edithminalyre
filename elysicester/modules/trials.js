@@ -14,13 +14,16 @@
  *   camera stays low instead of climbing over what's in the way (dust.js; Elm's ask)
  * - dock: the visit begins as the shadow, already walking, at the end of the jetty, the camera behind it (Elm's ask;
  *   main.js, walk.js); off, it begins with the whole city in view, as before
+ * - hostel: The Door in the Floor, the hostel from Episode 4, on its promontory of sand and dunes south of the
+ *   sun-dock, with its lane of gold cobbles, its white door and its two passages (Elm's first pick of the places;
+ *   places.js buildHostel, silhouette.js)
  */
 
 // =============================================================================
 // Constants
 // =============================================================================
 
-export const TRIALS = Object.freeze(['jetty', 'whisper', 'names', 'hint', 'wraith', 'dust', 'dock']);
+export const TRIALS = Object.freeze(['jetty', 'whisper', 'names', 'hint', 'wraith', 'dust', 'dock', 'hostel']);
 
 // =============================================================================
 // Main Code

@@ -60,15 +60,15 @@ const SHADOW_REACH = 40;
  * striped them with the shadow map's own grain; across the paving it lays the long shadows cleanly.
  */
 const CASTS_SHADOW = new Set(['gold', 'bricking', 'brick', 'stone', 'rock', 'steel', 'copper', 'arch', 'turquoise', 'amethyst', 'bridge', 'cloth', 'green', 'weed']);
-const TAKES_SHADOW = new Set(['dimGold', 'green']);
+const TAKES_SHADOW = new Set(['dimGold', 'green', 'sand']);
 /**
  * What comes apart into gold dust where the camera passes (a trial, dust.js; ?dust=off): everything in the city,
  * the paving's steps, posts and edges, the rock and the golden bridges too, so nothing is left standing inside what
  * has come apart; and the dust of each lingers in its shape. (Floors at or below the shadow's level stay: dust.js.)
  */
-const DUST_DISSOLVES = ['gold', 'bricking', 'dimGold', 'brick', 'stone', 'rock', 'steel', 'copper', 'turquoise', 'weed', 'amethyst', 'glass', 'arch', 'cloth', 'green', 'sign', 'glow', 'bridge'];
+const DUST_DISSOLVES = ['gold', 'bricking', 'dimGold', 'brick', 'stone', 'rock', 'steel', 'copper', 'turquoise', 'weed', 'amethyst', 'glass', 'arch', 'cloth', 'green', 'sign', 'glow', 'bridge', 'sand'];
 /** And what's drawn with materials of its own: what's laid on the cafés' walls, the hums, the paper. */
-const DUST_ON_WALLS = ['cafe-shadow', 'footlight-wash', 'hums', 'paper'];
+const DUST_ON_WALLS = ['cafe-shadow', 'footlight-wash', 'hums', 'paper', 'hostel'];
 /**
  * A safety net for slower phones: if frames run slower than this (seconds) for a sustained stretch,
  * the drawing buffer steps down a quarter at a time, never below 1. It only ever steps down, so it can't
@@ -257,7 +257,7 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
     }
 
     const rigPlaces = new Map(data.places.places
-        .filter((place) => place.tier === 1)
+        .filter((place) => place.tier === 1 && places.anchors.has(place.id))
         .map((place) => [place.id, { position: places.anchors.get(place.id), focus: place.focus }]));
     const rig = new OrbitRig({ places: rigPlaces, reducedMotion });
     rig.attach(camera, canvas);
@@ -359,6 +359,7 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         sky.update(elapsed, camera);
         sea.update(elapsed);
         places.update(elapsed);
+        places.hostelDoor?.update(dt, walk?.state);
         dust?.update(elapsed);
         dust?.cull(camera);
         hollowMap.update(dt);

@@ -325,6 +325,10 @@ export function createDust({ reducedMotion }) {
          * @param {import('three').Material} material
          */
         dissolve(material) {
+            // (A material the city's pieces share may be found again among what's drawn with materials of its own:
+            // taught once is enough, and twice would say everything twice over in its shader.)
+            if (material.userData.dust) return material;
+            material.userData.dust = true;
             alsoBeforeCompile(material, 'dust', (shader) => {
                 Object.assign(shader.uniforms, uniforms);
                 shader.vertexShader = shader.vertexShader

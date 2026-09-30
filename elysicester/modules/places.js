@@ -55,6 +55,7 @@ import {
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { doorCanOpen, doorOpen, shadowTexture } from './extras.js';
 import { createHums } from './hums.js';
+import { silhouetteAtlas } from './silhouette.js';
 import { trialOn } from './trials.js';
 import { WALKER_GLSL } from './walk.js';
 import {
@@ -2241,10 +2242,16 @@ function holdsFast(geometry) {
  * brings up. Kept clear of the cafés' platform and the sun-dock. A stream of
  * its own, so nothing else in the city moves.
  */
-function buildShoreWeed(buckets) {
+function buildShoreWeed(buckets, { underSand = false } = {}) {
     const random = createRandom(8080);
     const [north, south] = wallEnds();
     const clear = (z) => !((z > -11.6 && z < 2.8) || (z > 1.4 && z < 8.8));
+    // (Where the promontory's sand lies at the wall's foot, a trial, its weed is under it: drawn from the same
+    // stream all the same, so the rest of the shore's weed stays as it was.)
+    const buried = (z) => underSand && z > SAND_FROM && z < SAND_TO;
+    const add = buckets.add.bind(buckets);
+    let skip = false;
+    buckets = { add: (...args) => (skip ? null : add(...args)) };
     for (let cluster = 0; cluster < 24; cluster += 1) {
         const z = random.range(north + 1.2, south - 1.2);
         const x = wallX(z) + random.range(0.08, 0.3);
@@ -2253,6 +2260,7 @@ function buildShoreWeed(buckets) {
         const strands = 5 + Math.floor(random() * 5);
         const fronds = Math.floor(random() * 3);
         if (!clear(z)) continue;
+        skip = buried(z);
         // Small clumps, half under the water at the wall's foot.
         for (let lump = 0; lump < lumps; lump += 1) {
             const radius = random.range(0.09, 0.22);
@@ -3401,6 +3409,612 @@ function buildDressing(buckets, { halls, spires, byId, extras, animated, still }
 }
 
 // =============================================================================
+// The Door in the Floor: the hostel on the promontory (Elm's first pick; a trial, ?hostel=off)
+// =============================================================================
+
+/**
+ * The promontory at the wall's foot, south of the sun-dock, where E washed up "Like seaweed" and was carried "over
+ * sand and dunes, across cobbles sparkling gold, to an old, white door" (Numbers by Paint, Episode 4, p. 60): how
+ * far its sand reaches out from the wall's face along its length, [z, reach], read between smoothly.
+ */
+const SAND_REACH = [
+    [6.9, 0], [7.5, 2.0], [9.0, 2.4], [11.0, 3.4], [13.0, 5.8], [14.6, 8.6], [15.9, 9.6], [17.1, 8.4],
+    [18.2, 5.8], [19.5, 5.4], [22.0, 5.5], [24.0, 5.4], [25.2, 4.8], [25.8, 2.6], [26.3, 0],
+];
+const SAND_FROM = 6.9;
+const SAND_TO = 26.3;
+/** Over this far in from its edge, the sand rises out of the water to the beach. */
+const SAND_SHORE = 1.4;
+/** The dunes, [x, z, radius, height]: between the point where she washed up and the lane, and one by the wall. */
+const DUNES = [[12.4, 10.4, 1.4, 0.62], [14.4, 12.3, 1.9, 1.05], [16.4, 14.6, 1.7, 0.85], [14.9, 16.3, 1.3, 0.55], [10.4, 12.2, 1.1, 0.45], [17.6, 16.8, 1.1, 0.42]];
+/** The level the sand is laid to about the hostel and along the lane, and the cobbles' tops on it. */
+const TERRACE_Y = 0.06;
+const COBBLE_TOP = 0.13;
+/** The lane of gold cobbles, from the dunes to the doorstep, and how wide. */
+const LANE = [[10.9, 12.7], [11.05, 14.2], [11.45, 15.9], [11.6, 17.2]];
+const LANE_WIDE = 1.3;
+/** The hostel: its door face (north) and back (south), its sea face (east) and its back, in the sea-wall (west). */
+const HOSTEL_NORTH = 17.8;
+const HOSTEL_SOUTH = 24.8;
+const HOSTEL_EAST = 13.4;
+const HOSTEL_WEST = 9.0;
+const HOSTEL_WALL = 0.24;
+/** Its storeys' floors (the ground floor on the plinth), its eaves, and its roof's rise. */
+const HOSTEL_FLOORS = [0.35, 2.75, 5.05];
+const HOSTEL_EAVES = 7.35;
+const HOSTEL_RISE = 1.9;
+/** The plinth stands out this far all round; the doorstep before the door, and its top. */
+const PLINTH_OUT = 0.15;
+const DOORSTEP_TOP = 0.2;
+/** The white door, on the north face: its middle (x), its width, and its height to where the arch springs. */
+const DOOR_X = 11.6;
+const DOOR_WIDE = 1.05;
+const DOOR_SPRING = 1.85;
+/** The stair, along the back (south) wall, rising east: from x, ten treads of this depth and rise, this wide in z. */
+const STAIR_FROM = 10.3;
+const STAIR_TREADS = 10;
+const STAIR_TREAD = 0.26;
+const STAIR_DEEP = 0.76;
+/** The breakfast table (x0, x1, z0, z1), the bar along the sea-wall, and the cabinet with the key tray by the door. */
+const BREAKFAST = [11.2, 12.1, 19.7, 22.7];
+const BAR = [9.35, 9.95, 19.4, 22.4];
+const CABINET = [12.45, 13.12, 18.05, 18.45];
+/** Upstairs: the corridor along the sea-wall, the rooms along the sea (their fronts at this x), five to a floor. */
+const CORRIDOR_EAST = 10.5;
+const ROOMS = 5;
+/** The doors upstairs, "in myriad new colours", and E's, "a hot, venomous green". */
+const HOSTEL_DOORS = [0xd8465c, 0x3a74c8, 0xeaa82c, 0x7a4ab0, 0x2aa89c, 0xe86ea0, 0x5c9a3a, 0xe0703a, 0x3cb4e8, 0xa8c440, 0xb8342a, 0x8a66d0];
+const E_DOOR = 0x4cf01e;
+/** The door swings in as the walk's shadow comes this near (and closes behind it when it has gone). */
+const DOOR_OPENS = 2.4;
+const DOOR_SWING = -1.3;
+
+/** How far (x, z) is from the segment a–b ([x, z] pairs). */
+function segmentDistance(x, z, [ax, az], [bx, bz]) {
+    const ux = bx - ax;
+    const uz = bz - az;
+    const t = Math.max(0, Math.min(1, ((x - ax) * ux + (z - az) * uz) / (ux * ux + uz * uz)));
+    return Math.hypot(x - ax - ux * t, z - az - uz * t);
+}
+
+/** How far (x, z) is from the lane's middle line. */
+function laneDistance(x, z) {
+    let best = Infinity;
+    for (let index = 0; index < LANE.length - 1; index += 1) best = Math.min(best, segmentDistance(x, z, LANE[index], LANE[index + 1]));
+    return best;
+}
+
+/** How far the sand reaches out from the wall's face at z (0 beyond its ends), its shore wandering a little. */
+function sandReach(z) {
+    if (z <= SAND_FROM || z >= SAND_TO) return 0;
+    let at = 0;
+    while (at < SAND_REACH.length - 2 && SAND_REACH[at + 1][0] < z) at += 1;
+    const [z0, r0] = SAND_REACH[at];
+    const [z1, r1] = SAND_REACH[at + 1];
+    const before = SAND_REACH[Math.max(0, at - 1)][1];
+    const after = SAND_REACH[Math.min(SAND_REACH.length - 1, at + 2)][1];
+    const t = (z - z0) / (z1 - z0);
+    const reach = 0.5 * (2 * r0 + (r1 - before) * t + (2 * before - 5 * r0 + 4 * r1 - after) * t * t + (3 * r0 - before - 3 * r1 + after) * t * t * t);
+    const wander = (0.22 * Math.sin(z * 1.7) + 0.12 * Math.sin(z * 3.1 + 1.0)) * Math.min(1, Math.max(0, reach) / 1.5);
+    return Math.max(0, reach + wander);
+}
+
+/**
+ * The sand's height at (x, z), or null off it: rising out of the water at its edge to the beach, banked a little
+ * against the wall, the dunes on it, and laid level about the hostel and under the lane.
+ */
+function sandHeight(x, z) {
+    const reach = sandReach(z);
+    if (reach <= 0.05) return null;
+    const out = x - wallX(z);
+    if (out < -0.5 || out > reach + 0.35) return null;
+    const inFrom = reach - out;
+    let y = SEA_LEVEL - 0.14 + 0.66 * MathUtils.smoothstep(inFrom, -0.2, SAND_SHORE);
+    y += 0.18 * (1 - MathUtils.smoothstep(out, 0, 1.6)) * MathUtils.smoothstep(inFrom, 0, 1.0);
+    for (const [dx, dz, radius, height] of DUNES) {
+        const q = Math.hypot(x - dx, (z - dz) * 0.8) / radius;
+        if (q < 1) y += height * (1 - q * q) ** 2 * MathUtils.smoothstep(inFrom, 0.2, 1.2);
+    }
+    const lane = 1 - MathUtils.smoothstep(laneDistance(x, z), LANE_WIDE / 2 + 0.1, LANE_WIDE / 2 + 0.9);
+    const beyond = Math.hypot(Math.max(0, x - (HOSTEL_EAST + 0.6)), Math.max(0, HOSTEL_NORTH - 1.3 - z, z - (HOSTEL_SOUTH + 0.4)));
+    const around = 1 - MathUtils.smoothstep(beyond, 0, 0.9);
+    const level = Math.max(lane, around) * MathUtils.smoothstep(inFrom, 0.2, 0.9);
+    return y + (TERRACE_Y - y) * level;
+}
+
+/**
+ * The promontory's sand, laid in rows across it from inside the wall's face out to under the water, following its
+ * shore; wet and darker at the water, a lace of foam where it meets it. The dune grass on it, and at its point,
+ * where she washed up, weed and a few stones and a branch of driftwood thrown up with her.
+ */
+function buildPromontory(buckets, random) {
+    const rows = Math.ceil((SAND_TO - SAND_FROM) / 0.2);
+    const cols = 30;
+    const positions = [];
+    const index = [];
+    const at = [];
+    for (let row = 0; row <= rows; row += 1) {
+        const z = SAND_FROM + (row / rows) * (SAND_TO - SAND_FROM);
+        const reach = sandReach(z);
+        const line = [];
+        for (let col = 0; col <= cols; col += 1) {
+            if (reach <= 0.05) {
+                line.push(-1);
+                continue;
+            }
+            const x = wallX(z) - 0.45 + (col / cols) * (reach + 0.75);
+            line.push(positions.length / 3);
+            positions.push(x, sandHeight(x, z) ?? SEA_LEVEL - 0.2, z);
+        }
+        at.push(line);
+    }
+    for (let row = 0; row < rows; row += 1) {
+        for (let col = 0; col < cols; col += 1) {
+            const a = at[row][col];
+            const b = at[row][col + 1];
+            const c = at[row + 1][col];
+            const d = at[row + 1][col + 1];
+            if (a < 0 || b < 0 || c < 0 || d < 0) continue;
+            index.push(a, c, b, b, c, d);
+        }
+    }
+    const sand = new BufferGeometry();
+    sand.setAttribute('position', new Float32BufferAttribute(positions, 3));
+    sand.setIndex(index);
+    sand.computeVertexNormals();
+    const dry = new Color(0xf0dcb0);
+    const wet = new Color(0x9c7e52);
+    const foam = new Color(0xf2eee4);
+    paintBy(sand, (x, y, z, out) => {
+        const mottle = noise2(x * 1.3, z * 1.3);
+        out.copy(dry).multiplyScalar(0.92 + 0.14 * mottle);
+        out.lerp(wet, 1 - MathUtils.smoothstep(y, SEA_LEVEL + 0.04, SEA_LEVEL + 0.34));
+        out.lerp(foam, 0.85 * Math.exp(-(((y - SEA_LEVEL - 0.03) / 0.045) ** 2)));
+    });
+    buckets.add('sand', sand);
+
+    // Dune grass, in tufts on the dunes, pale and dry, leaning away from the sea.
+    const GRASS_BLADES = [0xd0c47e, 0xb8b46a, 0xe0cc8a, 0xa8ac62];
+    for (const [dx, dz, radius, height] of DUNES) {
+        const tufts = Math.round(6 + radius * 9 * height);
+        for (let tuft = 0; tuft < tufts; tuft += 1) {
+            const angle = random() * Math.PI * 2;
+            const far = Math.sqrt(random()) * radius * 0.8;
+            const tx = dx + Math.cos(angle) * far;
+            const tz = dz + Math.sin(angle) * far * 1.25;
+            const ty = sandHeight(tx, tz);
+            if (ty === null || ty < SEA_LEVEL + 0.4) continue;
+            const color = GRASS_BLADES[Math.floor(random() * GRASS_BLADES.length)];
+            const blades = 5 + Math.floor(random() * 4);
+            for (let blade = 0; blade < blades; blade += 1) {
+                const tall = random.range(0.22, 0.48);
+                const lean = random.range(0.05, 0.22);
+                const strip = new PlaneGeometry(0.035, tall, 1, 3);
+                strip.translate(0, tall / 2, 0);
+                const position = strip.attributes.position;
+                for (let vertex = 0; vertex < position.count; vertex += 1) {
+                    const up = position.getY(vertex) / tall;
+                    position.setX(vertex, position.getX(vertex) + up * up * lean);
+                }
+                swaying(strip, (bx, by) => by / tall, 0.35);
+                pose(strip, { x: tx + random.range(-0.06, 0.06), y: ty - 0.02, z: tz + random.range(-0.06, 0.06), ry: random.range(-0.6, 0.6) - Math.PI / 2 });
+                buckets.add('weed', paintBy(strip.toNonIndexed(), (bx, by, bz, out) => out.set(color).multiplyScalar(0.8 + 0.4 * Math.min(1, (by - ty) / tall))), { passable: true });
+            }
+        }
+    }
+
+    // At its point, where she washed up: weed thrown up on the sand, a few stones, a branch of driftwood.
+    const point = { x: wallX(15.9) + 8.7, z: 15.9 };
+    for (let clump = 0; clump < 9; clump += 1) {
+        const x = point.x + random.range(-1.2, 0.6);
+        const z = point.z + random.range(-1.4, 1.4);
+        const y = sandHeight(x, z);
+        if (y === null || y < SEA_LEVEL + 0.05) continue;
+        const radius = random.range(0.08, 0.2);
+        const lump = pose(new IcosahedronGeometry(radius, 0), { x, y: y + radius * 0.2, z, sy: 0.45, ry: random() * Math.PI });
+        buckets.add('weed', holdsFast(paint(lump, WEED[Math.floor(random() * WEED.length)])), { passable: true });
+    }
+    for (let stone = 0; stone < 5; stone += 1) {
+        const x = point.x + random.range(-1.6, 0.4);
+        const z = point.z + random.range(-1.8, 1.8);
+        const y = sandHeight(x, z);
+        if (y === null) continue;
+        const radius = random.range(0.1, 0.24);
+        buckets.add('stone', paint(unindexed(pose(new DodecahedronGeometry(radius, 0), { x, y: y + radius * 0.35, z, sy: 0.6, ry: random() * Math.PI })), new Color(0xa89c84).offsetHSL(0, 0, random.range(-0.08, 0.06))));
+    }
+    const driftFrom = new Vector3(point.x - 1.1, 0, point.z + 0.6);
+    const drift = [0, 0.35, 0.7, 1].map((t) => {
+        const x = driftFrom.x + t * 1.5;
+        const z = driftFrom.z - t * 0.5 + Math.sin(t * 3) * 0.12;
+        return new Vector3(x, (sandHeight(x, z) ?? 0) + 0.06, z);
+    });
+    buckets.add('stone', tube(drift, 0.055, 0x8e7a62, 10, 5));
+}
+
+/** The lane of gold cobbles, "sparkling gold", row by row from the dunes to the doorstep, each stone a gold of its own. */
+function buildLane(buckets, random) {
+    const golds = [...GOLDS, 0xf8dc90, 0xe8c070];
+    let row = 0;
+    for (let segment = 0; segment < LANE.length - 1; segment += 1) {
+        const [ax, az] = LANE[segment];
+        const [bx, bz] = LANE[segment + 1];
+        const length = Math.hypot(bx - ax, bz - az);
+        const wx = (bx - ax) / length;
+        const wz = (bz - az) / length;
+        const ry = Math.atan2(wx, wz);
+        for (let along = 0; along < length; along += 0.21) {
+            const stagger = row % 2 ? 0.1 : 0;
+            for (let across = -3; across <= 3; across += 1) {
+                const u = across * 0.2 + stagger;
+                if (Math.abs(u) > LANE_WIDE / 2 - 0.1) continue;
+                const x = ax + wx * along - wz * (u + random.range(-0.02, 0.02));
+                const z = az + wz * along + wx * (u + random.range(-0.02, 0.02));
+                const color = new Color(golds[Math.floor(random() * golds.length)]).offsetHSL(random.range(-0.01, 0.01), random.range(-0.05, 0.05), random.range(-0.05, 0.06));
+                buckets.add('gold', bevelBox(0.18, 0.09, 0.17, { x, y: COBBLE_TOP - 0.045, z, ry: ry + random.range(-0.15, 0.15) }, color, 0.035));
+            }
+            row += 1;
+        }
+    }
+}
+
+/** An arch-topped shape: straight sides to `spring`, a half-round above, `width` across, standing on y = 0. */
+function archShape(width, spring) {
+    const shape = new Shape();
+    shape.moveTo(-width / 2, 0);
+    shape.lineTo(width / 2, 0);
+    shape.lineTo(width / 2, spring);
+    shape.absarc(0, spring, width / 2, 0, Math.PI, false);
+    shape.lineTo(-width / 2, 0);
+    return shape;
+}
+
+/** An arch-topped slab, `thick` deep, facing +z (its back at -thick/2), posed at `at`. */
+function arched(width, spring, thick, at, color) {
+    const geometry = new ExtrudeGeometry(archShape(width, spring), { depth: thick, bevelEnabled: false, curveSegments: 10 });
+    geometry.translate(0, 0, -thick / 2);
+    return paint(pose(geometry, at), color);
+}
+
+/** An arch-topped ring round an opening: `band` wide, `thick` deep, facing +z. */
+function archRing(width, spring, band, thick, at, color) {
+    const shape = archShape(width + band * 2, spring + band);
+    shape.holes.push(archShape(width, spring));
+    // (The outer arch stands on y = 0 too: the hole's straight sides run down to it.)
+    const geometry = new ExtrudeGeometry(shape, { depth: thick, bevelEnabled: false, curveSegments: 10 });
+    geometry.translate(0, 0, -thick / 2);
+    return paint(pose(geometry, at), color);
+}
+
+/** A flat quad of the silhouette (silhouette.js), `size` across, facing `ry` (0 faces +z), in the atlas's cell. */
+function silhouetteQuad(size, at, color, cell) {
+    const quad = new PlaneGeometry(size, size);
+    const uv = quad.attributes.uv;
+    for (let vertex = 0; vertex < uv.count; vertex += 1) uv.setX(vertex, cell * 0.5 + uv.getX(vertex) * 0.5);
+    return paint(pose(quad, at), color);
+}
+
+/**
+ * The Door in the Floor, the hostel where Allison carried E (Numbers by Paint, Episode 4, pp. 60-61), standing on
+ * the promontory against the sea-wall's foot, its upper storeys over the wall's top: pale gold brick, three storeys
+ * of arched windows, lit and dark and shuttered, under a slate roof with a mouse for its weathervane. "An old, white
+ * door imprinted with the silhouette of a mouse and two jugs of ale" (silhouette.js), shining, that swings in as the
+ * walk's shadow comes to it (as Allison swung them in). Inside, the breakfast table she was set down on, the bar,
+ * the cabinet of keys, the stair; upstairs, a corridor of doors "all imprinted with the same silhouette as the
+ * entrance, but in myriad new colours", and hers, "a hot, venomous green, while the mouse and the jugs were a rainbow
+ * kaleidoscope", and "a tall, down-quilted bed" in "the light through the arched window". A stream of its own.
+ * Returns its floor for walking (the sand, the lane, the doorstep and the breakfast room: the walls, the furniture
+ * and the stair left out, for a floor given exactly is its own bound), the door, and what a touch finds.
+ */
+function buildHostel({ buckets, extras, still, materials }) {
+    const random = createRandom(6061);
+    buildPromontory(buckets, random);
+    buildLane(buckets, random);
+
+    const BRICK_PALE = 0xecd8a4;
+    const TRIM = 0xd8ceb2;
+    const PLINTH = 0xb4a684;
+    const SLATE = 0x564a5c;
+    const SLATE_RIDGE = 0x3c3444;
+    const DOOR_WHITE = 0xeee8da;
+    const DOOR_PANEL = 0xdcd4c2;
+    const BRASS = 0xc9a24e;
+    const DARK_WINDOW = 0x241a18;
+    const SHUTTERS = [0x5e7a52, 0x8a4a32, 0x4a6a8a];
+    const WOOD = TIMBER;
+    const t = HOSTEL_WALL;
+    const [ground, first, second] = HOSTEL_FLOORS;
+    const width = HOSTEL_EAST - HOSTEL_WEST;
+    const depth = HOSTEL_SOUTH - HOSTEL_NORTH;
+    const cx = (HOSTEL_EAST + HOSTEL_WEST) / 2;
+    const cz = (HOSTEL_NORTH + HOSTEL_SOUTH) / 2;
+    const tall = HOSTEL_EAVES - ground;
+    const inner = { x0: HOSTEL_WEST + t, x1: HOSTEL_EAST - t, z0: HOSTEL_NORTH + t, z1: HOSTEL_SOUTH - t };
+
+    // The plinth, and the doorstep up to it.
+    buckets.add('stone', bevelBox(width + PLINTH_OUT * 2, ground - (SEA_LEVEL - 0.3), depth + PLINTH_OUT * 2, { x: cx, y: (ground + SEA_LEVEL - 0.3) / 2, z: cz }, PLINTH, 0.05));
+    buckets.add('stone', bevelBox(1.6, DOORSTEP_TOP + 0.1, 0.62, { x: DOOR_X, y: (DOORSTEP_TOP - 0.1) / 2, z: HOSTEL_NORTH - PLINTH_OUT - 0.31 }, TRIM, 0.04));
+
+    // The walls: the sea face and the back whole, the south face whole, the north face about the doorway; the gables.
+    const walls = [
+        box(t, tall, depth, { x: HOSTEL_EAST - t / 2, y: ground + tall / 2, z: cz }, BRICK_PALE),
+        box(t, tall, depth, { x: HOSTEL_WEST + t / 2, y: ground + tall / 2, z: cz }, BRICK_PALE),
+        box(width, tall, t, { x: cx, y: ground + tall / 2, z: HOSTEL_SOUTH - t / 2 }, BRICK_PALE),
+    ];
+    const left = DOOR_X - DOOR_WIDE / 2 - 0.02;
+    const right = DOOR_X + DOOR_WIDE / 2 + 0.02;
+    const doorTop = ground + DOOR_SPRING + DOOR_WIDE / 2 + 0.03;
+    const nz = HOSTEL_NORTH + t / 2;
+    walls.push(box(left - HOSTEL_WEST, tall, t, { x: (HOSTEL_WEST + left) / 2, y: ground + tall / 2, z: nz }, BRICK_PALE));
+    walls.push(box(HOSTEL_EAST - right, tall, t, { x: (right + HOSTEL_EAST) / 2, y: ground + tall / 2, z: nz }, BRICK_PALE));
+    walls.push(box(right - left, HOSTEL_EAVES - doorTop, t, { x: DOOR_X, y: (doorTop + HOSTEL_EAVES) / 2, z: nz }, BRICK_PALE));
+    for (const z of [HOSTEL_NORTH + t / 2, HOSTEL_SOUTH - t / 2]) {
+        const end = gable(width, HOSTEL_RISE, t, { x: cx, y: HOSTEL_EAVES, z }, BRICK_PALE);
+        walls.push(end);
+    }
+    for (const wall of walls) buckets.add('bricking', wall);
+
+    // Stone trims: a course at each floor, the eaves' cornice, quoins at the sea corners.
+    const trims = [];
+    for (const y of [first - 0.06, second - 0.06]) {
+        trims.push(box(0.1, 0.12, depth + 0.1, { x: HOSTEL_EAST + 0.04, y, z: cz }, TRIM));
+        trims.push(box(width + 0.1, 0.12, 0.1, { x: cx, y, z: HOSTEL_NORTH - 0.04 }, TRIM));
+    }
+    trims.push(bevelBox(0.3, 0.2, depth + 0.3, { x: HOSTEL_EAST + 0.08, y: HOSTEL_EAVES - 0.05, z: cz }, TRIM, 0.04));
+    trims.push(bevelBox(0.3, 0.2, depth + 0.3, { x: HOSTEL_WEST - 0.08, y: HOSTEL_EAVES - 0.05, z: cz }, TRIM, 0.04));
+    for (let course = 0; course * 0.46 < tall - 0.3; course += 1) {
+        const long = course % 2 === 0;
+        for (const z of [HOSTEL_NORTH + (long ? 0.22 : 0.15), HOSTEL_SOUTH - (long ? 0.22 : 0.15)]) {
+            trims.push(bevelBox(0.07, 0.4, long ? 0.44 : 0.3, { x: HOSTEL_EAST + 0.02, y: ground + 0.23 + course * 0.46, z }, TRIM, 0.02));
+        }
+    }
+    for (const trim of trims) buckets.add('stone', trim);
+
+    // The roof: two slopes of slate over the eaves, a ridge, a chimney at the back, and on the front of the ridge
+    // a mouse for a weathervane (the silhouette's, as it were, looking out to sea).
+    const half = width / 2 + 0.28;
+    const slope = Math.atan2(HOSTEL_RISE, width / 2);
+    const run = Math.hypot(half, HOSTEL_RISE * (half / (width / 2)));
+    for (const side of [-1, 1]) {
+        buckets.add('brick', box(run, 0.12, depth + 0.5, {
+            x: cx + side * (half / 2), y: HOSTEL_EAVES + HOSTEL_RISE - (half / 2) * Math.tan(slope) + 0.06, z: cz, rz: -side * slope,
+        }, SLATE));
+    }
+    buckets.add('brick', box(0.22, 0.16, depth + 0.56, { x: cx, y: HOSTEL_EAVES + HOSTEL_RISE + 0.06, z: cz }, SLATE_RIDGE));
+    buckets.add('bricking', bevelBox(0.5, 1.6, 0.5, { x: cx - 0.9, y: HOSTEL_EAVES + HOSTEL_RISE * 0.55 + 0.5, z: HOSTEL_SOUTH - 1.2 }, BRICK_PALE, 0.04));
+    buckets.add('stone', box(0.62, 0.1, 0.62, { x: cx - 0.9, y: HOSTEL_EAVES + HOSTEL_RISE * 0.55 + 1.32, z: HOSTEL_SOUTH - 1.2 }, TRIM));
+    const vane = { x: cx, y: HOSTEL_EAVES + HOSTEL_RISE + 0.12, z: HOSTEL_NORTH + 0.5 };
+    const vanePieces = [
+        cylinder(0.02, 0.02, 0.7, 4, { x: vane.x, y: vane.y + 0.35, z: vane.z }, STEEL_DARK),
+        ball(0.16, { x: vane.x, y: vane.y + 0.82, z: vane.z, sx: 1.5, sz: 0.8 }, STEEL_DARK, 8, 5),
+        ball(0.1, { x: vane.x + 0.25, y: vane.y + 0.9, z: vane.z }, STEEL_DARK, 8, 5),
+        ball(0.06, { x: vane.x + 0.2, y: vane.y + 1.02, z: vane.z }, STEEL_DARK, 6, 4),
+        tube([new Vector3(vane.x - 0.22, vane.y + 0.8, vane.z), new Vector3(vane.x - 0.42, vane.y + 0.92, vane.z), new Vector3(vane.x - 0.5, vane.y + 1.08, vane.z)], 0.012, STEEL_DARK, 6, 3),
+    ];
+    for (const piece of vanePieces) buckets.add('steel', piece, { passable: true });
+
+    // The windows, arched, some lit, some dark, some shuttered: along the sea five to a floor (and one by the stair),
+    // over the door, and over the sea-wall toward the city.
+    const windowAt = (x, y, z, ry, kind, wide = 0.6, spring = 0.95) => {
+        const at = { x, y, z, ry };
+        if (kind === 'lit' || kind === 'gold') {
+            buckets.add('glow', arched(wide, spring, 0.04, at, kind === 'gold' ? light(0xffcf6a, 3.6) : WINDOW));
+        } else {
+            buckets.add('brick', arched(wide, spring, 0.04, at, DARK_WINDOW));
+        }
+        if (kind === 'shut') {
+            const shade = SHUTTERS[Math.floor(random() * SHUTTERS.length)];
+            for (const side of [-1, 1]) {
+                const leaf = [box(wide / 2 - 0.02, spring, 0.04, { x: side * (wide / 4), y: spring / 2, z: 0.03 }, shade)];
+                for (let slat = 1; slat < 6; slat += 1) leaf.push(box(wide / 2 - 0.06, 0.02, 0.02, { x: side * (wide / 4), y: (spring * slat) / 6, z: 0.06 }, new Color(shade).multiplyScalar(0.7)));
+                for (const piece of frame(leaf, at)) buckets.add('brick', piece);
+            }
+        }
+        buckets.add('stone', archRing(wide, spring, 0.07, 0.07, at, TRIM));
+        for (const piece of frame([box(wide + 0.22, 0.07, 0.14, { y: -0.035, z: 0.04 }, TRIM)], at)) buckets.add('stone', piece);
+    };
+    const bays = Array.from({ length: ROOMS }, (_, bay) => inner.z0 + ((inner.z1 - 0.8 - inner.z0) * (bay + 0.5)) / ROOMS);
+    const eastKinds = [
+        ['lit', 'lit', 'lit', 'lit', 'lit'],
+        ['lit', 'shut', 'dark', 'lit', 'shut'],
+        ['gold', 'dark', 'lit', 'shut', 'lit'],
+    ];
+    HOSTEL_FLOORS.forEach((floor, storey) => {
+        bays.forEach((z, bay) => windowAt(HOSTEL_EAST + 0.01, floor + (storey ? 0.72 : 0.62), z, Math.PI / 2, eastKinds[storey][bay]));
+        windowAt(HOSTEL_EAST + 0.01, floor + 0.9, inner.z1 - 0.4, Math.PI / 2, storey === 1 ? 'dark' : 'lit', 0.4, 0.6);
+    });
+    windowAt(DOOR_X, first + 0.72, HOSTEL_NORTH - 0.01, Math.PI, 'lit');
+    windowAt(DOOR_X, second + 0.72, HOSTEL_NORTH - 0.01, Math.PI, 'dark');
+    windowAt(DOOR_X - 1.55, ground + 0.75, HOSTEL_NORTH - 0.01, Math.PI, 'lit', 0.5, 0.75);
+    windowAt(DOOR_X + 1.2, first + 0.72, HOSTEL_NORTH - 0.01, Math.PI, 'shut', 0.5, 0.8);
+    for (const [z, kind] of [[19.2, 'lit'], [21.3, 'dark'], [23.4, 'lit']]) windowAt(HOSTEL_WEST - 0.01, second + 0.8, z, -Math.PI / 2, kind, 0.5, 0.8);
+    buckets.add('glow', cylinder(0.26, 0.26, 0.04, 16, { x: cx, y: HOSTEL_EAVES + 0.75, z: HOSTEL_NORTH - 0.01, rx: Math.PI / 2 }, WINDOW_LOW));
+    buckets.add('stone', paint(pose(new TorusGeometry(0.29, 0.05, 5, 16), { x: cx, y: HOSTEL_EAVES + 0.75, z: HOSTEL_NORTH - 0.03 }), TRIM));
+
+    // The doorway's arch in stone, and a lamp on its bracket beside the door.
+    buckets.add('stone', archRing(DOOR_WIDE + 0.04, DOOR_SPRING, 0.12, 0.1, { x: DOOR_X, y: ground, z: HOSTEL_NORTH - 0.02, ry: Math.PI }, TRIM));
+    buckets.add('steel', box(0.05, 0.05, 0.36, { x: right + 0.42, y: ground + 2.25, z: HOSTEL_NORTH - 0.18 }, STEEL_DARK), { passable: true });
+    buckets.add('steel', cylinder(0.02, 0.02, 0.22, 4, { x: right + 0.42, y: ground + 2.12, z: HOSTEL_NORTH - 0.36 }, STEEL_DARK), { passable: true });
+    buckets.add('glow', ball(0.12, { x: right + 0.42, y: ground + 1.94, z: HOSTEL_NORTH - 0.36 }, LAMP, 8, 6));
+
+    // Inside: the floors above (open over the stair, along the back), the breakfast table with its benches and its
+    // breakfast, the bar along the sea-wall with its bottles, the cabinet with its tray of keys, lamps over the table.
+    const stairZ = inner.z1 - STAIR_DEEP / 2;
+    for (const floor of [first, second]) {
+        buckets.add('stone', box(inner.x1 - inner.x0, 0.14, inner.z1 - STAIR_DEEP - inner.z0, { x: (inner.x0 + inner.x1) / 2, y: floor - 0.07, z: (inner.z0 + inner.z1 - STAIR_DEEP) / 2 }, WOOD[1]));
+        buckets.add('stone', box(STAIR_FROM - inner.x0, 0.14, STAIR_DEEP, { x: (inner.x0 + STAIR_FROM) / 2, y: floor - 0.07, z: stairZ }, WOOD[1]));
+    }
+    for (const [floor, rise] of [[ground, (first - ground) / STAIR_TREADS], [first, (second - first) / STAIR_TREADS]]) {
+        for (let tread = 0; tread < STAIR_TREADS; tread += 1) {
+            const top = floor + (tread + 1) * rise;
+            buckets.add('brick', box(STAIR_TREAD, top - floor, STAIR_DEEP, { x: STAIR_FROM + (tread + 0.5) * STAIR_TREAD, y: (floor + top) / 2, z: stairZ }, WOOD[tread % 2]));
+        }
+    }
+    const [tx0, tx1, tz0, tz1] = BREAKFAST;
+    const table = [
+        bevelBox(tx1 - tx0, 0.06, tz1 - tz0, { x: (tx0 + tx1) / 2, y: ground + 0.74, z: (tz0 + tz1) / 2 }, WOOD[1], 0.02),
+    ];
+    for (const x of [tx0 + 0.08, tx1 - 0.08]) for (const z of [tz0 + 0.1, tz1 - 0.1]) table.push(box(0.07, 0.71, 0.07, { x, y: ground + 0.355, z }, WOOD[2]));
+    for (const x of [tx0 - 0.35, tx1 + 0.35]) {
+        table.push(box(0.3, 0.05, tz1 - tz0 - 0.2, { x, y: ground + 0.44, z: (tz0 + tz1) / 2 }, WOOD[0]));
+        for (const z of [tz0 + 0.2, tz1 - 0.2]) table.push(box(0.26, 0.42, 0.05, { x, y: ground + 0.21, z }, WOOD[2]));
+    }
+    for (const piece of table) buckets.add('brick', piece);
+    const breakfast = [];
+    for (let place = 0; place < 6; place += 1) {
+        const side = place % 2 ? 1 : -1;
+        const z = tz0 + 0.45 + Math.floor(place / 2) * 0.95;
+        const x = (tx0 + tx1) / 2 + side * 0.25;
+        breakfast.push(cylinder(0.11, 0.1, 0.015, 10, { x, y: ground + 0.78, z }, 0xf2eee4));
+        breakfast.push(cylinder(0.035, 0.03, 0.06, 7, { x: x + side * -0.02, y: ground + 0.8, z: z + 0.17 }, 0xe8e2d4));
+    }
+    breakfast.push(ball(0.09, { x: (tx0 + tx1) / 2, y: ground + 0.84, z: (tz0 + tz1) / 2, sy: 0.8 }, 0x7a4a6e, 8, 6));
+    breakfast.push(ball(0.12, { x: (tx0 + tx1) / 2, y: ground + 0.82, z: tz0 + 0.95, sx: 1.6, sy: 0.6 }, 0xc8903e, 8, 5));
+    for (const piece of breakfast) buckets.add('stone', piece);
+    const [bx0, bx1, bz0, bz1] = BAR;
+    buckets.add('brick', bevelBox(bx1 - bx0, 1.02, bz1 - bz0, { x: (bx0 + bx1) / 2, y: ground + 0.51, z: (bz0 + bz1) / 2 }, WOOD[2], 0.03));
+    buckets.add('stone', box(bx1 - bx0 + 0.08, 0.05, bz1 - bz0 + 0.06, { x: (bx0 + bx1) / 2, y: ground + 1.045, z: (bz0 + bz1) / 2 }, 0xcdbf9c));
+    for (let bottle = 0; bottle < 9; bottle += 1) {
+        const z = bz0 + 0.25 + bottle * 0.32;
+        const color = [0x3c7a52, 0x8a3a2e, 0xc8a04a, 0x3a5a8a][bottle % 4];
+        buckets.add('glass', cylinder(0.035, 0.04, 0.26, 6, { x: bx0 + 0.14, y: ground + 1.2, z }, color));
+    }
+    const [kx0, kx1, kz0, kz1] = CABINET;
+    buckets.add('brick', bevelBox(kx1 - kx0, 1.4, kz1 - kz0, { x: (kx0 + kx1) / 2, y: ground + 0.7, z: (kz0 + kz1) / 2 }, WOOD[0], 0.02));
+    buckets.add('brick', box(0.46, 0.04, 0.34, { x: (kx0 + kx1) / 2, y: ground + 0.92, z: kz1 + 0.12 }, WOOD[1]));
+    for (let key = 0; key < 4; key += 1) buckets.add('stone', box(0.05, 0.015, 0.1, { x: kx0 + 0.16 + key * 0.11, y: ground + 0.95, z: kz1 + 0.14 }, BRASS));
+    for (const z of [tz0 + 0.8, tz1 - 0.8]) {
+        buckets.add('steel', cylinder(0.008, 0.008, first - ground - 1.75, 3, { x: (tx0 + tx1) / 2, y: (first + ground + 1.75) / 2 - 0.12, z }, STEEL_DARK), { passable: true });
+        buckets.add('brick', cone(0.2, 0.16, 10, { x: (tx0 + tx1) / 2, y: ground + 1.68, z }, 0x4a3a2c));
+        buckets.add('glow', ball(0.06, { x: (tx0 + tx1) / 2, y: ground + 1.6, z }, LAMP, 6, 4));
+    }
+
+    // Upstairs, on each floor: the corridor along the sea-wall; the rooms along the sea, their walls between them;
+    // doors on both sides of the corridor, and one at its end, each of a colour of its own and its silhouette another.
+    const silhouettes = [];
+    const doorColors = [...HOSTEL_DOORS];
+    let door = 0;
+    const doorOn = (x, y, z, ry, color, glyph, cell = 0) => {
+        buckets.add('brick', box(0.72, 1.85, 0.05, { x, y: y + 0.925, z, ry }, color));
+        const out = new Vector3(0, 0, 0.04).applyAxisAngle(UP, ry);
+        silhouettes.push(silhouetteQuad(0.5, { x: x + out.x, y: y + 1.22, z: z + out.z, ry }, glyph, cell));
+    };
+    const roomDepth = (inner.z1 - STAIR_DEEP - inner.z0) / ROOMS;
+    for (const [storey, floor] of [[1, first], [2, second]]) {
+        const room = floor + 2.15;
+        buckets.add('stone', box(0.1, room - floor, inner.z1 - STAIR_DEEP - inner.z0, { x: CORRIDOR_EAST + 0.05, y: (floor + room) / 2, z: (inner.z0 + inner.z1 - STAIR_DEEP) / 2 }, BRICK_PALE));
+        for (let wall = 1; wall < ROOMS; wall += 1) {
+            buckets.add('stone', box(inner.x1 - CORRIDOR_EAST - 0.1, room - floor, 0.08, { x: (CORRIDOR_EAST + 0.1 + inner.x1) / 2, y: (floor + room) / 2, z: inner.z0 + wall * roomDepth }, BRICK_PALE));
+        }
+        for (let bay = 0; bay < ROOMS; bay += 1) {
+            const z = inner.z0 + (bay + 0.5) * roomDepth;
+            const hers = storey === 2 && bay === 0;
+            const color = hers ? E_DOOR : doorColors[door % doorColors.length];
+            // (Each silhouette a colour of its own: the door's own, turned half round the wheel, and lit.)
+            const glyph = hers ? light(0xffffff, 1.35) : new Color(color).offsetHSL(0.5, 0.1, 0.25).multiplyScalar(1.25);
+            doorOn(CORRIDOR_EAST - 0.01, floor, z, -Math.PI / 2, color, glyph, hers ? 1 : 0);
+            door += 1;
+            const across = doorColors[(door + 5) % doorColors.length];
+            doorOn(inner.x0 + 0.01, floor, z, Math.PI / 2, across, new Color(across).offsetHSL(0.5, 0.1, 0.25).multiplyScalar(1.25));
+            door += 1;
+            // A bed in each room along the sea (hers, tall and down-quilted, by the arched window).
+            const bedZ = inner.z0 + (bay + 1) * roomDepth - 0.48;
+            const quilt = hers ? 0xf6f1e6 : [0xc8b8d8, 0xe0c8a8, 0xb8d0c8, 0xe8b8b0][bay % 4];
+            const bed = hers
+                ? [
+                    box(1.9, 0.62, 0.84, { x: CORRIDOR_EAST + 1.25, y: floor + 0.31, z: bedZ }, WOOD[2]),
+                    bevelBox(1.86, 0.34, 0.86, { x: CORRIDOR_EAST + 1.26, y: floor + 0.8, z: bedZ }, quilt, 0.12),
+                    ball(0.2, { x: CORRIDOR_EAST + 0.5, y: floor + 1.0, z: bedZ, sx: 1.9, sy: 0.7 }, 0xfaf8f2, 8, 5),
+                    box(0.08, 1.5, 0.9, { x: CORRIDOR_EAST + 0.22, y: floor + 0.75, z: bedZ }, WOOD[2]),
+                ]
+                : [
+                    box(1.8, 0.36, 0.78, { x: CORRIDOR_EAST + 1.2, y: floor + 0.18, z: bedZ }, WOOD[0]),
+                    bevelBox(1.76, 0.14, 0.8, { x: CORRIDOR_EAST + 1.2, y: floor + 0.43, z: bedZ }, quilt, 0.05),
+                ];
+            for (const piece of bed) buckets.add(hers ? 'cloth' : 'brick', piece);
+        }
+        doorOn((inner.x0 + CORRIDOR_EAST) / 2, floor, inner.z0 + 0.01, 0, doorColors[door % doorColors.length], new Color(doorColors[(door + 3) % doorColors.length]).multiplyScalar(1.25));
+        door += 1;
+    }
+
+    // The silhouettes upstairs, one draw for all; the white door, with its own, shining, on a hinge that swings it in.
+    const silhouetteMaterial = new MeshBasicMaterial({
+        map: silhouetteAtlas(),
+        vertexColors: true,
+        transparent: true,
+        alphaTest: 0.35,
+        depthWrite: false,
+        polygonOffset: true,
+        polygonOffsetFactor: -2,
+        polygonOffsetUnits: -2,
+    });
+    const group = new Group();
+    group.name = 'hostel';
+    const upstairs = new Mesh(mergeGeometries(silhouettes.map((quad) => unindexed(quad)), false), silhouetteMaterial);
+    upstairs.name = 'hostel-silhouettes';
+    group.add(upstairs);
+
+    const hinge = new Group();
+    hinge.name = 'hostel-door';
+    hinge.position.set(DOOR_X - DOOR_WIDE / 2, ground, HOSTEL_NORTH + t / 2);
+    const leafPieces = [arched(DOOR_WIDE - 0.02, DOOR_SPRING, 0.07, { x: DOOR_WIDE / 2 }, DOOR_WHITE)];
+    for (const [py, ph] of [[0.35, 0.6], [1.1, 0.62]]) {
+        for (const side of [-1, 1]) leafPieces.push(box(0.36, ph, 0.02, { x: DOOR_WIDE / 2 + side * 0.22, y: py + ph / 2, z: -0.045 }, DOOR_PANEL));
+    }
+    for (const face of [-1, 1]) leafPieces.push(ball(0.045, { x: DOOR_WIDE - 0.14, y: 1.0, z: face * 0.06 }, BRASS, 8, 6));
+    const leaf = new Mesh(mergeGeometries(leafPieces.map((piece) => unindexed(piece)), false), materials.brick);
+    leaf.name = 'hostel-door-leaf';
+    hinge.add(leaf);
+    const front = new Mesh(silhouetteQuad(0.74, { x: DOOR_WIDE / 2, y: 1.3, z: -0.06, ry: Math.PI }, light(0xffe6a8, 1.9), 0), silhouetteMaterial);
+    front.name = 'hostel-door-silhouette';
+    hinge.add(front);
+    group.add(hinge);
+    extras.push(group);
+
+    let swing = 0;
+    const doorway = {
+        leaf,
+        /** Every frame: swing in as the walk's shadow comes near (walk.js's state), and to again once it's gone. */
+        update(dt, walker) {
+            const near = Boolean(walker?.walking) && Math.hypot(walker.position.x - DOOR_X, walker.position.z - HOSTEL_NORTH) < DOOR_OPENS;
+            const want = near ? DOOR_SWING : 0;
+            swing += (want - swing) * (still ? 1 : 1 - Math.exp(-5 * dt));
+            hinge.rotation.y = swing;
+        },
+    };
+
+    // Where a body may stand: the sand (not in the sea-wall), the lane's cobbles, the doorstep, the plinth's ledge and
+    // the breakfast room; never the walls (the doorway aside), the table, the bar, the cabinet or the stair.
+    const girth = 0.12;
+    const within = (x, z, [x0, x1, z0, z1], pad = girth) => x > x0 - pad && x < x1 + pad && z > z0 - pad && z < z1 + pad;
+    const plinth = [HOSTEL_WEST - PLINTH_OUT, HOSTEL_EAST + PLINTH_OUT, HOSTEL_NORTH - PLINTH_OUT, HOSTEL_SOUTH + PLINTH_OUT];
+    const floorAt = (x, z) => {
+        if (x < wallX(z) + girth) return null;
+        if (within(x, z, plinth, 0)) {
+            const inDoorway = Math.abs(x - DOOR_X) < DOOR_WIDE / 2 - girth && z < inner.z0 + girth;
+            const inWalls = x > HOSTEL_WEST - girth && x < HOSTEL_EAST + girth && z > HOSTEL_NORTH - girth && z < HOSTEL_SOUTH + girth;
+            const inRoom = x > inner.x0 + girth && x < inner.x1 - girth && z > inner.z0 + girth && z < inner.z1 - girth;
+            if (inWalls && !inRoom && !inDoorway) return null;
+            if (inRoom) {
+                if (within(x, z, BREAKFAST) || within(x, z, BAR) || within(x, z, CABINET)) return null;
+                if (x > STAIR_FROM - girth && z > inner.z1 - STAIR_DEEP - girth) return null;
+            }
+            return ground;
+        }
+        if (Math.abs(x - DOOR_X) < 0.8 && z > HOSTEL_NORTH - PLINTH_OUT - 0.62 && z <= HOSTEL_NORTH - PLINTH_OUT) return DOORSTEP_TOP;
+        const y = sandHeight(x, z);
+        if (y === null || y < SEA_LEVEL + 0.14) return null;
+        return laneDistance(x, z) < LANE_WIDE / 2 - 0.05 ? COBBLE_TOP : y;
+    };
+
+    return {
+        floor: { floorAt },
+        door: doorway,
+        // A touch on the door: it's knocked on (and the mouse, perhaps, has its joke ready).
+        touch: [{ kind: 'door', center: new Vector3(DOOR_X, ground + 1.3, HOSTEL_NORTH - 0.05), radius: 0.85, fragment: 'nbp-e4-door-in-the-floor-1' }],
+    };
+}
+
+// =============================================================================
 // Main Code
 // =============================================================================
 
@@ -3414,6 +4028,7 @@ const BUILDERS = {
     'sea-wall': buildSeaWall,
     'gas-station': buildGasStation,
     edge: buildEdge,
+    'door-in-the-floor': buildHostel,
 };
 
 /**
@@ -3442,7 +4057,8 @@ export async function buildPlaces(buckets, placeData, materials, pause = async (
 
     const anchors = new Map();
     const built = new Map();
-    for (const place of placeData.places.filter((entry) => entry.tier === 1)) {
+    // (A place on trial, trials.js, is built only while its trial is on.)
+    for (const place of placeData.places.filter((entry) => entry.tier === 1 && (!entry.trial || trialOn(entry.trial)))) {
         const builder = BUILDERS[place.id];
         if (builder) {
             built.set(place.id, builder({ buckets, place, random, byId, extras, animated, materials, mounts, wanted, still, grand }));
@@ -3452,7 +4068,7 @@ export async function buildPlaces(buckets, placeData, materials, pause = async (
     }
 
     // Details from the text about the city, each on a random stream of its own (so nothing above moves).
-    buildShoreWeed(buckets);
+    buildShoreWeed(buckets, { underSand: built.has('door-in-the-floor') });
     const spires = built.get('bridge');
     if (spires) {
         buildVines(buckets, spires);
@@ -3483,6 +4099,8 @@ export async function buildPlaces(buckets, placeData, materials, pause = async (
         floors: [...built.values()].flatMap((result) => (result?.floor ? [result.floor] : [])),
         /** The sun-dock's light, for the stage to give the walk's shadow to. */
         sunLight: built.get('sun-dock')?.light ?? null,
+        /** The Door in the Floor's white door (a trial), which swings in as the walk's shadow comes to it, or null. */
+        hostelDoor: built.get('door-in-the-floor')?.door ?? null,
         /** The golden bridges: how many, of which kinds, and the sight line their dust keeps clear (walk.js keeps it). */
         bridges: bridges ? { count: bridges.count, kinds: bridges.kinds, ends: bridges.ends } : null,
         bridgeSight: bridges?.uniforms.bridgeSight.value ?? null,

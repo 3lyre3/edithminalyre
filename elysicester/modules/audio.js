@@ -116,6 +116,35 @@ function answer(context, output, noise, kind) {
             tone.start(now);
             tone.stop(now + fall + 0.05);
         }
+    } else if (kind === 'door') {
+        // The white door of The Door in the Floor, knocked on: two soft knocks on old wood, and then, very small,
+        // the mouse's squeak, its joke ready at last.
+        for (const knock of [0, 0.19]) {
+            const at = now + knock;
+            const tone = context.createOscillator();
+            tone.type = 'triangle';
+            tone.frequency.setValueAtTime(210, at);
+            tone.frequency.exponentialRampToValueAtTime(95, at + 0.06);
+            const gain = context.createGain();
+            gain.gain.setValueAtTime(0.0001, at);
+            gain.gain.exponentialRampToValueAtTime(0.26, at + 0.004);
+            gain.gain.exponentialRampToValueAtTime(0.0001, at + 0.11);
+            tone.connect(gain).connect(output);
+            tone.start(at);
+            tone.stop(at + 0.13);
+        }
+        const squeakAt = now + 0.62;
+        const squeak = context.createOscillator();
+        squeak.frequency.setValueAtTime(2300, squeakAt);
+        squeak.frequency.exponentialRampToValueAtTime(3100, squeakAt + 0.05);
+        squeak.frequency.exponentialRampToValueAtTime(2600, squeakAt + 0.09);
+        const small = context.createGain();
+        small.gain.setValueAtTime(0.0001, squeakAt);
+        small.gain.exponentialRampToValueAtTime(0.035, squeakAt + 0.015);
+        small.gain.exponentialRampToValueAtTime(0.0001, squeakAt + 0.1);
+        squeak.connect(small).connect(output);
+        squeak.start(squeakAt);
+        squeak.stop(squeakAt + 0.12);
     } else if (kind === 'dog') {
         // A little patter: two soft, low taps.
         for (const step of [0, 0.11]) {

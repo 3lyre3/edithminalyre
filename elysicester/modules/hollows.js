@@ -39,7 +39,7 @@ import { alsoBeforeCompile, groundYGLSL } from './kit.js';
 /** The merged meshes whose pieces stand on the ground (the island's rock is the ground's own). */
 const STANDING = new Set(['gold', 'bricking', 'brick', 'stone', 'steel', 'copper', 'cloth', 'green']);
 /** The materials the darkness gathers on. */
-export const HOLLOWED = ['gold', 'bricking', 'dimGold', 'brick', 'stone', 'steel', 'copper', 'cloth', 'green'];
+export const HOLLOWED = ['gold', 'bricking', 'dimGold', 'brick', 'stone', 'steel', 'copper', 'cloth', 'green', 'sand'];
 /** How long the darkness takes to come in, once the map is laid (seconds). */
 const COMING_IN = 1.2;
 
