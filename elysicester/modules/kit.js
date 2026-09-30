@@ -44,7 +44,7 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 // The island's shape and the noise, from shape.js
 // =============================================================================
 
-import { CLIFF_DEPTH, UNDERSIDE_DEPTH } from './shape.js';
+import { CLIFF_DEPTH, SEA_LEVEL, UNDERSIDE_DEPTH } from './shape.js';
 
 export {
     CLIFF_DEPTH,
@@ -353,6 +353,13 @@ export function createMaterials() {
         }),
         sign: toon({ vertexColors: false, emissive: 0xffffff, emissiveIntensity: 0.3 }),
         glow: new MeshBasicMaterial({ vertexColors: true }),
+        /**
+         * The sand of the promontory by The Door in the Floor (places.js): combed by the wind, darker where it's
+         * damp at the water, a little salt and mottling, and the key's shadows hatched across it as on the paving.
+         */
+        sand: weathered(rippled(hatched(toon({ emissive: 0x4a3818, emissiveIntensity: 0.34 }), { ink: 0.38 })), {
+            mottle: 0.7, damp: 0.45, salt: 0.35, age: 0.2, tint: 0xa89070, seed: 0.91,
+        }),
     };
 }
 
@@ -568,6 +575,41 @@ export function hatched(material, { spacing = 0.2, angle = 0.8, ink = 0.55 } = {
                 '}',
                 '#endif',
                 '#include <opaque_fragment>',
+            ].join('\n'));
+    });
+    return material;
+}
+
+/**
+ * Sand the wind has combed: faint ripples across it, wavering, a little darker in each trough, only where it lies
+ * open to the sky and dry (not its wet band, nor a steep face), and let go before they'd crowd on screen, so from
+ * far off it's plain sand. (The promontory by The Door in the Floor, places.js.)
+ * @param {import('three').Material} material
+ * @param {object} [options]
+ * @param {number} [options.spacing] - between ripples, in world units
+ * @param {number} [options.angle] - the way the wind blew across the ground (radians)
+ * @param {number} [options.dry] - the height from which the sand is dry (world y)
+ */
+export function rippled(material, { spacing = 0.13, angle = 0.35, dry = SEA_LEVEL + 0.35 } = {}) {
+    alsoBeforeCompile(material, 'rippled', (shader) => {
+        shader.uniforms.rippleWay = { value: new Vector2(Math.cos(angle), Math.sin(angle)).divideScalar(spacing) };
+        shader.uniforms.rippleDry = { value: dry };
+        shader.vertexShader = shader.vertexShader
+            .replace('#include <common>', '#include <common>\nvarying vec3 vRippleWorld;\nvarying float vRippleUp;')
+            .replace('#include <begin_vertex>', '#include <begin_vertex>\nvRippleWorld = (modelMatrix * vec4(transformed, 1.0)).xyz;\nvRippleUp = normalize(mat3(modelMatrix) * normal).y;');
+        shader.fragmentShader = shader.fragmentShader
+            .replace('#include <common>', '#include <common>\nuniform vec2 rippleWay;\nuniform float rippleDry;\nvarying vec3 vRippleWorld;\nvarying float vRippleUp;')
+            .replace('#include <color_fragment>', [
+                '#include <color_fragment>',
+                '{',
+                '    vec2 p = vRippleWorld.xz;',
+                '    float warp = sin(p.y * 1.3 + sin(p.x * 0.7) * 1.8) * 0.35 + sin(p.x * 0.45 - p.y * 0.2) * 0.5;',
+                '    float phase = dot(p, rippleWay) + warp * 1.6;',
+                '    float fw = fwidth(phase);',
+                '    float wave = abs(fract(phase) - 0.5) * 2.0;',
+                '    float open = smoothstep(0.55, 0.85, vRippleUp) * smoothstep(rippleDry, rippleDry + 0.25, vRippleWorld.y);',
+                '    diffuseColor.rgb *= 1.0 - 0.045 * open * (1.0 - smoothstep(0.25, 0.7, fw)) * smoothstep(0.4, 0.9, wave);',
+                '}',
             ].join('\n'));
     });
     return material;

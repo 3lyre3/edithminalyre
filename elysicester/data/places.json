@@ -100,6 +100,15 @@
       "focus": { "distance": 30, "height": -9.7 }
     },
     {
+      "id": "door-in-the-floor",
+      "tier": 1,
+      "district": "docks",
+      "label": "The Door in the Floor",
+      "position": [11.6, 1.45, 17.35],
+      "focus": { "distance": 12, "height": 4, "azimuth": 160 },
+      "trial": "hostel"
+    },
+    {
       "id": "blue-beach",
       "tier": 2,
       "district": "mainland",
