@@ -17,13 +17,15 @@
  * - hostel: The Door in the Floor, the hostel from Episode 4, on its promontory of sand and dunes south of the
  *   sun-dock, with its lane of gold cobbles, its white door and its two passages (Elm's first pick of the places;
  *   places.js buildHostel, silhouette.js)
+ * - hum: you fly as one of the bronze hums, low and in the middle of the view, over the benches, kerbs and edges
+ *   that caught the walker, the wraith's shadow going beneath it as if it were its own (Elm's idea; hum.js, walk.js)
  */
 
 // =============================================================================
 // Constants
 // =============================================================================
 
-export const TRIALS = Object.freeze(['jetty', 'whisper', 'names', 'hint', 'wraith', 'dust', 'dock', 'hostel']);
+export const TRIALS = Object.freeze(['jetty', 'whisper', 'names', 'hint', 'wraith', 'dust', 'dock', 'hostel', 'hum']);
 
 // =============================================================================
 // Main Code

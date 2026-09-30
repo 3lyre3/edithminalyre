@@ -82,8 +82,9 @@ function standingTriangles(meshes) {
  * @param {object} [options]
  * @param {boolean} [options.reducedMotion] - the darkness arrives at once rather than coming in
  * @param {boolean} [options.walls] - also mark where walls stand at a body's height (walking, walk.js)
+ * @param {boolean} [options.flight] - and at a hum's height (flying, walk.js: a trial)
  */
-export function createHollows(meshes, { reducedMotion = false, walls = false } = {}) {
+export function createHollows(meshes, { reducedMotion = false, walls = false, flight = false } = {}) {
     const data = new Uint8Array(HOLLOW_ACROSS * HOLLOW_DOWN * 4);
     const texture = new DataTexture(data, HOLLOW_ACROSS, HOLLOW_DOWN, RGBAFormat, UnsignedByteType);
     texture.magFilter = LinearFilter;
@@ -107,6 +108,8 @@ export function createHollows(meshes, { reducedMotion = false, walls = false } =
         ready: null,
         /** Where walls stand at a body's height (1 per WALLS_CELL cell over HOLLOW_REGION), once laid, if asked for. */
         walls: null,
+        /** And where they stand at a hum's height, if asked for (the same cells). */
+        flightWalls: null,
         wallsAcross: 0,
         /** True once the map is laid (or can't be) and the darkness has fully come in: for the local checks. */
         get settled() {
@@ -123,6 +126,7 @@ export function createHollows(meshes, { reducedMotion = false, walls = false } =
         data.set(result.data);
         texture.needsUpdate = true;
         hollowMap.walls = result.walls;
+        hollowMap.flightWalls = result.flightWalls ?? null;
         hollowMap.wallsAcross = result.wallsAcross;
         hollowMap.available = true;
         hollowMap.build = { where, ms: result.ms, total: performance.now() - started, dropped: result.dropped, fullest: result.fullest };
@@ -134,7 +138,7 @@ export function createHollows(meshes, { reducedMotion = false, walls = false } =
         const started = performance.now();
         // Without a worker, the map is laid here instead: a moment's work, once.
         const here = () => {
-            lay(buildHollowData({ ...standingTriangles(meshes), walls }), started, 'main thread');
+            lay(buildHollowData({ ...standingTriangles(meshes), walls, flight }), started, 'main thread');
             resolve(true);
         };
         let worker;
@@ -155,7 +159,7 @@ export function createHollows(meshes, { reducedMotion = false, walls = false } =
                 if (!answered) here();
             });
         }
-        const input = { ...standingTriangles(meshes), walls };
+        const input = { ...standingTriangles(meshes), walls, flight };
         worker.postMessage(input, [input.triangles.buffer, input.upwards.buffer]);
     });
     return hollowMap;

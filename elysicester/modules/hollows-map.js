@@ -219,15 +219,23 @@ export const WALLS_CELL = CELL;
 /** (Below this, a walker steps over: a kerb, a deck's edge, the garden's rim, a footlight, a dog asleep.) */
 const BODY_FROM = 0.6;
 const BODY_TO = 1.8;
+/**
+ * The band a hum flies in, above the ground (a trial, walk.js: Elm's bronze hummingbird): over the benches, the
+ * bollards, the tables, the hedges and every kerb; into the walls, the posts and the doors; and under the cafés'
+ * and the market's awnings, which hang just above it (hum.js FLIGHT: its head is about 1.45 over the floor).
+ */
+const FLIGHT_FROM = 1.1;
+const FLIGHT_TO = 1.8;
 
 /**
  * The walls a body can't pass through, cell by cell (1 where one stands): every
  * steep face that reaches into a walker's height above the ground (a kerb or a
  * deck's edge lies below it; eaves and bridges above), laid along its length
  * at half a cell's spacing. Walls are thin from above, a line of cells; a body
- * never crosses one in a stride.
+ * never crosses one in a stride. (`from` and `to`: the band, above the ground; a
+ * hum's is higher, FLIGHT_FROM to FLIGHT_TO.)
  */
-function wallCells(triangles, upwards, width, depth) {
+function wallCells(triangles, upwards, width, depth, from = BODY_FROM, to = BODY_TO) {
     const walls = new Uint8Array(width * depth);
     const { x0, z0 } = HOLLOW_REGION;
     const step = CELL * 0.5;
@@ -245,7 +253,7 @@ function wallCells(triangles, upwards, width, depth) {
         const ax = triangles[i];
         const az = triangles[i + 2];
         const ground = groundY((ax + triangles[i + 3] + triangles[i + 6]) / 3, (az + triangles[i + 5] + triangles[i + 8]) / 3);
-        if (Math.max(ay, by, cy) < ground + BODY_FROM || Math.min(ay, by, cy) > ground + BODY_TO) continue;
+        if (Math.max(ay, by, cy) < ground + from || Math.min(ay, by, cy) > ground + to) continue;
         const ux = triangles[i + 3] - ax;
         const uz = triangles[i + 5] - az;
         const vx = triangles[i + 6] - ax;
@@ -275,15 +283,17 @@ function wallCells(triangles, upwards, width, depth) {
  * @param {Float32Array} input.triangles - the standing pieces' triangles, world positions, nine numbers each
  * @param {Float32Array} input.upwards - each triangle's normal's upward part (the mean of its vertices')
  * @param {boolean} [input.walls] - also mark where walls stand at a body's height (for walking, walk.js)
- * @returns {{ data: Uint8Array, walls: Uint8Array | null, wallsAcross: number, ms: number, dropped: number, fullest: number }}
- *   data: RGBA, HOLLOW_ACROSS × HOLLOW_DOWN; walls: WALLS_CELL cells over HOLLOW_REGION, wallsAcross wide
+ * @param {boolean} [input.flight] - and where they stand at a hum's height (flying, walk.js: a trial)
+ * @returns {{ data: Uint8Array, walls: Uint8Array | null, flightWalls: Uint8Array | null, wallsAcross: number, ms: number, dropped: number, fullest: number }}
+ *   data: RGBA, HOLLOW_ACROSS × HOLLOW_DOWN; walls (and flightWalls): WALLS_CELL cells over HOLLOW_REGION, wallsAcross wide
  */
-export function buildHollowData({ triangles, upwards, walls: wantsWalls = false }) {
+export function buildHollowData({ triangles, upwards, walls: wantsWalls = false, flight = false }) {
     const started = performance.now();
     const per = Math.round(HOLLOW_TEXEL / CELL);
     const width = HOLLOW_ACROSS * per;
     const depth = HOLLOW_DOWN * per;
     const walls = wantsWalls ? wallCells(triangles, upwards, width, depth) : null;
+    const flightWalls = wantsWalls && flight ? wallCells(triangles, upwards, width, depth, FLIGHT_FROM, FLIGHT_TO) : null;
     const { standing, dropped, fullest } = standingHeights(triangles, upwards, width, depth);
 
     // Each texel holds, per height, how much of its two by two cells stands taller than that height.
@@ -307,5 +317,5 @@ export function buildHollowData({ triangles, upwards, walls: wantsWalls = false 
         soften(layer, HOLLOW_ACROSS, HOLLOW_DOWN, scratch);
         for (let texel = 0; texel < texels; texel += 1) data[texel * 4 + channel] = Math.round(Math.min(1, layer[texel]) * 255);
     }
-    return { data, walls, wallsAcross: width, ms: performance.now() - started, dropped, fullest };
+    return { data, walls, flightWalls, wallsAcross: width, ms: performance.now() - started, dropped, fullest };
 }

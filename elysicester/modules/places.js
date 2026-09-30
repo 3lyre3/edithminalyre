@@ -749,11 +749,18 @@ function buildSignalTowers(buckets) {
 // The named places
 // =============================================================================
 
-/** The sun-dock's half-sun: its radius, its rays (long and short by turns), and how high its light lies on the water. */
-const SUN_DISC = 3.2;
+/**
+ * The sun-dock's half-sun: its radius, its rays (long and short by turns), and how high its light lies on the water.
+ * (Grown a little, so the quay's steps come down onto it: Elm's ask.)
+ */
+const SUN_DISC = 3.6;
 const SUN_RAYS = 11;
-const SUN_LONG = 5.6;
-const SUN_SHORT = 4.4;
+const SUN_LONG = 6.3;
+const SUN_SHORT = 4.95;
+/** The quay's steps down to it: how deep each of their four treads is. */
+const QUAY_TREAD = 0.35;
+/** The quay's south edge and its steps, once built (buildQuay): the sun-dock's light gives no floor under them. */
+let quayLayout = null;
 const SUN_LIGHT_Y = SEA_LEVEL + 0.42;
 /** Where a body stands on it (the old gold disc's top), and how far in from its rim. */
 const SUN_FLOOR_Y = SEA_LEVEL + 0.44;
@@ -889,13 +896,27 @@ function buildSunDock({ place, mounts, extras, animated, still }) {
         unfurled = t * t * (3 - 2 * t);
         uniforms.unfurl.value = unfurled;
     });
-    // A body may stand on the half-sun (as far as it has unfurled), short of its rim and clear of the wall.
+    // A body may stand on the half-sun (as far as it has unfurled), short of its rim and clear of the wall; not under
+    // the quay, nor under its steps above the lowest two (which come down under the light, so a body walks off them
+    // onto it, and back up them from it); nor where the promontory's sand rises out of the water through it.
+    const sandy = trialOn('hostel');
     const floorAt = (x, zz) => {
         const radius = SUN_DISC * MathUtils.smoothstep(unfurled, 0, 0.45) - SUN_KEEP;
         if (radius <= 0 || x < wallX(zz) + 0.2 || Math.hypot(x - cx, zz - z) > radius) return null;
+        if (quayLayout) {
+            const { south, stairs, landing } = quayLayout;
+            const onStairs = x > stairs.x0 - 0.1 && x < stairs.x1 + 0.1;
+            if (zz < (onStairs ? landing : south + 0.12)) return null;
+        }
+        if (sandy) {
+            const sand = sandHeight(x, zz);
+            if (sand !== null && sand > SUN_FLOOR_Y - 0.04) return null;
+        }
         return SUN_FLOOR_Y;
     };
-    return { floor: { floorAt }, light };
+    // (For the water's share of the walk's shadow: where the light lies, it takes none of it. walk.js, sea.js.)
+    const disc = { x: cx, z, y: SUN_FLOOR_Y, radius: () => Math.max(0, SUN_DISC * MathUtils.smoothstep(unfurled, 0, 0.45)) };
+    return { floor: { floorAt, disc }, light };
 }
 
 /**
@@ -1031,8 +1052,10 @@ function buildQuay(buckets, { north, south, jetty }) {
     const PILASTER = 0x9b7744;
     const WET = 0x3a3322;
     const ROPE = 0x5a4030;
-    // The steps down to the water: at the south end, near its east corner (clear of the sun-dock's light).
-    const stairs = { x0: east - 1.55, x1: east - 0.45 };
+    // The steps down: at the south end, coming down onto the sun-dock's light (Elm: "the side rail step doesn't go
+    // down to the sun dock ... maybe we could expand the sun dock platform a bit so the steps connect to it?").
+    const stairs = { x0: east - 3.05, x1: east - 1.95 };
+    quayLayout = { south, stairs, landing: south + QUAY_TREAD * 2 };
     const onJetty = (zz) => Math.abs(zz - jetty) < 1.05;
     // The seaward edges, as runs of coping: the east face its whole length, the south face from the wall to the
     // corner (but for the stairs), the north face from the balcony's steps to the corner.
@@ -1081,19 +1104,21 @@ function buildQuay(buckets, { north, south, jetty }) {
             buckets.add('dimGold', box(0.02, 0.3, length / bands + 0.01, { x: mid.x + out.x * 0.011, y: SEA_LEVEL + 0.11, z: mid.z + out.z * 0.011, ry }, WET), { passable: true });
         }
     }
-    // The steps down into the water, their treads worn, and an iron rail beside them.
+    // The steps down onto the sun-dock's light, their treads worn (the lowest two under the light, as the water is),
+    // and an iron rail beside them.
     const rise = 0.2;
     for (let step = 0; step < 4; step += 1) {
         const top = 0.3 - rise * (step + 1) + 0.01;
-        const zz = south + 0.35 * (step + 0.5);
+        const zz = south + QUAY_TREAD * (step + 0.5);
         buckets.add('dimGold', box(stairs.x1 - stairs.x0, top + 1.0, 0.36, { x: (stairs.x0 + stairs.x1) / 2, y: (top - 1.0) / 2, z: zz }, step % 2 ? PAVE : new Color(PAVE).multiplyScalar(0.94)));
     }
+    // (Their cheeks are passable: a narrow ledge to be caught on, else, beside the treads, with only the water past it.)
     for (const x of [stairs.x0 - 0.06, stairs.x1 + 0.06]) {
-        buckets.add('dimGold', box(0.12, 1.36, 1.42, { x, y: -0.32, z: south + 0.7 }, PILASTER));
+        buckets.add('dimGold', box(0.12, 1.36, 1.42, { x, y: -0.32, z: south + 0.7 }, PILASTER), { passable: true });
     }
     // The rail runs down beside the steps, a hand's height above them, its posts standing on the treads.
     const railX = stairs.x1 - 0.1;
-    const treadAt = (zz) => 0.3 - rise * Math.min(4, Math.max(0, Math.ceil((zz - south) / 0.35))) + 0.01;
+    const treadAt = (zz) => 0.3 - rise * Math.min(4, Math.max(0, Math.ceil((zz - south) / QUAY_TREAD))) + 0.01;
     const railFrom = new Vector3(railX, 0.3 + 0.8, south - 0.1);
     const railTo = new Vector3(railX, 0.3 - rise * 4 + 0.8, south + 1.3);
     buckets.add('steel', tube([railFrom, railTo], 0.03, STEEL_DARK, 6, 4), { passable: true });
@@ -3465,8 +3490,11 @@ const ROOMS = 5;
 /** The doors upstairs, "in myriad new colours", and E's, "a hot, venomous green". */
 const HOSTEL_DOORS = [0xd8465c, 0x3a74c8, 0xeaa82c, 0x7a4ab0, 0x2aa89c, 0xe86ea0, 0x5c9a3a, 0xe0703a, 0x3cb4e8, 0xa8c440, 0xb8342a, 0x8a66d0];
 const E_DOOR = 0x4cf01e;
-/** The door swings in as the walk's shadow comes this near (and closes behind it when it has gone). */
-const DOOR_OPENS = 2.4;
+/**
+ * The door swings in as the walk's shadow (or the hum) comes this near, and closes behind it when it has gone: near
+ * enough that the silhouette on it is seen, coming up the lane, before it opens.
+ */
+const DOOR_OPENS = 1.5;
 const DOOR_SWING = -1.3;
 
 /** How far (x, z) is from the segment a–b ([x, z] pairs). */
@@ -3983,11 +4011,12 @@ function buildHostel({ buckets, extras, still, materials }) {
     };
 
     // Where a body may stand: the sand (not in the sea-wall), the lane's cobbles, the doorstep, the plinth's ledge and
-    // the breakfast room; never the walls (the doorway aside), the table, the bar, the cabinet or the stair.
+    // the breakfast room; never the walls (the doorway aside), the table, the bar, the cabinet or the stair. (A hum,
+    // flying, goes over the table and the bar: `flying`, walk.js.)
     const girth = 0.12;
     const within = (x, z, [x0, x1, z0, z1], pad = girth) => x > x0 - pad && x < x1 + pad && z > z0 - pad && z < z1 + pad;
     const plinth = [HOSTEL_WEST - PLINTH_OUT, HOSTEL_EAST + PLINTH_OUT, HOSTEL_NORTH - PLINTH_OUT, HOSTEL_SOUTH + PLINTH_OUT];
-    const floorAt = (x, z) => {
+    const floorAt = (x, z, flying = false) => {
         if (x < wallX(z) + girth) return null;
         if (within(x, z, plinth, 0)) {
             const inDoorway = Math.abs(x - DOOR_X) < DOOR_WIDE / 2 - girth && z < inner.z0 + girth;
@@ -3995,7 +4024,7 @@ function buildHostel({ buckets, extras, still, materials }) {
             const inRoom = x > inner.x0 + girth && x < inner.x1 - girth && z > inner.z0 + girth && z < inner.z1 - girth;
             if (inWalls && !inRoom && !inDoorway) return null;
             if (inRoom) {
-                if (within(x, z, BREAKFAST) || within(x, z, BAR) || within(x, z, CABINET)) return null;
+                if (within(x, z, CABINET) || (!flying && (within(x, z, BREAKFAST) || within(x, z, BAR)))) return null;
                 if (x > STAIR_FROM - girth && z > inner.z1 - STAIR_DEEP - girth) return null;
             }
             return ground;

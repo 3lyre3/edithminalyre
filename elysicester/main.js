@@ -253,6 +253,8 @@ async function boot() {
             stage?.walk?.walkFrom(x, z);
         },
     });
+    // (Flying as a hum, a trial: it flies from there.)
+    if (trialOn('hum')) document.querySelector('[data-reader-walk]')?.replaceChildren('fly from here');
     createSignList({
         list: byId('signs-list'),
         signs: signData.signs,

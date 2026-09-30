@@ -67,6 +67,7 @@ import {
     WebGLRenderTarget,
 } from 'three';
 import { createBanshee } from './banshee.js';
+import { createHum } from './hum.js';
 import { EASE } from './rigs/orbit.js';
 import { HOLLOW_REGION, WALLS_CELL } from './hollows-map.js';
 import { SEA_LEVEL, alsoBeforeCompile, groundY, onLand } from './kit.js';
@@ -197,6 +198,33 @@ const WAYS = {
  * graphical-intensity amount of distinct character/personality". See banshee.js.
  */
 const WRAITH = trialOn('wraith');
+
+/**
+ * Flying as a hum (a trial, trials.js; ?hum=off walks the shadow again). Elm: "the controlled character was one of
+ * the bronze hummingbirds and the shadow was still the very cute and adorable wraith ... flying lowish medium lowish
+ * and central", "the wraith shadow following it as if it were the hum's own shadow". The one casting the shadow goes
+ * beneath the hum as ever, but by the hum's rules: only what stands at the hum's height stops it (the walls, the
+ * posts, the doors: not the benches, the bollards, the tables or a kerb, which it flies over), it glides down off
+ * any edge, and it rises at most HUM_CLIMB at a time (a quay from its light, a flight of steps). The camera looks at
+ * the hum. See hum.js.
+ */
+const HUM = trialOn('hum');
+const HUM_CLIMB = 1.2;
+/**
+ * Flying, the camera looks this share of the way from the hum toward the middle of its shadow (so the hum is near
+ * the middle of the view, and its shadow beneath it with it), from a little higher than walking's, looking down on
+ * them both (the polar angle, close in and drawn back).
+ */
+const HUM_FRAME = 0.45;
+const HUM_PHI = 0.92;
+const HUM_PHI_FAR = 0.85;
+/**
+ * Flying, the wraith's shadow falls from a sun this high (radians; from the same quarter as the key light, which is
+ * lower): so it lies close beneath the hum, as a bird's own shadow does, the whole of it in the view with the hum.
+ */
+const HUM_SUN = (45 * Math.PI) / 180;
+/** What taking it is called: the hum's, or the shadow's. */
+const TAKE_WORDS = HUM ? 'fly as a hum' : 'walk as the shadow';
 
 /**
  * The walker's shadow map: its size in texels, and how much of the light's view it covers (world units). (The
@@ -387,8 +415,17 @@ function ignoresKeys(event) {
  * @param {Vector3} options.light - the way to the key light (world), which casts the shadow
  * @param {boolean} options.reducedMotion
  */
-export function createWalk({ light, reducedMotion }) {
+export function createWalk({ light, reducedMotion, gradientMap = null }) {
     const toLight = light.clone().normalize();
+    if (HUM) {
+        // (Flying, from a higher sun in the same quarter: HUM_SUN.)
+        const flat = Math.hypot(toLight.x, toLight.z);
+        toLight.set((toLight.x / flat) * Math.cos(HUM_SUN), Math.sin(HUM_SUN), (toLight.z / flat) * Math.cos(HUM_SUN));
+    }
+    // (Flying as a hum, a trial: it's drawn above the one casting the shadow, and the camera looks at it. hum.js.)
+    const hum = HUM ? createHum({ gradientMap, reducedMotion }) : null;
+    /** Word for the hum that it has just been taken, or has just arrived where it was sent (kept apart from the banshee's). */
+    const humNews = { taken: false, arrived: false, posedAt: null };
     const lightTheta = Math.atan2(toLight.x, toLight.z);
     const shadowWay = new Vector3(-toLight.x, 0, -toLight.z).normalize();
     /** How far a dusk shadow rises up a wall for each unit it would have gone on along the ground. */
@@ -423,6 +460,9 @@ export function createWalk({ light, reducedMotion }) {
         walkerDeckRegion: { value: new Vector4(0, 0, 0, 0) },
         walkerDeck: { value: new Vector4(0, 0, 0, 0) },
         walkerToLight: { value: toLight.clone() },
+        // And the sun-dock's light on the water (x, z, its radius as far as it has unfurled, and 1 if it's there):
+        // under it, the water takes none of the shadow (the light does, sea.js).
+        walkerDisc: { value: new Vector4(0, 0, 0, 0) },
     };
 
     const state = {
@@ -457,6 +497,8 @@ export function createWalk({ light, reducedMotion }) {
      * light. Each floorAt(x, z): a height, or null.
      */
     let floors = [];
+    /** The sun-dock's light on the water, from its floor ({ x, z, y, radius() }), or null. */
+    let sunDisc = null;
     /** "back to the jetty", shown while walking. */
     let backButton = null;
     /** The golden bridges' sight line (places.js): the walker's middle, and 1 while walking (their gold turns to dust there). */
@@ -485,6 +527,7 @@ export function createWalk({ light, reducedMotion }) {
     const sightAt = new Array(RISE_STEPS + 1).fill(0);
     const clearAt = new Array(RISE_STEPS + 1).fill(true);
     const lead = new Vector3();
+    const framing = new Vector3();
     const ahead = new Vector3();
     const sightFrom = new Vector3();
     const sight = new Sphere();
@@ -577,10 +620,13 @@ export function createWalk({ light, reducedMotion }) {
         if (!reducedMotion) body.position.y += Math.abs(Math.sin(state.stride)) * 0.035 * FIGURE * state.moving;
     }
 
-    /** The floor given exactly at (x, z) (the steps, the balcony, the sun-dock's light), or null. */
+    /**
+     * The floor given exactly at (x, z) (the steps, the balcony, the sun-dock's light), or null. (Flying as a hum, a
+     * floor may give more: the hostel's breakfast table and bar are flown over, not walked round.)
+     */
     function givenFloor(x, z) {
         for (const floor of floors) {
-            const height = floor.floorAt(x, z);
+            const height = floor.floorAt(x, z, HUM);
             if (height !== null) return height;
         }
         return null;
@@ -625,7 +671,7 @@ export function createWalk({ light, reducedMotion }) {
      * laid, which is long before anyone walks, nothing stops it.)
      */
     function blocked(x, z) {
-        const walls = hollowMap?.walls;
+        const walls = moveWalls();
         if (!walls) return false;
         const across = hollowMap.wallsAcross;
         for (const [dx, dz] of FEEL) {
@@ -637,7 +683,10 @@ export function createWalk({ light, reducedMotion }) {
         return false;
     }
 
-    /** The nearest place about (x, z) a body can stand (floor there, no wall within its girth), or null. */
+    /**
+     * The nearest place about (x, z) a body can stand (floor there, no wall within its girth) and go on from (not a
+     * pocket between walls, which it could be set down in but never leave), or null.
+     */
     function standingNear(x, z) {
         for (let radius = 0; radius <= STAND_SEARCH; radius += STAND_STEP) {
             const around = radius === 0 ? 1 : Math.max(8, Math.round((radius * Math.PI * 2) / STAND_STEP));
@@ -646,16 +695,37 @@ export function createWalk({ light, reducedMotion }) {
                 const px = x + Math.cos(angle) * radius;
                 const pz = z + Math.sin(angle) * radius;
                 const floor = standOn(px, pz);
-                if (floor === null) continue;
+                if (floor === null || !roomy(px, pz, floor)) continue;
                 return { x: px, z: pz, y: floor };
             }
         }
         return null;
     }
 
-    /** Whether the walls map marks the cell at (x, z) itself as a wall. */
-    function wallCell(x, z) {
-        const walls = hollowMap?.walls;
+    /** Whether a body standing at (x, z) on `floor` can go on from there: a stride open at least three of eight ways. */
+    function roomy(x, z, floor) {
+        let open = 0;
+        for (let k = 0; k < 8 && open < 3; k += 1) {
+            const nx = x + Math.cos((k * Math.PI) / 4) * 0.3;
+            const nz = z + Math.sin((k * Math.PI) / 4) * 0.3;
+            const next = floorAt(nx, nz, floor);
+            if (next === null || (HUM ? next - floor > HUM_CLIMB : Math.abs(next - floor) > STEP)) continue;
+            if (!aloft(nx, nz, next) && blocked(nx, nz)) continue;
+            open += 1;
+        }
+        return open >= 3;
+    }
+
+    /**
+     * The walls that stop it going: at a body's height, or, flying as a hum, at the hum's (the benches, bollards,
+     * tables and kerbs below it aren't in that map).
+     */
+    function moveWalls() {
+        return (HUM ? hollowMap?.flightWalls : null) ?? hollowMap?.walls ?? null;
+    }
+
+    /** Whether the walls map (or `walls`, the same cells) marks the cell at (x, z) itself as a wall. */
+    function wallCell(x, z, walls = hollowMap?.walls) {
         if (!walls) return false;
         const col = Math.floor((x - HOLLOW_REGION.x0) / WALLS_CELL);
         const row = Math.floor((z - HOLLOW_REGION.z0) / WALLS_CELL);
@@ -663,14 +733,15 @@ export function createWalk({ light, reducedMotion }) {
         return walls[row * hollowMap.wallsAcross + col] === 1;
     }
 
-    /** Which way is out, from the walls about (x, z): a unit step away from them on the ground, or null. */
+    /** Which way is out, from the walls that stop it about (x, z): a unit step away from them on the ground, or null. */
     function wallNormal(x, z) {
         let sx = 0;
         let sz = 0;
+        const walls = moveWalls();
         for (const radius of [GIRTH + 0.12, GIRTH + 0.26]) {
             for (let k = 0; k < 16; k += 1) {
                 const angle = (k / 16) * Math.PI * 2;
-                if (!wallCell(x + Math.cos(angle) * radius, z + Math.sin(angle) * radius)) continue;
+                if (!wallCell(x + Math.cos(angle) * radius, z + Math.sin(angle) * radius, walls)) continue;
                 sx -= Math.cos(angle);
                 sz -= Math.sin(angle);
             }
@@ -708,7 +779,10 @@ export function createWalk({ light, reducedMotion }) {
     function tryStep(dx, dz) {
         next.set(state.position.x + dx, state.position.y, state.position.z + dz);
         const floor = floorAt(next.x, next.z, state.position.y);
-        if (floor === null || Math.abs(floor - state.position.y) > STEP) return false;
+        if (floor === null) return false;
+        // (Walking, a step up or down is at most STEP. Flying as a hum, it glides down off any edge, and rises at
+        // most HUM_CLIMB at a time.)
+        if (HUM ? floor - state.position.y > HUM_CLIMB : Math.abs(floor - state.position.y) > STEP) return false;
         next.y = floor;
         if (aloft(next.x, next.z, floor)) return true;
         return !blocked(next.x, next.z) || blocked(state.position.x, state.position.z);
@@ -733,8 +807,9 @@ export function createWalk({ light, reducedMotion }) {
             if (distance < ARRIVE) {
                 if (!destination.held) {
                     clearTarget();
-                    // (Arrived where it was sent: the banshee twirls.)
+                    // (Arrived where it was sent: the banshee twirls, and so does the hum.)
                     justArrived = true;
+                    humNews.arrived = true;
                 }
                 return wanted.set(0, 0, 0);
             }
@@ -928,8 +1003,10 @@ export function createWalk({ light, reducedMotion }) {
      */
     function aimDust(lie) {
         const [feet, halfway, end, up] = dustTargets;
-        // (The line to its feet keeps the one casting it in sight too: they stand over them.)
-        alongShadow(feet, 0.15);
+        // (The line to its feet keeps the one casting it in sight too: they stand over them. Flying as a hum, the
+        // first line is the hum's, stopping a little short of it.)
+        if (hum) feet.set(hum.position.x, hum.position.y, hum.position.z, 0.3);
+        else alongShadow(feet, 0.15);
         alongShadow(halfway, lie.along * 0.5);
         alongShadow(end, Math.max(0.3, lie.along - 0.1));
         if (lie.wall && lie.along < shadowLength - 0.05) {
@@ -959,7 +1036,11 @@ export function createWalk({ light, reducedMotion }) {
         lead.lerp(ahead.copy(velocity).multiplyScalar(reducedMotion ? 0 : LEAD), 1 - Math.exp(-2.5 * dt));
         const lie = shadowLies();
         // It looks at the shadow itself, its middle as it lies, ahead by as much as its easing trails the going.
-        const target = shadowCentre(rig.goal.target, lie).add(lead);
+        // (Flying as a hum, it looks near the hum, "central so it's easy to keep track", a little toward its shadow,
+        // so the shadow is seen going with it.)
+        const target = (hum
+            ? rig.goal.target.copy(hum.position).lerp(shadowCentre(framing, lie), HUM_FRAME)
+            : shadowCentre(rig.goal.target, lie)).add(lead);
         // (No golden bridge stands between the camera and the walker: there, its gold comes apart into dust.)
         bridgeSight?.set(state.position.x, state.position.y + TALL * 0.5, state.position.z, 1);
         // (Nor anything else between the camera and any of the shadow, where the city comes apart into dust: then
@@ -977,7 +1058,7 @@ export function createWalk({ light, reducedMotion }) {
         if (solids?.available) solids.push(sightFrom, 0.3);
         const theta = rig.now.theta + shortest(followTheta - rig.now.theta);
         const reach = followDistance * Math.max(1, (0.9 / aspect) ** 0.3);
-        const low = MathUtils.lerp(FOLLOW_PHI, CLOSE_PHI, close);
+        const low = hum ? MathUtils.lerp(HUM_PHI_FAR, HUM_PHI, close) : MathUtils.lerp(FOLLOW_PHI, CLOSE_PHI, close);
         if (DUST && dustSight) {
             // Where the city comes apart into dust, the camera never climbs: what's in the way opens (dust.js).
             rise = 0;
@@ -1065,13 +1146,20 @@ export function createWalk({ light, reducedMotion }) {
             if (on.front && fromCentre < on.radius + 10) best = Math.min(best, Math.max(0, fromCentre - on.radius * 0.5));
         }
         if (onWallShadow(x, y)) best = 0;
+        // (Flying as a hum, the hum itself, hovering over its shadow, takes a tap too.)
+        if (hum && camera) {
+            const rect = canvas.getBoundingClientRect();
+            const at = feet.copy(hum.position).project(camera);
+            const away = Math.hypot(rect.left + ((at.x + 1) / 2) * rect.width - x, rect.top + ((1 - at.y) / 2) * rect.height - y);
+            if (at.z < 1 && away < reach) best = Math.min(best, away);
+        }
         return best;
     }
 
-    /** Where the shadow's middle is on screen (CSS px), and whether it's in front of the camera. */
+    /** Where the shadow's middle (flying, the hum) is on screen (CSS px), and whether it's in front of the camera. */
     function centreOnScreen() {
         const rect = canvas.getBoundingClientRect();
-        const at = shadowCentre(feet).project(camera);
+        const at = (hum ? feet.copy(hum.position) : shadowCentre(feet)).project(camera);
         return { x: rect.left + ((at.x + 1) / 2) * rect.width, y: rect.top + ((1 - at.y) / 2) * rect.height, front: at.z < 1 };
     }
 
@@ -1138,14 +1226,50 @@ export function createWalk({ light, reducedMotion }) {
         /** For the local checks: steer by the compass ({ x, z }) rather than by keys or stick; null to stop. */
         compass: null,
 
+        /** For the local checks: the floor a body could stand on at (x, z), near height `near`, or null. */
+        standAt: (x, z, near) => standOn(x, z, near),
+
+        /**
+         * For the local checks: where a walker gets to from (x, y, z), steered the compass way (dx, dz) for `seconds`
+         * (in strides of `dt`), by the very steps a visitor's takes (its slips and slides and all). The walk's own
+         * state is left as it was.
+         */
+        tryWalk(x, y, z, dx, dz, seconds = 0.5, dt = 1 / 60) {
+            const kept = { position: state.position.clone(), velocity: velocity.clone(), heading: state.heading, stride: state.stride, moving: state.moving, compass: walk.compass, destination };
+            state.position.set(x, y, z);
+            velocity.set(0, 0, 0);
+            walk.compass = { x: dx, z: dz };
+            destination = null;
+            for (let t = 0; t < seconds - 1e-9; t += dt) stepWalker(dt);
+            const end = state.position.clone();
+            state.position.copy(kept.position);
+            velocity.copy(kept.velocity);
+            state.heading = kept.heading;
+            state.stride = kept.stride;
+            state.moving = kept.moving;
+            walk.compass = kept.compass;
+            destination = kept.destination;
+            return end;
+        },
+
         /** Stand the walker at (x, z), facing heading (radians, 0 = +z), on the floor there. */
         place(x, z, heading = state.heading, y = floorAt(x, z) ?? groundY(x, z)) {
             state.position.set(x, y, z);
             state.heading = heading;
             state.present = true;
             uniforms.walkerOn.value = 1;
-            // (Set down somewhere new, the banshee's cloth lies as it would there, at once.)
+            // (Set down somewhere new, the banshee's cloth lies as it would there, at once; the hum is there at once.)
             banshee?.reset();
+            hum?.reset();
+            hum?.fly(0, state.position);
+        },
+
+        /** Flying as a hum (a trial): the hum, drawn in the city (the stage adds it), else null. */
+        bird: hum?.object ?? null,
+
+        /** Where the hum is (for the local checks), or null. */
+        get humAt() {
+            return hum ? hum.position.clone() : null;
         },
 
         /** The reading point it's beside, as a point in the city (main.js), or null: the banshee's hood turns to it. */
@@ -1199,6 +1323,7 @@ export function createWalk({ light, reducedMotion }) {
                 uniforms.walkerDeckRegion.value.set(region.x0, region.z0, 1 / (region.x1 - region.x0), 1 / (region.z1 - region.z0));
             }
             floors = parts.floors ?? [];
+            sunDisc = floors.find((floor) => floor.disc)?.disc ?? null;
             bridgeSight = parts.bridgeSight ?? null;
             dustSight = parts.dustSight ?? null;
             dustTargets = parts.dustTargets ?? null;
@@ -1239,7 +1364,7 @@ export function createWalk({ light, reducedMotion }) {
             label.className = 'point-label walk-label';
             label.hidden = true;
             label.setAttribute('aria-hidden', 'true');
-            label.textContent = 'walk as the shadow';
+            label.textContent = TAKE_WORDS;
             document.body.append(label);
             canvas.addEventListener('pointermove', (event) => {
                 if (event.pointerType !== 'mouse' || event.buttons) return;
@@ -1258,7 +1383,7 @@ export function createWalk({ light, reducedMotion }) {
                 button.type = 'button';
                 button.className = 'control';
                 button.setAttribute('aria-pressed', 'false');
-                button.textContent = 'walk as the shadow';
+                button.textContent = TAKE_WORDS;
                 button.addEventListener('click', () => (state.walking ? walk.letGo() : walk.take()));
                 parts.controls.prepend(button);
                 // While walking, a way out of any corner: back to where it began.
@@ -1450,8 +1575,9 @@ export function createWalk({ light, reducedMotion }) {
                 }
             }
             state.walking = true;
-            // (Taken, the banshee gives a little lift of delight.)
+            // (Taken, the banshee gives a little lift of delight, and so does the hum.)
             justTaken = true;
+            humNews.taken = true;
             rig.handsOff = true;
             rig.passesThrough = DUST && Boolean(dustSight);
             rig.setDrifting(false);
@@ -1472,7 +1598,9 @@ export function createWalk({ light, reducedMotion }) {
                 button.setAttribute('aria-pressed', 'true');
             }
             if (backButton) backButton.hidden = false;
-            announce('You are the shadow. Arrow keys or WASD to walk; plus and minus, the wheel or a pinch to come closer or draw back; R to go back to the jetty; Escape to let go.');
+            announce(hum
+                ? 'You are a hum, and the shadow beneath you is the wraith. Arrow keys or WASD to fly; plus and minus, the wheel or a pinch to come closer or draw back; R to go back to the jetty; Escape to let go.'
+                : 'You are the shadow. Arrow keys or WASD to walk; plus and minus, the wheel or a pinch to come closer or draw back; R to go back to the jetty; Escape to let go.');
         },
 
         /**
@@ -1530,7 +1658,7 @@ export function createWalk({ light, reducedMotion }) {
             rise = 0;
             settling = 0;
             if (!state.walking) walk.take();
-            announce('You walk from here.');
+            announce(hum ? 'You fly from here.' : 'You walk from here.');
             return true;
         },
 
@@ -1554,11 +1682,11 @@ export function createWalk({ light, reducedMotion }) {
             rig.gliding = true;
             rig.setDrifting(true);
             if (button) {
-                button.textContent = 'walk as the shadow';
+                button.textContent = TAKE_WORDS;
                 button.setAttribute('aria-pressed', 'false');
             }
             if (backButton) backButton.hidden = true;
-            announce('You let go of the shadow. It stays where you left it.');
+            announce(hum ? 'You let go of the hum. It hovers where you left it, over its shadow.' : 'You let go of the shadow. It stays where you left it.');
         },
 
         /**
@@ -1570,6 +1698,8 @@ export function createWalk({ light, reducedMotion }) {
         update(dt, walkDt = dt) {
             if (!state.walking) {
                 state.moving += (0 - state.moving) * (1 - Math.exp(-8 * dt));
+                // (Unflown, the hum hovers over where the one casting the shadow waits.)
+                if (hum && state.present) hum.fly(dt, state.position);
                 return;
             }
             // While a passage is open, the walker waits (and the camera is the reader's: nothing opens toward the
@@ -1580,9 +1710,10 @@ export function createWalk({ light, reducedMotion }) {
                 return;
             }
             // Until the map of walls is laid (on a slow machine it can take a while), it stands where it is.
-            if (!hollowMap?.walls && wallsWaited < WALLS_WAIT) {
+            if (!moveWalls() && wallsWaited < WALLS_WAIT) {
                 wallsWaited += walkDt;
                 velocity.set(0, 0, 0);
+                hum?.fly(dt, state.position);
                 follow(dt);
                 return;
             }
@@ -1596,6 +1727,8 @@ export function createWalk({ light, reducedMotion }) {
             }
             const steps = Math.max(1, Math.ceil(walkDt / 0.05 - 1e-6));
             for (let step = 0; step < steps; step += 1) stepWalker(walkDt / steps);
+            // (The hum goes with the one beneath it, rising and settling with their floor, before the camera looks.)
+            hum?.fly(walkDt, state.position);
             follow(dt);
         },
 
@@ -1617,10 +1750,19 @@ export function createWalk({ light, reducedMotion }) {
                 }
             }
             if (!state.present) return;
+            if (hum) {
+                // The hum is posed whether or not its shadow is in sight (a lift when taken, a twirl on arriving).
+                const dt = humNews.posedAt === null ? 1 / 60 : MathUtils.clamp(elapsed - humNews.posedAt, 0, 0.1);
+                humNews.posedAt = elapsed;
+                hum.pose({ elapsed, dt, heading: state.heading, moving: state.moving, flown: state.walking, taken: humNews.taken, arrived: humNews.arrived });
+                humNews.taken = false;
+                humNews.arrived = false;
+            }
             // (Where it stands, and whether that's a deck over the water, for the water's share of the shadow.)
             const deck = decks?.(state.position.x, state.position.z) ?? null;
             uniforms.walkerDeck.value.set(state.position.x, state.position.y, state.position.z,
                 deck !== null && Math.abs(deck - state.position.y) < 0.05 ? 1 : 0);
+            if (sunDisc) uniforms.walkerDisc.value.set(sunDisc.x, sunDisc.z, sunDisc.radius(), 1);
             if (ring?.visible) {
                 // The ring breathes (holding still, where motion is reduced), and from far off keeps a size
                 // the eye can find.
