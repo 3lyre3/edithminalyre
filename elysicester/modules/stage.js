@@ -25,6 +25,7 @@ import {
     Vector3,
     WebGLRenderer,
 } from 'three';
+import { createDust } from './dust.js';
 import { Buckets, createMaterials, duskLight, flutter, wallX } from './kit.js';
 import { inscriptionTexture } from './extras.js';
 import { HOLLOWED, createHollows, hollows } from './hollows.js';
@@ -38,6 +39,7 @@ import { createSea } from './sea.js';
 import { createSigns } from './signs.js';
 import { createSky } from './sky.js';
 import { createSolids } from './solids.js';
+import { trialOn } from './trials.js';
 import { createWisp } from './wisp.js';
 
 // =============================================================================
@@ -59,6 +61,13 @@ const SHADOW_REACH = 40;
  */
 const CASTS_SHADOW = new Set(['gold', 'bricking', 'brick', 'stone', 'rock', 'steel', 'copper', 'arch', 'turquoise', 'amethyst', 'bridge', 'cloth', 'green', 'weed']);
 const TAKES_SHADOW = new Set(['dimGold', 'green']);
+/**
+ * What comes apart into gold dust where the camera passes (a trial, dust.js; ?dust=off): everything that stands.
+ * Not the ground (dimGold), the rock, the sea or the sky; the golden bridges keep their own dust (places.js).
+ */
+const DUST_DISSOLVES = ['gold', 'bricking', 'brick', 'stone', 'steel', 'copper', 'turquoise', 'weed', 'amethyst', 'glass', 'arch', 'cloth', 'green', 'sign', 'glow'];
+/** And the things laid on the cafés' walls, which would be left hanging where a wall came apart. */
+const DUST_ON_WALLS = ['cafe-shadow', 'footlight-wash'];
 /**
  * A safety net for slower phones: if frames run slower than this (seconds) for a sustained stretch,
  * the drawing buffer steps down a quarter at a time, never below 1. It only ever steps down, so it can't
@@ -177,6 +186,9 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
     flutter(materials.turquoise, wind);
     flutter(materials.sign, wind);
     flutter(materials.weed, wind);
+    // Where the camera passes, the city comes apart into gold dust (a trial: ?dust=off).
+    const dust = trialOn('dust') ? createDust({ reducedMotion }) : null;
+    if (dust) for (const key of DUST_DISSOLVES) dust.dissolve(materials[key]);
     const buckets = new Buckets();
     await pause();
     buildIsland(buckets);
@@ -193,6 +205,12 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         scene.add(mesh);
     }
     for (const extra of places.extras) scene.add(extra);
+    if (dust) {
+        for (const name of DUST_ON_WALLS) {
+            const laid = scene.getObjectByName(name);
+            if (laid) dust.dissolve(laid.material);
+        }
+    }
     // The golden bridges' dust, drawn over them where they come apart (places.js): only while walking, or while
     // the camera is among them, as it's nowhere else.
     let bridgeDust = null;
@@ -283,6 +301,7 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         pierEnd: places.pierEnd,
         floors: places.floors,
         bridgeSight: places.bridgeSight,
+        dustSight: dust?.sight ?? null,
         scene,
         controls: document.querySelector('.controls'),
     });
@@ -331,6 +350,7 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         sky.update(elapsed, camera);
         sea.update(elapsed);
         places.update(elapsed);
+        dust?.update(elapsed);
         hollowMap.update(dt);
         wisp.update(elapsed);
         paper.update(camera);

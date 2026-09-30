@@ -10,13 +10,15 @@
  *   reader's count says where they are and their points glint more often
  * - wraith: the shadow as a friendly banshee, floating, its skirt streaming and its sleeves spreading as it glides
  *   (banshee.js; Elm's ask)
+ * - dust: everything the camera passes through comes apart into gold dust, as the golden bridges do, so the walking
+ *   camera stays low instead of climbing over what's in the way (dust.js; Elm's ask)
  */
 
 // =============================================================================
 // Constants
 // =============================================================================
 
-export const TRIALS = Object.freeze(['jetty', 'whisper', 'names', 'hint', 'wraith']);
+export const TRIALS = Object.freeze(['jetty', 'whisper', 'names', 'hint', 'wraith', 'dust']);
 
 // =============================================================================
 // Main Code

@@ -115,6 +115,11 @@ const CHASE_POINTING = 0.2;
  */
 const RISE_STEPS = 4;
 const RISE_TOP = 0.14;
+/**
+ * Where the city comes apart into gold dust as the camera passes (a trial, dust.js; ?dust=off), what's in the way
+ * opens instead, so the camera never rises: it stays low behind the one casting the shadow.
+ */
+const DUST = trialOn('dust');
 /** And with each step up it stands this much further back (a share of its distance), well above the rooftops. */
 const RISE_PULL = 0.28;
 /** How long a lower view must stay clear before the camera settles back down to it (seconds). */
@@ -408,6 +413,8 @@ export function createWalk({ light, reducedMotion }) {
     let backButton = null;
     /** The golden bridges' sight line (places.js): the walker's middle, and 1 while walking (their gold turns to dust there). */
     let bridgeSight = null;
+    /** The same for everything else that stands, where it comes apart into dust (dust.js; a trial), or null. */
+    let dustSight = null;
     /** A pointer pressed on the city while walking: { id, type, startX, startY, x, y, time, aimed }. */
     let press = null;
     /** The spot it walks to (a tap, or a pointer held down): { x, y, z, held, best, since }, or null. */
@@ -812,11 +819,24 @@ export function createWalk({ light, reducedMotion }) {
         target.y += TALL * LOOK_AT;
         // (No golden bridge stands between the camera and the walker: there, its gold comes apart into dust.)
         bridgeSight?.set(state.position.x, state.position.y + TALL * 0.5, state.position.z, 1);
+        // (Nor anything else, where the city comes apart into dust: then the camera never rises.)
+        dustSight?.set(state.position.x, state.position.y + TALL * 0.5, state.position.z, 1);
         // (Close against a wall, the one casting it may be all but in it: the sight is felt for from out of it.)
         sightFrom.copy(target);
         if (solids?.available) solids.push(sightFrom, 0.3);
         const theta = rig.now.theta + shortest(followTheta - rig.now.theta);
         const reach = FOLLOW * Math.max(1, (0.9 / aspect) ** 0.3);
+        if (DUST && dustSight) {
+            // Where the city comes apart into dust, the camera never climbs: what's in the way opens (dust.js).
+            rise = 0;
+            settling = 0;
+            rig.goal.phi = FOLLOW_PHI;
+            rig.goal.theta = theta;
+            rig.goal.radius = reach;
+            rig.atHome = false;
+            rig.gliding = false;
+            return;
+        }
 
         let lowest = -1;
         let leastHidden = 0;
@@ -1002,6 +1022,7 @@ export function createWalk({ light, reducedMotion }) {
             decks = waterfrontDecks(parts.meshes);
             floors = parts.floors ?? [];
             bridgeSight = parts.bridgeSight ?? null;
+            dustSight = parts.dustSight ?? null;
 
             // The shadow waits at the end of the jetty, looking out to sea (in place of the one on the café
             // wall), a ring breathing on the boards at its feet to say it can be taken.
@@ -1237,12 +1258,15 @@ export function createWalk({ light, reducedMotion }) {
             // (Taken, the banshee gives a little lift of delight.)
             justTaken = true;
             rig.handsOff = true;
+            rig.passesThrough = DUST && Boolean(dustSight);
             rig.setDrifting(false);
             followTheta = behindOf(turning ?? state.heading);
             rise = 0;
             settling = 0;
             lead.set(0, 0, 0);
-            uniforms.walkClear.value = CLEAR_NEAR;
+            // (Where the city comes apart into dust, the poles and flags by the camera do too, gilded, rather than
+            // simply not being drawn.)
+            uniforms.walkClear.value = DUST && dustSight ? 0 : CLEAR_NEAR;
             hovering = false;
             if (label) label.hidden = true;
             canvas.style.cursor = '';
@@ -1303,8 +1327,10 @@ export function createWalk({ light, reducedMotion }) {
             if (!state.walking) return;
             state.walking = false;
             rig.handsOff = false;
+            rig.passesThrough = false;
             uniforms.walkClear.value = 0;
             bridgeSight?.setW(0);
+            dustSight?.setW(0);
             keys.clear();
             releaseStick();
             press = null;
@@ -1333,8 +1359,13 @@ export function createWalk({ light, reducedMotion }) {
                 state.moving += (0 - state.moving) * (1 - Math.exp(-8 * dt));
                 return;
             }
-            // While a passage is open, the walker waits (and the camera is the reader's).
-            if (document.querySelector('dialog[open]')) return;
+            // While a passage is open, the walker waits (and the camera is the reader's: nothing opens toward the
+            // shadow from where it reads).
+            if (document.querySelector('dialog[open]')) {
+                bridgeSight?.setW(0);
+                dustSight?.setW(0);
+                return;
+            }
             // Until the map of walls is laid (on a slow machine it can take a while), it stands where it is.
             if (!hollowMap?.walls && wallsWaited < WALLS_WAIT) {
                 wallsWaited += walkDt;

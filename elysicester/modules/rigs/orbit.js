@@ -93,6 +93,8 @@ export class OrbitRig {
         this.held = 0;
         /** True while something else steers (walk.js): drags and the arrow keys are then its, not the rig's. */
         this.handsOff = false;
+        /** True while that steering camera may pass into anything, because it comes apart into dust (dust.js). */
+        this.passesThrough = false;
         this.nominal = new Vector3();
         this.resolved = new Vector3();
         this.offset = new Vector3();
@@ -282,7 +284,11 @@ export class OrbitRig {
         this.now.phi += (this.goal.phi - this.now.phi) * k;
 
         this.positionOf(this.now, this.nominal);
-        if (this.solids?.available && this.handsOff) {
+        if (this.handsOff && this.passesThrough) {
+            // Walking where the city comes apart into gold dust (dust.js, a trial): whatever the camera passes
+            // into opens round it, so nothing holds it out.
+            this.camera.position.copy(this.nominal);
+        } else if (this.solids?.available && this.handsOff) {
             // Something else steers (walk.js) and has already chosen where the view is clear from: the
             // camera is only kept out of anything solid, never held back on its way there.
             this.solids.push(this.resolved.copy(this.nominal), CLEARANCE);
