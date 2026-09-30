@@ -63,6 +63,7 @@ import {
     WebGLRenderTarget,
 } from 'three';
 import { createBanshee } from './banshee.js';
+import { EASE } from './rigs/orbit.js';
 import { HOLLOW_REGION, WALLS_CELL } from './hollows-map.js';
 import { SEA_LEVEL, alsoBeforeCompile, groundY, onLand } from './kit.js';
 import { trialOn } from './trials.js';
@@ -96,16 +97,38 @@ const EDGE = 0.35;
 const STAND_SEARCH = 8;
 const STAND_STEP = 0.3;
 /**
- * The camera, walking, stands above and behind where the one casting the shadow would be (Elm's ask): how far
- * back (a little further on a screen held upright, where there's less room across), how steeply it looks down
- * (its angle from straight overhead), where on the figure it looks (as a share of its height), and how quickly
- * it comes round behind the way the walker goes (by the sideways part of its going, so walking straight at the
- * camera never whirls it round).
+ * The camera, walking, stands above and behind the one casting the shadow (Elm's ask), and looks at the shadow itself,
+ * its middle as it lies (Elm: "can we centre the shadow more somehow? so it aligns more closely with the central
+ * moving object of the controlled figure?"): how far back (a little further on a screen held upright, where there's
+ * less room across), how steeply it looks down (its angle from straight overhead), and how quickly it comes round
+ * behind the way the walker goes (by the sideways part of its going, so walking straight at the camera never whirls
+ * it round).
  */
 const FOLLOW = 8;
 const FOLLOW_PHI = 0.95;
-const LOOK_AT = 0.6;
 const CHASE = 1.0;
+/**
+ * How near the walking camera may come (Elm: "Being able to zoom more closely to the shadow/over the shadow's
+ * "shoulder" would be the move I think. A kind of RPG type thing (like messenger.abeto)"): the wheel, a pinch, or +
+ * and − bring it in from FOLLOW to this far, or draw it back to this far. As it comes in, it comes down lower behind
+ * the shadow (to this angle from straight overhead: at its closest, about the height of the one casting it), and comes
+ * round behind them faster (this many times as fast, at its closest), so the shadow stays in sight. (Closer than
+ * FOLLOW_NEAR, the shadow no longer fits in the frame.)
+ */
+const FOLLOW_NEAR = 3;
+const FOLLOW_FAR = 12;
+const CLOSE_PHI = 1.12;
+const CLOSE_CHASE = 2.5;
+/** Close in, the dust's opening about the lens is smaller (open within, whole again from; dust.js). */
+const CLOSE_LENS = [0.45, 1.3];
+/**
+ * The lines the dust keeps open to the shadow (dust.js) stop this far short of where they're aimed: of the shadow on
+ * the ground (floors at its level never come apart), and of the shadow up a wall (so the wall stays whole, with the
+ * shadow on it); and how much further than the farthest of them their width reaches.
+ */
+const DUST_KEEP_GROUND = 0.2;
+const DUST_KEEP_WALL = 0.35;
+const DUST_SPARE = 2.2;
 /** How much of that coming round there is while a thumb or the pointer steers (so a held stick walks straight). */
 const CHASE_POINTING = 0.2;
 /**
@@ -126,8 +149,11 @@ const RISE_PULL = 0.28;
 const SETTLE = 0.9;
 /** The open air the camera keeps about itself, walking, so no pole-top or gable ever fills the view. */
 const LENS_ROOM = 1.6;
-/** How far ahead of the walker the camera looks, in seconds of its going (room to see where it's going). */
-const LEAD = 0.45;
+/**
+ * How far ahead of the shadow the camera looks, in seconds of its going: as far as the rig's own easing trails a steady
+ * going (orbit.js EASE), so the shadow stays at the middle of the view as it moves.
+ */
+const LEAD = 1 / EASE;
 /** How near the camera, walking, a pole, a crossbar, a wire or a flag goes undrawn (walkerClears). */
 const CLEAR_NEAR = 3;
 /** A drag this far (CSS px) starts the thumb's joystick; this far is a full stride. */
@@ -135,8 +161,8 @@ const STICK_START = 10;
 const STICK_REACH = 58;
 /** How near a tap must land to the shadow on the ground to take hold of it (CSS px). */
 const TAP_REACH = { mouse: 22, pen: 26, touch: 36 };
-/** Walking, how near its feet (a share of TAP_REACH) a tap must land to let go (anywhere else walks it there). */
-const FEET_REACH = 0.7;
+/** Walking, how near the shadow's middle (a share of TAP_REACH) a tap must land to let go (anywhere else walks it there). */
+const MIDDLE_REACH = 0.7;
 /** A finger held still this long (ms) walks the shadow toward it; and a press this long isn't a tap. */
 const HOLD_AFTER = 250;
 /** Walking to a spot: how near is there, how far off a spot may be (world units), and how long without getting nearer gives up (s). */
@@ -351,7 +377,9 @@ export function createWalk({ light, reducedMotion }) {
     const toLight = light.clone().normalize();
     const lightTheta = Math.atan2(toLight.x, toLight.z);
     const shadowWay = new Vector3(-toLight.x, 0, -toLight.z).normalize();
-    const shadowLength = TALL / Math.tan(Math.asin(toLight.y));
+    /** How far a dusk shadow rises up a wall for each unit it would have gone on along the ground. */
+    const slope = Math.tan(Math.asin(toLight.y));
+    const shadowLength = TALL / slope;
     // (The walker, or, on trial, the banshee: WRAITH, banshee.js.)
     const banshee = WRAITH ? createBanshee({ figure: FIGURE, pace: PACE, reducedMotion }) : null;
     const { body, legs, arms } = banshee ? { body: banshee.body, legs: [], arms: [] } : buildBody();
@@ -415,6 +443,13 @@ export function createWalk({ light, reducedMotion }) {
     let bridgeSight = null;
     /** The same for everything else that stands, where it comes apart into dust (dust.js; a trial), or null. */
     let dustSight = null;
+    /** The lines the dust keeps open to the whole shadow (aimDust), and its opening about the lens (dust.js), or null. */
+    let dustTargets = null;
+    let dustNear = null;
+    const lensOpen = new Vector2(1.1, 3.0);
+    /** How far back the walking camera stands: FOLLOW at first; the wheel, a pinch, or + and − bring it in or draw it back. */
+    let followDistance = FOLLOW;
+    const reachOf = new Vector3();
     /** A pointer pressed on the city while walking: { id, type, startX, startY, x, y, time, aimed }. */
     let press = null;
     /** The spot it walks to (a tap, or a pointer held down): { x, y, z, held, best, since }, or null. */
@@ -440,6 +475,8 @@ export function createWalk({ light, reducedMotion }) {
     let label = null;
     let hovering = false;
     const keys = new Set();
+    /** The fingers on the screen now (a second makes a pinch). */
+    const touches = new Set();
     const stick = { id: null, startX: 0, startY: 0, x: 0, y: 0, active: false, view: null, knob: null };
     const velocity = new Vector3();
     const wanted = new Vector3();
@@ -727,13 +764,20 @@ export function createWalk({ light, reducedMotion }) {
         return spot;
     }
 
-    /** Walk to the spot under (x, y): held (while a pointer stays down) or once (a tap). */
+    /**
+     * Walk to the spot under (x, y): held (while a pointer stays down) or once (a tap). It's the shadow that's steered,
+     * so it's the shadow's middle that goes there: the one casting it walks to where that puts it (the spot, less the
+     * shadow's half-length on flat ground), and the ring marks the spot itself.
+     */
     function aimAt(x, y, held) {
         const spot = groundUnder(x, y);
         if (!spot) return false;
-        const floor = floorAt(spot.x, spot.z, state.position.y);
-        const distance = Math.hypot(spot.x - state.position.x, spot.z - state.position.z);
-        destination = { x: spot.x, y: floor ?? spot.y, z: spot.z, held, best: distance, since: 0 };
+        const mark = { x: spot.x, y: floorAt(spot.x, spot.z, state.position.y) ?? spot.y, z: spot.z };
+        const toX = spot.x - shadowWay.x * shadowLength * 0.5;
+        const toZ = spot.z - shadowWay.z * shadowLength * 0.5;
+        const floor = floorAt(toX, toZ, state.position.y);
+        const distance = Math.hypot(toX - state.position.x, toZ - state.position.z);
+        destination = { x: toX, y: floor ?? spot.y, z: toZ, held, best: distance, since: 0, mark };
         return true;
     }
 
@@ -808,29 +852,99 @@ export function createWalk({ light, reducedMotion }) {
      * rather than across. If something stands between it and the walker, it rises over it at once, and settles
      * back down only once the lower view has stayed clear a while.
      */
+    /**
+     * Where the shadow lies on the ground, from its feet: as far as a dusk shadow of its height reaches, or, if a
+     * wall catches it first (the walls map, at a body's height), as far as that wall. Returns that distance.
+     */
+    function shadowOnGround() {
+        for (let along = 0.25; along < shadowLength; along += 0.08) {
+            if (wallCell(state.position.x + shadowWay.x * along, state.position.z + shadowWay.z * along)) return along;
+        }
+        return shadowLength;
+    }
+
+    /**
+     * The middle of the shadow as it lies, into `out`: halfway along it from its feet, on the ground, or, where a wall
+     * catches it before its middle, that far up the wall.
+     */
+    function shadowCentre(out, onGround = shadowOnGround()) {
+        const climb = onGround < shadowLength ? (shadowLength - onGround) * slope : 0;
+        const half = (onGround + climb) / 2;
+        if (half <= onGround) return alongShadow(out, half);
+        alongShadow(out, onGround - 0.12);
+        out.y += half - onGround;
+        return out;
+    }
+
+    /** A point on the ground along the shadow, `along` from its feet, a hand above the floor there, into `out`. */
+    function alongShadow(out, along, keep = DUST_KEEP_GROUND) {
+        const x = state.position.x + shadowWay.x * along;
+        const z = state.position.z + shadowWay.z * along;
+        return out.set(x, (floorAt(x, z, state.position.y) ?? state.position.y) + 0.15, z, keep);
+    }
+
+    /**
+     * Aim the dust's lines at the whole of the shadow (dust.js; Elm: "so that we never lose sight of the shadow nor
+     * any part of the shadow"): the one casting it; the shadow on the ground, at its feet, its middle and its tip
+     * (or where a wall catches it); and, if a wall does, up that wall, as high as the shadow climbs.
+     */
+    function aimDust(onGround) {
+        const [feet, halfway, end, up] = dustTargets;
+        // (The line to its feet keeps the one casting it in sight too: they stand over them.)
+        alongShadow(feet, 0.15);
+        alongShadow(halfway, onGround * 0.5);
+        alongShadow(end, Math.max(0.3, onGround - 0.1));
+        if (onGround < shadowLength - 0.05) {
+            // (A dusk shadow rises up a wall as far as it would have gone on along the ground, over its slope.)
+            const climb = (shadowLength - onGround) * slope;
+            alongShadow(up, onGround - 0.12, DUST_KEEP_WALL).y += climb * 0.55 - 0.15;
+        } else {
+            up.w = -1;
+        }
+        // How far from the camera any line reaches, its width and a little more (squared): nothing further off need
+        // look for them at all, which is most of the city.
+        let farthest = 0;
+        for (const target of dustTargets) {
+            if (target.w >= 0) farthest = Math.max(farthest, camera.position.distanceTo(reachOf.set(target.x, target.y, target.z)));
+        }
+        dustSight.x = (farthest + DUST_SPARE) ** 2;
+    }
+
     function follow(dt) {
         const aspect = camera.aspect || 1;
+        // How close the visitor has brought the camera: 0 where it stands at first, 1 closest.
+        const close = MathUtils.clamp((FOLLOW - followDistance) / (FOLLOW - FOLLOW_NEAR), 0, 1);
         if (!reducedMotion && state.moving > 0.2) {
-            const chase = steeredBy === 'pointing' ? CHASE_POINTING : CHASE;
+            const chase = (steeredBy === 'pointing' ? CHASE_POINTING : CHASE) * (1 + (CLOSE_CHASE - 1) * close);
             followTheta += Math.sin(shortest(behindOf(state.heading) - followTheta)) * chase * state.moving * dt;
         }
         lead.lerp(ahead.copy(velocity).multiplyScalar(reducedMotion ? 0 : LEAD), 1 - Math.exp(-2.5 * dt));
-        const target = rig.goal.target.copy(state.position).add(lead);
-        target.y += TALL * LOOK_AT;
+        const onGround = shadowOnGround();
+        // It looks at the shadow itself, its middle as it lies, ahead by as much as its easing trails the going.
+        const target = shadowCentre(rig.goal.target, onGround).add(lead);
         // (No golden bridge stands between the camera and the walker: there, its gold comes apart into dust.)
         bridgeSight?.set(state.position.x, state.position.y + TALL * 0.5, state.position.z, 1);
-        // (Nor anything else, where the city comes apart into dust: then the camera never rises.)
-        dustSight?.set(state.position.x, state.position.y + TALL * 0.5, state.position.z, 1);
+        // (Nor anything else between the camera and any of the shadow, where the city comes apart into dust: then
+        // the camera never rises. Close in, the opening about the lens is smaller, so the walls near the shadow,
+        // and the shadow on them, stay.)
+        if (dustSight) {
+            // (Its y is the floor the one casting it stands on: floors at or below it never come apart. Its x is set
+            // by aimDust.)
+            dustSight.set(0, state.position.y, 0, 1);
+            if (dustTargets) aimDust(onGround);
+            dustNear?.set(MathUtils.lerp(lensOpen.x, CLOSE_LENS[0], close), MathUtils.lerp(lensOpen.y, CLOSE_LENS[1], close));
+        }
         // (Close against a wall, the one casting it may be all but in it: the sight is felt for from out of it.)
         sightFrom.copy(target);
         if (solids?.available) solids.push(sightFrom, 0.3);
         const theta = rig.now.theta + shortest(followTheta - rig.now.theta);
-        const reach = FOLLOW * Math.max(1, (0.9 / aspect) ** 0.3);
+        const reach = followDistance * Math.max(1, (0.9 / aspect) ** 0.3);
+        const low = MathUtils.lerp(FOLLOW_PHI, CLOSE_PHI, close);
         if (DUST && dustSight) {
             // Where the city comes apart into dust, the camera never climbs: what's in the way opens (dust.js).
             rise = 0;
             settling = 0;
-            rig.goal.phi = FOLLOW_PHI;
+            rig.goal.phi = low;
             rig.goal.theta = theta;
             rig.goal.radius = reach;
             rig.atHome = false;
@@ -841,7 +955,7 @@ export function createWalk({ light, reducedMotion }) {
         let lowest = -1;
         let leastHidden = 0;
         for (let index = 0; index <= RISE_STEPS; index += 1) {
-            rises[index] = FOLLOW_PHI - ((FOLLOW_PHI - RISE_TOP) * index) / RISE_STEPS;
+            rises[index] = low - ((low - RISE_TOP) * index) / RISE_STEPS;
             const back = reach * (1 + RISE_PULL * index);
             sightAt[index] = sightLine(sightFrom, theta, rises[index], back) / back;
             clearAt[index] = sightAt[index] >= 1 && roomAt(sightFrom, back);
@@ -893,16 +1007,16 @@ export function createWalk({ light, reducedMotion }) {
     /**
      * How near a tap (or the pointer) at (x, y) is to something that takes or lets go of the shadow (CSS px).
      * Waiting to be taken: the shadow on the ground, within a finger's reach, the ring at its feet (as large as
-     * it's drawn, and a little more), or the shadow on the café wall. Walking: only its feet (a tap anywhere
-     * else along its shadow walks it there). Infinity if it's on none of them.
+     * it's drawn, and a little more), or the shadow on the café wall. Walking: only the shadow's middle, where
+     * the camera looks (a tap anywhere else, along the shadow too, walks it there). Infinity if it's on none.
      */
     function tapDistance(x, y, pointerType) {
         const reach = TAP_REACH[pointerType] ?? TAP_REACH.touch;
         if (state.walking) {
             if (!camera) return Infinity;
-            const feetAt = feetOnScreen();
-            const away = Math.hypot(x - feetAt.x, y - feetAt.y);
-            return feetAt.front && away < reach * FEET_REACH ? away : Infinity;
+            const middle = centreOnScreen();
+            const away = Math.hypot(x - middle.x, y - middle.y);
+            return middle.front && away < reach * MIDDLE_REACH ? away : Infinity;
         }
         let best = Infinity;
         const along = shadowDistance(x, y);
@@ -916,10 +1030,10 @@ export function createWalk({ light, reducedMotion }) {
         return best;
     }
 
-    /** Where its feet are on screen (CSS px), and whether they're in front of the camera. */
-    function feetOnScreen() {
+    /** Where the shadow's middle is on screen (CSS px), and whether it's in front of the camera. */
+    function centreOnScreen() {
         const rect = canvas.getBoundingClientRect();
-        const at = feet.copy(state.position).project(camera);
+        const at = shadowCentre(feet).project(camera);
         return { x: rect.left + ((at.x + 1) / 2) * rect.width, y: rect.top + ((1 - at.y) / 2) * rect.height, front: at.z < 1 };
     }
 
@@ -1001,6 +1115,20 @@ export function createWalk({ light, reducedMotion }) {
             attending = point ? (attending ?? new Vector3()).copy(point) : null;
         },
 
+        /**
+         * Walking, bring the camera in (a factor below 1) or draw it back (above 1): from close over the shadow to a
+         * little further than it stands at first. (The rig hands on the wheel, a pinch, and + and −.)
+         */
+        zoomBy(factor) {
+            if (!state.walking) return;
+            followDistance = MathUtils.clamp(followDistance * factor, FOLLOW_NEAR, FOLLOW_FAR);
+        },
+
+        /** How far back the walking camera stands (for the local checks). */
+        get followDistance() {
+            return followDistance;
+        },
+
         /** Whether the shadow is the banshee (a trial) rather than the walker. */
         get wraith() {
             return Boolean(banshee);
@@ -1023,6 +1151,11 @@ export function createWalk({ light, reducedMotion }) {
             floors = parts.floors ?? [];
             bridgeSight = parts.bridgeSight ?? null;
             dustSight = parts.dustSight ?? null;
+            dustTargets = parts.dustTargets ?? null;
+            dustNear = parts.dustNear ?? null;
+            if (dustNear) lensOpen.copy(dustNear);
+            // Walking, the wheel, a pinch, or + and − bring the camera closer or draw it back (the rig hands them on).
+            rig.handsOffZoom = (factor) => walk.zoomBy(factor);
 
             // The shadow waits at the end of the jetty, looking out to sea (in place of the one on the café
             // wall), a ring breathing on the boards at its feet to say it can be taken.
@@ -1106,7 +1239,18 @@ export function createWalk({ light, reducedMotion }) {
             // Walking, a pointer pressed on the city steers: the mouse at once, toward wherever it points while
             // it's held down; a finger held still, toward the place under it; a finger dragged, the joystick.
             canvas.addEventListener('pointerdown', (event) => {
-                if (!state.walking || press) return;
+                if (event.pointerType !== 'mouse') touches.add(event.pointerId);
+                if (!state.walking) return;
+                // A second finger down makes a pinch (the camera's: the rig hands it on), and the first stops steering.
+                if (touches.size > 1) {
+                    if (press) {
+                        if (stick.active) releaseStick();
+                        if (destination?.held) clearTarget();
+                        press = null;
+                    }
+                    return;
+                }
+                if (press) return;
                 if (event.pointerType === 'mouse' && event.button !== 0) return;
                 press = {
                     id: event.pointerId,
@@ -1147,6 +1291,7 @@ export function createWalk({ light, reducedMotion }) {
             });
             for (const type of ['pointerup', 'pointercancel']) {
                 canvas.addEventListener(type, (event) => {
+                    touches.delete(event.pointerId);
                     if (!press || event.pointerId !== press.id) return;
                     press = null;
                     if (stick.active) releaseStick();
@@ -1277,7 +1422,7 @@ export function createWalk({ light, reducedMotion }) {
                 button.setAttribute('aria-pressed', 'true');
             }
             if (backButton) backButton.hidden = false;
-            announce('You are the shadow. Arrow keys or WASD to walk; R to go back to the jetty; Escape to let go.');
+            announce('You are the shadow. Arrow keys or WASD to walk; plus and minus, the wheel or a pinch to come closer or draw back; R to go back to the jetty; Escape to let go.');
         },
 
         /**
@@ -1331,6 +1476,7 @@ export function createWalk({ light, reducedMotion }) {
             uniforms.walkClear.value = 0;
             bridgeSight?.setW(0);
             dustSight?.setW(0);
+            dustNear?.copy(lensOpen);
             keys.clear();
             releaseStick();
             press = null;
@@ -1397,7 +1543,7 @@ export function createWalk({ light, reducedMotion }) {
                 targetRing.visible = Boolean(destination) && state.walking;
                 if (targetRing.visible) {
                     const breath = reducedMotion ? 0.5 : 0.5 + 0.5 * Math.sin(elapsed * 3.2);
-                    targetRing.position.set(destination.x, destination.y + 0.03, destination.z);
+                    targetRing.position.set(destination.mark.x, destination.mark.y + 0.03, destination.mark.z);
                     const far = camera ? Math.max(1, camera.position.distanceTo(targetRing.position) * RING_FAR) : 1;
                     targetRing.scale.setScalar(far * (1 + 0.1 * breath));
                     targetRing.material.opacity = 0.3 + 0.3 * breath;
