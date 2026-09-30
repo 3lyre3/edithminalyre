@@ -16,5 +16,5 @@ import { buildHollowData } from './hollows-map.js';
 
 self.addEventListener('message', (event) => {
     const result = buildHollowData(event.data);
-    self.postMessage(result, result.walls ? [result.data.buffer, result.walls.buffer] : [result.data.buffer]);
+    self.postMessage(result, [result.data, result.walls, result.flightWalls].filter(Boolean).map((array) => array.buffer));
 });

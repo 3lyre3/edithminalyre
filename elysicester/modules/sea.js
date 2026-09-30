@@ -299,10 +299,15 @@ export function createSea({ sunDirection, horizonDip = { value: 0.16 } }) {
                     '    uniform vec4 walkerDeckRegion;',
                     '    uniform vec4 walkerDeck;',
                     '    uniform vec3 walkerToLight;',
+                    '    uniform vec4 walkerDisc;',
                     // Standing on a deck, the walker's shadow falls on the deck; only what misses it (the light
-                    // passing the deck's edge, at the walker's height) comes down to the water.
+                    // passing the deck's edge, at the walker's height) comes down to the water. And where the
+                    // sun-dock's light lies on the water, the shadow is the light's, cut from it: the water under
+                    // the light takes none (else it showed twice there, the water's a little off the light's).
                     '    float walkerOnWater(vec3 world) {',
                     '        float shade = walkerShade(world);',
+                    '        if (shade <= 0.0) return 0.0;',
+                    '        if (walkerDisc.w > 0.5) shade *= smoothstep(walkerDisc.z * 0.85, walkerDisc.z * 1.02, distance(world.xz, walkerDisc.xy));',
                     '        if (shade <= 0.0 || walkerDeck.w < 0.5) return shade;',
                     '        vec3 up = world + walkerToLight * ((walkerDeck.y - world.y) / max(walkerToLight.y, 0.05));',
                     '        vec2 at = (up.xz - walkerDeckRegion.xy) * walkerDeckRegion.zw;',

@@ -253,6 +253,8 @@ async function boot() {
             stage?.walk?.walkFrom(x, z);
         },
     });
+    // (Flying as a hum, a trial: it flies from there.)
+    if (trialOn('hum')) document.querySelector('[data-reader-walk]')?.replaceChildren('fly from here');
     createSignList({
         list: byId('signs-list'),
         signs: signData.signs,
@@ -463,6 +465,8 @@ async function boot() {
                 const fragment = readable.find((candidate) => candidate.id === pointLabel.dataset.fragment);
                 if (fragment) open(fragment, null);
             });
+            // (And a thumb set down on it to steer, as a phone's thumb is, low on the screen, steers: walk.js.)
+            stage.walk.steersFrom(pointLabel);
         }
     }
     // If the card held focus (it has gone now), land it on the city's name.

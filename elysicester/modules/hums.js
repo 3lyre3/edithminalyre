@@ -55,8 +55,11 @@ const LIFE = 1.7;
 // The bird
 // =============================================================================
 
-/** One hummingbird, looking along +z: body, head and beak, and two wings whose tips flap (the "wing" attribute). */
-function birdGeometry() {
+/**
+ * One hummingbird, looking along +z: body, head and beak, and two wings whose tips flap (the "wing" attribute).
+ * (Also the hum you fly as: hum.js.)
+ */
+export function birdGeometry() {
     const solid = [
         pose(new ConeGeometry(0.05, 0.24, 6), { rx: -Math.PI / 2, z: -0.02 }),
         pose(new SphereGeometry(0.045, 6, 4), { z: 0.11, y: 0.012 }),
@@ -85,8 +88,8 @@ function birdGeometry() {
     return mergeGeometries([...solid, wings], false);
 }
 
-/** Bronze in the dusk, drawn like everything else; its wings beat in the vertex shader. */
-function birdMaterial(gradientMap, clock) {
+/** Bronze in the dusk, drawn like everything else; its wings beat in the vertex shader. (Also hum.js's.) */
+export function birdMaterial(gradientMap, clock) {
     const material = new MeshToonMaterial({
         gradientMap,
         vertexColors: true,
@@ -117,9 +120,10 @@ function birdMaterial(gradientMap, clock) {
 /**
  * The steam the hums drip: soft puffs, one set of points for every bird. Each
  * puff leaves its bird, rises and swells, and fades, then leaves it again from
- * wherever the bird has got to. Drawn only; it blocks and hides nothing.
+ * wherever the bird has got to. Drawn only; it blocks and hides nothing. (`scale`: how much bigger each puff is,
+ * for a bigger bird: hum.js.)
  */
-function createSteam(count) {
+export function createSteam(count, scale = 1) {
     const positions = new Float32Array(count * 3);
     const ages = new Float32Array(count);
     const geometry = new BufferGeometry();
@@ -138,7 +142,7 @@ function createSteam(count) {
             void main() {
                 vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
                 vAge = age;
-                float size = 0.06 + 0.2 * age;
+                float size = (0.06 + 0.2 * age) * ${scale.toFixed(2)};
                 gl_PointSize = clamp(size * projectionMatrix[1][1] * viewportHeight * 0.5 / -mvPosition.z, 1.0, 48.0);
                 gl_Position = projectionMatrix * mvPosition;
             }

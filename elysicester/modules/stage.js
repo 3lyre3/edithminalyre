@@ -197,7 +197,7 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
     const places = await buildPlaces(buckets, data.places, materials, pause, extras, reducedMotion);
     // The sun-dock's warmth on the water round it (the dock is a half-sun unfurled from the wall).
     const dock = data.places.places.find((place) => place.id === 'sun-dock');
-    if (dock) sea.warmAt(wallX(dock.position[2]) + 1.6, dock.position[2], 6.5);
+    if (dock) sea.warmAt(wallX(dock.position[2]) + 1.8, dock.position[2], 7.2);
     await pause();
     const meshes = buckets.build(materials, { turquoise: ['sway'], weed: ['sway'] });
     for (const mesh of meshes.values()) {
@@ -224,9 +224,12 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
     // Walking as the shadow (walk.js), for everyone (?walk=off leaves it out, and the shadow stays on its café
     // wall). The hollows' worker marks where the walls stand, at a body's height, for it to walk by.
     const walking = new URLSearchParams(window.location.search).get('walk') !== 'off';
-    const hollowMap = createHollows(meshes, { reducedMotion, walls: walking });
+    // (Flying as a hum, a trial, the worker marks the walls at the hum's height as well: walk.js, hum.js.)
+    const hollowMap = createHollows(meshes, { reducedMotion, walls: walking, flight: walking && trialOn('hum') });
     for (const key of HOLLOWED) hollows(materials[key], hollowMap);
-    const walk = walking ? createWalk({ light: KEY_DIRECTION, reducedMotion }) : null;
+    const walk = walking ? createWalk({ light: KEY_DIRECTION, reducedMotion, gradientMap: materials.gold.gradientMap }) : null;
+    // (The hum you fly as, drawn in the city from the first, so its bronze is compiled with the rest.)
+    if (walk?.bird) scene.add(walk.bird);
     if (walk) {
         for (const key of [...HOLLOWED, 'rock']) walkerShadow(materials[key], walk);
         walkerClears(materials.steel, walk);

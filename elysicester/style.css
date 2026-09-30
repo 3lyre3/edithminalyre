@@ -310,6 +310,8 @@ a:focus-visible {
 .point-label.is-near {
     pointer-events: auto;
     cursor: pointer;
+    /* A thumb set down on it may be steering (walk.js steersFrom): the page mustn't take the drag for a scroll. */
+    touch-action: none;
 }
 
 .point-label.is-near:hover {

@@ -56,13 +56,25 @@ import { alsoBeforeCompile } from './kit.js';
 /** About the camera's lens: open within this far, whole again from this far (world units; walk.js brings these in when it comes close). */
 export const NEAR_OPEN = 1.1;
 export const NEAR_FADE = 3.0;
-/** About each line from the camera to the shadow: open within this far of it, whole again from this far. */
+/**
+ * About each line from the camera to the shadow: open within this far of it, whole again from this far; narrowing
+ * as it nears what it's aimed at, to this and this there (so the walls beside the shadow, or the hum, stay standing:
+ * a wall that's there should look it, Elm found, stuck against ones that weren't).
+ */
 const SIGHT_OPEN = 0.95;
 export const SIGHT_FADE = 1.75;
+const SIGHT_OPEN_NEAR = 0.5;
+const SIGHT_FADE_NEAR = 1.0;
 /** How many lines to the shadow there may be (walk.js): its feet (and the one casting it), its middle, its tip, up a wall. */
 export const DUST_TARGETS = 4;
 /** Floors (facing up) at most this far above the floor the shadow's on never come apart (a step is at most 0.5). */
 const FLOOR_KEPT = 0.9;
+/**
+ * Nor does anything at all below this far above it: the foot of every wall stays, as a cut-away model's does, so
+ * it's seen where the walls stand; and a kerb, a step or a platform's side never opens into a hole with the water
+ * showing through it (Elm: "this juncture here at the gate is still very treacherous").
+ */
+const LOW_KEPT = 0.4;
 /** How wide the gilded band at an opening's edge is (in the opening's own measure, 0 to 1), and how gold. */
 const GILT_BAND = 0.1;
 const GILT = 0.75;
@@ -116,7 +128,9 @@ const DUST_GLSL = /* glsl */ `
                 float t = clamp(dot(fromLens, ab) / (reach * reach), 0.0, 1.0);
                 float off = distance(p, cameraPosition + ab * t);
                 float stop = 1.0 - target.w / reach;
-                dust = max(dust, (1.0 - smoothstep(${SIGHT_OPEN.toFixed(2)}, ${SIGHT_FADE.toFixed(2)}, off))
+                float open = mix(${SIGHT_OPEN.toFixed(2)}, ${SIGHT_OPEN_NEAR.toFixed(2)}, t);
+                float whole = mix(${SIGHT_FADE.toFixed(2)}, ${SIGHT_FADE_NEAR.toFixed(2)}, t);
+                dust = max(dust, (1.0 - smoothstep(open, whole, off))
                     * smoothstep(0.0, 0.04, t) * (1.0 - smoothstep(stop - 0.04, stop, t)));
             }
         }
@@ -131,10 +145,11 @@ const DUST_GLSL = /* glsl */ `
  */
 const DUST_EDGE_GLSL = /* glsl */ `
     bool dustFloor() {
-        // (Not walking, every floor stays. Walking, so does everything below the shadow's floor: the camera is always
-        // above it, so nothing down there can stand between it and the shadow: the jetty's end, a platform's sides.)
+        // (Not walking, every floor stays. Walking, so does everything below the shadow's floor, and a little above
+        // it: the camera is always above it, so nothing down there can stand between it and the shadow, and the foot
+        // of each wall shows where it stands: the jetty's end, a platform's sides, a step.)
         if (dustSight.w < 0.5) return vDustUp > 0.6;
-        return vDustWorld.y < dustSight.y - 0.05 || (vDustUp > 0.6 && vDustWorld.y < dustSight.y + ${FLOOR_KEPT.toFixed(2)});
+        return vDustWorld.y < dustSight.y + ${LOW_KEPT.toFixed(2)} || (vDustUp > 0.6 && vDustWorld.y < dustSight.y + ${FLOOR_KEPT.toFixed(2)});
     }
     float dustEdge(vec2 cell) { return 0.42 + 0.03 * dustGrain(cell); }
 `;
