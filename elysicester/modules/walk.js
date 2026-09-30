@@ -223,8 +223,8 @@ const HUM_PHI_FAR = 0.85;
  * lower): so it lies close beneath the hum, as a bird's own shadow does, the whole of it in the view with the hum.
  */
 const HUM_SUN = (45 * Math.PI) / 180;
-/** What taking it is called: the hum's, or the shadow's. */
-const TAKE_WORDS = HUM ? 'fly as a hum' : 'walk as the shadow';
+/** What taking it is called: the hum's (Elm: "i think just "fly" would work"), or the shadow's. */
+const TAKE_WORDS = HUM ? 'fly' : 'walk as the shadow';
 
 /**
  * The walker's shadow map: its size in texels, and how much of the light's view it covers (world units). (The
