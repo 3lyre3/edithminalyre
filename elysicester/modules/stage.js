@@ -57,7 +57,7 @@ const SHADOW_REACH = 40;
  * ground, its streets and plazas and platforms. A low dusk light across the walls and roofs themselves
  * striped them with the shadow map's own grain; across the paving it lays the long shadows cleanly.
  */
-const CASTS_SHADOW = new Set(['gold', 'bricking', 'brick', 'stone', 'rock', 'steel', 'copper', 'arch', 'turquoise', 'amethyst']);
+const CASTS_SHADOW = new Set(['gold', 'bricking', 'brick', 'stone', 'rock', 'steel', 'copper', 'arch', 'turquoise', 'amethyst', 'bridge']);
 const TAKES_SHADOW = new Set(['dimGold']);
 /**
  * A safety net for slower phones: if frames run slower than this (seconds) for a sustained stretch,
@@ -193,6 +193,18 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         scene.add(mesh);
     }
     for (const extra of places.extras) scene.add(extra);
+    // The golden bridges' dust, drawn over them where they come apart (places.js): only while walking, or while
+    // the camera is among them, as it's nowhere else.
+    let bridgeDust = null;
+    let bridgeReach = null;
+    if (places.bridgeDust && meshes.get('bridge')) {
+        const bridgeGeometry = meshes.get('bridge').geometry;
+        bridgeGeometry.computeBoundingBox();
+        bridgeReach = bridgeGeometry.boundingBox.clone().expandByScalar(3.2);
+        bridgeDust = places.bridgeDust(bridgeGeometry);
+        bridgeDust.visible = false;
+        scene.add(bridgeDust);
+    }
     // Where things stand close, the dark gathers: a worker finds where, from the city as built, while the
     // flight plays (hollows.js); the materials learn to read its map now, before they're compiled.
     // Walking as the shadow (walk.js), for everyone (?walk=off leaves it out, and the shadow stays on its café
@@ -274,6 +286,7 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         wallShadow: scene.getObjectByName('cafe-shadow'),
         pierEnd: places.pierEnd,
         floors: places.floors,
+        bridgeSight: places.bridgeSight,
         scene,
         controls: document.querySelector('.controls'),
     });
@@ -331,6 +344,7 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
             shadowsDrawn = true;
         }
         walk?.render(renderer, elapsed);
+        if (bridgeDust) bridgeDust.visible = Boolean(walk?.state.walking) || bridgeReach.containsPoint(camera.position);
         ink.render(scene, camera, elapsed, rig.home.radius / Math.max(rig.now.radius, 1e-3));
 
         const { calls, triangles, points, lines } = renderer.info.render;
@@ -384,6 +398,6 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         },
     };
 
-    if (debug) Object.assign(window.elysicesterDebug ??= {}, { info: () => stage.info(), rig, stage, solids, houses: places.houses, pixelRatio: () => renderer.getPixelRatio(), hollows: hollowMap, walk });
+    if (debug) Object.assign(window.elysicesterDebug ??= {}, { info: () => stage.info(), rig, stage, solids, houses: places.houses, bridges: places.bridges, pixelRatio: () => renderer.getPixelRatio(), hollows: hollowMap, walk });
     return stage;
 }

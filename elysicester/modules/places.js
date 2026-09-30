@@ -120,6 +120,9 @@ const GATE_Z = -3.2;
 const PLATFORM_NORTH = -12.16;
 const PLATFORM_NOTCH_Z = -11.7;
 const PLATFORM_NOTCH_X = 9.4;
+/** The quay's seaward edge (the cafés' platform, from end to end), and where the steps up to the balcony begin. */
+const QUAY_EAST = 14.6;
+const QUAY_STEPS_WEST = 12.6;
 /** How far a building's edges are cut back to catch the light (a hand's breadth, at the city's scale). */
 const BEVEL = 0.07;
 /** No house stands nearer the Steel Garden's middle than this (its disc is 4.3 across the radius). */
@@ -634,9 +637,9 @@ function buildHalls(buckets, byId, zones, standing) {
         const style = styles[Math.floor(random() * styles.length)];
         const tower = style !== 'dome' && random() < 0.3;
         addHall(buckets, random, x, z, { width, depth, height, style, turn, tower });
-        halls.push({ x, z, reach });
+        halls.push({ x, z, reach, width, depth, height, turn, base: groundY(x, z) - 0.05 });
     }
-    return halls.length;
+    return halls;
 }
 
 function buildHouses(buckets, random, byId, { grand = false } = {}) {
@@ -684,7 +687,10 @@ function buildHouses(buckets, random, byId, { grand = false } = {}) {
         if (built) standing.push([x, z]);
         placed.push([x, z]);
     }
-    if (grand) return { built: standing.length, cleared, streets: 0, infill: 0, halls: buildHalls(buckets, byId, zones, standing) };
+    if (grand) {
+        const halls = buildHalls(buckets, byId, zones, standing);
+        return { built: standing.length, cleared, streets: 0, infill: 0, halls: halls.length, hallSpecs: halls };
+    }
 
     // As many again as the streets cleared, as far as there's room for them between the streets (there is for
     // most: fifteen of twenty-two), from a stream of their own, so nothing else in the city moves.
@@ -1005,6 +1011,150 @@ function weatherCafes(material, worn) {
 }
 
 /**
+ * The cafés' platform dressed as a quay (Elm: "something about this corner… the blocky edge of the dock… feels
+ * very underbaked"): along its seaward edges a coping of bevelled stones, jointed, standing a little proud of
+ * the paving and overhanging the face; on the face, pilasters, and timber fenders between them; at the water, a
+ * dark wet band with weed hanging in it and drifting out from it; iron bollards along the edge, a rope looped
+ * between two by the jetty, a lamp at the far corner; and there, by the sun-dock, a flight of steps going down
+ * into the water. A stream of its own.
+ * @param {object} quay - the quay's north and south ends (z), and the jetty's line (z)
+ */
+function buildQuay(buckets, { north, south, jetty }) {
+    const random = createRandom(9091);
+    const east = QUAY_EAST;
+    const COPING = 0xc9a25e;
+    const PILASTER = 0x9b7744;
+    const WET = 0x3a3322;
+    const ROPE = 0x5a4030;
+    // The steps down to the water: at the south end, near its east corner (clear of the sun-dock's light).
+    const stairs = { x0: east - 1.55, x1: east - 0.45 };
+    const onJetty = (zz) => Math.abs(zz - jetty) < 1.05;
+    // The seaward edges, as runs of coping: the east face its whole length, the south face from the wall to the
+    // corner (but for the stairs), the north face from the balcony's steps to the corner.
+    const runs = [
+        { from: new Vector3(east, 0, north), to: new Vector3(east, 0, south), out: new Vector3(1, 0, 0) },
+        { from: new Vector3(wallX(south) + 0.1, 0, south), to: new Vector3(stairs.x0, 0, south), out: new Vector3(0, 0, 1) },
+        { from: new Vector3(stairs.x1, 0, south), to: new Vector3(east, 0, south), out: new Vector3(0, 0, 1) },
+        { from: new Vector3(QUAY_STEPS_WEST, 0, north), to: new Vector3(east, 0, north), out: new Vector3(0, 0, -1) },
+    ];
+    for (const { from, to, out } of runs) {
+        const length = from.distanceTo(to);
+        const along = new Vector3().subVectors(to, from).normalize();
+        const ry = Math.atan2(along.x, along.z);
+        const stones = Math.max(1, Math.round(length / 0.92));
+        const each = length / stones;
+        for (let stone = 0; stone < stones; stone += 1) {
+            const mid = from.clone().addScaledVector(along, each * (stone + 0.5));
+            if (out.x > 0 && onJetty(mid.z)) continue;
+            const lift = random.range(-0.012, 0.012);
+            const shade = new Color(COPING).offsetHSL(random.range(-0.01, 0.01), random.range(-0.05, 0.03), random.range(-0.05, 0.04));
+            // (The run's direction as the stone's length; it overhangs the face a little, a hair short of its
+            // neighbours, so the joints between stones show.)
+            // (0.36 across, overhanging the face by 0.08: its middle is 0.1 in from the edge.)
+            buckets.add('dimGold', bevelBox(0.36, 0.13, each - 0.035, {
+                x: mid.x - out.x * 0.1, y: 0.3 + 0.045 + lift, z: mid.z - out.z * 0.1, ry,
+            }, shade, 0.035));
+        }
+        // Pilasters down the face, now and then, and the fenders between them (timber, worn dark).
+        const bays = Math.max(1, Math.round(length / 1.9));
+        for (let bay = 0; bay <= bays; bay += 1) {
+            const at = from.clone().addScaledVector(along, (length * bay) / bays);
+            if (out.x > 0 && onJetty(at.z)) continue;
+            buckets.add('dimGold', box(0.28, 1.22, 0.1, { x: at.x + out.x * 0.05, y: -0.39, z: at.z + out.z * 0.05, ry }, PILASTER));
+            if (bay < bays) {
+                const fender = from.clone().addScaledVector(along, (length * (bay + 0.5)) / bays);
+                if (!(out.x > 0 && onJetty(fender.z))) {
+                    buckets.add('dimGold', box(0.13, 1.25, 0.12, { x: fender.x + out.x * 0.07, y: -0.4, z: fender.z + out.z * 0.07, ry }, PAVE_DARK), { passable: true });
+                }
+            }
+        }
+        // The wet band at the waterline, and in front of the pilasters.
+        const bands = Math.max(1, Math.ceil(length / 2.4));
+        for (let band = 0; band < bands; band += 1) {
+            const mid = from.clone().addScaledVector(along, (length * (band + 0.5)) / bands);
+            if (out.x > 0 && onJetty(mid.z)) continue;
+            buckets.add('dimGold', box(0.02, 0.3, length / bands + 0.01, { x: mid.x + out.x * 0.011, y: SEA_LEVEL + 0.11, z: mid.z + out.z * 0.011, ry }, WET), { passable: true });
+        }
+    }
+    // The steps down into the water, their treads worn, and an iron rail beside them.
+    const rise = 0.2;
+    for (let step = 0; step < 4; step += 1) {
+        const top = 0.3 - rise * (step + 1) + 0.01;
+        const zz = south + 0.35 * (step + 0.5);
+        buckets.add('dimGold', box(stairs.x1 - stairs.x0, top + 1.0, 0.36, { x: (stairs.x0 + stairs.x1) / 2, y: (top - 1.0) / 2, z: zz }, step % 2 ? PAVE : new Color(PAVE).multiplyScalar(0.94)));
+    }
+    for (const x of [stairs.x0 - 0.06, stairs.x1 + 0.06]) {
+        buckets.add('dimGold', box(0.12, 1.36, 1.42, { x, y: -0.32, z: south + 0.7 }, PILASTER));
+    }
+    // The rail runs down beside the steps, a hand's height above them, its posts standing on the treads.
+    const railX = stairs.x1 - 0.1;
+    const treadAt = (zz) => 0.3 - rise * Math.min(4, Math.max(0, Math.ceil((zz - south) / 0.35))) + 0.01;
+    const railFrom = new Vector3(railX, 0.3 + 0.8, south - 0.1);
+    const railTo = new Vector3(railX, 0.3 - rise * 4 + 0.8, south + 1.3);
+    buckets.add('steel', tube([railFrom, railTo], 0.03, STEEL_DARK, 6, 4), { passable: true });
+    for (const t of [0.04, 0.5, 0.96]) {
+        const at = railFrom.clone().lerp(railTo, t);
+        const foot = treadAt(at.z);
+        buckets.add('steel', cylinder(0.025, 0.025, at.y - foot, 4, { x: at.x, y: (at.y + foot) / 2, z: at.z }, STEEL_DARK), { passable: true });
+    }
+    // Iron bollards along the east edge, a rope looped between the two by the jetty, and a lamp at the corner.
+    const bollards = [];
+    for (let zz = north + 1.3; zz < south - 0.6; zz += 2.6) {
+        const at = onJetty(zz) ? (zz < jetty ? jetty - 1.35 : jetty + 1.35) : zz;
+        if (bollards.some((other) => Math.abs(other - at) < 1.2)) continue;
+        bollards.push(at);
+        const x = east - 0.28;
+        buckets.add('steel', cylinder(0.1, 0.12, 0.36, 8, { x, y: 0.3 + 0.18, z: at }, STEEL_DARK));
+        buckets.add('steel', cylinder(0.15, 0.13, 0.07, 8, { x, y: 0.3 + 0.39, z: at }, STEEL_DARK));
+        buckets.add('steel', paint(pose(new SphereGeometry(0.1, 8, 4, 0, Math.PI * 2, 0, Math.PI / 2), { x, y: 0.3 + 0.42, z: at }), STEEL_DARK));
+    }
+    const nearJetty = bollards.filter((at) => Math.abs(at - jetty) < 1.6).sort((p, q) => p - q);
+    if (nearJetty.length >= 2) {
+        const [a, b] = nearJetty;
+        const x = east - 0.28;
+        const sag = [new Vector3(x, 0.66, a), new Vector3(x + 0.12, 0.42, (a + b) / 2), new Vector3(x, 0.66, b)];
+        buckets.add('steel', tube(sag, 0.028, ROPE, 16, 4), { passable: true });
+    }
+    const lampAt = new Vector3(east - 0.35, 0, south - 0.35);
+    buckets.add('steel', cylinder(0.05, 0.06, 1.7, 5, { x: lampAt.x, y: 0.3 + 0.85, z: lampAt.z }, STEEL_DARK));
+    buckets.add('glow', ball(0.16, { x: lampAt.x, y: 0.3 + 1.78, z: lampAt.z }, LAMP, 8, 6));
+    // Weed hanging at the waterline and drifting out from the face.
+    for (let cluster = 0; cluster < 11; cluster += 1) {
+        const run = runs[cluster % 3 === 2 ? 1 : 0];
+        const t = random.range(0.06, 0.94);
+        const at = run.from.clone().lerp(run.to, t);
+        if (run.out.x > 0 && onJetty(at.z)) continue;
+        const color = WEED[Math.floor(random() * WEED.length)];
+        for (let lump = 0; lump < 2; lump += 1) {
+            const radius = random.range(0.07, 0.16);
+            const clump = pose(new IcosahedronGeometry(radius, 0), {
+                x: at.x + run.out.x * 0.05 + random.range(-0.2, 0.2) * Math.abs(run.out.z), y: SEA_LEVEL + random.range(0.02, 0.14),
+                z: at.z + run.out.z * 0.05 + random.range(-0.2, 0.2) * Math.abs(run.out.x), sy: 0.6, ry: random() * Math.PI,
+            });
+            buckets.add('weed', holdsFast(paint(clump, color)), { passable: true });
+        }
+        const strands = 3 + Math.floor(random() * 4);
+        for (let strand = 0; strand < strands; strand += 1) {
+            const reach = random.range(0.4, 1.2);
+            const angle = random.range(-0.9, 0.9);
+            const wave = random.range(2, 4.5);
+            const strip = new PlaneGeometry(0.05, reach, 1, 8);
+            strip.rotateX(-Math.PI / 2);
+            strip.translate(0, 0, reach / 2);
+            const position = strip.attributes.position;
+            for (let index = 0; index < position.count; index += 1) {
+                const alongStrip = position.getZ(index) / reach;
+                position.setX(index, position.getX(index) + Math.sin(alongStrip * wave * Math.PI) * 0.06 * alongStrip);
+            }
+            swaying(strip, (sx, sy, sz) => sz / reach, 0.9);
+            const facing = Math.atan2(run.out.x, run.out.z);
+            pose(strip, { x: at.x + run.out.x * 0.04, y: SEA_LEVEL + 0.04, z: at.z + run.out.z * 0.04 + random.range(-0.25, 0.25) * Math.abs(run.out.x), ry: facing + angle });
+            buckets.add('weed', paintBy(strip.toNonIndexed(), (px, py, pz, out) => out.set(color).lerp(WEED_TIP, 0.3)), { passable: true });
+        }
+    }
+}
+
+/**
  * Three brick-red, steepled cafés at the head of the jetty, facing out like
  * actors: two to one side and one to the other, parted by an aisle down the
  * stage's middle, so the way from the jetty to the gate in the wall runs
@@ -1017,17 +1167,19 @@ function buildCafes({ buckets, place, mounts, extras, animated, wanted, material
     // broader and longer, so the two northern cafés stand free with a walk all round each (a playtester's
     // shadow kept being caught in the narrow ways between them, the wall and the water); and there, by the
     // wall, it stops short of the sea-wall's balcony overhead, where the steps up to it begin (buildSeaWall).
-    const segments = [[PLATFORM_NOTCH_Z, z - 4.4, 6.2], [z - 4.4, z - 1.0, 5.2], [z - 1.0, z + 2.4, 5.2], [z + 2.4, z + 5.8, 5.2]];
-    let platformEast = 0;
-    for (const [z0, z1, width] of segments) {
+    // (Its seaward edge runs in one straight line, the quay's, from end to end: Elm found its steps in and out
+    // "blocky", and the quay itself underbaked. buildQuay dresses it.)
+    const segments = [[PLATFORM_NOTCH_Z, z - 4.4], [z - 4.4, z - 1.0], [z - 1.0, z + 2.4], [z + 2.4, z + 5.8]];
+    for (const [z0, z1] of segments) {
         const zm = (z0 + z1) / 2;
-        buckets.add('dimGold', box(width, 1.3, z1 - z0 + 0.12, { x: wallX(zm) + width / 2 - 0.1, y: -0.35, z: zm }, PAVE));
-        if (!platformEast) platformEast = wallX(zm) + width - 0.1;
+        const west = wallX(zm) - 0.1;
+        buckets.add('dimGold', box(QUAY_EAST - west, 1.3, z1 - z0 + 0.12, { x: (west + QUAY_EAST) / 2, y: -0.35, z: zm }, PAVE));
     }
     const northZ0 = PLATFORM_NORTH + 0.06;
-    buckets.add('dimGold', box(platformEast - PLATFORM_NOTCH_X, 1.3, PLATFORM_NOTCH_Z - northZ0 + 0.12, {
-        x: (platformEast + PLATFORM_NOTCH_X) / 2, y: -0.35, z: (northZ0 + PLATFORM_NOTCH_Z) / 2,
+    buckets.add('dimGold', box(QUAY_EAST - PLATFORM_NOTCH_X, 1.3, PLATFORM_NOTCH_Z - northZ0 + 0.12, {
+        x: (QUAY_EAST + PLATFORM_NOTCH_X) / 2, y: -0.35, z: (northZ0 + PLATFORM_NOTCH_Z) / 2,
     }, PAVE));
+    buildQuay(buckets, { north: PLATFORM_NORTH, south: z + 5.8 + 0.06, jetty: z });
 
     const jettyStart = wallX(z) + 3.6;
     const jettyEnd = 23.5;
@@ -2266,6 +2418,412 @@ function buildChute(buckets, spires) {
 }
 
 // =============================================================================
+// The golden bridges
+// =============================================================================
+
+/** The deck: how wide, how thick, and how high its rails stand. */
+const BRIDGE_WIDE = 0.86;
+const BRIDGE_DECK = 0.12;
+const BRIDGE_RAIL = 0.62;
+/** How high a bridge's underside keeps over the ground beneath it, at the least (the shadow stands 1.35 tall). */
+const BRIDGE_CLEAR = 2.6;
+/** The shortest and longest span, how many bridges at most, and how many to one building (a tree may take more). */
+const BRIDGE_SPAN = [1.8, 9.5];
+const BRIDGES_MOST = 22;
+const BRIDGES_EACH = 2;
+/** How far a bridge may climb for every unit it spans, and how square to a face it must leave it. */
+const BRIDGE_SLOPE = 0.16;
+const BRIDGE_SQUARE = Math.cos(MathUtils.degToRad(26));
+/** From this span a bridge is arched beneath; from this one, roofed. */
+const BRIDGE_ARCHED = 3.2;
+const BRIDGE_ROOFED = 6.4;
+
+/**
+ * Where a bridge dissolves into gold dust: within reach of the camera, and about the line from the camera to the
+ * walking shadow (bridgeSight: the shadow's middle, and 1 while walking), so a bridge never stands between the
+ * two. What's left there glitters. (The dust is a pixel's grain, turning over a few times a second.)
+ */
+const BRIDGE_DUST_GLSL = /* glsl */ `
+    uniform vec4 bridgeSight;
+    uniform float bridgeTime;
+    varying vec3 vBridgeWorld;
+    float bridgeGrain(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
+    float bridgeDust() {
+        float near = 1.0 - smoothstep(0.9, 2.8, distance(vBridgeWorld, cameraPosition));
+        float sight = 0.0;
+        if (bridgeSight.w > 0.5) {
+            vec3 ab = bridgeSight.xyz - cameraPosition;
+            float t = clamp(dot(vBridgeWorld - cameraPosition, ab) / max(dot(ab, ab), 1e-4), 0.0, 1.0);
+            float off = distance(vBridgeWorld, cameraPosition + ab * t);
+            sight = (1.0 - smoothstep(0.6, 1.35, off)) * smoothstep(0.0, 0.05, t) * (1.0 - smoothstep(0.9, 0.97, t));
+        }
+        return max(near, sight);
+    }
+`;
+
+/** A bar of rectangular section swept along a path (at(t), t from 0 to 1): a deck, a roof's slope. */
+function sweptBar(at, segments, width, thickness, color, tilt = 0) {
+    const up = new Vector3(0, 1, 0);
+    const rings = [];
+    for (let index = 0; index <= segments; index += 1) {
+        const t = index / segments;
+        const point = at(t);
+        const tangent = at(Math.min(1, t + 0.002)).sub(at(Math.max(0, t - 0.002))).normalize();
+        const side = new Vector3().crossVectors(tangent, up).normalize();
+        const lift = new Vector3().crossVectors(side, tangent).normalize();
+        if (tilt) {
+            side.applyAxisAngle(tangent, tilt);
+            lift.applyAxisAngle(tangent, tilt);
+        }
+        const half = side.multiplyScalar(width / 2);
+        const down = lift.multiplyScalar(-thickness);
+        rings.push([
+            point.clone().add(half), point.clone().sub(half),
+            point.clone().sub(half).add(down), point.clone().add(half).add(down),
+        ]);
+    }
+    const positions = [];
+    const quad = (a, b, c, d) => positions.push(...a.toArray(), ...b.toArray(), ...c.toArray(), ...a.toArray(), ...c.toArray(), ...d.toArray());
+    for (let index = 0; index < segments; index += 1) {
+        const [a0, b0, c0, d0] = rings[index];
+        const [a1, b1, c1, d1] = rings[index + 1];
+        quad(a0, a1, b1, b0);
+        quad(b0, b1, c1, c0);
+        quad(c0, c1, d1, d0);
+        quad(d0, d1, a1, a0);
+    }
+    const [first, last] = [rings[0], rings[segments]];
+    quad(first[0], first[1], first[2], first[3]);
+    quad(last[3], last[2], last[1], last[0]);
+    const geometry = new BufferGeometry();
+    geometry.setAttribute('position', new Float32BufferAttribute(positions, 3));
+    geometry.computeVertexNormals();
+    return paint(geometry, color);
+}
+
+/**
+ * One golden bridge, from a to b (each { point: its deck's top at that end, door: the face's outward normal where
+ * it leaves a hall, or ring: the tree it leaves, or wall: true }), in the style its span asks for.
+ */
+function goldenBridge(buckets, a, b, random) {
+    const span = Math.hypot(b.point.x - a.point.x, b.point.z - a.point.z);
+    const way = new Vector3(b.point.x - a.point.x, 0, b.point.z - a.point.z).normalize();
+    const side = new Vector3(-way.z, 0, way.x);
+    const camber = Math.min(0.42, span * 0.055);
+    const deckAt = (t) => new Vector3().lerpVectors(a.point, b.point, t).add(new Vector3(0, camber * Math.sin(Math.PI * t), 0));
+    const segments = Math.max(4, Math.ceil(span / 0.45));
+    const gold = GOLDS[Math.floor(random() * GOLDS.length)];
+    const pieces = [];
+    const glows = [];
+    pieces.push(sweptBar(deckAt, segments, BRIDGE_WIDE, BRIDGE_DECK, gold));
+    // A kerb along each edge of the deck, the balusters, and a rail along their tops.
+    for (const edge of [-1, 1]) {
+        const offset = side.clone().multiplyScalar(edge * (BRIDGE_WIDE / 2 - 0.05));
+        pieces.push(sweptBar((t) => deckAt(t).add(offset).add(new Vector3(0, 0.06, 0)), segments, 0.08, 0.1, GOLDS[2]));
+        const rail = [];
+        for (let index = 0; index <= segments; index += 1) rail.push(deckAt(index / segments).add(offset).add(new Vector3(0, BRIDGE_RAIL, 0)));
+        pieces.push(tube(rail, 0.035, GOLDS[0], segments, 4));
+        const posts = Math.max(2, Math.round(span / 0.58));
+        for (let post = 1; post < posts; post += 1) {
+            const foot = deckAt(post / posts).add(offset);
+            pieces.push(box(0.045, BRIDGE_RAIL, 0.045, { x: foot.x, y: foot.y + BRIDGE_RAIL / 2, z: foot.z }, GOLDS[2]));
+        }
+        // A lantern at each end, on a post a little above the rail.
+        for (const t of [0.06, 0.94]) {
+            const foot = deckAt(t).add(offset);
+            pieces.push(box(0.06, BRIDGE_RAIL + 0.3, 0.06, { x: foot.x, y: foot.y + (BRIDGE_RAIL + 0.3) / 2, z: foot.z }, GOLDS[3]));
+            glows.push(ball(0.08, { x: foot.x, y: foot.y + BRIDGE_RAIL + 0.36, z: foot.z }, LAMP, 6, 4));
+        }
+    }
+    // Arched beneath: an arch springing from below each end, rising to meet the deck at its middle, and slender
+    // posts between it and the deck.
+    if (span >= BRIDGE_ARCHED) {
+        const springs = 0.85 + Math.min(0.5, span * 0.04);
+        const archAt = (t) => deckAt(t).add(new Vector3(0, -(BRIDGE_DECK + 0.04 + springs * (1 - Math.sin(Math.PI * t))), 0));
+        for (const edge of [-1, 1]) {
+            const offset = side.clone().multiplyScalar(edge * (BRIDGE_WIDE / 2 - 0.14));
+            const arch = [];
+            for (let index = 0; index <= segments; index += 1) arch.push(archAt(index / segments).add(offset));
+            pieces.push(tube(arch, 0.07, GOLDS[1], segments, 4));
+            for (const t of [0.14, 0.27, 0.73, 0.86]) {
+                const low = archAt(t).add(offset);
+                const high = deckAt(t).add(offset).add(new Vector3(0, -BRIDGE_DECK, 0));
+                pieces.push(rod(low, high, 0.04, GOLDS[2]));
+            }
+        }
+    }
+    // Roofed, as a gallery: slim columns along both sides, and a low gabled roof following the deck's rise.
+    if (span >= BRIDGE_ROOFED) {
+        const columns = Math.max(3, Math.round(span / 1.35));
+        for (const edge of [-1, 1]) {
+            const offset = side.clone().multiplyScalar(edge * (BRIDGE_WIDE / 2 - 0.04));
+            for (let column = 0; column <= columns; column += 1) {
+                const foot = deckAt(column / columns).add(offset);
+                pieces.push(box(0.06, 1.45, 0.06, { x: foot.x, y: foot.y + 0.72, z: foot.z }, GOLDS[3]));
+            }
+        }
+        for (const edge of [-1, 1]) {
+            const slope = (t) => deckAt(t).add(new Vector3(0, 1.62, 0)).add(side.clone().multiplyScalar(edge * 0.26));
+            pieces.push(sweptBar(slope, segments, 0.62, 0.05, GOLD_ROOFS[Math.floor(random() * GOLD_ROOFS.length)], edge * 0.42));
+        }
+        glows.push(ball(0.1, { x: deckAt(0.5).x, y: deckAt(0.5).y + 1.3, z: deckAt(0.5).z }, LAMP, 6, 4));
+    }
+    // Where it leaves a hall, an arched door in the face; round a tree, a collar; on the wall, a landing.
+    for (const end of [a, b]) {
+        if (end.door) {
+            const out = end.door;
+            const ry = Math.atan2(out.x, out.z);
+            const at = end.point.clone().addScaledVector(out, 0.03);
+            const lit = random() < 0.45;
+            // (The door's round top: a half-disc stood upright in the face.)
+            const cap = new CylinderGeometry(0.34, 0.34, 0.04, 12, 1, false, 0, Math.PI);
+            cap.rotateX(Math.PI / 2);
+            cap.rotateZ(Math.PI / 2);
+            const opening = [box(0.68, 1.05, 0.04, { y: 0.52 }, lit ? WINDOW_LOW : SHADOW), paint(pose(cap, { y: 1.05 }), lit ? WINDOW_LOW : SHADOW)];
+            for (const piece of frame(opening, { x: at.x, y: at.y, z: at.z, ry })) (lit ? glows : pieces).push(piece);
+            const arch = paint(pose(new TorusGeometry(0.4, 0.05, 4, 12, Math.PI), { y: 1.05 }), GOLDS[3]);
+            pieces.push(...frame([arch, box(0.08, 1.05, 0.08, { x: -0.4, y: 0.52 }, GOLDS[3]), box(0.08, 1.05, 0.08, { x: 0.4, y: 0.52 }, GOLDS[3])], { x: at.x, y: at.y, z: at.z + 0, ry }));
+        } else if (end.ring) {
+            const ring = end.ring;
+            pieces.push(paint(pose(new TorusGeometry(ring.girth + 0.16, 0.09, 5, 20), { x: ring.x, y: end.point.y - 0.05, z: ring.z, rx: Math.PI / 2 }), GOLDS[2]));
+        } else if (end.wall) {
+            pieces.push(box(1.0, 0.1, 1.05, { x: end.point.x + 0.35, y: end.point.y - 0.05, z: end.point.z, ry: Math.atan2(way.x, way.z) }, GOLDS[1]));
+        }
+    }
+    for (const piece of pieces) buckets.add('bridge', piece);
+    for (const piece of glows) buckets.add('glow', piece);
+}
+
+/**
+ * Golden bridges between the city's buildings (Elm: "more and more thoroughly designed golden bridges between
+ * every type of building, just high enough the shadow can walk under them, and maybe they can have a sort of
+ * dusting shimmering see through effect if the camera has to go through them"): hall to hall, hall to one of the
+ * great golden trees, hall to the top of the sea-wall. Each leaves a hall by an arched door at one of its drawn
+ * storey lines, and keeps high enough over the street for the shadow to walk beneath. Short ones are footbridges;
+ * middling ones are arched beneath, with slender posts between the arch and the deck; long ones are roofed
+ * galleries; each has its balusters and a lantern at either end. They're their own material, which neither the
+ * walker's walls nor the camera's solids count: where the camera, or the line from it to the walking shadow,
+ * passes through one, it comes apart into glittering gold dust. (?bridges=off leaves them out, to compare.)
+ * A stream of its own. Returns the uniforms the dust needs, for the walk to keep the sight line in.
+ */
+function buildGoldenBridges(buckets, materials, halls, trees, byId) {
+    if (!halls?.length || new URLSearchParams(globalThis.location?.search ?? '').get('bridges') === 'off') return null;
+    const random = createRandom(6007);
+    // The ends a bridge may leave from, building by building.
+    const buildings = [];
+    for (const hall of halls) {
+        const c = Math.cos(hall.turn);
+        const s = Math.sin(hall.turn);
+        const xAxis = new Vector3(c, 0, -s);
+        const zAxis = new Vector3(s, 0, c);
+        const lines = [];
+        for (let y = 0.45 + HALL_STOREY + 0.3 + HALL_STOREY; y < hall.height - 0.6; y += HALL_STOREY) lines.push(hall.base + y);
+        const faces = [[zAxis, hall.depth / 2, hall.width], [zAxis.clone().negate(), hall.depth / 2, hall.width], [xAxis, hall.width / 2, hall.depth], [xAxis.clone().negate(), hall.width / 2, hall.depth]]
+            .map(([normal, out, across]) => ({ centre: new Vector3(hall.x, 0, hall.z).addScaledVector(normal, out + 0.02), normal, along: new Vector3(-normal.z, 0, normal.x), half: across / 2 }));
+        buildings.push({ kind: 'hall', hall, faces, lines, most: BRIDGES_EACH, used: 0 });
+    }
+    for (const tree of trees.filter((spire) => !spire.leans)) {
+        const lines = [];
+        for (let y = 3.9; y < tree.height * 0.55; y += 0.75) lines.push(tree.base + y);
+        buildings.push({ kind: 'tree', tree, lines, most: 3, used: 0 });
+    }
+    const [north, south] = wallEnds();
+    const wallSpots = [];
+    for (let z = north + 2; z < south - 2; z += 2.2) {
+        if (Math.abs(z - GATE_Z) < 2.6) continue;
+        wallSpots.push(z);
+    }
+    buildings.push({ kind: 'wall', spots: wallSpots, lines: [3.1], most: 3, used: 0 });
+    // The places that keep their own sky (the flags' lines, the garden, the glass station, the bridgework's middle).
+    const keepClear = [['flags', 4.5], ['steel-garden', 4.0], ['gas-station', 3.5], ['bridge', 3.0]]
+        .map(([id, room]) => ({ at: byId.get(id)?.position, room }))
+        .filter(({ at }) => at);
+
+    /** Where on a building a bridge toward `toward` (x, z) would leave it: { point (x, z), door | ring | wall } or null. */
+    const leave = (building, toward) => {
+        if (building.kind === 'hall') {
+            let best = null;
+            for (const face of building.faces) {
+                const reach = Math.max(0, face.half - 0.75);
+                const along = MathUtils.clamp(new Vector3().subVectors(toward, face.centre).dot(face.along), -reach, reach);
+                const point = face.centre.clone().addScaledVector(face.along, along);
+                const out = new Vector3().subVectors(toward, point).setY(0).normalize();
+                const square = out.dot(face.normal);
+                if (square >= BRIDGE_SQUARE && (!best || square > best.square)) best = { point, door: face.normal, square };
+            }
+            return best;
+        }
+        if (building.kind === 'tree') {
+            const { tree } = building;
+            const out = new Vector3(toward.x - tree.x, 0, toward.z - tree.z).normalize();
+            return { point: new Vector3(tree.x, 0, tree.z).addScaledVector(out, tree.girth(0.3) + 0.12), ring: { x: tree.x, z: tree.z, girth: tree.girth(0.3) } };
+        }
+        let best = null;
+        for (const z of building.spots) {
+            const point = new Vector3(wallX(z) - 1.3, 0, z);
+            const out = new Vector3().subVectors(toward, point).setY(0).normalize();
+            const square = -out.x;
+            if (square >= BRIDGE_SQUARE && (!best || point.distanceTo(toward) < best.point.distanceTo(toward))) best = { point, wall: true };
+        }
+        return best;
+    };
+    const centreOf = (building) => (building.kind === 'hall' ? new Vector3(building.hall.x, 0, building.hall.z) : building.kind === 'tree' ? new Vector3(building.tree.x, 0, building.tree.z) : null);
+    /** Whether a point at height y stands inside a hall (other than those given) or a tree's trunk. */
+    const inside = (x, y, z, skip) => {
+        for (const other of buildings) {
+            if (skip.includes(other)) continue;
+            if (other.kind === 'hall') {
+                const { hall } = other;
+                const dx = x - hall.x;
+                const dz = z - hall.z;
+                const u = dx * Math.cos(hall.turn) - dz * Math.sin(hall.turn);
+                const v = dx * Math.sin(hall.turn) + dz * Math.cos(hall.turn);
+                if (Math.abs(u) < hall.width / 2 + 0.5 && Math.abs(v) < hall.depth / 2 + 0.5 && y < hall.base + hall.height + 3.5) return true;
+            } else if (other.kind === 'tree') {
+                const { tree } = other;
+                if (Math.hypot(x - tree.x, z - tree.z) < tree.girth(0.3) + 0.7 && y < tree.base + tree.height) return true;
+            }
+        }
+        return false;
+    };
+
+    // Every pair of buildings near enough, each way it could be bridged, scored: short and level first.
+    const candidates = [];
+    for (let i = 0; i < buildings.length; i += 1) {
+        for (let j = i + 1; j < buildings.length; j += 1) {
+            const A = buildings[i];
+            const B = buildings[j];
+            if (A.kind !== 'hall' && B.kind !== 'hall') continue;
+            const [hallEnd, other] = A.kind === 'hall' ? [A, B] : [B, A];
+            const guessOther = centreOf(other) ?? new Vector3(wallX(hallEnd.hall.z) - 1.3, 0, hallEnd.hall.z);
+            if (Math.hypot(guessOther.x - hallEnd.hall.x, guessOther.z - hallEnd.hall.z) > BRIDGE_SPAN[1] + 6) continue;
+            let a = leave(hallEnd, guessOther);
+            if (!a) continue;
+            let b = leave(other, a.point);
+            if (!b) continue;
+            a = leave(hallEnd, b.point);
+            if (!a) continue;
+            b = leave(other, a.point);
+            if (!b) continue;
+            const span = Math.hypot(b.point.x - a.point.x, b.point.z - a.point.z);
+            if (span < BRIDGE_SPAN[0] || span > BRIDGE_SPAN[1]) continue;
+            if (other.kind === 'hall' && -new Vector3().subVectors(b.point, a.point).setY(0).normalize().dot(b.door) < BRIDGE_SQUARE) continue;
+            // The storey lines at either end that are nearest level with each other, within a gentle ramp.
+            let heights = null;
+            for (const ya of hallEnd.lines) {
+                for (const yb of other.lines) {
+                    const climb = Math.abs(ya - yb);
+                    if (climb > BRIDGE_SLOPE * span) continue;
+                    const score = climb + 0.12 * Math.abs((ya + yb) / 2 - (hallEnd.hall.base + 4.6));
+                    if (!heights || score < heights.score) heights = { ya, yb, score };
+                }
+            }
+            if (!heights) continue;
+            a.point.y = heights.ya;
+            b.point.y = heights.yb;
+            // Clear of the ground, of every other building, and of the places that keep their sky.
+            let clear = true;
+            for (let t = 0.08; t <= 0.92 && clear; t += 0.3 / span) {
+                const x = a.point.x + (b.point.x - a.point.x) * t;
+                const z = a.point.z + (b.point.z - a.point.z) * t;
+                const y = a.point.y + (b.point.y - a.point.y) * t;
+                if (y - BRIDGE_DECK - groundY(x, z) < BRIDGE_CLEAR) clear = false;
+                else if (!onLand(x, z, -0.2)) clear = false;
+                else if (inside(x, y, z, [hallEnd, other])) clear = false;
+                else if (keepClear.some(({ at, room }) => Math.hypot(x - at[0], z - at[2]) < room)) clear = false;
+            }
+            if (!clear) continue;
+            const score = span + 3 * Math.abs(a.point.y - b.point.y) + (other.kind === 'hall' ? 0 : -1.5);
+            candidates.push({ A: hallEnd, B: other, a, b, span, score });
+        }
+    }
+    candidates.sort((p, q) => p.score - q.score);
+
+    // Taken shortest first, no building taking more than its share, and no two crossing at much the same height.
+    const taken = [];
+    const crosses = (p, q) => {
+        const [a1, b1, a2, b2] = [p.a.point, p.b.point, q.a.point, q.b.point];
+        const d = (b1.x - a1.x) * (b2.z - a2.z) - (b1.z - a1.z) * (b2.x - a2.x);
+        if (Math.abs(d) < 1e-9) return false;
+        const u = ((a2.x - a1.x) * (b2.z - a2.z) - (a2.z - a1.z) * (b2.x - a2.x)) / d;
+        const v = ((a2.x - a1.x) * (b1.z - a1.z) - (a2.z - a1.z) * (b1.x - a1.x)) / d;
+        return u > -0.05 && u < 1.05 && v > -0.05 && v < 1.05 && Math.abs((a1.y + b1.y) / 2 - (a2.y + b2.y) / 2) < 2.2;
+    };
+    for (const candidate of candidates) {
+        if (taken.length >= BRIDGES_MOST) break;
+        if (candidate.A.used >= candidate.A.most || candidate.B.used >= candidate.B.most) continue;
+        if (taken.some((other) => (other.A === candidate.A && other.B === candidate.B) || crosses(other, candidate))) continue;
+        // (Two bridges from one building leave it well apart: their doors never crowd one another.)
+        const endAt = (bridge, building) => (bridge.A === building ? bridge.a.point : bridge.B === building ? bridge.b.point : null);
+        const crowded = taken.some((other) => [candidate.A, candidate.B].some((building) => {
+            const mine = endAt(candidate, building);
+            const theirs = endAt(other, building);
+            return mine && theirs && Math.hypot(mine.x - theirs.x, mine.z - theirs.z) < 1.9 && Math.abs(mine.y - theirs.y) < 1.2;
+        }));
+        if (crowded) continue;
+        taken.push(candidate);
+        candidate.A.used += 1;
+        candidate.B.used += 1;
+    }
+    for (const { a, b } of taken) goldenBridge(buckets, a, b, random);
+
+    // Their gold comes apart into dust where the camera, or its sight of the walking shadow, passes through.
+    const uniforms = { bridgeSight: { value: new Vector4(0, 0, 0, 0) }, bridgeTime: { value: 0 } };
+    if (materials?.bridge) {
+        alsoBeforeCompile(materials.bridge, 'bridge-dust', (shader) => {
+            Object.assign(shader.uniforms, uniforms);
+            shader.vertexShader = shader.vertexShader
+                .replace('#include <common>', '#include <common>\nvarying vec3 vBridgeWorld;')
+                .replace('#include <begin_vertex>', '#include <begin_vertex>\nvBridgeWorld = (modelMatrix * vec4(transformed, 1.0)).xyz;');
+            // (Where it comes apart the gold is simply gone, a narrow grain of it at the edge, so the ink draws
+            // one light line round the opening rather than one round every mote; the dust is drawn over it.)
+            shader.fragmentShader = shader.fragmentShader
+                .replace('#include <common>', `#include <common>\n${BRIDGE_DUST_GLSL}`)
+                .replace('void main() {', [
+                    'void main() {',
+                    '    float dust = bridgeDust();',
+                    '    if (dust > 0.42 + 0.14 * bridgeGrain(floor(gl_FragCoord.xy / 2.0))) discard;',
+                ].join('\n'));
+        });
+    }
+    // The dust itself: the bridges drawn again, in light only (no depth, so no ink), where they come apart: a
+    // faint gold haze, and motes glittering in it, turning over as the light catches them.
+    const dustMaterial = new ShaderMaterial({
+        uniforms,
+        vertexShader: /* glsl */ `
+            varying vec3 vBridgeWorld;
+            void main() {
+                vec4 world = modelMatrix * vec4(position, 1.0);
+                vBridgeWorld = world.xyz;
+                gl_Position = projectionMatrix * viewMatrix * world;
+            }
+        `,
+        fragmentShader: /* glsl */ `
+            ${BRIDGE_DUST_GLSL}
+            void main() {
+                float dust = bridgeDust();
+                if (dust < 0.03) discard;
+                float mote = bridgeGrain(floor(gl_FragCoord.xy / 2.0) + floor(bridgeTime * 7.0) * 13.7);
+                float glint = step(0.9, mote) * (0.55 + 0.45 * sin(bridgeTime * 9.0 + mote * 40.0));
+                vec3 gold = vec3(1.0, 0.78, 0.4);
+                gl_FragColor = vec4(gold * (glint * 1.5 + 0.05) * smoothstep(0.03, 0.6, dust), 1.0);
+            }
+        `,
+        transparent: true,
+        blending: AdditiveBlending,
+        depthWrite: false,
+        side: DoubleSide,
+    });
+    const dustOf = (geometry) => {
+        const dust = new Mesh(geometry, dustMaterial);
+        dust.name = 'bridge-dust';
+        dust.renderOrder = 3;
+        return dust;
+    };
+    return { uniforms, dustOf, count: taken.length, kinds: taken.map(({ B }) => B.kind), ends: taken.map(({ a, b }) => [a.point.toArray(), b.point.toArray()]) };
+}
+
+// =============================================================================
 // Main Code
 // =============================================================================
 
@@ -2324,6 +2882,9 @@ export async function buildPlaces(buckets, placeData, materials, pause = async (
         buildRibbons(buckets, spires);
         buildChute(buckets, spires);
     }
+    // The golden bridges between the buildings (a stream of their own), and the clock their dust keeps.
+    const bridges = buildGoldenBridges(buckets, materials, houses.hallSpecs, spires ?? [], byId);
+    if (bridges) animated.push((time) => { bridges.uniforms.bridgeTime.value = time; });
 
     return {
         anchors,
@@ -2339,6 +2900,11 @@ export async function buildPlaces(buckets, placeData, materials, pause = async (
         floors: [...built.values()].flatMap((result) => (result?.floor ? [result.floor] : [])),
         /** The sun-dock's light, for the stage to give the walk's shadow to. */
         sunLight: built.get('sun-dock')?.light ?? null,
+        /** The golden bridges: how many, of which kinds, and the sight line their dust keeps clear (walk.js keeps it). */
+        bridges: bridges ? { count: bridges.count, kinds: bridges.kinds, ends: bridges.ends } : null,
+        bridgeSight: bridges?.uniforms.bridgeSight.value ?? null,
+        /** The bridges' dust, drawn over their merged mesh (stage.js makes it once the buckets are built). */
+        bridgeDust: bridges?.dustOf ?? null,
         /** What a touch may find, and the words it opens: [{ kind, center, radius, fragment }] (touch.js). */
         touch: [...built.values()].flatMap((result) => result?.touch ?? []),
         update(time) {
