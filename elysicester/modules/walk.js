@@ -62,8 +62,10 @@ import {
     Vector3,
     WebGLRenderTarget,
 } from 'three';
+import { createBanshee } from './banshee.js';
 import { HOLLOW_REGION, WALLS_CELL } from './hollows-map.js';
 import { SEA_LEVEL, alsoBeforeCompile, groundY, onLand } from './kit.js';
+import { trialOn } from './trials.js';
 
 // =============================================================================
 // Constants
@@ -149,9 +151,19 @@ const WAYS = {
     ArrowLeft: 'left', KeyA: 'left', ArrowRight: 'right', KeyD: 'right',
 };
 
-/** The walker's shadow map: its size in texels, and how much of the light's view it covers (world units). */
-const MAP_SIZE = 512;
-const MAP_REACH = 1.1;
+/**
+ * The shadow as a friendly banshee (a trial, trials.js; ?wraith=off brings back the walker). Elm: "more like a
+ * friendly banshee flowing and billowing around and spreading its cloth where it glides ... a very low
+ * graphical-intensity amount of distinct character/personality". See banshee.js.
+ */
+const WRAITH = trialOn('wraith');
+
+/**
+ * The walker's shadow map: its size in texels, and how much of the light's view it covers (world units). (The
+ * banshee's skirt streams out behind it and its sleeves spread, so its map covers more, in more texels, as finely.)
+ */
+const MAP_SIZE = WRAITH ? 640 : 512;
+const MAP_REACH = WRAITH ? 1.3 : 1.1;
 /**
  * How far behind the walker (along the light) its shadow can fall: as far as a dusk shadow of its height
  * reaches, and no further, so it never lands again behind a wall that has already caught it.
@@ -335,7 +347,9 @@ export function createWalk({ light, reducedMotion }) {
     const lightTheta = Math.atan2(toLight.x, toLight.z);
     const shadowWay = new Vector3(-toLight.x, 0, -toLight.z).normalize();
     const shadowLength = TALL / Math.tan(Math.asin(toLight.y));
-    const { body, legs, arms } = buildBody();
+    // (The walker, or, on trial, the banshee: WRAITH, banshee.js.)
+    const banshee = WRAITH ? createBanshee({ figure: FIGURE, pace: PACE, reducedMotion }) : null;
+    const { body, legs, arms } = banshee ? { body: banshee.body, legs: [], arms: [] } : buildBody();
     const scene = new Scene();
     scene.add(body);
 
@@ -434,8 +448,41 @@ export function createWalk({ light, reducedMotion }) {
     const tip = new Vector3();
     const aim = new Vector3();
 
+    // ----- The banshee's ways (WRAITH, banshee.js) -----
+    /** The last pose's moment (s). */
+    let posedAt = null;
+    /** Word that it has just been taken, or has just arrived where it was sent (a lift of delight; a twirl). */
+    let justTaken = false;
+    let justArrived = false;
+    /** A reading point it's beside (main.js says, attend): its hood turns to it. */
+    let attending = null;
+
+    /** Pose the banshee for this moment (banshee.js): its going, and what it's doing (waiting, walked, let go). */
+    function poseBanshee(elapsed) {
+        const dt = posedAt === null ? 1 / 60 : MathUtils.clamp(elapsed - posedAt, 0, 0.1);
+        posedAt = elapsed;
+        if (justTaken) banshee.taken(elapsed);
+        if (justArrived) banshee.arrived(elapsed);
+        justTaken = false;
+        justArrived = false;
+        banshee.pose({
+            elapsed,
+            dt,
+            position: state.position,
+            heading: state.heading,
+            velocity,
+            mode: state.walking ? 'walking' : turnsToCity ? 'waiting' : 'resting',
+            attending,
+            viewer: camera?.position ?? null,
+        });
+    }
+
     /** Pose the body for this moment: the stride's phase and how much it's walking (0 to 1). */
     function pose(elapsed) {
+        if (banshee) {
+            poseBanshee(elapsed);
+            return;
+        }
         const swing = Math.sin(state.stride) * state.moving;
         legs.forEach(({ hip, knee }, index) => {
             hip.rotation.x = (index === 0 ? 1 : -1) * swing * 0.5;
@@ -618,7 +665,11 @@ export function createWalk({ light, reducedMotion }) {
             const dz = destination.z - state.position.z;
             const distance = Math.hypot(dx, dz);
             if (distance < ARRIVE) {
-                if (!destination.held) clearTarget();
+                if (!destination.held) {
+                    clearTarget();
+                    // (Arrived where it was sent: the banshee twirls.)
+                    justArrived = true;
+                }
                 return wanted.set(0, 0, 0);
             }
             const pace = PACE * Math.min(1, distance / 0.9);
@@ -921,6 +972,18 @@ export function createWalk({ light, reducedMotion }) {
             state.heading = heading;
             state.present = true;
             uniforms.walkerOn.value = 1;
+            // (Set down somewhere new, the banshee's cloth lies as it would there, at once.)
+            banshee?.reset();
+        },
+
+        /** The reading point it's beside, as a point in the city (main.js), or null: the banshee's hood turns to it. */
+        attend(point) {
+            attending = point ? (attending ?? new Vector3()).copy(point) : null;
+        },
+
+        /** Whether the shadow is the banshee (a trial) rather than the walker. */
+        get wraith() {
+            return Boolean(banshee);
         },
 
         /**
@@ -1171,6 +1234,8 @@ export function createWalk({ light, reducedMotion }) {
                 }
             }
             state.walking = true;
+            // (Taken, the banshee gives a little lift of delight.)
+            justTaken = true;
             rig.handsOff = true;
             rig.setDrifting(false);
             followTheta = behindOf(turning ?? state.heading);
