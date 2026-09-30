@@ -204,8 +204,10 @@ function glowTexture() {
  *   something the tap landed squarely on (a sign) keep a tap that only grazed a point
  * @param {(x: number, y: number, pointerType: string) => void} [options.onMiss] - a tap that found no
  *   point (touch.js may find something else there)
+ * @param {() => number | null} [options.glintEvery] - how often (seconds) an unread point glints again, if
+ *   not at the usual pace (the hint, on trial: the last few unread glint more often)
  */
-export function createHotspots({ stage, fragments, read, places, label, reducedMotion, onPick, yieldTap, onMiss }) {
+export function createHotspots({ stage, fragments, read, places, label, reducedMotion, onPick, yieldTap, onMiss, glintEvery }) {
     const { scene, camera, canvas, renderer, rig } = stage;
     const entries = fragments.map((fragment, index) => ({
         fragment,
@@ -243,7 +245,7 @@ export function createHotspots({ stage, fragments, read, places, label, reducedM
     scene.add(points);
 
     // Glass, cloth and water don't hide a point; the sky and sea never stand in front of one, nor a passing hum.
-    const occluders = scene.children.filter((child) => child instanceof Mesh && !['sky', 'sea', 'glass', 'turquoise', 'hums', 'verti-pool', 'footlight-wash', 'walk-ring', 'walk-target', 'sun-dock-light', 'bridge', 'bridge-dust'].includes(child.name));
+    const occluders = scene.children.filter((child) => child instanceof Mesh && !['sky', 'sea', 'glass', 'turquoise', 'hums', 'verti-pool', 'footlight-wash', 'walk-ring', 'walk-target', 'sun-dock-light', 'bridge', 'bridge-dust', 'fountain-fall'].includes(child.name));
     const raycaster = new Raycaster();
     const projected = new Vector3();
     const drawingBuffer = new Vector2();
@@ -348,7 +350,7 @@ export function createHotspots({ stage, fragments, read, places, label, reducedM
         uniforms.time.value = elapsed;
         // Now and then, one unread point in sight glints again (never under reduced motion).
         if (!reducedMotion && elapsed >= nextIdleGlint) {
-            nextIdleGlint = elapsed + IDLE_GLINT;
+            nextIdleGlint = elapsed + (glintEvery?.() ?? IDLE_GLINT);
             const waiting = entries.filter((entry) => !isRead(entry) && screenOf(entry).inFront);
             if (waiting.length) glintAt(waiting[Math.floor(Math.random() * waiting.length)], elapsed);
         }

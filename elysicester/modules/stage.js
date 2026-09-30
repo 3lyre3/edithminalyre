@@ -57,8 +57,8 @@ const SHADOW_REACH = 40;
  * ground, its streets and plazas and platforms. A low dusk light across the walls and roofs themselves
  * striped them with the shadow map's own grain; across the paving it lays the long shadows cleanly.
  */
-const CASTS_SHADOW = new Set(['gold', 'bricking', 'brick', 'stone', 'rock', 'steel', 'copper', 'arch', 'turquoise', 'amethyst', 'bridge']);
-const TAKES_SHADOW = new Set(['dimGold']);
+const CASTS_SHADOW = new Set(['gold', 'bricking', 'brick', 'stone', 'rock', 'steel', 'copper', 'arch', 'turquoise', 'amethyst', 'bridge', 'cloth', 'green', 'weed']);
+const TAKES_SHADOW = new Set(['dimGold', 'green']);
 /**
  * A safety net for slower phones: if frames run slower than this (seconds) for a sustained stretch,
  * the drawing buffer steps down a quarter at a time, never below 1. It only ever steps down, so it can't
@@ -218,7 +218,7 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         walkerClears(materials.steel, walk);
         walkerClears(materials.turquoise, walk, 1.5);
         // Whatever stands between the camera and the walker is cut away as they walk (never the ground or the rock).
-        for (const key of ['gold', 'bricking', 'brick', 'stone', 'steel', 'turquoise', 'copper', 'arch', 'glass', 'amethyst', 'glow', 'sign', 'weed']) {
+        for (const key of ['gold', 'bricking', 'brick', 'stone', 'steel', 'turquoise', 'copper', 'arch', 'glass', 'amethyst', 'glow', 'sign', 'weed', 'cloth', 'green']) {
             walkerSees(materials[key], walk);
         }
         sea.receiveWalker(WALKER_GLSL, walk.uniforms);
@@ -398,6 +398,6 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         },
     };
 
-    if (debug) Object.assign(window.elysicesterDebug ??= {}, { info: () => stage.info(), rig, stage, solids, houses: places.houses, bridges: places.bridges, pixelRatio: () => renderer.getPixelRatio(), hollows: hollowMap, walk });
+    if (debug) Object.assign(window.elysicesterDebug ??= {}, { info: () => stage.info(), rig, stage, solids, houses: places.houses, bridges: places.bridges, dressing: places.dressing, pixelRatio: () => renderer.getPixelRatio(), hollows: hollowMap, walk });
     return stage;
 }

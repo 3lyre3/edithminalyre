@@ -21,16 +21,22 @@ import {
     DoubleSide,
     Euler,
     Float32BufferAttribute,
+    LinearFilter,
+    LinearMipmapLinearFilter,
     Matrix4,
     Mesh,
     MeshBasicMaterial,
     MeshToonMaterial,
     NearestFilter,
     Quaternion,
+    RGBAFormat,
     RedFormat,
+    RepeatWrapping,
     TubeGeometry,
+    UnsignedByteType,
     Vector2,
     Vector3,
+    Vector4,
 } from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
@@ -292,23 +298,40 @@ export function light(hex, strength) {
 export function createMaterials() {
     const gradientMap = toonRamp();
     const toon = (options) => new MeshToonMaterial({ gradientMap, vertexColors: true, color: 0xffffff, ...options });
+    // (Each weathered as the years would have it: see weather(). The cafés' brick has its own, places.js.
+    // ?ageing=off leaves the city as it was built, to compare.)
+    const ageing = new URLSearchParams(globalThis.location?.search ?? '').get('ageing') !== 'off';
+    const weathered = (material, look) => (ageing ? weather(material, look) : material);
     return {
-        gold: toon({ emissive: 0x8a7424, emissiveIntensity: 0.3 }),
+        /** The halls and houses, the great golden trees: a tarnish in patches, moss where the sun never comes. */
+        gold: weathered(toon({ emissive: 0x8a7424, emissiveIntensity: 0.3 }), {
+            mottle: 0.8, streaks: 0.75, damp: 0.7, moss: 0.55, salt: 0.25, age: 0.38, tint: 0x6e6440, seed: 0.13,
+        }),
         /** The golden bridges between the buildings (places.js): gold of their own, which comes apart into dust. */
         bridge: toon({ emissive: 0x8a7424, emissiveIntensity: 0.32, side: DoubleSide }),
-        /** The sea-wall's golden bricking. */
-        bricking: bricks(toon({ emissive: 0x8a7424, emissiveIntensity: 0.28 })),
-        /** The ground and its paving (streets, platforms, the jetty): flagstones, in the bricking's bond. */
-        dimGold: hatched(bricks(toon({ emissive: 0x3a2a0c, emissiveIntensity: 0.4 }), { length: 1.1, height: 0.5 })),
+        /** The sea-wall's golden bricking: salted and weeded low down, where the sea "erupts" against it. */
+        bricking: weathered(bricks(toon({ emissive: 0x8a7424, emissiveIntensity: 0.28 })), {
+            mottle: 0.6, streaks: 0.85, damp: 0.6, moss: 0.7, salt: 0.9, age: 0.3, tint: 0x6a6a48, seed: 0.41,
+        }),
+        /** The ground and its paving (streets, platforms, the jetty): flagstones, in the bricking's bond; stained. */
+        dimGold: weathered(hatched(bricks(toon({ emissive: 0x3a2a0c, emissiveIntensity: 0.4 }), { length: 1.1, height: 0.5 })), {
+            mottle: 0.75, salt: 0.2, age: 0.42, tint: 0x5a4a34, seed: 0.77,
+        }),
         brick: toon({}),
-        stone: toon({}),
+        /** Stone: lichen in pale patches, damp at the foot. */
+        stone: weathered(toon({}), {
+            mottle: 0.7, streaks: 0.6, damp: 0.6, moss: 0.6, salt: 0.4, age: 0.4, tint: 0xb8b890, seed: 0.29,
+        }),
         /** The island's underside (and the hanging mountain): rock striated top to bottom, as Elm draws her islands. */
         rock: striated(toon({}), {
             colors: [0x7c5e5c, 0x86665a, 0x76606a, 0x8e705e, 0x6e5c64],
             deep: 0x2e2438,
             reach: CLIFF_DEPTH + UNDERSIDE_DEPTH,
         }),
-        steel: toon({}),
+        /** Steel: caked here and there, as the Steel Garden's is, "all bluish-green". */
+        steel: weathered(toon({}), {
+            mottle: 0.5, streaks: 0.5, damp: 0.4, moss: 0.3, salt: 0.3, age: 0.3, tint: 0x4a7a70, seed: 0.53,
+        }),
         turquoise: toon({ emissive: 0x1a8a84, emissiveIntensity: 0.6, side: DoubleSide }),
         /** Seaweed at the shore and the vines of the plazas: green things, swaying a little. */
         weed: toon({ emissive: 0x0e2a18, emissiveIntensity: 0.5, side: DoubleSide }),
@@ -316,7 +339,18 @@ export function createMaterials() {
         amethyst: toon({ transparent: true, opacity: 0.78, emissive: 0x5a2496, emissiveIntensity: 0.6 }),
         glass: toon({ transparent: true, opacity: 0.3, emissive: 0x3a5a62, emissiveIntensity: 0.35, side: DoubleSide }),
         arch: toon({ emissive: 0x5a6878, emissiveIntensity: 0.45 }),
-        copper: toon({ emissive: 0x4a1c08, emissiveIntensity: 0.4 }),
+        /** The dressing's cloth (places.js): the market's awnings and skirts and goods, the halls' banners. */
+        cloth: weathered(toon({ side: DoubleSide, emissive: 0x2a1c12, emissiveIntensity: 0.3 }), {
+            mottle: 0.6, streaks: 0.3, damp: 0.3, age: 0.2, tint: 0x8a7a60, seed: 0.87,
+        }),
+        /** Green things that stand or lie still: the park's lawn and hedges, the plants in their pots; drawn shadows. */
+        green: weathered(hatched(toon({ emissive: 0x0e2a18, emissiveIntensity: 0.35 })), {
+            mottle: 0.9, age: 0.3, tint: 0x7a8a44, seed: 0.33,
+        }),
+        /** Copper: verdigris gathering in patches and running down from it. */
+        copper: weathered(toon({ emissive: 0x4a1c08, emissiveIntensity: 0.4 }), {
+            mottle: 0.5, streaks: 0.6, damp: 0.3, moss: 0.2, salt: 0.2, age: 0.75, tint: 0x5e9c88, seed: 0.61,
+        }),
         sign: toon({ vertexColors: false, emissive: 0xffffff, emissiveIntensity: 0.3 }),
         glow: new MeshBasicMaterial({ vertexColors: true }),
     };
@@ -585,6 +619,187 @@ export function bricks(material, { length = 0.72, height = 0.3 } = {}) {
     });
     return material;
 }
+
+// =============================================================================
+// Weathering: the city as the years have left it
+// =============================================================================
+
+let wornMapTexture = null;
+
+/**
+ * The weathering's noise, made once: four tiling noises in one small texture,
+ * read a few times a pixel (cheaper than working noise out in the shader).
+ * r: broad mottling; g: streaks (fine across, long up, for grime running down
+ * a wall); b: fine tufts; a: patches.
+ */
+function wornMap() {
+    if (wornMapTexture) return wornMapTexture;
+    const size = 256;
+    const data = new Uint8Array(size * size * 4);
+    // Value noise on a lattice that wraps (period cells across the texture), so the texture tiles seamlessly.
+    const lattice = (ix, iy, period, seed) => {
+        const x = ((ix % period.x) + period.x) % period.x;
+        const y = ((iy % period.y) + period.y) % period.y;
+        let h = Math.imul(x + seed * 131, 374761393) ^ Math.imul(y + seed * 71, 668265263);
+        h = Math.imul(h ^ (h >>> 13), 1274126177);
+        return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
+    };
+    const noise = (u, v, period, seed) => {
+        const x = u * period.x;
+        const y = v * period.y;
+        const ix = Math.floor(x);
+        const iy = Math.floor(y);
+        const fx = x - ix;
+        const fy = y - iy;
+        const sx = fx * fx * (3 - 2 * fx);
+        const sy = fy * fy * (3 - 2 * fy);
+        const a = lattice(ix, iy, period, seed);
+        const b = lattice(ix + 1, iy, period, seed);
+        const c = lattice(ix, iy + 1, period, seed);
+        const d = lattice(ix + 1, iy + 1, period, seed);
+        return a + (b - a) * sx + (c - a) * sy + (a - b - c + d) * sx * sy;
+    };
+    const fbm = (u, v, base, octaves, seed) => {
+        let sum = 0;
+        let weight = 0;
+        for (let octave = 0, amount = 1, cells = base; octave < octaves; octave += 1, amount *= 0.5, cells *= 2) {
+            sum += amount * noise(u, v, { x: cells, y: cells }, seed + octave * 17);
+            weight += amount;
+        }
+        return sum / weight;
+    };
+    const channels = [new Float32Array(size * size), new Float32Array(size * size), new Float32Array(size * size), new Float32Array(size * size)];
+    for (let row = 0; row < size; row += 1) {
+        for (let col = 0; col < size; col += 1) {
+            const u = col / size;
+            const v = row / size;
+            const at = row * size + col;
+            channels[0][at] = fbm(u, v, 4, 3, 1);
+            // Streaks: narrow ones across, each long up the texture, broken along its length, some finer beside.
+            channels[1][at] = noise(u, v, { x: 16, y: 2 }, 5) * 0.7 + noise(u, v, { x: 32, y: 5 }, 9) * 0.3;
+            channels[2][at] = fbm(u, v, 16, 2, 23);
+            channels[3][at] = fbm(u, v, 3, 3, 41);
+        }
+    }
+    // Each stretched to the whole range, so a threshold in the shader means the same share of the surface.
+    channels.forEach((channel, index) => {
+        let low = Infinity;
+        let high = -Infinity;
+        for (const value of channel) {
+            low = Math.min(low, value);
+            high = Math.max(high, value);
+        }
+        for (let at = 0; at < channel.length; at += 1) data[at * 4 + index] = Math.round(((channel[at] - low) / Math.max(high - low, 1e-6)) * 255);
+    });
+    const texture = new DataTexture(data, size, size, RGBAFormat, UnsignedByteType);
+    texture.wrapS = RepeatWrapping;
+    texture.wrapT = RepeatWrapping;
+    texture.magFilter = LinearFilter;
+    texture.minFilter = LinearMipmapLinearFilter;
+    texture.generateMipmaps = true;
+    texture.needsUpdate = true;
+    wornMapTexture = texture;
+    return texture;
+}
+
+/**
+ * Weather a material, as the years would (Elm: "spread the ageing", after the
+ * cafés): laid on its colour before the light falls on it, as a painter
+ * weathers a wall, with the world's own place for every mark, so it runs on
+ * across pieces as one surface does. A brush's mottling, warmer and cooler;
+ * grime in streaks down the walls; damp rising at their feet; moss on the
+ * faces turned north, in fine tufts at the foot, and in patches on ledges and
+ * roofs; a bloom of salt low over the sea; and patches of the material's own
+ * ageing (a tarnish on gold, verdigris on copper, lichen on stone, stains on
+ * the paving), darkening its colour rather than painting over it, so a dark
+ * window stays dark. Nothing is added to what a vertex hands on: the place
+ * and the facing are found again from the view (the pixel's view position,
+ * and its normal, turned back into the world).
+ * @param {import('three').Material} material
+ * @param {object} look - each 0 to 1
+ * @param {number} [look.mottle]
+ * @param {number} [look.streaks]
+ * @param {number} [look.damp]
+ * @param {number} [look.moss]
+ * @param {number} [look.salt]
+ * @param {number} [look.age] - how much of the material's own ageing
+ * @param {number} look.tint - its colour (hex): where it gathers, the colour goes toward this, kept as dark
+ * @param {number} [look.seed] - so no two materials weather alike
+ */
+export function weather(material, { mottle = 0, streaks = 0, damp = 0, moss = 0, salt = 0, age = 0, tint = 0x807060, seed = 0 }) {
+    const uniforms = {
+        wornMap: { value: wornMap() },
+        wornLook: { value: new Vector4(mottle, streaks, damp, moss) },
+        wornMore: { value: new Vector4(salt, age, seed, 0) },
+        wornTint: { value: new Color(tint) },
+    };
+    alsoBeforeCompile(material, 'weathered', (shader) => {
+        Object.assign(shader.uniforms, uniforms);
+        // (Laid just before main, where the view position and the normal have been declared.)
+        shader.fragmentShader = shader.fragmentShader
+            .replace('void main() {', `${WORN_GLSL}\nvoid main() {`)
+            .replace('#include <color_fragment>', '#include <color_fragment>\ndiffuseColor.rgb = cityWorn(diffuseColor.rgb);');
+    });
+    return material;
+}
+
+const WORN_GLSL = /* glsl */ `
+    uniform sampler2D wornMap;
+    uniform vec4 wornLook;
+    uniform vec4 wornMore;
+    uniform vec3 wornTint;
+    vec3 cityWorn(vec3 albedo) {
+        // Where this pixel is in the world, and which way it faces there, found again from the view.
+        mat3 back = transpose(mat3(viewMatrix));
+        vec3 p = cameraPosition + back * (-vViewPosition);
+        #ifdef FLAT_SHADED
+            vec3 n = normalize(back * cross(dFdx(vViewPosition), dFdy(vViewPosition)));
+        #else
+            vec3 n = normalize(back * vNormal);
+        #endif
+        float upright = 1.0 - smoothstep(0.4, 0.7, abs(n.y));
+        // Along a wall's run and up it; across a roof or the ground.
+        float along = abs(n.x) > abs(n.z) ? p.z : p.x;
+        vec2 face = upright > 0.5 ? vec2(along, p.y) : p.xz;
+        // How high above the ground (as the ground rises gently to the west; near enough for a wall's foot).
+        float h = p.y - max(0.0, -p.x - 4.0) * 0.055;
+        float seed = wornMore.z;
+        vec4 broad = texture2D(wornMap, face * 0.085 + seed);
+        float streaked = texture2D(wornMap, vec2(face.x * 0.16, face.y * 0.05) + seed * 1.7).g;
+        vec4 close = texture2D(wornMap, face * 0.55 + seed * 2.3);
+        float tuft = close.b;
+        vec3 base = albedo;
+        // A brush's mottling, lighter and darker, warmer and cooler: fine over broad, as a painter's is.
+        float m = 0.6 * close.r + 0.4 * broad.r;
+        albedo *= 1.0 + wornLook.x * (m - 0.5) * 0.5;
+        albedo *= mix(vec3(1.0), mix(vec3(0.92, 0.99, 1.1), vec3(1.08, 0.99, 0.86), m), wornLook.x);
+        // Grime running down the walls in streaks from each ledge (a hall's storey line, 1.5 apart from 2.25
+        // up), strongest just beneath it and fading as it runs; gathered in a band under the ledge itself; and
+        // more where the patches are.
+        float hang = fract((h - 0.75) / 1.5);
+        float streak = smoothstep(0.6, 0.88, streaked) * upright * (0.25 + 0.75 * hang * hang) * (0.45 + 0.55 * broad.a);
+        float under = smoothstep(0.82, 1.0, hang) * upright * step(1.5, h);
+        albedo *= 1.0 - wornLook.y * (0.5 * streak + 0.22 * under);
+        // Damp rising at a wall's foot, to a height that wanders.
+        float rise = 0.35 + 0.6 * broad.b;
+        albedo *= 1.0 - wornLook.z * 0.34 * upright * (1.0 - smoothstep(rise * 0.35, rise, h));
+        // Moss: in fine tufts at the foot of the faces turned north, and in patches on ledges and roofs.
+        float north = max(0.0, -n.z);
+        float tufts = smoothstep(0.55, 0.78, tuft) * (1.0 - smoothstep(0.1, 1.2, h));
+        float ledge = smoothstep(0.75, 0.95, n.y) * smoothstep(0.5, 0.9, h) * smoothstep(0.6, 0.8, broad.b * 0.5 + tuft * 0.5);
+        float moss = clamp(north * upright * tufts + ledge * (0.45 + 0.55 * north), 0.0, 0.85);
+        albedo = mix(albedo, vec3(0.27, 0.34, 0.19) * (0.8 + 0.4 * broad.r), wornLook.w * moss);
+        // Salt, low over the sea: a pale bloom in the tufts' pattern.
+        float low = 1.0 - smoothstep(0.2, 2.0, p.y + 0.6);
+        albedo = mix(albedo, vec3(0.9, 0.88, 0.82), wornMore.x * upright * low * smoothstep(0.45, 0.8, tuft) * 0.65);
+        // Its own ageing, in patches: toward the tint, kept as dark as it was.
+        float patches = smoothstep(0.6, 0.85, broad.a) * (0.6 + 0.4 * tuft);
+        float lightness = dot(base, vec3(0.3, 0.59, 0.11));
+        vec3 aged = wornTint * lightness / max(dot(wornTint, vec3(0.3, 0.59, 0.11)), 1e-3);
+        albedo = mix(albedo, aged, wornMore.y * patches);
+        return albedo;
+    }
+`;
 
 /**
  * Teach a material to flutter in the wind, by each vertex's "sway" (0 stays

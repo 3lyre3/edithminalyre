@@ -10,8 +10,10 @@
  * rig and later tiers can find each place; mounts, by name, tell signs.js where
  * each plaque, board, banner and marker hangs.
  *
- * Nothing here is decoration for its own sake: each shape answers a line in
- * Numbers by Paint (Episodes 1 and 3) or President Oedipus.
+ * Each shape answers a line in Numbers by Paint (Episodes 1 and 3) or
+ * President Oedipus, or something Elm asked for: last of all, the dressing
+ * (buildDressing), the market, lamps, benches, plants and the park with its
+ * fountain that make it a lived-in city.
  */
 
 // =============================================================================
@@ -33,6 +35,7 @@ import {
     Float32BufferAttribute,
     Group,
     IcosahedronGeometry,
+    LatheGeometry,
     MathUtils,
     Matrix4,
     Mesh,
@@ -2824,6 +2827,578 @@ function buildGoldenBridges(buckets, materials, halls, trees, byId) {
 }
 
 // =============================================================================
+// The dressing: a market, lamps, benches, plants, lanterns and banners, and a park with its fountain
+// =============================================================================
+
+const TIMBER = [0x6a4a32, 0x7a5638, 0x5e4230];
+const CANVAS = 0xeee2c6;
+const AWNINGS = [0x2fb0a8, 0xb04a34, 0xd4a24e, 0x7a4a8e, 0x3e7a52, 0x2f6f9e, 0xc8704a];
+const TERRACOTTA = [0xa4553a, 0xb4643e, 0x94482e];
+const FOLIAGE = [0x4e7c46, 0x5c8c4a, 0x3f6e40, 0x6a9a50];
+const HEDGE = [0x3f7042, 0x487c46, 0x39663c];
+const BLOOMS = [0xe86a7a, 0xf0c050, 0xf4ece0, 0xb07ae0, 0xe8904a, 0xd84a5a];
+const FRUIT = [0xe8903a, 0xc8402e, 0x8ab04a, 0xe8c84a, 0x7a3a6a];
+const BINDINGS = [0x6a2a2a, 0x2a4a6a, 0x4a5a2a, 0xa08a50, 0x3a2a4a, 0x8a4a2a];
+const GLAZES = [0xa4553a, 0x3a6a8a, 0xd8ccb4, 0x5e8c7a];
+const STONE_PALE = 0xd8ccb4;
+const IRON = 0x2a2e36;
+const BARK = 0x5a4632;
+const SOIL = 0x4a3426;
+const GRASS = new Color(0x6fa452);
+const GRASS_DRY = new Color(0xa2ae5e);
+const BULBS = [light(0xffc870, 3.2), light(0xff9a6a, 3.0), light(0xfff0b0, 3.0)];
+
+/**
+ * The park, between the golden trees and the Steel Garden, just off the avenue: its middle, how far its lawn
+ * reaches either way (its corners rounded), and the fountain at its heart.
+ */
+const PARK = { x: -4.4, z: 6.3, halfX: 4.2, halfZ: 1.95, corner: 1.0 };
+
+/**
+ * The market along the avenue, between the golden trees and the flags' crossroads, short of the flags' own
+ * poles, and (on the south side) behind the bridgework's plaque, which looks down the avenue to the gate. Its
+ * stalls (x, z, what they sell): the south side's face north across the street, the north side's face south.
+ * And the poles its lanterns are strung between, across the street, one at each stall's front corner, clear of
+ * the ways between the stalls, which lead on behind.
+ */
+const STALLS = [
+    [-7.1, -1.3, 'fruit'], [-4.6, -1.3, 'cloth'],
+    [-5.6, -5.1, 'lanterns'], [-3.1, -5.1, 'books'], [-0.6, -5.1, 'pots'],
+];
+const MARKET_POLES = {
+    south: { z: -1.85, xs: [-6.3, -3.8] },
+    north: { z: -4.55, xs: [-6.4, -3.9, -1.4] },
+};
+/** Lamps stand along the streets this far apart, by turns on either side; and a bench now and then between. */
+const LAMP_EVERY = 7;
+const BENCH_EVERY = 11;
+
+const FOUNTAIN_VERTEX = /* glsl */ `
+    attribute float aRise;
+    varying vec3 vWorld;
+    varying vec2 vUv;
+    varying float vRise;
+    void main() {
+        vec4 world = modelMatrix * vec4(position, 1.0);
+        vWorld = world.xyz;
+        vUv = uv;
+        vRise = aRise;
+        gl_Position = projectionMatrix * viewMatrix * world;
+    }
+`;
+
+/** The fountain's water, in its basin and its bowl: rings going out from where the water comes down. */
+const FOUNTAIN_WATER = /* glsl */ `
+    uniform float time;
+    uniform vec3 centre;
+    varying vec3 vWorld;
+    void main() {
+        vec2 d = vWorld.xz - centre.xz;
+        float bowl = step(centre.y + 1.2, vWorld.y);
+        float r = length(d) / mix(0.76, 0.52, bowl);
+        float from = mix(0.86, 0.0, bowl);
+        float rings = pow(0.5 + 0.5 * sin((r - from) * 34.0 - time * 3.4), 8.0) * exp(-abs(r - from) * 2.2);
+        vec3 deep = vec3(0.07, 0.18, 0.26);
+        vec3 shallow = vec3(0.24, 0.46, 0.54);
+        vec3 color = mix(shallow, deep, smoothstep(0.1, 1.0, r)) + vec3(1.0, 0.85, 0.6) * rings * 0.42;
+        gl_FragColor = vec4(color, 1.0);
+    }
+`;
+
+/** Its falling water (and the jet rising from the top): light only, in streaks, broken and glinting. */
+const FOUNTAIN_FALL = /* glsl */ `
+    uniform float time;
+    varying vec2 vUv;
+    varying float vRise;
+    void main() {
+        float across = vUv.x * 48.0;
+        float lane = floor(across);
+        float h = fract(sin(lane * 12.9898) * 43758.5453);
+        // (The sheet's streaks run down it, the jet's up: uv.y is 1 at a cylinder's top.)
+        float up = vRise > 0.5 ? -1.0 : 1.0;
+        float flow = fract(vUv.y * (1.6 + h) + time * (1.3 + h * 0.8) * up);
+        float streak = smoothstep(0.0, 0.15, flow) * (1.0 - smoothstep(0.35, 0.8, flow));
+        float thin = 1.0 - smoothstep(0.1, 0.45, abs(fract(across) - 0.5));
+        vec3 color = vec3(0.75, 0.88, 1.0) * streak * thin * 0.55 + vec3(0.25, 0.4, 0.5) * 0.1;
+        gl_FragColor = vec4(color, 1.0);
+    }
+`;
+
+/**
+ * The city dressed (Elm, 30 Sep: "Maybe some plants and bits and bobs and decorations around the city too?
+ * Stalls idk all that sort of thing. A park somewhere? A fountain?"). A market along the avenue under striped
+ * awnings, its goods on the counters (fruit, cloth, pots, books, lanterns), and lanterns strung across the
+ * street above it; lamps along the streets; benches; potted plants by the halls and flowers in their window
+ * boxes; banners of plain cloth on the halls that face a street; and, between the golden trees and the Steel
+ * Garden, a park: a lawn with low hedges, the city's sycamores (Episode 3, "tangling the sycamores' heights"),
+ * raised beds of flowers, benches, and at its heart a fountain, its water falling from a bowl and rising from
+ * its top. Nothing crowds what already stands (the halls, the trees' feet, the named places, the streets) or
+ * what the dressing has set down. A stream of its own (7331), so nothing else in the city moves; ?dressing=off
+ * leaves it all out, to compare.
+ */
+/** A piece as the buckets want it, with its own corners (a polyhedron has them already). */
+function unindexed(geometry) {
+    return geometry.index ? geometry.toNonIndexed() : geometry;
+}
+
+function buildDressing(buckets, { halls, spires, byId, extras, animated, still }) {
+    const random = createRandom(7331);
+    const pick = (list) => list[Math.floor(random() * list.length)];
+    const trunks = spires.filter((spire) => !spire.leans && spire.girth(0) > 1);
+    const [gx, , gz] = byId.get('steel-garden').position;
+    const [sx, , sz] = byId.get('gas-station').position;
+    const [fx, , fz] = byId.get('flags').position;
+    const taken = [];
+    const inHall = (x, z, r) => halls.some((hall) => {
+        const c = Math.cos(hall.turn);
+        const s = Math.sin(hall.turn);
+        const dx = x - hall.x;
+        const dz = z - hall.z;
+        return Math.abs(dx * c - dz * s) < hall.width / 2 + 0.3 + r && Math.abs(dx * s + dz * c) < hall.depth / 2 + 0.3 + r;
+    });
+    /** Whether something r across the radius may stand at (x, z): on the land, off the street, crowding nothing. */
+    const clear = (x, z, r, street = 0.1) => onLand(x, z, r + 0.3)
+        && !inHall(x, z, r)
+        && trunks.every((trunk) => Math.hypot(x - trunk.x, z - trunk.z) > trunk.girth(0) * 1.4 + r + 0.3)
+        && Math.hypot(x - gx, z - gz) > 2.9 + r
+        && !(Math.abs(x - sx) < 2.4 + r && Math.abs(z - sz) < 3.0 + r)
+        && Math.hypot(x - fx, z - fz) > 4.2 + r
+        && streetGap(x, z) > street + r
+        && inPark(x, z) === false
+        && taken.every(([tx, tz, tr]) => Math.hypot(x - tx, z - tz) > tr + r + 0.25);
+    const take = (x, z, r) => taken.push([x, z, r]);
+    function inPark(x, z) {
+        return Math.abs(x - PARK.x) < PARK.halfX + 0.4 && Math.abs(z - PARK.z) < PARK.halfZ + 0.4;
+    }
+    const ground = (x, z) => groundY(x, z) - 0.02;
+    const counts = { stalls: 0, lamps: 0, benches: 0, pots: 0, windowBoxes: 0, banners: 0, strings: 0, trees: 0, beds: 0 };
+
+    // ----- Pieces -----
+
+    const lamp = (x, z) => {
+        const y = ground(x, z);
+        buckets.add('steel', cylinder(0.11, 0.13, 0.22, 6, { x, y: y + 0.11, z }, IRON));
+        buckets.add('steel', cylinder(0.045, 0.06, 2.3, 6, { x, y: y + 1.35, z }, IRON));
+        buckets.add('steel', cone(0.15, 0.16, 6, { x, y: y + 2.76, z }, IRON));
+        buckets.add('glow', ball(0.12, { x, y: y + 2.58, z }, LAMP, 8, 6));
+        take(x, z, 0.3);
+        counts.lamps += 1;
+    };
+
+    // A bench for two, its seat facing +z in its own frame (turned by facing).
+    const bench = (x, z, facing) => {
+        const at = { x, y: ground(x, z), z, ry: facing };
+        const wood = pick(TIMBER);
+        const planks = [
+            bevelBox(1.1, 0.06, 0.36, { y: 0.44, z: 0.02 }, wood, 0.015),
+            bevelBox(1.1, 0.26, 0.05, { y: 0.74, z: -0.17, rx: -0.12 }, wood, 0.015),
+        ];
+        const iron = [];
+        for (const side of [-0.48, 0.48]) {
+            iron.push(box(0.05, 0.44, 0.05, { x: side, y: 0.22, z: 0.14 }, IRON));
+            iron.push(box(0.05, 0.88, 0.05, { x: side, y: 0.44, z: -0.16 }, IRON));
+            iron.push(box(0.05, 0.05, 0.36, { x: side, y: 0.6, z: 0 }, IRON));
+        }
+        for (const piece of frame(planks, at)) buckets.add('stone', piece);
+        for (const piece of frame(iron, at)) buckets.add('steel', piece);
+        take(x, z, 0.65);
+        counts.benches += 1;
+    };
+
+    // A pot of clay by a hall, and what grows in it: a clipped ball of box, a cone of yew, or a tumble of flowers.
+    const pot = (x, z) => {
+        const y = ground(x, z);
+        const clay = pick(TERRACOTTA);
+        buckets.add('stone', cylinder(0.24, 0.18, 0.44, 9, { x, y: y + 0.22, z }, clay));
+        buckets.add('stone', cylinder(0.26, 0.26, 0.05, 9, { x, y: y + 0.45, z }, clay));
+        const kind = random();
+        if (kind < 0.38) {
+            buckets.add('green', paint(pose(new IcosahedronGeometry(0.3, 1), { x, y: y + 0.78, z }), pick(FOLIAGE)));
+        } else if (kind < 0.66) {
+            buckets.add('green', cone(0.25, 0.95, 8, { x, y: y + 0.95, z }, pick(HEDGE)));
+        } else {
+            buckets.add('green', paint(pose(new IcosahedronGeometry(0.2, 0), { x, y: y + 0.6, z, sy: 0.7 }), pick(FOLIAGE)));
+            for (let leaf = 0; leaf < 3; leaf += 1) {
+                const clump = pose(new IcosahedronGeometry(0.14, 0), { x: x + random.range(-0.16, 0.16), y: y + random.range(0.62, 0.8), z: z + random.range(-0.16, 0.16) });
+                buckets.add('weed', paint(unindexed(swaying(clump, () => 1, 0.18)), pick(FOLIAGE)), { passable: true });
+            }
+            for (let bloom = 0; bloom < 5; bloom += 1) {
+                const flower = pose(new SphereGeometry(0.055, 5, 3), { x: x + random.range(-0.2, 0.2), y: y + random.range(0.7, 0.92), z: z + random.range(-0.2, 0.2) });
+                buckets.add('weed', paint(unindexed(swaying(flower, () => 1, 0.2)), pick(BLOOMS)), { passable: true });
+            }
+        }
+        take(x, z, 0.35);
+        counts.pots += 1;
+    };
+
+    // A sycamore: a trunk, and its crown in clumps, swaying a little in the wind.
+    const sycamore = (x, z, scale) => {
+        const y = ground(x, z);
+        const lean = random.range(-0.08, 0.08);
+        const trunk = [new Vector3(x, y, z), new Vector3(x + lean, y + 0.9 * scale, z - lean * 0.5), new Vector3(x - lean * 0.5, y + 1.8 * scale, z + lean)];
+        buckets.add('stone', unindexed(taperedTube(trunk, 0.15 * scale, 0.08 * scale, BARK, 8, 6)));
+        const crown = new Vector3(x, y + 2.35 * scale, z);
+        for (let clump = 0; clump < 5; clump += 1) {
+            const angle = (clump / 5) * Math.PI * 2 + random.range(-0.4, 0.4);
+            const out = (clump === 0 ? 0 : random.range(0.4, 0.75)) * scale;
+            const at = crown.clone().add(new Vector3(Math.cos(angle) * out, random.range(-0.25, 0.4) * scale, Math.sin(angle) * out));
+            const leaves = pose(new IcosahedronGeometry(random.range(0.55, 0.8) * scale, 1), { x: at.x, y: at.y, z: at.z, sy: 0.78 });
+            swaying(leaves, (px, py) => (py - y) / (3.2 * scale), 0.22);
+            buckets.add('weed', paint(unindexed(leaves), pick(FOLIAGE)), { passable: true });
+        }
+        take(x, z, 0.4);
+        counts.trees += 1;
+    };
+
+    // A raised bed of flowers, in a stone rim that comes to a body's knee (so it's walked round).
+    const flowerBed = (x, z) => {
+        const y = ground(x, z);
+        const rim = new LatheGeometry([
+            new Vector2(0.5, 0), new Vector2(0.47, 0.05), new Vector2(0.47, 0.6), new Vector2(0.44, 0.65), new Vector2(0.4, 0.62), new Vector2(0.4, 0.52),
+        ], 14);
+        buckets.add('stone', paint(pose(rim, { x, y, z }), STONE_PALE));
+        buckets.add('stone', paint(pose(new CircleGeometry(0.41, 14).rotateX(-Math.PI / 2), { x, y: y + 0.57, z }), SOIL));
+        for (let leaf = 0; leaf < 6; leaf += 1) {
+            const angle = random() * Math.PI * 2;
+            const r = Math.sqrt(random()) * 0.3;
+            const clump = pose(new IcosahedronGeometry(0.1, 0), { x: x + Math.cos(angle) * r, y: y + 0.66, z: z + Math.sin(angle) * r, sy: 0.7 });
+            buckets.add('weed', paint(unindexed(swaying(clump, () => 1, 0.1)), pick(FOLIAGE)), { passable: true });
+        }
+        for (let bloom = 0; bloom < 12; bloom += 1) {
+            const angle = random() * Math.PI * 2;
+            const r = Math.sqrt(random()) * 0.34;
+            const flower = pose(new SphereGeometry(0.05, 5, 3), { x: x + Math.cos(angle) * r, y: y + random.range(0.7, 0.86), z: z + Math.sin(angle) * r });
+            buckets.add('weed', paint(unindexed(swaying(flower, () => 1, 0.14)), pick(BLOOMS)), { passable: true });
+        }
+        take(x, z, 0.5);
+        counts.beds += 1;
+    };
+
+    // ----- The market -----
+
+    STALLS.forEach(([x, z, kind], index) => {
+        const facing = z > GATE_Z ? Math.PI : 0;
+        const at = { x, y: ground(x, z), z, ry: facing };
+        const color = AWNINGS[index % AWNINGS.length];
+        const wood = pick(TIMBER);
+        const solid = [];
+        const cloth = [];
+        const awning = [];
+        const glows = [];
+        for (const [px, pz, h] of [[-0.7, 0.36, 1.95], [0.7, 0.36, 1.95], [-0.7, -0.36, 2.2], [0.7, -0.36, 2.2]]) {
+            solid.push(box(0.07, h, 0.07, { x: px, y: h / 2, z: pz }, wood));
+        }
+        solid.push(bevelBox(1.5, 0.08, 0.72, { y: 0.92, z: 0.02 }, wood, 0.02));
+        solid.push(box(1.46, 0.86, 0.04, { y: 0.47, z: -0.37 }, wood));
+        cloth.push(box(1.46, 0.66, 0.03, { y: 0.55, z: 0.38 }, color));
+        cloth.push(box(1.46, 0.07, 0.035, { y: 0.8, z: 0.385 }, CANVAS));
+        // The awning, in stripes, sloping down to the front, and a scalloped valance along its edge.
+        const slope = Math.atan2(0.25, 0.72);
+        for (let stripe = 0; stripe < 6; stripe += 1) {
+            const sxAt = -0.675 + stripe * 0.27;
+            awning.push(box(0.27, 0.025, 1.22, { x: sxAt, y: 2.1, z: 0.05, rx: slope }, stripe % 2 ? CANVAS : color));
+            awning.push(cone(0.1, 0.13, 3, { x: sxAt, y: 1.77, z: 0.64, rx: Math.PI }, stripe % 2 ? color : CANVAS));
+        }
+        awning.push(box(1.62, 0.12, 0.02, { y: 1.88, z: 0.635 }, color));
+        glows.push(ball(0.07, { y: 1.64, z: 0.52 }, LAMP, 6, 4));
+        solid.push(cone(0.06, 0.08, 5, { y: 1.74, z: 0.52 }, IRON));
+        // What it sells, laid out on the counter.
+        const top = 0.96;
+        if (kind === 'fruit') {
+            for (const side of [-0.36, 0.36]) {
+                solid.push(box(0.52, 0.1, 0.36, { x: side, y: top + 0.05, z: 0.04 }, wood));
+                for (let piece = 0; piece < 7; piece += 1) {
+                    cloth.push(ball(0.07, { x: side + random.range(-0.18, 0.18), y: top + 0.14 + random.range(0, 0.04), z: 0.04 + random.range(-0.11, 0.11) }, pick(FRUIT), 6, 4));
+                }
+            }
+        } else if (kind === 'cloth') {
+            for (let bolt = 0; bolt < 5; bolt += 1) {
+                cloth.push(cylinder(0.065, 0.065, 0.5, 7, { x: -0.56 + bolt * 0.28, y: top + 0.065, z: 0.04, rx: Math.PI / 2 }, pick(AWNINGS)));
+            }
+            cloth.push(box(0.4, 0.05, 0.3, { x: 0.3, y: top + 0.16, z: 0.02, ry: 0.2 }, pick(BLOOMS)));
+        } else if (kind === 'books') {
+            // (A stall of books, in a city that is a book.)
+            for (const [px, pz, count] of [[-0.52, 0.02, 4], [-0.2, 0.1, 3], [0.14, -0.02, 5], [0.46, 0.08, 2]]) {
+                for (let book = 0; book < count; book += 1) {
+                    cloth.push(box(0.22, 0.05, 0.3, { x: px + random.range(-0.02, 0.02), y: top + 0.025 + book * 0.05, z: pz, ry: random.range(-0.18, 0.18) }, pick(BINDINGS)));
+                }
+            }
+            cloth.push(box(0.2, 0.012, 0.28, { x: 0.3, y: top + 0.06, z: 0.24, rz: 0.22, rx: -0.2 }, CANVAS));
+            cloth.push(box(0.2, 0.012, 0.28, { x: 0.5, y: top + 0.06, z: 0.24, rz: -0.22, rx: -0.2 }, CANVAS));
+        } else if (kind === 'pots') {
+            for (let vase = 0; vase < 5; vase += 1) {
+                const glaze = pick(GLAZES);
+                const px = -0.56 + vase * 0.28;
+                cloth.push(cylinder(0.07, 0.09, 0.18, 7, { x: px, y: top + 0.09, z: 0.04 }, glaze));
+                cloth.push(cylinder(0.04, 0.06, 0.08, 7, { x: px, y: top + 0.22, z: 0.04 }, glaze));
+            }
+        } else {
+            for (const px of [-0.45, 0, 0.45]) {
+                glows.push(ball(0.06, { x: px, y: 1.56, z: 0.42 }, pick(BULBS), 6, 4));
+                solid.push(cone(0.05, 0.07, 5, { x: px, y: 1.65, z: 0.42 }, IRON));
+                glows.push(ball(0.065, { x: px * 1.1, y: top + 0.08, z: 0.02 }, pick(BULBS), 6, 4));
+                solid.push(box(0.14, 0.02, 0.14, { x: px * 1.1, y: top + 0.01, z: 0.02 }, IRON));
+            }
+        }
+        // A crate behind it, and now and then a barrel (behind, so the ways between the stalls stay open).
+        solid.push(bevelBox(0.42, 0.42, 0.42, { x: 0.42, y: 0.21, z: -0.64, ry: random.range(-0.2, 0.2) }, pick(TIMBER), 0.03));
+        if (index % 2 === 0) {
+            solid.push(cylinder(0.19, 0.2, 0.56, 9, { x: -0.4, y: 0.28, z: -0.62 }, pick(TIMBER)));
+            for (const hoop of [0.12, 0.44]) solid.push(cylinder(0.205, 0.205, 0.04, 9, { x: -0.4, y: hoop, z: -0.62 }, IRON));
+        }
+        for (const piece of frame(solid, at)) buckets.add('stone', piece);
+        for (const piece of frame(cloth, at)) buckets.add('cloth', piece);
+        for (const piece of frame(awning, at)) buckets.add('cloth', piece, { passable: true });
+        for (const piece of frame(glows, at)) buckets.add('glow', piece);
+        take(x, z + (z > GATE_Z ? 0.2 : -0.2), 1.2);
+        counts.stalls += 1;
+    });
+
+    // Lanterns strung across the street above the market, pole to pole, from one side to the other and back.
+    const poleTop = (x, z) => new Vector3(x, ground(x, z) + 3.3, z);
+    const poles = [];
+    for (const side of ['south', 'north']) {
+        const { z, xs } = MARKET_POLES[side];
+        for (const x of xs) {
+            buckets.add('steel', cylinder(0.035, 0.045, 3.4, 5, { x, y: ground(x, z) + 1.7, z }, IRON));
+            buckets.add('steel', ball(0.06, { x, y: ground(x, z) + 3.42, z }, IRON, 6, 4));
+            take(x, z, 0.2);
+            poles.push({ x, z, side });
+        }
+    }
+    const south = poles.filter((pole) => pole.side === 'south');
+    const north = poles.filter((pole) => pole.side === 'north');
+    // (Each south pole to the north poles on either side of it, so the strings zig-zag down the street.)
+    const strings = [];
+    for (const pole of south) {
+        const before = north.filter((other) => other.x <= pole.x).pop();
+        const after = north.find((other) => other.x > pole.x);
+        for (const other of [before, after]) if (other) strings.push([pole, other]);
+    }
+    for (const [a, b] of strings) {
+        const curve = sagging(poleTop(a.x, a.z), poleTop(b.x, b.z), 0.42);
+        buckets.add('steel', paint(new TubeGeometry(curve, 14, 0.012, 3, false), IRON), { passable: true });
+        const length = curve.getLength();
+        const bulbs = Math.floor(length / 0.42);
+        for (let bulb = 1; bulb < bulbs; bulb += 1) {
+            const at = curve.getPointAt(bulb / bulbs);
+            buckets.add('glow', ball(0.05, { x: at.x, y: at.y - 0.07, z: at.z }, pick(BULBS), 6, 4), { passable: true });
+        }
+        counts.strings += 1;
+    }
+
+    // ----- The park -----
+
+    // The lawn: a grid laid on the ground's rise and fall, its corners drawn in to the rounded outline, greener
+    // and drier by turns.
+    {
+        const lawn = new PlaneGeometry(PARK.halfX * 2, PARK.halfZ * 2, 34, 16);
+        lawn.rotateX(-Math.PI / 2);
+        const position = lawn.attributes.position;
+        const innerX = PARK.halfX - PARK.corner;
+        const innerZ = PARK.halfZ - PARK.corner;
+        for (let index = 0; index < position.count; index += 1) {
+            let u = position.getX(index);
+            let v = position.getZ(index);
+            const dx = Math.abs(u) - innerX;
+            const dz = Math.abs(v) - innerZ;
+            if (dx > 0 && dz > 0 && Math.hypot(dx, dz) > PARK.corner) {
+                const k = PARK.corner / Math.hypot(dx, dz);
+                u = Math.sign(u) * (innerX + dx * k);
+                v = Math.sign(v) * (innerZ + dz * k);
+            }
+            const x = PARK.x + u;
+            const z = PARK.z + v;
+            position.setXYZ(index, x, groundY(x, z) + 0.07, z);
+        }
+        lawn.computeVertexNormals();
+        const tint = new Color();
+        buckets.add('green', paintBy(unindexed(lawn), (x, y, z, out) => {
+            const dry = noise2(x * 0.7 + 11.3, z * 0.7 - 4.1);
+            out.copy(tint.copy(GRASS).lerp(GRASS_DRY, MathUtils.smoothstep(dry, 0.35, 0.8) * 0.7));
+        }));
+    }
+    // The paths: a round court about the fountain, and a walk from it to either end.
+    {
+        const court = new CircleGeometry(1.6, 28);
+        court.rotateX(-Math.PI / 2);
+        const position = court.attributes.position;
+        for (let index = 0; index < position.count; index += 1) {
+            const x = PARK.x + position.getX(index);
+            const z = PARK.z + position.getZ(index);
+            position.setXYZ(index, x, groundY(x, z) + 0.1, z);
+        }
+        court.computeVertexNormals();
+        buckets.add('dimGold', paint(court, PAVE));
+        buckets.add('dimGold', groundStrip(PARK.x - PARK.halfX - 0.05, PARK.z, PARK.x - 1.3, PARK.z, 0.9, PAVE, 0.095));
+        buckets.add('dimGold', groundStrip(PARK.x + 1.3, PARK.z, PARK.x + PARK.halfX + 0.05, PARK.z, 0.9, PAVE, 0.095));
+    }
+    // Low hedges along its sides and its ends, open at the walks and at the corners.
+    {
+        const hedge = (x0, z0, x1, z1) => {
+            const length = Math.hypot(x1 - x0, z1 - z0);
+            const x = (x0 + x1) / 2;
+            const z = (z0 + z1) / 2;
+            buckets.add('green', bevelBox(length, 0.72, 0.42, { x, y: ground(x, z) + 0.36, z, ry: -Math.atan2(z1 - z0, x1 - x0) }, pick(HEDGE), 0.1));
+        };
+        const edgeX = PARK.halfX - 0.3;
+        const edgeZ = PARK.halfZ - 0.3;
+        for (const side of [-1, 1]) {
+            hedge(PARK.x - edgeX + PARK.corner * 0.7, PARK.z + side * edgeZ, PARK.x - 2.75, PARK.z + side * edgeZ);
+            hedge(PARK.x + 2.75, PARK.z + side * edgeZ, PARK.x + edgeX - PARK.corner * 0.7, PARK.z + side * edgeZ);
+            hedge(PARK.x + side * edgeX, PARK.z - edgeZ + PARK.corner * 0.7, PARK.x + side * edgeX, PARK.z - 0.65);
+            hedge(PARK.x + side * edgeX, PARK.z + 0.65, PARK.x + side * edgeX, PARK.z + edgeZ - PARK.corner * 0.7);
+        }
+    }
+    // Its sycamores, its beds of flowers, and benches looking in at the fountain.
+    for (const [dx, dz] of [[-2.95, -1.12], [-2.85, 1.15], [2.9, -1.1], [2.95, 1.12]]) sycamore(PARK.x + dx, PARK.z + dz, random.range(0.9, 1.1));
+    for (const [dx, dz] of [[-2.1, -1.38], [-2.1, 1.38], [2.1, -1.38], [2.1, 1.38]]) flowerBed(PARK.x + dx, PARK.z + dz);
+    bench(PARK.x, PARK.z - 2.12, 0);
+    bench(PARK.x, PARK.z + 2.12, Math.PI);
+    lamp(PARK.x - PARK.halfX - 0.3, PARK.z + 0.75);
+    lamp(PARK.x + PARK.halfX + 0.3, PARK.z - 0.75);
+
+    // The fountain: a basin of pale stone, a column rising from its water to a bowl, the bowl's water falling
+    // back into the basin in a glittering sheet, a jet rising from its top.
+    {
+        const x = PARK.x;
+        const z = PARK.z;
+        const y = ground(x, z);
+        const stone = (profile, segments) => paint(pose(new LatheGeometry(profile.map(([r, h]) => new Vector2(r, h)), segments), { x, y, z }), STONE_PALE);
+        // (Each profile runs up its outside, across its top and down its inside, so every face looks out.)
+        buckets.add('stone', stone([[1.0, 0], [0.95, 0.08], [0.95, 0.62], [0.91, 0.7], [0.8, 0.7], [0.75, 0.62], [0.75, 0.1]], 30));
+        buckets.add('stone', cylinder(0.12, 0.17, 1.05, 10, { x, y: y + 1.02, z }, STONE_PALE));
+        buckets.add('stone', stone([[0.12, 1.5], [0.42, 1.58], [0.58, 1.7], [0.6, 1.74], [0.55, 1.73], [0.3, 1.67], [0.0, 1.64]], 20));
+        buckets.add('gold', ball(0.1, { x, y: y + 1.86, z }, GOLDS[3], 10, 6));
+        buckets.add('gold', cone(0.07, 0.26, 8, { x, y: y + 2.05, z }, GOLDS[3]));
+        take(x, z, 1.1);
+
+        const uniforms = { time: { value: 0 }, centre: { value: new Vector3(x, y, z) } };
+        const water = [new CircleGeometry(0.76, 30).rotateX(-Math.PI / 2).translate(x, y + 0.55, z), new CircleGeometry(0.53, 20).rotateX(-Math.PI / 2).translate(x, y + 1.69, z)];
+        for (const disc of water) disc.setAttribute('aRise', new Float32BufferAttribute(new Float32Array(disc.attributes.position.count), 1));
+        const surface = new Mesh(mergeGeometries(water), new ShaderMaterial({ uniforms, vertexShader: FOUNTAIN_VERTEX, fragmentShader: FOUNTAIN_WATER }));
+        surface.name = 'fountain-water';
+        const fall = new CylinderGeometry(0.6, 0.66, 1.12, 32, 1, true).translate(x, y + 1.12, z);
+        const jet = new CylinderGeometry(0.015, 0.05, 0.55, 8, 1, true).translate(x, y + 2.42, z);
+        fall.setAttribute('aRise', new Float32BufferAttribute(new Float32Array(fall.attributes.position.count), 1));
+        jet.setAttribute('aRise', new Float32BufferAttribute(new Float32Array(jet.attributes.position.count).fill(1), 1));
+        const falling = new Mesh(mergeGeometries([fall, jet]), new ShaderMaterial({
+            uniforms,
+            vertexShader: FOUNTAIN_VERTEX,
+            fragmentShader: FOUNTAIN_FALL,
+            transparent: true,
+            blending: AdditiveBlending,
+            depthWrite: false,
+            side: DoubleSide,
+        }));
+        falling.name = 'fountain-fall';
+        falling.renderOrder = 2;
+        extras.push(surface, falling);
+        animated.push((time) => {
+            if (!still) uniforms.time.value = time;
+        });
+    }
+
+    // ----- Along the streets -----
+
+    // Lamps by turns on either side (none in the market, which has its lanterns), and a bench now and then
+    // between them, facing the street.
+    let turn = 1;
+    for (const { points, width } of STREETS) {
+        for (let index = 0; index < points.length - 1; index += 1) {
+            const [ax, az] = points[index];
+            const [bx, bz] = points[index + 1];
+            const length = Math.hypot(bx - ax, bz - az);
+            const wayX = (bx - ax) / length;
+            const wayZ = (bz - az) / length;
+            for (let along = LAMP_EVERY / 2; along < length; along += LAMP_EVERY) {
+                turn = -turn;
+                const out = width / 2 + 0.45;
+                const x = ax + wayX * along - wayZ * out * turn;
+                const z = az + wayZ * along + wayX * out * turn;
+                const inMarket = Math.abs(z - GATE_Z) < 2.6 && x > -8.5 && x < 2.5;
+                if (!inMarket && clear(x, z, 0.2, 0.15)) lamp(x, z);
+            }
+            for (let along = BENCH_EVERY / 2 + 1.7; along < length; along += BENCH_EVERY) {
+                const out = width / 2 + 0.75;
+                const side = -turn;
+                const x = ax + wayX * along - wayZ * out * side;
+                const z = az + wayZ * along + wayX * out * side;
+                const inMarket = Math.abs(z - GATE_Z) < 2.6 && x > -8.5 && x < 2.5;
+                // (It faces the street: back to its outside, the way out from the street's middle.)
+                const facing = Math.atan2(wayZ * side, -wayX * side);
+                if (!inMarket && clear(x, z, 0.62, 0.05)) bench(x, z, facing);
+            }
+        }
+    }
+
+    // ----- By the halls -----
+
+    // The faces of each hall that look onto a street (the two nearest at most): potted plants at their ends,
+    // out from the plinth; flowers in window boxes under some of the first storey's windows (where addHall lays
+    // them); and, on a tall hall's street face, now and then a banner of plain cloth.
+    for (const hall of halls) {
+        const hallAt = { x: hall.x, y: hall.base, z: hall.z, ry: hall.turn };
+        const faces = [
+            { across: hall.width, out: hall.depth / 2, turn: 0 },
+            { across: hall.width, out: hall.depth / 2, turn: Math.PI },
+            { across: hall.depth, out: hall.width / 2, turn: Math.PI / 2 },
+            { across: hall.depth, out: hall.width / 2, turn: -Math.PI / 2 },
+        ];
+        const local = (face, along, y, out) => {
+            const c = Math.cos(face.turn);
+            const s = Math.sin(face.turn);
+            return { x: along * c + out * s, y, z: -along * s + out * c, ry: face.turn };
+        };
+        const onto = faces
+            .map((face) => {
+                const middle = local(face, 0, 0, face.out + 1);
+                const world = inFrame(middle.x, 0, middle.z, hallAt);
+                return { face, gap: streetGap(world.x, world.z) };
+            })
+            .filter(({ gap }) => gap < 3.2)
+            .sort((a, b) => a.gap - b.gap)
+            .slice(0, 2);
+        onto.forEach(({ face, gap }, which) => {
+            for (const along of [-(face.across / 2 - 0.3), face.across / 2 - 0.3]) {
+                const spot = local(face, along, 0, face.out + 0.62);
+                const world = inFrame(spot.x, 0, spot.z, hallAt);
+                if (clear(world.x, world.z, 0.3, 0.05) && !inHall(world.x, world.z, -0.3)) pot(world.x, world.z);
+            }
+            const columns = Math.max(1, Math.floor((face.across - 0.5) / 0.72));
+            const spacing = (face.across - 0.5) / columns;
+            const pieces = [];
+            const plants = [];
+            for (let column = 0; column < columns; column += 1) {
+                if (random() > 0.42) continue;
+                const along = -face.across / 2 + 0.25 + spacing * (column + 0.5);
+                pieces.push(box(0.34, 0.1, 0.13, local(face, along, 2.48, face.out + 0.08), pick(TERRACOTTA)));
+                for (let bloom = 0; bloom < 4; bloom += 1) {
+                    const sprig = new SphereGeometry(bloom < 2 ? 0.06 : 0.045, 5, 3);
+                    pose(sprig, local(face, along + random.range(-0.13, 0.13), 2.58 + random.range(0, 0.05), face.out + 0.1 + random.range(-0.03, 0.03)));
+                    plants.push(paint(sprig, bloom < 2 ? pick(FOLIAGE) : pick(BLOOMS)));
+                }
+                counts.windowBoxes += 1;
+            }
+            if (which === 0 && gap < 1.5 && hall.height > 5.8 && random() < 0.6) {
+                const color = pick(AWNINGS);
+                pieces.push(box(0.66, 0.035, 0.035, local(face, 0, 5.1, face.out + 0.2), IRON));
+                const banner = [
+                    box(0.52, 1.36, 0.015, local(face, 0, 4.38, face.out + 0.14), color),
+                    box(0.52, 0.08, 0.02, local(face, 0, 3.78, face.out + 0.145), CANVAS),
+                    paint(pose(new CylinderGeometry(0.12, 0.12, 0.02, 14).rotateX(Math.PI / 2), local(face, 0, 4.6, face.out + 0.15)), GOLDS[3]),
+                ];
+                for (const piece of frame(banner, hallAt)) buckets.add('cloth', piece, { passable: true });
+                counts.banners += 1;
+            }
+            for (const piece of frame(pieces, hallAt)) buckets.add('stone', piece);
+            for (const piece of frame(plants, hallAt)) buckets.add('weed', unindexed(holdsFast(piece)), { passable: true });
+        });
+    }
+    return counts;
+}
+
+// =============================================================================
 // Main Code
 // =============================================================================
 
@@ -2885,6 +3460,12 @@ export async function buildPlaces(buckets, placeData, materials, pause = async (
     // The golden bridges between the buildings (a stream of their own), and the clock their dust keeps.
     const bridges = buildGoldenBridges(buckets, materials, houses.hallSpecs, spires ?? [], byId);
     if (bridges) animated.push((time) => { bridges.uniforms.bridgeTime.value = time; });
+    // The city dressed: its market, lamps, benches, plants, and its park and fountain (Elm's ask; a stream of its
+    // own; the grand city's; ?dressing=off leaves it out).
+    const dressed = new URLSearchParams(globalThis.location?.search ?? '').get('dressing') !== 'off';
+    const dressing = dressed && houses.hallSpecs
+        ? buildDressing(buckets, { halls: houses.hallSpecs, spires: spires ?? [], byId, extras, animated, still })
+        : null;
 
     return {
         anchors,
@@ -2905,6 +3486,8 @@ export async function buildPlaces(buckets, placeData, materials, pause = async (
         bridgeSight: bridges?.uniforms.bridgeSight.value ?? null,
         /** The bridges' dust, drawn over their merged mesh (stage.js makes it once the buckets are built). */
         bridgeDust: bridges?.dustOf ?? null,
+        /** What the dressing set down, by kind (for the local checks), or null. */
+        dressing,
         /** What a touch may find, and the words it opens: [{ kind, center, radius, fragment }] (touch.js). */
         touch: [...built.values()].flatMap((result) => result?.touch ?? []),
         update(time) {

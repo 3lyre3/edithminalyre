@@ -25,12 +25,15 @@
 import { createAudio } from './modules/audio.js';
 import { speak, wantedExtras } from './modules/extras.js';
 import { createHotspots, createPointList } from './modules/hotspots.js';
+import { createNames } from './modules/names.js';
 import { WORKS, createReader } from './modules/reader.js';
 import { createSignList, createSignOverlay } from './modules/signs.js';
 import { createRenderer, createStage, fitRenderer } from './modules/stage.js';
 import { crossedThisVisit, markRead, readFragments, rememberCrossed, rememberSound, soundWanted } from './modules/state.js';
 import { createThreshold } from './modules/threshold.js';
 import { createTouch } from './modules/touch.js';
+import { trialOn } from './modules/trials.js';
+import { createWhisper } from './modules/whisper.js';
 
 // =============================================================================
 // Constants
@@ -44,6 +47,11 @@ const NEAR_POINT = 3.2;
 
 /** A touched thing answers (its ring, its sound), and this long after, its words open (ms). */
 const TOUCH_PAUSE = 450;
+
+/** The hint (a trial, trials.js): once no more than this many passages are left unread, the count says where. */
+const HINT_FEW = 3;
+/** And their points glint this often (seconds; else hotspots.js's own pace). */
+const HINT_GLINT = 3.5;
 
 // =============================================================================
 // Main Code
@@ -176,13 +184,19 @@ async function boot() {
     ]);
     const places = new Map(placeData.places.map((place) => [place.id, place]));
     const fragmentById = new Map(fragmentData.fragments.map((fragment) => [fragment.id, fragment]));
-    const readable = fragmentData.fragments.filter((fragment) => places.get(fragment.place)?.tier === 1);
+    // (A passage on trial, trials.js, is read only while its trial is on.)
+    const readable = fragmentData.fragments.filter((fragment) => places.get(fragment.place)?.tier === 1
+        && (!fragment.trial || trialOn(fragment.trial)));
     const lines = VOICE_FRAGMENTS.map((id) => fragmentById.get(id)).filter(Boolean).flatMap((fragment, index) => (
         index === 0 ? fragment.text.split(/\n{2,}/) : [fragment.text]
     ));
+    // E's own lines, of those (the first passage's), are the ones a long stillness whispers again (whisper.js).
+    const whispered = fragmentById.get(VOICE_FRAGMENTS[0])?.text.split(/\n{2,}/) ?? [];
     fillPrompt(fragmentById.get(PROMPT_FRAGMENT));
 
     const read = readFragments();
+    const hinting = trialOn('hint');
+    const unreadCount = () => readable.filter((fragment) => !read.has(fragment.id)).length;
     let stage = null;
     let hotspots = null;
     let signOverlay = null;
@@ -214,7 +228,10 @@ async function boot() {
         }
         // (A place read at before is gone "back to", so a thread that comes round again says so.)
         const returning = Boolean(next) && next.place !== fragment.place && visited.has(next.place);
-        return { next, returning, read: readable.filter((candidate) => read.has(candidate.id)).length, total: readable.length };
+        // (The hint, on trial: the last few left unread, and where they are.)
+        const left = readable.filter((candidate) => !read.has(candidate.id));
+        const lastAt = hinting && left.length > 0 && left.length <= HINT_FEW ? [...new Set(left.map((candidate) => candidate.place))] : null;
+        return { next, returning, read: readable.length - left.length, total: readable.length, lastAt };
     };
     let open = null;
     const reader = createReader({
@@ -290,6 +307,8 @@ async function boot() {
                     places,
                     label: byId('point-label'),
                     reducedMotion,
+                    // (The hint, on trial: the last few unread glint more often.)
+                    glintEvery: () => (hinting && unreadCount() <= HINT_FEW ? HINT_GLINT : null),
                     onPick: (fragment) => open(fragment, null),
                     // A tap on the shadow is the shadow's (walk.js); one squarely on a sign is the sign's.
                     yieldTap: (x, y, pointDistance) => (stage.walk?.claimsTap(x, y) ?? false)
@@ -358,6 +377,32 @@ async function boot() {
     if (debug) window.elysicesterDebug.threshold = passage;
     pointsNav.inert = false;
     if (extras.has('voice')) speak(readable.filter((fragment) => fragment.status === 'approved'), WORKS);
+
+    // The trials (trials.js): a whisper after a long stillness, taken up where the flight's lines left off;
+    // and the places' faint names from far out.
+    if (stage && trialOn('whisper')) {
+        const whisper = createWhisper({
+            element: byId('whisper'),
+            lines: whispered,
+            from: (passage?.linesShown ?? 0) < whispered.length ? passage?.linesShown ?? 0 : 0,
+            isBusy: () => reader.isOpen,
+            onFrame: (listener) => stage.onFrame(listener),
+        });
+        if (debug) window.elysicesterDebug.whisper = whisper;
+    }
+    if (stage && trialOn('names')) {
+        const pointLabel = byId('point-label');
+        const names = createNames({
+            container: byId('place-names'),
+            stage,
+            places,
+            fragments: readable,
+            read,
+            hint: hinting,
+            litPlace: () => (pointLabel.hidden ? null : readable.find((fragment) => fragment.id === pointLabel.dataset.fragment)?.place ?? null),
+        });
+        if (debug) window.elysicesterDebug.names = names;
+    }
 
     if (stage) {
         const home = byId('home-view');
