@@ -318,6 +318,78 @@ a:focus-visible {
 }
 
 /*
+ * The places' faint names, from far out (a trial, names.js): each a little above its place, drawn light on the
+ * dusk, taking no touch. Places read through are fainter still (names.js sets each one's strength).
+ */
+.place-names {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.place-name {
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform: translate(-50%, -100%);
+    font-family: var(--font-display);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: #f1e6cc;
+    text-shadow: 0 0 6px rgba(3, 2, 6, 0.95), 0 0 2px rgba(3, 2, 6, 1);
+    transition: opacity 0.5s linear;
+}
+
+/*
+ * A whisper over the water, after a long stillness (a trial, whisper.js): one of E's lines, low in the view,
+ * rising a little as it comes and sinking as it goes.
+ */
+.whisper {
+    position: fixed;
+    left: 50%;
+    bottom: 14vh;
+    z-index: 25;
+    width: min(26em, calc(100vw - 48px));
+    margin: 0;
+    transform: translate(-50%, 10px);
+    font-family: var(--font-display);
+    font-size: clamp(19px, 2.5vw, 25px);
+    font-style: italic;
+    line-height: 1.35;
+    letter-spacing: 0.02em;
+    text-align: center;
+    text-wrap: balance;
+    color: #ebe8f8;
+    text-shadow: 0 0 14px rgba(160, 150, 230, 0.6), 0 0 3px rgba(3, 2, 6, 0.95);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 2.8s ease, transform 7s ease-out;
+}
+
+.whisper.is-whispering {
+    opacity: 0.84;
+    transform: translate(-50%, 0);
+    transition: opacity 2.4s ease, transform 7s ease-out;
+}
+
+.whisper.is-quick {
+    transition: opacity 0.6s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .whisper,
+    .whisper.is-whispering {
+        transform: translate(-50%, 0);
+        transition: opacity 0.3s linear;
+    }
+}
+
+/*
  * A sign's words, floated over its plate: the Danæam above, and beneath it the
  * site's gloss where the site gives one.
  */

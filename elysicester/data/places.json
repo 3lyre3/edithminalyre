@@ -18,6 +18,14 @@
       "focus": { "distance": 16, "height": 5 }
     },
     {
+      "id": "jetty-end",
+      "tier": 1,
+      "district": "docks",
+      "label": "The end of the jetty",
+      "position": [24.4, 1.3, -3.2],
+      "focus": { "distance": 12, "height": 3.2, "azimuth": 50 }
+    },
+    {
       "id": "flags",
       "tier": 1,
       "district": "crossroads",

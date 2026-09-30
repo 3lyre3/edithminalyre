@@ -437,7 +437,7 @@ async function drag(page, context, isTouch, from, to) {
 
 async function hideChrome(page) {
     // The page lays the site's grain over the still as over the scene, so the still itself is shot without it.
-    await page.addStyleTag({ content: '.plainly, .debug-readout, .controls, .threshold-voice, .veil, .point-label, .sign-label, .grain { visibility: hidden !important; }' });
+    await page.addStyleTag({ content: '.plainly, .debug-readout, .controls, .threshold-voice, .veil, .point-label, .sign-label, .place-names, .place-name, .whisper, .grain { visibility: hidden !important; }' });
 }
 
 /** Encode a PNG as a WebP of the given size, using the browser's own encoder. */

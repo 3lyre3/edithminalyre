@@ -11,9 +11,9 @@
  * blue-red mirror-gates ringed with nodes, after the wheel at the centre of
  * Elm's cosmology plate, drawn in characters as ASCII art is (Elm's ask): each
  * cell of a grid takes the maze's colour at its middle, and a character as
- * dense as that colour is bright. Low across it runs the rail E leans against
- * (the bars of the Heltix's caged chassis stood in front of it too, once:
- * ?bars=on, to compare; Elm let the swirl stand without them). The flight
+ * dense as that colour is bright. (The bars of the Heltix's caged chassis stood
+ * in front of it once, and the rail E leans against ran low across it: ?bars=on
+ * brings both back, to compare; Elm let the swirl stand without them.) The flight
  * doubles as the loading screen: it ends once the city is ready and a minimum
  * passage has played. A tap or Esc skips it (the city still has to be ready).
  * On the way, E's inner voice surfaces a line at a time. Under reduced motion
@@ -158,7 +158,8 @@ const fragmentShader = /* glsl */ `
         vec3 color = tone * 0.06 + (tone * 1.25 + 0.03) * ink;
 
         // (Asked for, ?bars=on: the bars of the Heltix's caged chassis, two to each side, swaying a little:
-        // solid and round, slimmer on a tall, narrow screen. Elm let the swirl stand without them.)
+        // solid and round, slimmer on a tall, narrow screen; and the rail E leans against, low across the view,
+        // round too, lit from above, a glint along its top. Elm let the swirl stand without either.)
         float pixel = 1.0 / resolution.y;
         if (bars > 0.5) {
             float aspect = resolution.x / resolution.y;
@@ -170,15 +171,14 @@ const fragmentShader = /* glsl */ `
                 vec4 iron = bar((across - at) / barHalf, index < 2 ? 1.0 : -1.0, pixel / barHalf, tone);
                 color = mix(color, iron.rgb, iron.a);
             }
-        }
 
-        // The rail E leans against, low across the view: round too, lit from above, a glint along its top.
-        float railY = 0.085;
-        float railHalf = 0.019;
-        float t = (uv.y - railY) / railHalf;
-        vec4 rail = bar(t, 1.0, pixel / railHalf, tone);
-        float glint = smoothstep(0.25, 0.0, abs(t - 0.62)) * (0.55 + 0.45 * sin(uv.x * 9.0 - time * 1.3));
-        color = mix(color, rail.rgb + vec3(0.85, 0.68, 0.36) * glint * 0.5, rail.a);
+            float railY = 0.085;
+            float railHalf = 0.019;
+            float t = (uv.y - railY) / railHalf;
+            vec4 rail = bar(t, 1.0, pixel / railHalf, tone);
+            float glint = smoothstep(0.25, 0.0, abs(t - 0.62)) * (0.55 + 0.45 * sin(uv.x * 9.0 - time * 1.3));
+            color = mix(color, rail.rgb + vec3(0.85, 0.68, 0.36) * glint * 0.5, rail.a);
+        }
 
         color += (hash12(floor(gl_FragCoord.xy) + floor(time * 20.0)) - 0.5) * 0.05;
         gl_FragColor = vec4(color * fade, 1.0);
@@ -344,7 +344,7 @@ export function createThreshold({ root, card, begin, voice, onBegin, returning =
                 glyphs: { value: atlas.texture },
                 glyphCount: { value: atlas.count },
                 cell: { value: cell },
-                // The Heltix's bars stand in front only when asked for (?bars=on): the swirl is the way in.
+                // The Heltix's bars and E's rail stand in front only when asked for (?bars=on): the swirl is the way in.
                 bars: { value: new URLSearchParams(window.location.search).get('bars') === 'on' ? 1 : 0 },
             };
             const material = new ShaderMaterial({ uniforms, vertexShader, fragmentShader, depthTest: false, depthWrite: false });

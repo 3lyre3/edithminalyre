@@ -58,6 +58,21 @@
       "status": "approved"
     },
     {
+      "id": "nbp-e5-jetty-end-1",
+      "place": "jetty-end",
+      "work": "nbp",
+      "source": "Agamemnon, Episode 5 (thesis p. 76)",
+      "text": "Two days later, at roughly 3AM, Cassandra’s shadow sent a message reading: we’re going somewhere you won’t believe, hope someday you’ll find us here, and never reappeared, her desk, her computer, her emberling all abandoned and left to Cassandra’s care. She’s an adult, Cassandra supposed. There’s no point chasing her.",
+      "read_on": "https://digital.library.adelaide.edu.au/server/api/core/bitstreams/9cbedc1a-5eac-4ee5-b909-320c83028bba/content#page=76",
+      "offset": [
+        0,
+        0,
+        0
+      ],
+      "trial": "jetty",
+      "status": "approved"
+    },
+    {
       "id": "nbp-e3-flags-1",
       "place": "flags",
       "work": "nbp",

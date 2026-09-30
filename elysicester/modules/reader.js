@@ -9,7 +9,8 @@
  * foot, the thread on: "on to" the nearest place not yet read ("back to" a
  * place read at before, when the thread comes round again), "walk from here"
  * (as the shadow, from this place), and a quiet count of how many have been
- * read. Esc closes it, and focus returns to whatever
+ * read (with the hint on trial, once only a few are left, where they wait).
+ * Esc closes it, and focus returns to whatever
  * opened it. A tap outside it closes it, and if the tap was on one of the
  * corner controls or links, that answers too (one tap, not two).
  */
@@ -56,6 +57,11 @@ function appendWithItalics(element, text, italicRuns) {
 /** A place's name as it runs on in a sentence: "The sea-wall" becomes "the sea-wall". */
 function inSentence(label) {
     return label.replace(/^The /, 'the ');
+}
+
+/** Names run together as a sentence has them: "a", "a and b", "a, b and c". */
+function listed(names) {
+    return names.length < 2 ? names.join('') : `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`;
 }
 
 /**
@@ -179,7 +185,10 @@ export function createReader({ dialog, places, onClose, onward, onOnward, canWal
                     onButton.hidden = !next;
                     const name = inSentence(nextPlace?.label ?? '');
                     onButton.textContent = !next ? '' : again ? `more from ${name}` : way.returning ? `back to ${name}` : `on to ${name}`;
-                    count.textContent = `${way.read} of ${way.total} read`;
+                    // (The hint, on trial: once only a few are left, where they wait.)
+                    const left = way.total - way.read;
+                    const where = way.lastAt?.length ? listed(way.lastAt.map((id) => inSentence(places.get(id)?.label ?? ''))) : '';
+                    count.textContent = `${way.read} of ${way.total} read${where ? ` · the last ${left === 1 ? 'waits' : 'wait'} at ${where}` : ''}`;
                 }
             }
             if (walkButton) walkButton.hidden = !(canWalk?.(fragment) ?? false);
