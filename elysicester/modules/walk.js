@@ -44,9 +44,11 @@ import {
     BoxGeometry,
     Color,
     CylinderGeometry,
+    DataTexture,
     DepthTexture,
     Frustum,
     Group,
+    LinearFilter,
     MathUtils,
     Matrix4,
     Mesh,
@@ -54,12 +56,14 @@ import {
     NearestFilter,
     OrthographicCamera,
     Raycaster,
+    RedFormat,
     RingGeometry,
     Scene,
     Sphere,
     SphereGeometry,
     Vector2,
     Vector3,
+    Vector4,
     WebGLRenderTarget,
 } from 'three';
 import { createBanshee } from './banshee.js';
@@ -99,8 +103,9 @@ const STAND_STEP = 0.3;
 /**
  * The camera, walking, stands above and behind the one casting the shadow (Elm's ask), and looks at the shadow itself,
  * its middle as it lies (Elm: "can we centre the shadow more somehow? so it aligns more closely with the central
- * moving object of the controlled figure?"): how far back (a little further on a screen held upright, where there's
- * less room across), how steeply it looks down (its angle from straight overhead), and how quickly it comes round
+ * moving object of the controlled figure?"): how far back it stood before it could come in close (the zoom's measure;
+ * a little further on a screen held upright, where there's less room across; FOLLOW_START is where it stands at
+ * first), how steeply it looks down from there (its angle from straight overhead), and how quickly it comes round
  * behind the way the walker goes (by the sideways part of its going, so walking straight at the camera never whirls
  * it round).
  */
@@ -117,6 +122,8 @@ const CHASE = 1.0;
  */
 const FOLLOW_NEAR = 3;
 const FOLLOW_FAR = 12;
+/** Where it stands at first: close in, over the shadow's shoulder (Elm: "the camera being close to the shadow is better/ideal"). */
+const FOLLOW_START = 3.6;
 const CLOSE_PHI = 1.12;
 const CLOSE_CHASE = 2.5;
 /** Close in, the dust's opening about the lens is smaller (open within, whole again from; dust.js). */
@@ -163,6 +170,8 @@ const STICK_REACH = 58;
 const TAP_REACH = { mouse: 22, pen: 26, touch: 36 };
 /** Walking, how near the shadow's middle (a share of TAP_REACH) a tap must land to let go (anywhere else walks it there). */
 const MIDDLE_REACH = 0.7;
+/** Where its floor drops by more than this (world units: the jetty's edge, a platform's), the shadow falls on below it. */
+const FLOOR_DROP = 0.3;
 /** A finger held still this long (ms) walks the shadow toward it; and a press this long isn't a tap. */
 const HOLD_AFTER = 250;
 /** Walking to a spot: how near is there, how far off a spot may be (world units), and how long without getting nearer gives up (s). */
@@ -339,13 +348,18 @@ function waterfrontDecks(meshes) {
             }
         }
     }
-    return (x, z) => {
+    const deckAt = (x, z) => {
         const col = Math.floor((x - region.x0) / cell);
         const row = Math.floor((z - region.z0) / cell);
         if (col < 0 || row < 0 || col >= width || row >= depth) return null;
         const top = tops[row * width + col];
         return Number.isNaN(top) ? null : top;
     };
+    // (Where the decks are, as a picture a shader can read: the water under them takes none of the walker's shadow.)
+    const map = new Uint8Array(width * depth);
+    for (let at = 0; at < map.length; at += 1) map[at] = Number.isNaN(tops[at]) ? 0 : 255;
+    deckAt.picture = { map, width, depth, region };
+    return deckAt;
 }
 
 function shortest(angle) {
@@ -403,6 +417,12 @@ export function createWalk({ light, reducedMotion }) {
         walkerReach: { value: SHADOW_REACH / (LIGHT_FAR - 0.5) },
         // How near the camera the thin things aren't drawn (walkerClears): only while walking.
         walkClear: { value: 0 },
+        // The water's own (sea.js): where the decks are (attach draws them), where the walker stands (w: 1 on a deck),
+        // and the way to the light, so the water takes only the shadow that misses the deck the walker stands on.
+        walkerDecks: { value: null },
+        walkerDeckRegion: { value: new Vector4(0, 0, 0, 0) },
+        walkerDeck: { value: new Vector4(0, 0, 0, 0) },
+        walkerToLight: { value: toLight.clone() },
     };
 
     const state = {
@@ -447,9 +467,11 @@ export function createWalk({ light, reducedMotion }) {
     let dustTargets = null;
     let dustNear = null;
     const lensOpen = new Vector2(1.1, 3.0);
-    /** How far back the walking camera stands: FOLLOW at first; the wheel, a pinch, or + and − bring it in or draw it back. */
-    let followDistance = FOLLOW;
+    /** How far back the walking camera stands: close in at first; the wheel, a pinch, or + and − bring it in or draw it back. */
+    let followDistance = FOLLOW_START;
     const reachOf = new Vector3();
+    /** Where the shadow lies on its floor (shadowLies): how far from its feet, and whether a wall stops it there. */
+    const lies = { along: 0, wall: false };
     /** A pointer pressed on the city while walking: { id, type, startX, startY, x, y, time, aimed }. */
     let press = null;
     /** The spot it walks to (a tap, or a pointer held down): { x, y, z, held, best, since }, or null. */
@@ -853,26 +875,42 @@ export function createWalk({ light, reducedMotion }) {
      * back down only once the lower view has stayed clear a while.
      */
     /**
-     * Where the shadow lies on the ground, from its feet: as far as a dusk shadow of its height reaches, or, if a
-     * wall catches it first (the walls map, at a body's height), as far as that wall. Returns that distance.
+     * Where the shadow lies on its floor, from its feet (into `lies`, which it returns): as far as a dusk shadow of its
+     * height reaches (along); or, if a wall catches it first (the walls map, at a body's height), as far as that wall
+     * (wall: true, and the rest climbs it); or, if its floor ends first (the jetty's edge, a platform's), as far as
+     * that edge (wall: false: the rest falls to whatever's below, the water, the paving, further on).
      */
-    function shadowOnGround() {
+    function shadowLies() {
+        lies.wall = false;
         for (let along = 0.25; along < shadowLength; along += 0.08) {
-            if (wallCell(state.position.x + shadowWay.x * along, state.position.z + shadowWay.z * along)) return along;
+            const x = state.position.x + shadowWay.x * along;
+            const z = state.position.z + shadowWay.z * along;
+            if (wallCell(x, z)) {
+                lies.wall = true;
+                lies.along = along;
+                return lies;
+            }
+            const floor = floorAt(x, z, state.position.y);
+            if (floor === null || floor < state.position.y - FLOOR_DROP) {
+                lies.along = along;
+                return lies;
+            }
         }
-        return shadowLength;
+        lies.along = shadowLength;
+        return lies;
     }
 
     /**
-     * The middle of the shadow as it lies, into `out`: halfway along it from its feet, on the ground, or, where a wall
-     * catches it before its middle, that far up the wall.
+     * The middle of the shadow as it lies on its floor, into `out`: halfway along it from its feet, or, where a wall
+     * catches it before its middle, that far up the wall. (Where its floor ends, the middle of what lies on it: the
+     * rest has fallen further on, below.)
      */
-    function shadowCentre(out, onGround = shadowOnGround()) {
-        const climb = onGround < shadowLength ? (shadowLength - onGround) * slope : 0;
-        const half = (onGround + climb) / 2;
-        if (half <= onGround) return alongShadow(out, half);
-        alongShadow(out, onGround - 0.12);
-        out.y += half - onGround;
+    function shadowCentre(out, lie = shadowLies()) {
+        const climb = lie.wall ? (shadowLength - lie.along) * slope : 0;
+        const half = (lie.along + climb) / 2;
+        if (half <= lie.along) return alongShadow(out, half);
+        alongShadow(out, lie.along - 0.12);
+        out.y += half - lie.along;
         return out;
     }
 
@@ -888,16 +926,16 @@ export function createWalk({ light, reducedMotion }) {
      * any part of the shadow"): the one casting it; the shadow on the ground, at its feet, its middle and its tip
      * (or where a wall catches it); and, if a wall does, up that wall, as high as the shadow climbs.
      */
-    function aimDust(onGround) {
+    function aimDust(lie) {
         const [feet, halfway, end, up] = dustTargets;
         // (The line to its feet keeps the one casting it in sight too: they stand over them.)
         alongShadow(feet, 0.15);
-        alongShadow(halfway, onGround * 0.5);
-        alongShadow(end, Math.max(0.3, onGround - 0.1));
-        if (onGround < shadowLength - 0.05) {
+        alongShadow(halfway, lie.along * 0.5);
+        alongShadow(end, Math.max(0.3, lie.along - 0.1));
+        if (lie.wall && lie.along < shadowLength - 0.05) {
             // (A dusk shadow rises up a wall as far as it would have gone on along the ground, over its slope.)
-            const climb = (shadowLength - onGround) * slope;
-            alongShadow(up, onGround - 0.12, DUST_KEEP_WALL).y += climb * 0.55 - 0.15;
+            const climb = (shadowLength - lie.along) * slope;
+            alongShadow(up, lie.along - 0.12, DUST_KEEP_WALL).y += climb * 0.55 - 0.15;
         } else {
             up.w = -1;
         }
@@ -912,16 +950,16 @@ export function createWalk({ light, reducedMotion }) {
 
     function follow(dt) {
         const aspect = camera.aspect || 1;
-        // How close the visitor has brought the camera: 0 where it stands at first, 1 closest.
+        // How close the camera is: 0 at FOLLOW (as it stood before it came in close), 1 closest.
         const close = MathUtils.clamp((FOLLOW - followDistance) / (FOLLOW - FOLLOW_NEAR), 0, 1);
         if (!reducedMotion && state.moving > 0.2) {
             const chase = (steeredBy === 'pointing' ? CHASE_POINTING : CHASE) * (1 + (CLOSE_CHASE - 1) * close);
             followTheta += Math.sin(shortest(behindOf(state.heading) - followTheta)) * chase * state.moving * dt;
         }
         lead.lerp(ahead.copy(velocity).multiplyScalar(reducedMotion ? 0 : LEAD), 1 - Math.exp(-2.5 * dt));
-        const onGround = shadowOnGround();
+        const lie = shadowLies();
         // It looks at the shadow itself, its middle as it lies, ahead by as much as its easing trails the going.
-        const target = shadowCentre(rig.goal.target, onGround).add(lead);
+        const target = shadowCentre(rig.goal.target, lie).add(lead);
         // (No golden bridge stands between the camera and the walker: there, its gold comes apart into dust.)
         bridgeSight?.set(state.position.x, state.position.y + TALL * 0.5, state.position.z, 1);
         // (Nor anything else between the camera and any of the shadow, where the city comes apart into dust: then
@@ -931,7 +969,7 @@ export function createWalk({ light, reducedMotion }) {
             // (Its y is the floor the one casting it stands on: floors at or below it never come apart. Its x is set
             // by aimDust.)
             dustSight.set(0, state.position.y, 0, 1);
-            if (dustTargets) aimDust(onGround);
+            if (dustTargets) aimDust(lie);
             dustNear?.set(MathUtils.lerp(lensOpen.x, CLOSE_LENS[0], close), MathUtils.lerp(lensOpen.y, CLOSE_LENS[1], close));
         }
         // (Close against a wall, the one casting it may be all but in it: the sight is felt for from out of it.)
@@ -1148,6 +1186,18 @@ export function createWalk({ light, reducedMotion }) {
         attach(parts) {
             ({ rig, camera, canvas, solids, hollowMap, wallShadow } = parts);
             decks = waterfrontDecks(parts.meshes);
+            // (The decks, as a picture the water reads, so it takes only the shadow that misses them: sea.js.)
+            if (decks.picture) {
+                const { map, width, depth, region } = decks.picture;
+                const picture = new DataTexture(map, width, depth, RedFormat);
+                picture.unpackAlignment = 1;
+                picture.magFilter = LinearFilter;
+                picture.minFilter = LinearFilter;
+                picture.generateMipmaps = false;
+                picture.needsUpdate = true;
+                uniforms.walkerDecks.value = picture;
+                uniforms.walkerDeckRegion.value.set(region.x0, region.z0, 1 / (region.x1 - region.x0), 1 / (region.z1 - region.z0));
+            }
             floors = parts.floors ?? [];
             bridgeSight = parts.bridgeSight ?? null;
             dustSight = parts.dustSight ?? null;
@@ -1426,6 +1476,23 @@ export function createWalk({ light, reducedMotion }) {
         },
 
         /**
+         * Begin the visit as the shadow (main.js; the dock trial, trials.js; Elm: "after loading in it starts from
+         * the shadow's perspective? Immediately on the dock?"): taken where it waits at the jetty's end, the camera
+         * already behind it as the city lifts out of the dark, rather than coming down to it from the whole city.
+         * It turns from the sea to face the city, as it does when taken there. False if there's no shadow to take.
+         */
+        arrive() {
+            walk.take();
+            if (!state.walking) return false;
+            follow(0);
+            rig.now.target.copy(rig.goal.target);
+            rig.now.radius = rig.goal.radius;
+            rig.now.theta = rig.goal.theta;
+            rig.now.phi = rig.goal.phi;
+            return true;
+        },
+
+        /**
          * Back to the end of the jetty (R, or Home), facing the city again, wherever the shadow has got to: a
          * way out of any corner. The camera comes round behind it, across the city.
          */
@@ -1550,6 +1617,10 @@ export function createWalk({ light, reducedMotion }) {
                 }
             }
             if (!state.present) return;
+            // (Where it stands, and whether that's a deck over the water, for the water's share of the shadow.)
+            const deck = decks?.(state.position.x, state.position.z) ?? null;
+            uniforms.walkerDeck.value.set(state.position.x, state.position.y, state.position.z,
+                deck !== null && Math.abs(deck - state.position.y) < 0.05 ? 1 : 0);
             if (ring?.visible) {
                 // The ring breathes (holding still, where motion is reduced), and from far off keeps a size
                 // the eye can find.

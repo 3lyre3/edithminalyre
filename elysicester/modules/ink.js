@@ -145,6 +145,13 @@ const fragmentShader = /* glsl */ `
         float up = inverseDepth(uv + vec2(0.0, texel.y));
         float fold = (abs(left + right - 2.0 * centre) + abs(up + down - 2.0 * centre)) / max(centre, 1e-6);
         float edge = smoothstep(0.012, 0.045, fold);
+        // Where a surface has come apart into gold dust (dust.js), no line is drawn round the rim of the opening: the
+        // dust's alpha marks the rim, at any of the taps.
+        if (edge > 0.0) {
+            float rim = min(min(texture2D(tColor, uv - vec2(texel.x, 0.0)).a, texture2D(tColor, uv + vec2(texel.x, 0.0)).a),
+                min(texture2D(tColor, uv - vec2(0.0, texel.y)).a, texture2D(tColor, uv + vec2(0.0, texel.y)).a));
+            edge *= clamp(min(rim, texture2D(tColor, uv).a), 0.0, 1.0);
+        }
 
         vec3 color = texture2D(tColor, vUv).rgb;
         color += (texture2D(tGlowNear, vUv).rgb * 0.55 + texture2D(tGlowFar, vUv).rgb * 0.75) * glowStrength;

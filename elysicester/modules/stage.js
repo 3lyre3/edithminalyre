@@ -63,8 +63,8 @@ const CASTS_SHADOW = new Set(['gold', 'bricking', 'brick', 'stone', 'rock', 'ste
 const TAKES_SHADOW = new Set(['dimGold', 'green']);
 /**
  * What comes apart into gold dust where the camera passes (a trial, dust.js; ?dust=off): everything in the city,
- * the paving's steps, posts and edges, the rock and the golden bridges too (they keep their own haze as well), so
- * nothing is left standing inside what has come apart. (Floors at or below the shadow's level stay: dust.js.)
+ * the paving's steps, posts and edges, the rock and the golden bridges too, so nothing is left standing inside what
+ * has come apart; and the dust of each lingers in its shape. (Floors at or below the shadow's level stay: dust.js.)
  */
 const DUST_DISSOLVES = ['gold', 'bricking', 'dimGold', 'brick', 'stone', 'rock', 'steel', 'copper', 'turquoise', 'weed', 'amethyst', 'glass', 'arch', 'cloth', 'green', 'sign', 'glow', 'bridge'];
 /** And what's drawn with materials of its own: what's laid on the cafés' walls, the hums, the paper. */
@@ -207,10 +207,11 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
     }
     for (const extra of places.extras) scene.add(extra);
     // The golden bridges' dust, drawn over them where they come apart (places.js): only while walking, or while
-    // the camera is among them, as it's nowhere else.
+    // the camera is among them, as it's nowhere else. (Where the whole city comes apart, a trial, their dust
+    // lingers as everything's does instead: dust.js.)
     let bridgeDust = null;
     let bridgeReach = null;
-    if (places.bridgeDust && meshes.get('bridge')) {
+    if (!dust && places.bridgeDust && meshes.get('bridge')) {
         const bridgeGeometry = meshes.get('bridge').geometry;
         bridgeGeometry.computeBoundingBox();
         bridgeReach = bridgeGeometry.boundingBox.clone().expandByScalar(3.2);
@@ -249,6 +250,10 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         const own = new Set();
         for (const name of DUST_ON_WALLS) scene.getObjectByName(name)?.traverse((object) => object.isMesh && own.add(object.material));
         for (const material of own) dust.dissolve(material);
+        // And where anything comes apart, its dust lingers in its shape (Elm's "original vision for all of it").
+        const lingers = DUST_DISSOLVES.map((key) => meshes.get(key)).filter(Boolean);
+        if (signs.mesh) lingers.push(signs.mesh);
+        scene.add(dust.linger(lingers, wind));
     }
 
     const rigPlaces = new Map(data.places.places
@@ -301,7 +306,8 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         wallShadow: scene.getObjectByName('cafe-shadow'),
         pierEnd: places.pierEnd,
         floors: places.floors,
-        bridgeSight: places.bridgeSight,
+        // (Where the whole city comes apart, the bridges do as everything does, so their own sight line isn't kept.)
+        bridgeSight: dust ? null : places.bridgeSight,
         dustSight: dust?.sight ?? null,
         dustTargets: dust?.targets ?? null,
         dustNear: dust?.near ?? null,
@@ -354,6 +360,7 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         sea.update(elapsed);
         places.update(elapsed);
         dust?.update(elapsed);
+        dust?.cull(camera);
         hollowMap.update(dt);
         wisp.update(elapsed);
         paper.update(camera);

@@ -293,9 +293,27 @@ export function createSea({ sunDirection, horizonDip = { value: 0.16 } }) {
         receiveWalker(glsl, walkerUniforms) {
             Object.assign(uniforms, walkerUniforms);
             material.fragmentShader = material.fragmentShader
-                .replace('    void main() {', `${glsl}\n\n    void main() {`)
+                .replace('    void main() {', [
+                    glsl,
+                    '    uniform sampler2D walkerDecks;',
+                    '    uniform vec4 walkerDeckRegion;',
+                    '    uniform vec4 walkerDeck;',
+                    '    uniform vec3 walkerToLight;',
+                    // Standing on a deck, the walker's shadow falls on the deck; only what misses it (the light
+                    // passing the deck's edge, at the walker's height) comes down to the water.
+                    '    float walkerOnWater(vec3 world) {',
+                    '        float shade = walkerShade(world);',
+                    '        if (shade <= 0.0 || walkerDeck.w < 0.5) return shade;',
+                    '        vec3 up = world + walkerToLight * ((walkerDeck.y - world.y) / max(walkerToLight.y, 0.05));',
+                    '        vec2 at = (up.xz - walkerDeckRegion.xy) * walkerDeckRegion.zw;',
+                    '        if (at.x <= 0.0 || at.y <= 0.0 || at.x >= 1.0 || at.y >= 1.0) return shade;',
+                    '        return texture2D(walkerDecks, at).r > 0.5 ? 0.0 : shade;',
+                    '    }',
+                    '',
+                    '    void main() {',
+                ].join('\n'))
                 .replace('gl_FragColor = vec4(color, 1.0);', [
-                    'color = mix(color, color * vec3(0.3, 0.26, 0.36), walkerShade(vWorld) * 0.72);',
+                    'color = mix(color, color * vec3(0.3, 0.26, 0.36), walkerOnWater(vWorld) * 0.72);',
                     '        gl_FragColor = vec4(color, 1.0);',
                 ].join('\n'));
             material.needsUpdate = true;

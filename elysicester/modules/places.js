@@ -55,6 +55,7 @@ import {
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { doorCanOpen, doorOpen, shadowTexture } from './extras.js';
 import { createHums } from './hums.js';
+import { trialOn } from './trials.js';
 import { WALKER_GLSL } from './walk.js';
 import {
     SEA_LEVEL,
@@ -2770,9 +2771,10 @@ function buildGoldenBridges(buckets, materials, halls, trees, byId) {
     }
     for (const { a, b } of taken) goldenBridge(buckets, a, b, random);
 
-    // Their gold comes apart into dust where the camera, or its sight of the walking shadow, passes through.
+    // Their gold comes apart into dust where the camera, or its sight of the walking shadow, passes through. (Where
+    // the whole city comes apart, a trial, they come apart as everything does, and their dust lingers: dust.js.)
     const uniforms = { bridgeSight: { value: new Vector4(0, 0, 0, 0) }, bridgeTime: { value: 0 } };
-    if (materials?.bridge) {
+    if (materials?.bridge && !trialOn('dust')) {
         alsoBeforeCompile(materials.bridge, 'bridge-dust', (shader) => {
             Object.assign(shader.uniforms, uniforms);
             shader.vertexShader = shader.vertexShader
