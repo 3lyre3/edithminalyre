@@ -8,13 +8,17 @@
  *   (names.js)
  * - hint: the places still unread stand out among those names, and once only a few passages are left, the
  *   reader's count says where they are and their points glint more often
+ * - wraith: the shadow as a friendly banshee, floating, its skirt streaming and its sleeves spreading as it glides
+ *   (banshee.js; Elm's ask)
+ * - dust: everything the camera passes through comes apart into gold dust, as the golden bridges do, so the walking
+ *   camera stays low instead of climbing over what's in the way (dust.js; Elm's ask)
  */
 
 // =============================================================================
 // Constants
 // =============================================================================
 
-export const TRIALS = Object.freeze(['jetty', 'whisper', 'names', 'hint']);
+export const TRIALS = Object.freeze(['jetty', 'whisper', 'names', 'hint', 'wraith', 'dust']);
 
 // =============================================================================
 // Main Code

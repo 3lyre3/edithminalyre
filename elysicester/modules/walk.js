@@ -62,8 +62,10 @@ import {
     Vector3,
     WebGLRenderTarget,
 } from 'three';
+import { createBanshee } from './banshee.js';
 import { HOLLOW_REGION, WALLS_CELL } from './hollows-map.js';
 import { SEA_LEVEL, alsoBeforeCompile, groundY, onLand } from './kit.js';
+import { trialOn } from './trials.js';
 
 // =============================================================================
 // Constants
@@ -108,24 +110,16 @@ const CHASE = 1.0;
 const CHASE_POINTING = 0.2;
 /**
  * When a wall, a gable or a pole-top stands between the camera and the shadow, it rises over it, in so many
- * steps, up to this angle from straight overhead (never so far that it looks straight down: whatever still stands
- * in the way is cut away instead, below). It never dives in closer: under an arch, it keeps the view least hidden
- * until the walker is through.
+ * steps, up to this angle from straight overhead. (It never dives in closer: under an arch, it keeps the view
+ * least hidden until the walker is through.)
  */
 const RISE_STEPS = 4;
-const RISE_TOP = 0.5;
+const RISE_TOP = 0.14;
 /**
- * Walking, the camera keeps a little open air about its lens in everything (so it never stands inside a box),
- * and when even its highest rise can't see the walker, whatever stands between them is cut away (walkerSees):
- * a tunnel about the line of sight, narrow at the lens and widening toward the walker, stopping this far short
- * of them, so the walls the shadow climbs beside them stay whole. (The ground is never cut.)
+ * Where the city comes apart into gold dust as the camera passes (a trial, dust.js; ?dust=off), what's in the way
+ * opens instead, so the camera never rises: it stays low behind the one casting the shadow.
  */
-const SIGHT_LENS = 1.1;
-const SIGHT_NEAR = 0.7;
-const SIGHT_FAR = 1.5;
-const SIGHT_KEEP = 2.4;
-/** Once cut, the way stays open this long after the view comes clear (so it doesn't flicker at an edge). */
-const SIGHT_HOLD = 0.6;
+const DUST = trialOn('dust');
 /** And with each step up it stands this much further back (a share of its distance), well above the rooftops. */
 const RISE_PULL = 0.28;
 /** How long a lower view must stay clear before the camera settles back down to it (seconds). */
@@ -162,9 +156,19 @@ const WAYS = {
     ArrowLeft: 'left', KeyA: 'left', ArrowRight: 'right', KeyD: 'right',
 };
 
-/** The walker's shadow map: its size in texels, and how much of the light's view it covers (world units). */
-const MAP_SIZE = 512;
-const MAP_REACH = 1.1;
+/**
+ * The shadow as a friendly banshee (a trial, trials.js; ?wraith=off brings back the walker). Elm: "more like a
+ * friendly banshee flowing and billowing around and spreading its cloth where it glides ... a very low
+ * graphical-intensity amount of distinct character/personality". See banshee.js.
+ */
+const WRAITH = trialOn('wraith');
+
+/**
+ * The walker's shadow map: its size in texels, and how much of the light's view it covers (world units). (The
+ * banshee's skirt streams out behind it and its sleeves spread, so its map covers more, in more texels, as finely.)
+ */
+const MAP_SIZE = WRAITH ? 640 : 512;
+const MAP_REACH = WRAITH ? 1.3 : 1.1;
 /**
  * How far behind the walker (along the light) its shadow can fall: as far as a dusk shadow of its height
  * reaches, and no further, so it never lands again behind a wall that has already caught it.
@@ -348,7 +352,9 @@ export function createWalk({ light, reducedMotion }) {
     const lightTheta = Math.atan2(toLight.x, toLight.z);
     const shadowWay = new Vector3(-toLight.x, 0, -toLight.z).normalize();
     const shadowLength = TALL / Math.tan(Math.asin(toLight.y));
-    const { body, legs, arms } = buildBody();
+    // (The walker, or, on trial, the banshee: WRAITH, banshee.js.)
+    const banshee = WRAITH ? createBanshee({ figure: FIGURE, pace: PACE, reducedMotion }) : null;
+    const { body, legs, arms } = banshee ? { body: banshee.body, legs: [], arms: [] } : buildBody();
     const scene = new Scene();
     scene.add(body);
 
@@ -369,9 +375,6 @@ export function createWalk({ light, reducedMotion }) {
         walkerReach: { value: SHADOW_REACH / (LIGHT_FAR - 0.5) },
         // How near the camera the thin things aren't drawn (walkerClears): only while walking.
         walkClear: { value: 0 },
-        // The one casting the shadow, and whether what stands between them and the camera is cut away (walkerSees).
-        walkSight: { value: new Vector3() },
-        walkSightOn: { value: 0 },
     };
 
     const state = {
@@ -396,8 +399,6 @@ export function createWalk({ light, reducedMotion }) {
     let followTheta = lightTheta;
     let rise = 0;
     let settling = 0;
-    /** How much longer the way to the walker stays cut open (seconds; see SIGHT_HOLD). */
-    let sightHeld = 0;
     // Waiting at the jetty's end, it faces the sea; taken there, it turns to face the city (the heading it turns to).
     let turnsToCity = false;
     let turning = null;
@@ -412,6 +413,8 @@ export function createWalk({ light, reducedMotion }) {
     let backButton = null;
     /** The golden bridges' sight line (places.js): the walker's middle, and 1 while walking (their gold turns to dust there). */
     let bridgeSight = null;
+    /** The same for everything else that stands, where it comes apart into dust (dust.js; a trial), or null. */
+    let dustSight = null;
     /** A pointer pressed on the city while walking: { id, type, startX, startY, x, y, time, aimed }. */
     let press = null;
     /** The spot it walks to (a tap, or a pointer held down): { x, y, z, held, best, since }, or null. */
@@ -452,8 +455,41 @@ export function createWalk({ light, reducedMotion }) {
     const tip = new Vector3();
     const aim = new Vector3();
 
+    // ----- The banshee's ways (WRAITH, banshee.js) -----
+    /** The last pose's moment (s). */
+    let posedAt = null;
+    /** Word that it has just been taken, or has just arrived where it was sent (a lift of delight; a twirl). */
+    let justTaken = false;
+    let justArrived = false;
+    /** A reading point it's beside (main.js says, attend): its hood turns to it. */
+    let attending = null;
+
+    /** Pose the banshee for this moment (banshee.js): its going, and what it's doing (waiting, walked, let go). */
+    function poseBanshee(elapsed) {
+        const dt = posedAt === null ? 1 / 60 : MathUtils.clamp(elapsed - posedAt, 0, 0.1);
+        posedAt = elapsed;
+        if (justTaken) banshee.taken(elapsed);
+        if (justArrived) banshee.arrived(elapsed);
+        justTaken = false;
+        justArrived = false;
+        banshee.pose({
+            elapsed,
+            dt,
+            position: state.position,
+            heading: state.heading,
+            velocity,
+            mode: state.walking ? 'walking' : turnsToCity ? 'waiting' : 'resting',
+            attending,
+            viewer: camera?.position ?? null,
+        });
+    }
+
     /** Pose the body for this moment: the stride's phase and how much it's walking (0 to 1). */
     function pose(elapsed) {
+        if (banshee) {
+            poseBanshee(elapsed);
+            return;
+        }
         const swing = Math.sin(state.stride) * state.moving;
         legs.forEach(({ hip, knee }, index) => {
             hip.rotation.x = (index === 0 ? 1 : -1) * swing * 0.5;
@@ -636,7 +672,11 @@ export function createWalk({ light, reducedMotion }) {
             const dz = destination.z - state.position.z;
             const distance = Math.hypot(dx, dz);
             if (distance < ARRIVE) {
-                if (!destination.held) clearTarget();
+                if (!destination.held) {
+                    clearTarget();
+                    // (Arrived where it was sent: the banshee twirls.)
+                    justArrived = true;
+                }
                 return wanted.set(0, 0, 0);
             }
             const pace = PACE * Math.min(1, distance / 0.9);
@@ -777,15 +817,26 @@ export function createWalk({ light, reducedMotion }) {
         lead.lerp(ahead.copy(velocity).multiplyScalar(reducedMotion ? 0 : LEAD), 1 - Math.exp(-2.5 * dt));
         const target = rig.goal.target.copy(state.position).add(lead);
         target.y += TALL * LOOK_AT;
-        uniforms.walkSight.value.copy(state.position);
-        uniforms.walkSight.value.y += TALL * 0.5;
         // (No golden bridge stands between the camera and the walker: there, its gold comes apart into dust.)
         bridgeSight?.set(state.position.x, state.position.y + TALL * 0.5, state.position.z, 1);
+        // (Nor anything else, where the city comes apart into dust: then the camera never rises.)
+        dustSight?.set(state.position.x, state.position.y + TALL * 0.5, state.position.z, 1);
         // (Close against a wall, the one casting it may be all but in it: the sight is felt for from out of it.)
         sightFrom.copy(target);
         if (solids?.available) solids.push(sightFrom, 0.3);
         const theta = rig.now.theta + shortest(followTheta - rig.now.theta);
         const reach = FOLLOW * Math.max(1, (0.9 / aspect) ** 0.3);
+        if (DUST && dustSight) {
+            // Where the city comes apart into dust, the camera never climbs: what's in the way opens (dust.js).
+            rise = 0;
+            settling = 0;
+            rig.goal.phi = FOLLOW_PHI;
+            rig.goal.theta = theta;
+            rig.goal.radius = reach;
+            rig.atHome = false;
+            rig.gliding = false;
+            return;
+        }
 
         let lowest = -1;
         let leastHidden = 0;
@@ -816,9 +867,6 @@ export function createWalk({ light, reducedMotion }) {
         rig.goal.phi = rises[rise];
         rig.goal.theta = theta;
         rig.goal.radius = reach * (1 + RISE_PULL * rise);
-        // Still hidden at the view chosen: cut the way open (and keep it open a moment once it clears).
-        sightHeld = sightAt[rise] < 1 ? SIGHT_HOLD : Math.max(0, sightHeld - dt);
-        uniforms.walkSightOn.value = sightHeld > 0 ? 2 : 1;
         rig.atHome = false;
         rig.gliding = false;
     }
@@ -944,6 +992,18 @@ export function createWalk({ light, reducedMotion }) {
             state.heading = heading;
             state.present = true;
             uniforms.walkerOn.value = 1;
+            // (Set down somewhere new, the banshee's cloth lies as it would there, at once.)
+            banshee?.reset();
+        },
+
+        /** The reading point it's beside, as a point in the city (main.js), or null: the banshee's hood turns to it. */
+        attend(point) {
+            attending = point ? (attending ?? new Vector3()).copy(point) : null;
+        },
+
+        /** Whether the shadow is the banshee (a trial) rather than the walker. */
+        get wraith() {
+            return Boolean(banshee);
         },
 
         /**
@@ -962,6 +1022,7 @@ export function createWalk({ light, reducedMotion }) {
             decks = waterfrontDecks(parts.meshes);
             floors = parts.floors ?? [];
             bridgeSight = parts.bridgeSight ?? null;
+            dustSight = parts.dustSight ?? null;
 
             // The shadow waits at the end of the jetty, looking out to sea (in place of the one on the café
             // wall), a ring breathing on the boards at its feet to say it can be taken.
@@ -1194,15 +1255,18 @@ export function createWalk({ light, reducedMotion }) {
                 }
             }
             state.walking = true;
+            // (Taken, the banshee gives a little lift of delight.)
+            justTaken = true;
             rig.handsOff = true;
+            rig.passesThrough = DUST && Boolean(dustSight);
             rig.setDrifting(false);
             followTheta = behindOf(turning ?? state.heading);
             rise = 0;
             settling = 0;
-            sightHeld = 0;
             lead.set(0, 0, 0);
-            uniforms.walkClear.value = CLEAR_NEAR;
-            uniforms.walkSightOn.value = 1;
+            // (Where the city comes apart into dust, the poles and flags by the camera do too, gilded, rather than
+            // simply not being drawn.)
+            uniforms.walkClear.value = DUST && dustSight ? 0 : CLEAR_NEAR;
             hovering = false;
             if (label) label.hidden = true;
             canvas.style.cursor = '';
@@ -1263,9 +1327,10 @@ export function createWalk({ light, reducedMotion }) {
             if (!state.walking) return;
             state.walking = false;
             rig.handsOff = false;
+            rig.passesThrough = false;
             uniforms.walkClear.value = 0;
-            uniforms.walkSightOn.value = 0;
             bridgeSight?.setW(0);
+            dustSight?.setW(0);
             keys.clear();
             releaseStick();
             press = null;
@@ -1294,8 +1359,13 @@ export function createWalk({ light, reducedMotion }) {
                 state.moving += (0 - state.moving) * (1 - Math.exp(-8 * dt));
                 return;
             }
-            // While a passage is open, the walker waits (and the camera is the reader's).
-            if (document.querySelector('dialog[open]')) return;
+            // While a passage is open, the walker waits (and the camera is the reader's: nothing opens toward the
+            // shadow from where it reads).
+            if (document.querySelector('dialog[open]')) {
+                bridgeSight?.setW(0);
+                dustSight?.setW(0);
+                return;
+            }
             // Until the map of walls is laid (on a slow machine it can take a while), it stands where it is.
             if (!hollowMap?.walls && wallsWaited < WALLS_WAIT) {
                 wallsWaited += walkDt;
@@ -1441,44 +1511,6 @@ export function walkerClears(material, walk, scale = 1) {
         shader.fragmentShader = shader.fragmentShader
             .replace('#include <common>', '#include <common>\nuniform float walkClear;\nvarying vec3 vClearWorld;')
             .replace('void main() {', `void main() {\n    if (distance(vClearWorld, cameraPosition) < walkClear * ${scale.toFixed(2)}) discard;`);
-    });
-    return material;
-}
-
-/**
- * Cut away, while walking, whatever of a material stands between the camera and the one casting the shadow
- * (the playtester's roofs, that hid the shadow and sent the camera up to look straight down): a tunnel about
- * the line of sight, SIGHT_NEAR wide at the lens and SIGHT_FAR toward the walker, ending SIGHT_KEEP short of
- * them. The cut is clean (a dithered edge set the ink pass drawing round every speck), and the city's ink draws
- * one line round what's cut, as a drawn cutaway would.
- * @param {import('three').Material} material
- * @param {ReturnType<typeof createWalk>} walk
- */
-export function walkerSees(material, walk) {
-    alsoBeforeCompile(material, 'walker-sees', (shader) => {
-        shader.uniforms.walkSight = walk.uniforms.walkSight;
-        shader.uniforms.walkSightOn = walk.uniforms.walkSightOn;
-        shader.vertexShader = shader.vertexShader
-            .replace('#include <common>', '#include <common>\nvarying vec3 vSightWorld;')
-            .replace('#include <begin_vertex>', '#include <begin_vertex>\nvSightWorld = (modelMatrix * vec4(transformed, 1.0)).xyz;');
-        shader.fragmentShader = shader.fragmentShader
-            .replace('#include <common>', '#include <common>\nuniform vec3 walkSight;\nuniform float walkSightOn;\nvarying vec3 vSightWorld;')
-            .replace('void main() {', [
-                'void main() {',
-                `    if (walkSightOn > 0.5 && distance(vSightWorld, cameraPosition) < ${SIGHT_LENS.toFixed(2)}) discard;`,
-                '    if (walkSightOn > 1.5) {',
-                '        vec3 way = walkSight - cameraPosition;',
-                '        float reach = max(length(way), 1e-3);',
-                '        float along = dot(vSightWorld - cameraPosition, way) / (reach * reach);',
-                `        float stop = 1.0 - ${SIGHT_KEEP.toFixed(2)} / reach;`,
-                '        if (along > 0.0 && along < stop) {',
-                '            float off = distance(vSightWorld, cameraPosition + way * along);',
-                `            float radius = mix(${SIGHT_NEAR.toFixed(2)}, ${SIGHT_FAR.toFixed(2)}, along / max(stop, 1e-3));`,
-                '            radius *= smoothstep(stop, stop - 0.1, along);',
-                '            if (off < radius) discard;',
-                '        }',
-                '    }',
-            ].join('\n'));
     });
     return material;
 }

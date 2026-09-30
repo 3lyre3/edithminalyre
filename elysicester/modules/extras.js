@@ -27,6 +27,7 @@
 // =============================================================================
 
 import { CanvasTexture, LinearFilter, RepeatWrapping } from 'three';
+import { trialOn } from './trials.js';
 
 // =============================================================================
 // Constants
@@ -120,7 +121,53 @@ export async function inscriptionTexture() {
     return texture;
 }
 
+/**
+ * The shadow on the wall as the banshee (a trial, trials.js: ?wraith=off gives the walker's back), as banshee.js
+ * makes it: a sheet over a round hood, the hood's roundness running into soft shoulders with no neck between,
+ * the cloth falling to a hem in soft scallops that floats clear of the ground; one wide sleeve hanging, the other
+ * lifted a little, as if to wave.
+ */
+function banshee(context) {
+    context.beginPath();
+    context.ellipse(128, 100, 34, 38, 0, 0, Math.PI * 2);
+    context.fill();
+    context.beginPath();
+    context.moveTo(98, 118);
+    context.quadraticCurveTo(128, 134, 158, 118);
+    context.quadraticCurveTo(184, 136, 186, 176);
+    context.quadraticCurveTo(190, 320, 206, 440);
+    const waves = 5;
+    const right = 206;
+    const left = 50;
+    for (let wave = 0; wave < waves; wave += 1) {
+        const from = right - (wave * (right - left)) / waves;
+        const to = right - ((wave + 1) * (right - left)) / waves;
+        context.quadraticCurveTo((from + to) / 2, 472, to, 440);
+    }
+    context.quadraticCurveTo(66, 320, 70, 176);
+    context.quadraticCurveTo(72, 136, 98, 118);
+    context.closePath();
+    context.fill();
+    // The left sleeve, hanging, wide at the cuff.
+    context.beginPath();
+    context.moveTo(76, 150);
+    context.quadraticCurveTo(46, 210, 34, 300);
+    context.quadraticCurveTo(54, 286, 78, 298);
+    context.quadraticCurveTo(80, 230, 94, 176);
+    context.closePath();
+    context.fill();
+    // The right, lifted a little, as if to wave.
+    context.beginPath();
+    context.moveTo(178, 150);
+    context.quadraticCurveTo(214, 160, 230, 214);
+    context.quadraticCurveTo(212, 206, 196, 222);
+    context.quadraticCurveTo(190, 186, 170, 170);
+    context.closePath();
+    context.fill();
+}
+
 /** A figure's shadow, soft at its edges, standing and looking out: black on clear. */
+
 export function shadowTexture() {
     const canvas = document.createElement('canvas');
     canvas.width = 256;
@@ -132,6 +179,10 @@ export function shadowTexture() {
     context.shadowOffsetX = 1000;
     context.translate(-1000, 0);
     context.fillStyle = '#000000';
+    if (trialOn('wraith')) {
+        banshee(context);
+        return new CanvasTexture(canvas);
+    }
     context.beginPath();
     context.ellipse(128, 74, 25, 31, 0, 0, Math.PI * 2);
     context.fill();

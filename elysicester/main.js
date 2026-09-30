@@ -437,6 +437,8 @@ async function boot() {
                 if (found !== near) {
                     near = found;
                     hotspots.light(found, { pin: true });
+                    // (The banshee, on trial, turns its hood to the passage it's beside.)
+                    stage.walk.attend?.(found ? hotspots.positionOf(found.id) : null);
                 }
             });
             // Its name, while the shadow stands beside it, is a way in too: a click reads it (the list is the
