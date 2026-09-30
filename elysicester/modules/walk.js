@@ -516,6 +516,8 @@ export function createWalk({ light, reducedMotion, gradientMap = null }) {
     const lies = { along: 0, wall: false };
     /** A pointer pressed on the city while walking: { id, type, startX, startY, x, y, time, aimed }. */
     let press = null;
+    /** Where a press begins (attach sets it; steersFrom lends it to what's set down on above the city). */
+    let pressDown = () => {};
     /** The spot it walks to (a tap, or a pointer held down): { x, y, z, held, best, since }, or null. */
     let destination = null;
     let targetRing = null;
@@ -1412,8 +1414,10 @@ export function createWalk({ light, reducedMotion, gradientMap = null }) {
             document.body.append(stick.view);
 
             // Walking, a pointer pressed on the city steers: the mouse at once, toward wherever it points while
-            // it's held down; a finger held still, toward the place under it; a finger dragged, the joystick.
-            canvas.addEventListener('pointerdown', (event) => {
+            // it's held down; a finger held still, toward the place under it; a finger dragged, the joystick. (Its
+            // moves and its lifting are heard on the window: a finger set down on a place's name, steersFrom, goes on
+            // steering wherever it goes.)
+            pressDown = (event) => {
                 if (event.pointerType !== 'mouse') touches.add(event.pointerId);
                 if (!state.walking) return;
                 // A second finger down makes a pinch (the camera's: the rig hands it on), and the first stops steering.
@@ -1439,8 +1443,8 @@ export function createWalk({ light, reducedMotion, gradientMap = null }) {
                     aimed: false,
                 };
                 if (event.pointerType === 'mouse') press.aimed = aimAt(event.clientX, event.clientY, true);
-            });
-            canvas.addEventListener('pointermove', (event) => {
+            };
+            const pressMove = (event) => {
                 if (!press || event.pointerId !== press.id) return;
                 press.x = event.clientX;
                 press.y = event.clientY;
@@ -1463,17 +1467,18 @@ export function createWalk({ light, reducedMotion, gradientMap = null }) {
                 stick.x = (dx / Math.max(distance, 1e-6)) * reach;
                 stick.y = -(dy / Math.max(distance, 1e-6)) * reach;
                 showStick();
-            });
-            for (const type of ['pointerup', 'pointercancel']) {
-                canvas.addEventListener(type, (event) => {
-                    touches.delete(event.pointerId);
-                    if (!press || event.pointerId !== press.id) return;
-                    press = null;
-                    if (stick.active) releaseStick();
-                    // Let go of a held pointer, and it stops (a tap's spot, set as this tap was heard, it walks on to).
-                    if (destination?.held) clearTarget();
-                });
-            }
+            };
+            const pressUp = (event) => {
+                touches.delete(event.pointerId);
+                if (!press || event.pointerId !== press.id) return;
+                press = null;
+                if (stick.active) releaseStick();
+                // Let go of a held pointer, and it stops (a tap's spot, set as this tap was heard, it walks on to).
+                if (destination?.held) clearTarget();
+            };
+            canvas.addEventListener('pointerdown', (event) => pressDown(event));
+            window.addEventListener('pointermove', pressMove);
+            for (const type of ['pointerup', 'pointercancel']) window.addEventListener(type, pressUp);
             window.addEventListener('keydown', (event) => {
                 if (!state.walking || ignoresKeys(event)) return;
                 if (event.key === 'Escape') {
@@ -1512,6 +1517,18 @@ export function createWalk({ light, reducedMotion, gradientMap = null }) {
                 claimed = { x, y };
                 if (state.walking) walk.letGo();
                 else walk.take();
+            });
+        },
+
+        /**
+         * Let a finger set down on `element` (a place's name, shown beside the shadow as it passes: main.js) steer as
+         * one set down on the city does. A drag begun there is the joystick (the name sits low on a phone, where a
+         * thumb goes to steer); a tap there is still the element's own (it reads the passage).
+         * @param {HTMLElement} element
+         */
+        steersFrom(element) {
+            element.addEventListener('pointerdown', (event) => {
+                if (event.pointerType !== 'mouse') pressDown(event);
             });
         },
 
