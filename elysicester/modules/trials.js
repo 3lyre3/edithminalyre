@@ -12,13 +12,15 @@
  *   (banshee.js; Elm's ask)
  * - dust: everything the camera passes through comes apart into gold dust, as the golden bridges do, so the walking
  *   camera stays low instead of climbing over what's in the way (dust.js; Elm's ask)
+ * - dock: the visit begins as the shadow, already walking, at the end of the jetty, the camera behind it (Elm's ask;
+ *   main.js, walk.js); off, it begins with the whole city in view, as before
  */
 
 // =============================================================================
 // Constants
 // =============================================================================
 
-export const TRIALS = Object.freeze(['jetty', 'whisper', 'names', 'hint', 'wraith', 'dust']);
+export const TRIALS = Object.freeze(['jetty', 'whisper', 'names', 'hint', 'wraith', 'dust', 'dock']);
 
 // =============================================================================
 // Main Code

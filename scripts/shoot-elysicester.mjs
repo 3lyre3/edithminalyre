@@ -35,6 +35,12 @@
  * desktop pass drives the camera hard at three places, tilted all the way
  * down, as close as it comes, round and round, and it must keep clear of
  * every surface.
+ * The visit begins as the shadow at the jetty's end (the dock trial), so the
+ * passes above run with ?dock=off, from the whole city, as they were written;
+ * and the desktop, mobile and reduced passes then make a plain visit too: it
+ * must arrive walking as the shadow at the end of the jetty, the camera close
+ * behind it, come back there on a reload, and "the whole city" must let go and
+ * draw back to it all.
  * Before the passes, every outside "read on" address is asked whether it
  * answers. Headless frame rates mean nothing; Elm's phone judges smoothness.
  *
@@ -90,9 +96,9 @@ const MIME = {
  * toggle round; soundOn: arrive with "sound on" remembered from a past visit.
  */
 const PASSES = {
-    desktop: { viewport: { width: 1280, height: 800 }, keyboard: true, begin: 'click', then: 'watch', expect: 'flight', sound: true, camera: true },
-    mobile: { viewport: { width: 390, height: 844 }, deviceScaleFactor: 3, isMobile: true, hasTouch: true, begin: 'tap', then: 'skip', expect: 'flight' },
-    reduced: { viewport: { width: 1280, height: 800 }, reducedMotion: 'reduce', checkStillness: true, keyboard: true, begin: 'key', expect: 'crossfade', sound: true, soundOn: true },
+    desktop: { viewport: { width: 1280, height: 800 }, keyboard: true, begin: 'click', then: 'watch', expect: 'flight', sound: true, camera: true, dock: true },
+    mobile: { viewport: { width: 390, height: 844 }, deviceScaleFactor: 3, isMobile: true, hasTouch: true, begin: 'tap', then: 'skip', expect: 'flight', dock: true },
+    reduced: { viewport: { width: 1280, height: 800 }, reducedMotion: 'reduce', checkStillness: true, keyboard: true, begin: 'key', expect: 'crossfade', sound: true, soundOn: true, dock: true },
     nogl: { viewport: { width: 1280, height: 800 }, noWebGL: true, keyboard: true, begin: 'click', expect: 'crossfade' },
     // The optional extras, every one on (and the door made to open now): each must appear, and nothing else change.
     extras: { viewport: { width: 1280, height: 800 }, begin: 'click', then: 'skip', expect: 'flight', query: 'extras=all,door-open', signs: false, extras: true },
@@ -793,6 +799,61 @@ async function checkReadOn() {
     return answers;
 }
 
+/**
+ * The dock start (a trial, trials.js): a plain visit must arrive walking as the shadow at the end of the jetty, the
+ * camera close behind it; a reload (within the visit) must come back there; and "the whole city" must let go of the
+ * shadow and draw back to the whole of it. Its own browser, as a first visit.
+ */
+async function dockRound(chromium, pass, shots) {
+    const { browser, context, page, messages, failures } = await openPass(chromium, pass);
+    const problems = [];
+    const where = () => page.evaluate(() => {
+        const { walk, stage } = window.elysicesterDebug;
+        return {
+            walking: walk?.state.walking ?? null,
+            at: walk ? walk.state.position.toArray().map((n) => Number(n.toFixed(2))) : null,
+            cameraToWalker: walk ? Number(stage.camera.position.distanceTo(walk.state.position).toFixed(2)) : null,
+            atHome: stage?.rig.atHome ?? null,
+            controls: [...document.querySelectorAll('.controls .control')].filter((button) => !button.hidden).map((button) => button.textContent),
+        };
+    });
+    const arrived = (seen, when) => {
+        if (!seen.walking) problems.push(`${when}: not walking as the shadow`);
+        if (!(seen.at?.[0] > 20)) problems.push(`${when}: the shadow is not at the jetty's end (${seen.at})`);
+        if (!(seen.cameraToWalker < 8)) problems.push(`${when}: the camera is ${seen.cameraToWalker} from it, not close behind`);
+        for (const label of ['let go', 'the whole city']) {
+            if (!seen.controls.includes(label)) problems.push(`${when}: no "${label}" (controls: ${seen.controls.join(', ')})`);
+        }
+    };
+    const result = {};
+    try {
+        await page.goto(`${origin}/elysicester/?debug=1`, { waitUntil: 'load' });
+        const entered = await enter(page, context, pass, { begin: pass.begin, then: 'skip' });
+        if (entered.mode !== 'live') problems.push(`the city did not go live (${entered.mode})`);
+        for (const line of entered.problems) problems.push(`threshold: ${line}`);
+        result.arrival = await where();
+        arrived(result.arrival, 'arriving');
+        await page.screenshot({ path: `${shots}-dock.png` });
+        await page.reload({ waitUntil: 'load' });
+        const back = await comeBack(page);
+        for (const line of back.problems) problems.push(`on return: ${line}`);
+        result.reload = await where();
+        arrived(result.reload, 'on return');
+        await page.getByRole('button', { name: 'the whole city' }).click();
+        await page.waitForTimeout(pass.reducedMotion ? 800 : 4000);
+        result.whole = await where();
+        if (result.whole.walking) problems.push('"the whole city" left it walking');
+        if (!result.whole.atHome) problems.push('"the whole city" did not draw back to the whole city');
+        await page.screenshot({ path: `${shots}-dock-whole.png` });
+    } catch (error) {
+        problems.push(`the round broke off: ${error.message.split('\n')[0]}`);
+    } finally {
+        await browser.close();
+    }
+    for (const line of [...messages, ...failures]) problems.push(line);
+    return { ...result, problems, ok: problems.length === 0 };
+}
+
 function summarise(results) {
     if (!results) return '';
     const ok = results.filter((result) => result.ok).length;
@@ -845,7 +906,8 @@ try {
             }
             const spoken = [];
             if (pass.extras) page.on('console', (message) => { if (message.type() === 'log') spoken.push(message.text()); });
-            await page.goto(`${origin}/elysicester/?debug=1${pass.query ? `&${pass.query}` : ''}`, { waitUntil: 'load' });
+            // (From the whole city, as these checks were written: the dock start has its own round, dockRound.)
+            await page.goto(`${origin}/elysicester/?debug=1&dock=off${pass.query ? `&${pass.query}` : ''}`, { waitUntil: 'load' });
             const threshold = await enter(page, context, pass, { begin: pass.begin, then: pass.then, shots: path.join(outDir, name), voiceLines });
             const { mode } = threshold;
             const result = { mode, threshold, messages, failures };
@@ -889,8 +951,9 @@ try {
                     points: window.elysicesterDebug?.hotspots?.readIds().length ?? null,
                 }));
             }
-            report.passes[name] = result;
             await browser.close();
+            if (pass.dock) result.dock = await dockRound(chromium, pass, path.join(outDir, name));
+            report.passes[name] = result;
         }
 
         await writeFile(path.join(outDir, 'report.json'), `${JSON.stringify(report, null, 2)}\n`);
@@ -918,8 +981,10 @@ try {
                 : '';
             const extras = result.extras ? `extras ${result.extras.ok ? 'sky, shadow, door, voice and hums all there' : 'NOT OK'}` : '';
             const camera = result.camera ? `camera ${result.camera.ok ? `kept clear (closest ${Math.min(...result.camera.rows.map((row) => row.closest))})` : 'WENT INTO SOMETHING'}` : '';
-            process.stdout.write(`${name.padEnd(8)} ${result.mode.padEnd(6)} ${problems === 0 ? 'clean' : `${problems} problem(s)`}  ${[crossing, sound, info, orbit, still, camera, signs, extras, pointer, keys, axe, back, kept].filter(Boolean).join(' · ')}\n`);
+            const dock = result.dock ? `dock ${result.dock.ok ? 'arrives walking at the jetty, again on reload, and lets go to the whole city' : 'NOT OK'}` : '';
+            process.stdout.write(`${name.padEnd(8)} ${result.mode.padEnd(6)} ${problems === 0 ? 'clean' : `${problems} problem(s)`}  ${[crossing, sound, info, orbit, still, camera, signs, extras, pointer, keys, axe, back, kept, dock].filter(Boolean).join(' · ')}\n`);
             for (const line of [...result.messages, ...result.failures]) process.stdout.write(`    ${line}\n`);
+            for (const line of result.dock?.problems ?? []) process.stdout.write(`    dock not ok: ${line}\n`);
             for (const line of result.extras?.problems ?? []) process.stdout.write(`    extras not ok: ${line}\n`);
             for (const line of result.camera?.problems ?? []) process.stdout.write(`    camera not ok: ${line}\n`);
             for (const line of [...result.threshold.problems, ...(result.reentered?.problems ?? []).map((text) => `on return: ${text}`), ...(result.sound?.problems ?? [])]) {

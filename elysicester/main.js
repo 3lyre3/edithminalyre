@@ -12,6 +12,8 @@
  * (under reduced motion, the card crossfades instead), and the city lifts out
  * of a dark veil. Coming back within the same visit (Back, a reload) skips
  * the card and the flight: the city lifts from the dark as soon as it's ready.
+ * On trial (dock, trials.js), the visitor arrives as the shadow, walking, at
+ * the end of the jetty; "the whole city" (or ?dock=off) is the view from far.
  * If anything fails, the city arrives as a still and its points as a list;
  * the reader works either way, and each passage leads on to the nearest place
  * not yet read. The optional extras (extras.js) appear only when the address
@@ -256,7 +258,10 @@ async function boot() {
         signs: signData.signs,
         places,
         onFocusSign: (sign) => {
-            if (sign) hotspots?.light(null);
+            if (sign) {
+                hotspots?.light(null);
+                stage?.walk?.letGo();
+            }
             signOverlay?.focusSign(sign);
         },
     });
@@ -286,7 +291,10 @@ async function boot() {
         onOpen: open,
         onFocusPoint: (fragment) => {
             hotspots?.light(fragment);
-            if (fragment) focusFragment(fragment);
+            if (!fragment) return;
+            // (Looking about by the list, the camera is the list's: the shadow is let go, and stays where it stands.)
+            stage?.walk?.letGo();
+            focusFragment(fragment);
         },
     });
 
@@ -353,9 +361,15 @@ async function boot() {
         console.error('Elysicester could not be drawn live:', error);
         return null;
     });
-    // Arrive: the live city if it was built, else the still (unless it's already showing).
+    // A passage asked for by the address (#read-…) opens once the city has arrived.
+    const wanted = window.location.hash.startsWith('#read-')
+        ? readable.find((fragment) => `#read-${fragment.id}` === window.location.hash)
+        : null;
+    // Arrive: the live city if it was built, else the still (unless it's already showing). On trial (dock,
+    // trials.js), the visit begins as the shadow, walking, at the end of the jetty (unless it came to read).
     const arrive = () => {
         if (stage) {
+            if (trialOn('dock') && !wanted) stage.walk?.arrive();
             stage.start();
             root.dataset.mode = 'live';
         } else if (root.dataset.mode !== 'still') {
@@ -468,9 +482,6 @@ async function boot() {
         });
     }
 
-    const wanted = window.location.hash.startsWith('#read-')
-        ? readable.find((fragment) => `#read-${fragment.id}` === window.location.hash)
-        : null;
     if (wanted) open(wanted, list.linkFor(wanted.id));
 }
 
