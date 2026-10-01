@@ -584,6 +584,7 @@ async function boot() {
                 // Cassandra's door (a trial: places.js): its knock and its slam, and her shadow's words where she
                 // stands, while she says them.
                 const doorWords = byId('door-words');
+                const oneOption = byId('one-button');
                 if (stage.cassandra && doorWords) {
                     let saidAt = null;
                     let seenAt = null;
@@ -598,11 +599,13 @@ async function boot() {
                         if (!saidAt) return;
                         seenAt.copy(saidAt).project(stage.camera);
                         const rect = stage.canvas.getBoundingClientRect();
-                        // (Over her, and kept on the screen, however near the camera has come: it's drawn above
-                        // its point, so its point stays at least its own height and a margin below the top.)
+                        // (Over her, and kept on the screen, however near the camera has come, and below the one
+                        // option at the top: it's drawn above its point, so its point stays at least its own height
+                        // and a margin below them.)
                         const half = doorWords.offsetWidth / 2 + 8;
+                        const above = oneOption && !oneOption.hidden ? oneOption.getBoundingClientRect().bottom + 6 : 0;
                         const x = Math.min(Math.max(half, window.innerWidth - half), Math.max(half, rect.left + ((seenAt.x + 1) / 2) * rect.width));
-                        const y = Math.min(window.innerHeight - 8, Math.max(doorWords.offsetHeight + 26, rect.top + ((1 - seenAt.y) / 2) * rect.height));
+                        const y = Math.min(window.innerHeight - 8, Math.max(above + doorWords.offsetHeight + 26, rect.top + ((1 - seenAt.y) / 2) * rect.height));
                         doorWords.style.translate = `${Math.round(x)}px ${Math.round(y)}px`;
                         doorWords.hidden = seenAt.z >= 1;
                     });
