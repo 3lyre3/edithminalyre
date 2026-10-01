@@ -42,7 +42,10 @@ import { createWhisper } from './modules/whisper.js';
 // =============================================================================
 
 const PROMPT_FRAGMENT = 'nbp-e1-mega-screen-1';
-const VOICE_FRAGMENTS = ['nbp-e3-intermaze-1', 'nbp-e3-intermaze-2'];
+/** E's lines in the Intermaze (Elm, 1 Oct, cut "They?" and the rail, so they end on "You never remember the dreams."). */
+const VOICE_FRAGMENTS = ['nbp-e3-intermaze-1'];
+/** Where "Stay - Read" and the one option's "back" go: the city's text, plainly (Elm: "back can take you to the text interface"). */
+const TEXT_PAGE = 'plainly.html';
 
 /** Walking as the shadow, a reading point within this of its head names its place. */
 const NEAR_POINT = 3.2;
@@ -137,6 +140,66 @@ function fillPrompt(fragment) {
     prompt.append(rest);
 }
 
+/**
+ * Out of the Intermaze, the choice (a trial, trials.js; Elm: "a screen that offers 'Explore - Win' on one side and
+ * 'Stay - Read' on the other. Right as we come out of the ascii portal"). "Stay - Read" is a link, to the city's text;
+ * this resolves once the visitor chooses to explore (their tap may start the sound, if it's wanted and isn't on yet).
+ */
+function choose({ audio }) {
+    const choice = byId('choice');
+    const explore = byId('choice-explore');
+    byId('veil').classList.add('is-dark');
+    choice.hidden = false;
+    requestAnimationFrame(() => requestAnimationFrame(() => choice.classList.add('is-shown')));
+    explore.focus({ preventScroll: true });
+    return new Promise((resolve) => {
+        explore.addEventListener('click', () => {
+            if (soundWanted() && audio.state !== 'running') audio.start();
+            choice.classList.remove('is-shown');
+            root.dataset.threshold = 'done';
+            window.setTimeout(() => {
+                choice.hidden = true;
+            }, reducedMotion ? 0 : 900);
+            resolve();
+        }, { once: true });
+    });
+}
+
+/**
+ * One option at the top of the screen (a trial, trials.js; Elm: "there can just be one option at the top of the
+ * screen: zoom out, zoom out, back. And back can take you to the text interface anyway"). Flying close, it draws the
+ * camera back as far as it follows; flying drawn back, it lets the hum hover where it is and goes out to the whole
+ * city (looking about, it goes there too); at the whole city, "back" goes to the city's text. Taking the hum again
+ * (a tap on it) brings the camera back in close, and the round begins again.
+ */
+function wireOneButton(stage) {
+    const one = byId('one-button');
+    one.hidden = false;
+    const step = () => {
+        const walk = stage.walk;
+        if (walk?.state.walking) return walk.followDistance < walk.followFar - 0.05 ? 'closer' : 'far';
+        return stage.rig.atHome ? 'home' : 'away';
+    };
+    stage.onFrame(() => {
+        const words = step() === 'home' ? 'back' : 'zoom out';
+        if (one.textContent !== words) one.textContent = words;
+    });
+    one.addEventListener('click', () => {
+        const now = step();
+        if (now === 'closer') {
+            stage.walk.zoomTo(stage.walk.followFar);
+        } else if (now === 'far') {
+            stage.walk.letGo();
+            stage.rig.toHome();
+        } else if (now === 'away') {
+            stage.rig.toHome();
+        } else {
+            window.location.href = TEXT_PAGE;
+        }
+    });
+    return one;
+}
+
 /** Let the city lift out of the dark after the flight, whichever city it is. */
 function liftVeil(arrive) {
     const veil = byId('veil');
@@ -147,9 +210,21 @@ function liftVeil(arrive) {
 
 async function boot() {
     const audio = createAudio();
+    // With one option at the top of the screen (a trial), the rest stands aside (style.css), and the sound switch
+    // keeps a quiet corner of its own.
+    const oneButton = trialOn('onebutton');
+    if (oneButton) {
+        root.dataset.onebutton = '';
+        const toggle = byId('sound-toggle');
+        toggle.classList.add('sound-corner');
+        document.body.append(toggle);
+    }
     wireSound(audio);
     if (debug) window.elysicesterDebug.audio = audio;
     const returning = crossedThisVisit();
+    // Out of the Intermaze, a choice (a trial): not when coming back within the visit, nor for an address that came to
+    // read a passage (#read-…), which goes straight to it.
+    const choosing = trialOn('choice') && !returning && !window.location.hash.startsWith('#read-');
     const threshold = createThreshold({
         root,
         card: byId('threshold'),
@@ -160,6 +235,7 @@ async function boot() {
             if (soundWanted()) audio.start();
         },
         returning,
+        choosing,
     });
     // Until the city is entered, its reading points wait behind the card.
     const pointsNav = byId('points');
@@ -384,6 +460,17 @@ async function boot() {
         liftVeil(arrive);
     } else if (renderer && !reducedMotion) {
         passage = await threshold.fly({ renderer, ready: built, lines, fit: () => fitRenderer(renderer, canvas) });
+        if (choosing) {
+            // (Crossed: a visitor who stays to read and comes back to the city comes straight in.)
+            rememberCrossed();
+            await choose({ audio });
+        }
+        liftVeil(arrive);
+    } else if (choosing) {
+        passage = await threshold.crossfade({ ready: built });
+        rememberCrossed();
+        await choose({ audio });
+        // (The choice darkened the veil behind it: the city lifts out of that dark, as after a flight.)
         liftVeil(arrive);
     } else {
         passage = await threshold.crossfade({ ready: built.then(arrive) });
@@ -421,6 +508,7 @@ async function boot() {
     }
 
     if (stage) {
+        if (oneButton) wireOneButton(stage);
         const home = byId('home-view');
         home.addEventListener('click', () => {
             stage.walk?.letGo();
@@ -469,9 +557,9 @@ async function boot() {
             stage.walk.steersFrom(pointLabel);
         }
     }
-    // If the card held focus (it has gone now), land it on the city's name.
+    // If the card or the choice held focus (they've gone now), land it on the city's name.
     const focused = document.activeElement;
-    if (!focused || focused === document.body || byId('threshold').contains(focused)) {
+    if (!focused || focused === document.body || byId('threshold').contains(focused) || byId('choice').contains(focused)) {
         byId('diorama-title').focus({ preventScroll: true });
     }
 

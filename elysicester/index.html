@@ -28,7 +28,7 @@
         // Back within the same visit (modules/state.js keeps it): no card, not even for a moment before the city.
         try { if (sessionStorage.getItem('elysicester:crossed') === 'yes') document.documentElement.dataset.returning = ''; } catch (error) {}
     </script>
-    <link rel="stylesheet" href="v/1be5737d3b/style.css">
+    <link rel="stylesheet" href="v/cbbb26e13e/style.css">
     <noscript><style>.threshold, .veil, .controls { display: none; }</style></noscript>
     <script type="importmap">
     {
@@ -38,7 +38,7 @@
         }
     }
     </script>
-    <script type="module" src="v/1be5737d3b/main.js"></script>
+    <script type="module" src="v/cbbb26e13e/main.js"></script>
 </head>
 <body>
     <nav class="plainly" aria-label="Leave the diorama">
@@ -53,6 +53,7 @@
         <button type="button" id="sound-toggle" class="control" aria-pressed="false">sound: off</button>
         <button type="button" id="home-view" class="control" hidden>the whole city</button>
     </div>
+    <button type="button" id="one-button" class="one-button" hidden>zoom out</button>
 
     <main id="diorama" class="diorama">
         <h1 id="diorama-title" class="visually-hidden" tabindex="-1">Elysicester</h1>
@@ -92,6 +93,11 @@
             </button>
         </section>
         <p id="threshold-voice" class="threshold-voice" aria-live="polite"></p>
+        <section id="choice" class="choice" aria-labelledby="choice-title" hidden>
+            <h2 id="choice-title" class="visually-hidden">Explore the city, or stay and read</h2>
+            <button type="button" id="choice-explore" class="choice-side choice-explore"><span class="choice-words">Explore - Win</span></button>
+            <a id="choice-read" class="choice-side choice-read" href="plainly.html"><span class="choice-words">Stay - Read</span></a>
+        </section>
         <div id="veil" class="veil" aria-hidden="true"></div>
     </main>
 

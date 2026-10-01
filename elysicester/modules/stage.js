@@ -36,6 +36,7 @@ import { buildPlaces } from './places.js';
 import { OrbitRig } from './rigs/orbit.js';
 import { WALKER_GLSL, createWalk, walkerClears, walkerShadow } from './walk.js';
 import { createSea } from './sea.js';
+import { createGuides } from './guides.js';
 import { createSigns } from './signs.js';
 import { createSky } from './sky.js';
 import { createSolids } from './solids.js';
@@ -242,6 +243,12 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
     const signs = await createSigns({ data: data.signs, mounts: places.mounts, material: materials.sign, renderer });
     signs.mesh.castShadow = true;
     scene.add(signs.mesh);
+    // The jetty's two signs, in Elm's words (a trial: guides.js), where places.js mounted them.
+    const guides = await createGuides({ mounts: places.mounts, gradientMap: materials.gold.gradientMap, renderer });
+    if (guides) {
+        scene.add(guides.mesh);
+        dust?.dissolve(guides.mesh.material);
+    }
     await pause();
 
     const wisp = createWisp({ reducedMotion });
@@ -256,6 +263,7 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         // And where anything comes apart, its dust lingers in its shape (Elm's "original vision for all of it").
         const lingers = DUST_DISSOLVES.map((key) => meshes.get(key)).filter(Boolean);
         if (signs.mesh) lingers.push(signs.mesh);
+        if (guides?.mesh) lingers.push(guides.mesh);
         scene.add(dust.linger(lingers, wind));
     }
 
@@ -398,6 +406,8 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         rig,
         anchors: places.anchors,
         signs,
+        /** The jetty's two signs (a trial: guides.js), or null. */
+        guides,
         solids,
         canvas,
         /** Walking as the shadow (walk.js), where the address asks for it; else null. */

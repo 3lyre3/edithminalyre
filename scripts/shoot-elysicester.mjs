@@ -35,12 +35,18 @@
  * desktop pass drives the camera hard at three places, tilted all the way
  * down, as close as it comes, round and round, and it must keep clear of
  * every surface.
- * The visit begins as the shadow at the jetty's end (the dock trial), so the
- * passes above run with ?dock=off, from the whole city, as they were written;
- * and the desktop, mobile and reduced passes then make a plain visit too: it
- * must arrive walking as the shadow at the end of the jetty, the camera close
- * behind it, come back there on a reload, and "the whole city" must let go and
- * draw back to it all.
+ * Out of the Intermaze comes the choice (a trial): every first visit must find
+ * it worded as Elm worded it ("Explore - Win", "Stay - Read"), "Stay - Read"
+ * leading to the city's text, focus on "Explore - Win"; each pass chooses to
+ * explore the way it began (a click, a tap or a key), and the choice must go.
+ * The visit begins as the hum on the Cyclolite at the jetty's end (the dock and
+ * cyclolite trials), so the passes above run with ?dock=off, from the whole
+ * city, as they were written; and the desktop, mobile and reduced passes then
+ * make a plain visit too: it must arrive flying, on the Cyclolite's deck, the
+ * hum perched there and the camera close behind it, the jetty's signs standing,
+ * and come back there on a reload; and the one option at the top of the screen
+ * must go "zoom out" (drawn back, still flying), "zoom out" (let go, out to the
+ * whole city), then "back", to the city's text.
  * Before the passes, every outside "read on" address is asked whether it
  * answers. Headless frame rates mean nothing; Elm's phone judges smoothness.
  *
@@ -281,8 +287,37 @@ async function enter(page, context, pass, { begin, then = 'watch', shots = null,
             }
         }
     }
+    // Out of the Intermaze, the choice (a trial, trials.js), unless the address turned it off: both sides as Elm worded
+    // them, "Stay - Read" leading to the city's text (and answering), focus on "Explore - Win"; explore is chosen the
+    // way the visitor began (a click, a tap, or a key).
+    const expectChoice = await page.evaluate(() => !/[?&](choice|trials)=off\b/.test(window.location.search));
+    await page.waitForFunction(() => ['choice', 'done'].includes(document.documentElement.dataset.threshold), null, { timeout: LOAD_TIMEOUT });
+    let choice = null;
+    if (await page.evaluate(() => document.documentElement.dataset.threshold === 'choice')) {
+        choice = await page.evaluate(() => ({
+            explore: document.getElementById('choice-explore').textContent.trim(),
+            read: document.getElementById('choice-read').textContent.trim(),
+            readTo: document.getElementById('choice-read').getAttribute('href'),
+            focus: document.activeElement?.id || null,
+        }));
+        choice.readAnswers = await fetch(new URL(choice.readTo, page.url())).then((response) => response.status, (error) => `error: ${error.message}`);
+        if (shots) {
+            await page.waitForTimeout(1200);
+            await page.screenshot({ path: `${shots}-choice.png` });
+        }
+        if (begin === 'tap') {
+            const box = await page.locator('#choice-explore').boundingBox();
+            await touch(context, page, [{ x: box.x + box.width / 2, y: box.y + box.height / 2 }]);
+        } else if (begin === 'key') {
+            await page.keyboard.press('Enter');
+        } else {
+            await page.click('#choice-explore');
+        }
+    }
     await page.waitForFunction(() => document.documentElement.dataset.threshold === 'done', null, { timeout: LOAD_TIMEOUT });
     const mode = await settle(page);
+    // (The choice fades, then is hidden.)
+    if (choice) await page.waitForFunction(() => document.getElementById('choice').hidden, null, { timeout: 5000 }).catch(() => {});
     const after = await page.evaluate(() => ({
         log: window.__elysicesterLog ?? [],
         passage: window.elysicesterDebug?.threshold ?? null,
@@ -291,10 +326,12 @@ async function enter(page, context, pass, { begin, then = 'watch', shots = null,
         focus: document.activeElement?.id || document.activeElement?.tagName || null,
         pointsInert: document.getElementById('points').inert,
         cardHidden: document.getElementById('threshold').hidden,
+        choiceHidden: document.getElementById('choice').hidden,
         veilDark: document.getElementById('veil').classList.contains('is-dark'),
     }));
     const sequence = after.log.filter((entry) => entry.name === 'data-threshold').map((entry) => entry.value);
-    const doneAt = after.log.find((entry) => entry.name === 'data-threshold' && entry.value === 'done')?.at ?? null;
+    // Where the passage lands: the choice, where there is one, else the city.
+    const landedAt = after.log.find((entry) => entry.name === 'data-threshold' && ['choice', 'done'].includes(entry.value))?.at ?? null;
     const result = {
         mode,
         sequence: sequence.join(' > '),
@@ -302,9 +339,10 @@ async function enter(page, context, pass, { begin, then = 'watch', shots = null,
         began: begin,
         card,
         begun,
+        choice,
         readyBeforeBegin: after.readyAt !== null && after.begunAt !== null ? after.readyAt < after.begunAt : null,
-        beginToDone: doneAt !== null && after.begunAt !== null ? Math.round(doneAt - after.begunAt) : null,
-        skipToDone: doneAt !== null && skipAt !== null ? Math.round(doneAt - Math.max(skipAt, after.readyAt ?? 0)) : null,
+        beginToLanded: landedAt !== null && after.begunAt !== null ? Math.round(landedAt - after.begunAt) : null,
+        skipToLanded: landedAt !== null && skipAt !== null ? Math.round(landedAt - Math.max(skipAt, after.readyAt ?? 0)) : null,
         focus: after.focus,
         pointsInertOnCard: card.pointsInert,
         pointsInertAfter: after.pointsInert,
@@ -312,7 +350,16 @@ async function enter(page, context, pass, { begin, then = 'watch', shots = null,
         veilDark: after.veilDark,
     };
     const problems = [];
-    if (result.sequence !== `card > ${pass.expect} > done`) problems.push(`sequence was ${result.sequence}`);
+    if (result.sequence !== `card > ${pass.expect}${expectChoice ? ' > choice' : ''} > done`) problems.push(`sequence was ${result.sequence}`);
+    if (expectChoice && !choice) problems.push('the choice did not show');
+    if (choice) {
+        if (choice.explore !== 'Explore - Win') problems.push(`the choice's explore side read ${JSON.stringify(choice.explore)}`);
+        if (choice.read !== 'Stay - Read') problems.push(`the choice's read side read ${JSON.stringify(choice.read)}`);
+        if (choice.readTo !== 'plainly.html') problems.push(`"Stay - Read" led to ${choice.readTo}`);
+        if (choice.readAnswers !== 200) problems.push(`"Stay - Read" answered ${choice.readAnswers}`);
+        if (choice.focus !== 'choice-explore') problems.push(`focus on the choice was on ${choice.focus}`);
+        if (!after.choiceHidden) problems.push('the choice is still there');
+    }
     if (pass.expect === 'crossfade' && after.passage?.frames !== 0) problems.push('the tunnel drew frames under a crossfade');
     if (pass.expect === 'flight' && !(after.passage?.frames > 0)) problems.push('no flight frames');
     if (then === 'watch' && pass.expect === 'flight') {
@@ -321,7 +368,7 @@ async function enter(page, context, pass, { begin, then = 'watch', shots = null,
     }
     if (then === 'skip' && pass.expect === 'flight') {
         if (!after.passage?.skipped) problems.push('the skip was not heard');
-        if (result.skipToDone === null || result.skipToDone > 2500) problems.push(`skip took ${result.skipToDone} ms to land`);
+        if (result.skipToLanded === null || result.skipToLanded > 2500) problems.push(`skip took ${result.skipToLanded} ms to land`);
     }
     if (!card.pointsInert) problems.push('the points were reachable behind the card');
     if (after.pointsInert) problems.push('the points stayed inert after the threshold');
@@ -411,17 +458,25 @@ async function touch(context, page, points) {
 /**
  * Press once at a point (a tap, or a click) and say how long the canvas held it, in ms. Under
  * SwiftShader a simulated press can outlast the rig's tap limit (TAP_LIMIT), since input is answered
- * only between slow frames; such a press is no tap at all, and the rounds press again.
+ * only between slow frames (a phone-sized frame can take more than a second there, where a phone draws
+ * sixty); such a press is no tap at all, and the rounds press again. So a touch pass holds the city's
+ * frames still for the moment of the tap (the tap itself is answered by the same handlers, as it is
+ * between a phone's frames) and lets them run again at once.
  */
 async function pressAt(page, context, pass, point) {
-    await page.evaluate(() => {
+    await page.evaluate((hold) => {
         const canvas = document.getElementById('stage');
         window.__press = {};
         canvas.addEventListener('pointerdown', (event) => { window.__press.down = event.timeStamp; }, { once: true });
         canvas.addEventListener('pointerup', (event) => { window.__press.up = event.timeStamp; }, { once: true });
-    });
-    if (pass.hasTouch) await touch(context, page, [point]);
-    else await page.mouse.click(point.x, point.y);
+        if (hold) window.elysicesterDebug?.stage?.stop();
+    }, Boolean(pass.hasTouch));
+    try {
+        if (pass.hasTouch) await touch(context, page, [point]);
+        else await page.mouse.click(point.x, point.y);
+    } finally {
+        if (pass.hasTouch) await page.evaluate(() => window.elysicesterDebug?.stage?.start());
+    }
     return page.evaluate(() => (window.__press.up ?? Infinity) - (window.__press.down ?? 0));
 }
 
@@ -443,7 +498,7 @@ async function drag(page, context, isTouch, from, to) {
 
 async function hideChrome(page) {
     // The page lays the site's grain over the still as over the scene, so the still itself is shot without it.
-    await page.addStyleTag({ content: '.plainly, .debug-readout, .controls, .threshold-voice, .veil, .point-label, .sign-label, .place-names, .place-name, .whisper, .grain { visibility: hidden !important; }' });
+    await page.addStyleTag({ content: '.plainly, .debug-readout, .controls, .one-button, .sound-corner, .choice, .threshold-voice, .veil, .point-label, .sign-label, .place-names, .place-name, .whisper, .grain { visibility: hidden !important; }' });
 }
 
 /** Encode a PNG as a WebP of the given size, using the browser's own encoder. */
@@ -800,30 +855,42 @@ async function checkReadOn() {
 }
 
 /**
- * The dock start (a trial, trials.js): a plain visit must arrive walking as the shadow at the end of the jetty, the
- * camera close behind it; a reload (within the visit) must come back there; and "the whole city" must let go of the
- * shadow and draw back to the whole of it. Its own browser, as a first visit.
+ * The dock start (the dock and cyclolite trials, trials.js): a plain visit must arrive flying at the end of the jetty,
+ * on the Cyclolite (past the jetty's end, on its deck), the hum perched there, the camera close behind it, and the
+ * jetty's signs standing; a reload (within the visit) must come back there; and the one option at the top of the
+ * screen must go "zoom out" (the camera drawn back as far as it follows, still flying), "zoom out" (letting go, out to
+ * the whole city, where it says "back"), and "back", to the city's text. Its own browser, as a first visit.
  */
 async function dockRound(chromium, pass, shots) {
     const { browser, context, page, messages, failures } = await openPass(chromium, pass);
     const problems = [];
     const where = () => page.evaluate(() => {
         const { walk, stage } = window.elysicesterDebug;
+        const one = document.getElementById('one-button');
         return {
             walking: walk?.state.walking ?? null,
             at: walk ? walk.state.position.toArray().map((n) => Number(n.toFixed(2))) : null,
+            // How high the hum hovers over its shadow: perched, a little; flying, at a body's height.
+            perch: walk?.humAt ? Number((walk.humAt.y - walk.state.position.y).toFixed(2)) : null,
             cameraToWalker: walk ? Number(stage.camera.position.distanceTo(walk.state.position).toFixed(2)) : null,
+            follow: walk ? Number(walk.followDistance.toFixed(2)) : null,
+            followFar: walk?.followFar ?? null,
             atHome: stage?.rig.atHome ?? null,
-            controls: [...document.querySelectorAll('.controls .control')].filter((button) => !button.hidden).map((button) => button.textContent),
+            one: one && !one.hidden ? one.textContent : null,
+            boat: Boolean(stage?.scene.getObjectByName('cyclolite-light')),
+            signs: Boolean(stage?.scene.getObjectByName('guides')),
         };
     });
+    // (The option's words follow the camera frame by frame: under SwiftShader a frame can take a second.)
+    const oneSays = (words) => page.waitForFunction((wanted) => document.getElementById('one-button')?.textContent === wanted, words, { timeout: 15_000 }).catch(() => {});
     const arrived = (seen, when) => {
-        if (!seen.walking) problems.push(`${when}: not walking as the shadow`);
-        if (!(seen.at?.[0] > 20)) problems.push(`${when}: the shadow is not at the jetty's end (${seen.at})`);
+        if (!seen.walking) problems.push(`${when}: not flying as the hum`);
+        if (!seen.boat) problems.push(`${when}: no Cyclolite at the jetty's end`);
+        else if (!(seen.at?.[0] > 23.5) || !(Math.abs(seen.at[1] - 0.19) < 0.15)) problems.push(`${when}: not on the Cyclolite's deck (${seen.at})`);
+        if (seen.perch === null || !(seen.perch < 0.8)) problems.push(`${when}: the hum is not perched (it hovers ${seen.perch} over its shadow)`);
         if (!(seen.cameraToWalker < 8)) problems.push(`${when}: the camera is ${seen.cameraToWalker} from it, not close behind`);
-        for (const label of ['let go', 'the whole city']) {
-            if (!seen.controls.includes(label)) problems.push(`${when}: no "${label}" (controls: ${seen.controls.join(', ')})`);
-        }
+        if (!seen.signs) problems.push(`${when}: the jetty's signs are not standing`);
+        if (seen.one !== 'zoom out') problems.push(`${when}: the one option says ${JSON.stringify(seen.one)}, not "zoom out"`);
     };
     const result = {};
     try {
@@ -831,20 +898,44 @@ async function dockRound(chromium, pass, shots) {
         const entered = await enter(page, context, pass, { begin: pass.begin, then: 'skip' });
         if (entered.mode !== 'live') problems.push(`the city did not go live (${entered.mode})`);
         for (const line of entered.problems) problems.push(`threshold: ${line}`);
+        await oneSays('zoom out');
         result.arrival = await where();
         arrived(result.arrival, 'arriving');
         await page.screenshot({ path: `${shots}-dock.png` });
         await page.reload({ waitUntil: 'load' });
         const back = await comeBack(page);
         for (const line of back.problems) problems.push(`on return: ${line}`);
+        await oneSays('zoom out');
         result.reload = await where();
         arrived(result.reload, 'on return');
-        await page.getByRole('button', { name: 'the whole city' }).click();
+        // The one option, round. "zoom out": the camera draws back as far as it follows, still flying...
+        await page.click('#one-button');
+        await page.waitForFunction(() => {
+            const { walk } = window.elysicesterDebug;
+            return walk.followDistance >= walk.followFar - 0.05;
+        }, null, { timeout: 10_000 }).catch(() => {});
+        await page.waitForTimeout(pass.reducedMotion ? 800 : 3000);
+        result.zoomed = await where();
+        if (!result.zoomed.walking) problems.push('the first "zoom out" let go of the hum');
+        if (!(result.zoomed.follow >= result.zoomed.followFar - 0.05)) problems.push(`the first "zoom out" drew back to ${result.zoomed.follow}, not ${result.zoomed.followFar}`);
+        if (result.zoomed.one !== 'zoom out') problems.push(`after the first "zoom out" the option says ${JSON.stringify(result.zoomed.one)}`);
+        await page.screenshot({ path: `${shots}-dock-zoomed.png` });
+        // ... "zoom out" again: it lets go, out to the whole city, where the option says "back" ...
+        await page.click('#one-button');
+        await oneSays('back');
         await page.waitForTimeout(pass.reducedMotion ? 800 : 4000);
         result.whole = await where();
-        if (result.whole.walking) problems.push('"the whole city" left it walking');
-        if (!result.whole.atHome) problems.push('"the whole city" did not draw back to the whole city');
+        if (result.whole.walking) problems.push('the second "zoom out" left it flying');
+        if (!result.whole.atHome) problems.push('the second "zoom out" did not draw back to the whole city');
+        if (result.whole.one !== 'back') problems.push(`at the whole city the option says ${JSON.stringify(result.whole.one)}, not "back"`);
         await page.screenshot({ path: `${shots}-dock-whole.png` });
+        // ... and "back" goes to the city's text.
+        await Promise.all([
+            page.waitForURL(/\/elysicester\/plainly\.html$/, { timeout: 15_000 }).catch(() => {}),
+            page.click('#one-button'),
+        ]);
+        result.back = new URL(page.url()).pathname;
+        if (result.back !== '/elysicester/plainly.html') problems.push(`"back" went to ${result.back}`);
     } catch (error) {
         problems.push(`the round broke off: ${error.message.split('\n')[0]}`);
     } finally {
@@ -894,7 +985,8 @@ try {
         await mkdir(outDir, { recursive: true });
         const report = { origin, readOn: await checkReadOn(), passes: {} };
         const data = JSON.parse(await readFile(path.join(ROOT, 'elysicester', 'data', 'fragments.json'), 'utf8'));
-        const voice = ['nbp-e3-intermaze-1', 'nbp-e3-intermaze-2'].map((id) => data.fragments.find((fragment) => fragment.id === id));
+        // (As main.js's VOICE_FRAGMENTS: E's lines, which the flight surfaces one by one.)
+        const voice = ['nbp-e3-intermaze-1'].map((id) => data.fragments.find((fragment) => fragment.id === id));
         const voiceLines = voice.filter(Boolean).flatMap((fragment, index) => (index === 0 ? fragment.text.split(/\n{2,}/) : [fragment.text]));
 
         for (const [name, pass] of Object.entries(PASSES).filter(([key]) => only.includes(key))) {
@@ -972,7 +1064,7 @@ try {
             const kept = result.persisted ? `dim after reload ${result.persisted.list}/${result.persisted.total}${result.persisted.points === null ? '' : ` (points ${result.persisted.points})`}` : '';
             const back = result.reentered ? (result.reentered.ok ? 'reload lands in the city' : 'RELOAD NOT OK') : '';
             const passage = result.threshold.passage;
-            const crossing = `threshold ${result.threshold.sequence}${passage?.frames ? ` (${passage.frames} frames, ${passage.linesShown} lines${passage.skipped ? `, skipped, landed ${result.threshold.skipToDone} ms after skip` : ''})` : ''} ${result.threshold.ok ? 'ok' : 'NOT OK'}`;
+            const crossing = `threshold ${result.threshold.sequence}${passage?.frames ? ` (${passage.frames} frames, ${passage.linesShown} lines${passage.skipped ? `, skipped, landed ${result.threshold.skipToLanded} ms after skip` : ''})` : ''} ${result.threshold.ok ? 'ok' : 'NOT OK'}`;
             const sound = result.sound ? `sound ${result.sound.ok ? 'ok' : 'NOT OK'}` : '';
             const navSerious = (result.signs?.navViolations ?? []).filter((violation) => SERIOUS.has(violation.impact)).length;
             const slowSigns = result.signs?.results.reduce((sum, entry) => sum + (entry.slowPresses ?? 0), 0) ?? 0;
@@ -981,7 +1073,7 @@ try {
                 : '';
             const extras = result.extras ? `extras ${result.extras.ok ? 'sky, shadow, door, voice and hums all there' : 'NOT OK'}` : '';
             const camera = result.camera ? `camera ${result.camera.ok ? `kept clear (closest ${Math.min(...result.camera.rows.map((row) => row.closest))})` : 'WENT INTO SOMETHING'}` : '';
-            const dock = result.dock ? `dock ${result.dock.ok ? 'arrives walking at the jetty, again on reload, and lets go to the whole city' : 'NOT OK'}` : '';
+            const dock = result.dock ? `dock ${result.dock.ok ? 'arrives perched on the Cyclolite by the signs, again on reload; zoom out, zoom out, back to the text' : 'NOT OK'}` : '';
             process.stdout.write(`${name.padEnd(8)} ${result.mode.padEnd(6)} ${problems === 0 ? 'clean' : `${problems} problem(s)`}  ${[crossing, sound, info, orbit, still, camera, signs, extras, pointer, keys, axe, back, kept, dock].filter(Boolean).join(' · ')}\n`);
             for (const line of [...result.messages, ...result.failures]) process.stdout.write(`    ${line}\n`);
             for (const line of result.dock?.problems ?? []) process.stdout.write(`    dock not ok: ${line}\n`);

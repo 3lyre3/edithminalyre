@@ -43,6 +43,7 @@ import {
     PlaneGeometry,
     Quaternion,
     Raycaster,
+    RingGeometry,
     ShaderMaterial,
     Shape,
     SphereGeometry,
@@ -1190,7 +1191,7 @@ function buildQuay(buckets, { north, south, jetty }) {
  * stage's middle, so the way from the jetty to the gate in the wall runs
  * straight between them. Each as built and as aged (CAFE_BUILDS).
  */
-function buildCafes({ buckets, place, mounts, extras, animated, wanted, materials }) {
+function buildCafes({ buckets, place, mounts, extras, animated, wanted, materials, still }) {
     const z = place.position[2];
     // Their stage: a platform out from the wall, with an apron before the cafés (where the footlights stand)
     // wide enough to walk, running on past the last café's outer wall toward the sun-dock. Its north end is
@@ -1323,8 +1324,211 @@ function buildCafes({ buckets, place, mounts, extras, animated, wanted, material
     footlit.name = 'footlight-wash';
     extras.push(footlit);
     if (materials?.brick) weatherCafes(materials.brick, worn);
-    // Where the jetty ends, out over the water, on its boards (the walk's shadow waits there, walk.js).
+    // The jetty's two signs (a trial: guides.js draws them): lecterns on its boards, a little off its middle, leaning
+    // back toward the way in from its end, so the camera behind the hum reads them whole, even on a phone held upright
+    // (whose view is narrow). They stand below the hum's height (it flies over them), and aren't walls to anyone.
+    if (trialOn('jettysigns')) {
+        const lean = new Vector3(Math.cos(0.62), Math.sin(0.62), 0);
+        for (const [name, back] of [['jetty/let-go', 1.7], ['jetty/pinch', 4.5]]) {
+            mount(mounts, name, {
+                position: new Vector3(jettyEnd - back, 0.82, z - 0.42),
+                normal: lean.clone(),
+                height: 0.44,
+                maxWidth: 1.16,
+                style: 'guide',
+                stand: { kind: 'posts', base: 0.19 },
+            });
+        }
+    }
+    // Where the jetty ends, out over the water: on the Cyclolite moored there (a trial), or on its boards (the walk's
+    // shadow, or the hum, waits there, walk.js).
+    if (trialOn('cyclolite')) {
+        const boatX = jettyEnd + CYCLOLITE_RADIUS - CYCLOLITE_MOORED;
+        const floor = buildCyclolite(buckets, { x: boatX, z, extras, animated, still });
+        return { pierEnd: new Vector3(boatX + CYCLOLITE_WAITS.x, CYCLOLITE_DECK_Y, z + CYCLOLITE_WAITS.z), floor };
+    }
     return { pierEnd: new Vector3(jettyEnd - 0.9, 0.19, z) };
+}
+
+/**
+ * The Cyclolite (a trial, trials.js; ?cyclolite=off). In Numbers by Paint (p. 94) it is "the long, silvered necklace
+ * that, when activated, engulfs its owner in a fishbowl of hard, yellow light". Elm's: "a little golden floating half
+ * boat half disc at the end of the jetty ... a cyclolite with the roof open, spread wide enough for the bird and shadow
+ * to appear in full, the shadow on the ground of the cyclolite disc." So: a golden disc-boat moored off the jetty's
+ * end, its deck level with the jetty's boards (a floor: the hum begins on it, and flies off it onto the boards); the
+ * silvered necklace strung round its rim, its stone hanging at the front; and its fishbowl of hard yellow light opened
+ * into petals spread wide and low about it, breathing a little, as a flower does once it has opened, so nothing of it
+ * stands between the camera and the hum, or the wraith's shadow on the deck.
+ */
+const CYCLOLITE_RADIUS = 1.12;
+/** Its deck, level with the jetty's boards (their top), and how far in from its rim a body stands. */
+const CYCLOLITE_DECK_Y = 0.19;
+const CYCLOLITE_KEEP = 0.2;
+/** How far it overlaps the jetty's end, moored against it (so the deck and the boards meet with no gap between). */
+const CYCLOLITE_MOORED = 0.32;
+/**
+ * Where its owner waits on the deck: off the middle, against the way the wraith's shadow falls (north and a little
+ * east, from the key light's quarter: walk.js HUM_SUN), so the shadow lies across the deck's heart, the whole of it on
+ * the disc (Elm: "the shadow on the ground of the cyclolite disc").
+ */
+const CYCLOLITE_WAITS = { x: -0.22, z: 0.5 };
+/** Its fishbowl's petals: how many, how far out from the rim they reach, how high they arch, and their tips' curl. */
+const CYCLOLITE_PETALS = 8;
+const PETAL_REACH = 0.82;
+const PETAL_ARCH = 0.18;
+const PETAL_CURL = 0.16;
+const CYCLOLITE_LIGHT = 0xffd447;
+/** The deck's inlay, ring by ring from its heart out (radius as a share of the deck's, and its gold). */
+const CYCLOLITE_INLAY = [[0.3, 0xf6dc94], [0.36, 0xb0802e], [0.66, 0xecc46c], [0.7, 0xb0802e], [0.985, 0xdcb05a]];
+
+const cycloliteVertexShader = /* glsl */ `
+    attribute float along;
+    attribute float across;
+    attribute float petal;
+    uniform float time;
+    varying float vAlong;
+    varying float vAcross;
+    varying vec3 vWorld;
+    void main() {
+        vAlong = along;
+        vAcross = across;
+        vec3 p = position;
+        // Each petal breathes on its own beat: its tip rises and settles a little.
+        p.y += sin(time * 0.9 + petal * 0.79) * 0.045 * along * along;
+        vec4 world = modelMatrix * vec4(p, 1.0);
+        vWorld = world.xyz;
+        gl_Position = projectionMatrix * viewMatrix * world;
+    }
+`;
+
+const cycloliteFragmentShader = /* glsl */ `
+    uniform vec3 color;
+    uniform float time;
+    varying float vAlong;
+    varying float vAcross;
+    varying vec3 vWorld;
+    void main() {
+        // Hard light: faint through each petal's body, bright along its edges and its tip, as light held in glass is.
+        float edge = smoothstep(0.72, 1.0, abs(vAcross * 2.0 - 1.0));
+        float tip = smoothstep(0.8, 1.0, vAlong);
+        float base = 1.0 - smoothstep(0.0, 0.12, vAlong);
+        float glow = 0.1 + 0.62 * max(edge, tip) + 0.35 * base;
+        // A slow shimmer passes round the bowl.
+        glow *= 0.85 + 0.15 * sin(vAlong * 6.0 - time * 1.4 + vAcross * 3.0);
+        glow *= 1.0 - smoothstep(70.0, 160.0, distance(cameraPosition, vWorld));
+        gl_FragColor = vec4(color * glow, 1.0);
+    }
+`;
+
+/** The opened fishbowl: petals about a deck of radius `radius`, in the boat's own frame (its deck's middle at 0). */
+function cyclolitePetals(radius) {
+    const ACROSS = 6;
+    const ALONG = 9;
+    const positions = [];
+    const along = [];
+    const across = [];
+    const petals = [];
+    const index = [];
+    const span = (Math.PI * 2) / CYCLOLITE_PETALS;
+    for (let k = 0; k < CYCLOLITE_PETALS; k += 1) {
+        const middle = (k + 0.5) * span;
+        const first = positions.length / 3;
+        for (let j = 0; j <= ALONG; j += 1) {
+            const v = j / ALONG;
+            // Out from the rim, arching a little, its tip curling up: a petal of the bowl, opened.
+            const r = radius + PETAL_REACH * v;
+            const y = PETAL_ARCH * Math.sin(Math.PI * v * 0.85) + PETAL_CURL * v * v * v;
+            // Broad at its root (nearly its share of the rim), narrowing to a rounded tip.
+            const half = span * 0.46 * (1 - 0.72 * Math.pow(v, 1.6)) * (radius / r);
+            for (let i = 0; i <= ACROSS; i += 1) {
+                const u = i / ACROSS;
+                const angle = middle + (u - 0.5) * 2 * half;
+                positions.push(Math.cos(angle) * r, y, Math.sin(angle) * r);
+                along.push(v);
+                across.push(u);
+                petals.push(k);
+            }
+        }
+        for (let j = 0; j < ALONG; j += 1) {
+            for (let i = 0; i < ACROSS; i += 1) {
+                const a = first + j * (ACROSS + 1) + i;
+                const b = a + ACROSS + 1;
+                index.push(a, b, a + 1, a + 1, b, b + 1);
+            }
+        }
+    }
+    const geometry = new BufferGeometry();
+    geometry.setAttribute('position', new Float32BufferAttribute(positions, 3));
+    geometry.setAttribute('along', new Float32BufferAttribute(along, 1));
+    geometry.setAttribute('across', new Float32BufferAttribute(across, 1));
+    geometry.setAttribute('petal', new Float32BufferAttribute(petals, 1));
+    geometry.setIndex(index);
+    geometry.computeBoundingSphere();
+    return geometry;
+}
+
+/**
+ * Build the Cyclolite moored off the jetty's end at (x, z): its hull, deck and rim of gold (the city's own, so the
+ * wraith's shadow falls on its deck as on the paving, and the ink and the dust take it as they take the city), its
+ * necklace of silvered beads and the necklace's stone, and its opened fishbowl of light (an extra, drawn as light: it
+ * writes no depth and draws no ink, and stops nothing). Returns its floor, for walking (walk.js).
+ */
+function buildCyclolite(buckets, { x, z, extras, animated, still }) {
+    const deckY = CYCLOLITE_DECK_Y;
+    const R = CYCLOLITE_RADIUS;
+    // The hull: a shallow golden bowl under the deck, half under the water, as a little boat's is.
+    const hull = new LatheGeometry([
+        new Vector2(0.001, deckY - 0.52),
+        new Vector2(R * 0.42, deckY - 0.49),
+        new Vector2(R * 0.74, deckY - 0.37),
+        new Vector2(R * 0.93, deckY - 0.19),
+        new Vector2(R * 1.02, deckY - 0.04),
+        new Vector2(R * 1.0, deckY + 0.04),
+    ], 32);
+    buckets.add('gold', paint(pose(hull, { x, y: 0, z }), GOLDS[2]));
+    // The deck: a disc of gold inlaid ring by ring, brightest at its heart, where its owner stands.
+    let inner = 0;
+    for (const [share, color] of CYCLOLITE_INLAY) {
+        const ring = inner === 0 ? new CircleGeometry(R * share, 32) : new RingGeometry(R * inner, R * share, 32);
+        ring.rotateX(-Math.PI / 2);
+        buckets.add('gold', paint(pose(ring, { x, y: deckY + 0.004, z }), color));
+        inner = share;
+    }
+    // Its rim, a raised lip of brighter gold.
+    const rim = new TorusGeometry(R, 0.05, 6, 40);
+    rim.rotateX(Math.PI / 2);
+    buckets.add('gold', paint(pose(rim, { x, y: deckY + 0.04, z }), GOLDS[0]));
+    // The silvered necklace, strung round the rim, bead by bead; its stone hangs at the front, toward the city.
+    const BEADS = 36;
+    for (let k = 0; k < BEADS; k += 1) {
+        const angle = (k / BEADS) * Math.PI * 2;
+        const out = R + 0.085;
+        buckets.add('steel', ball(0.045, { x: x + Math.cos(angle) * out, y: deckY - 0.01, z: z + Math.sin(angle) * out }, 0xd8dee8, 6, 4));
+    }
+    buckets.add('steel', cylinder(0.012, 0.012, 0.14, 4, { x: x - R - 0.1, y: deckY - 0.08, z }, 0xd8dee8));
+    buckets.add('glow', ball(0.085, { x: x - R - 0.1, y: deckY - 0.19, z }, light(CYCLOLITE_LIGHT, 2.6), 8, 6));
+
+    // The fishbowl of hard, yellow light, opened wide.
+    const uniforms = { time: { value: 0 }, color: { value: new Color(CYCLOLITE_LIGHT).multiplyScalar(1.5) } };
+    const bowl = new Mesh(cyclolitePetals(R), new ShaderMaterial({
+        uniforms,
+        vertexShader: cycloliteVertexShader,
+        fragmentShader: cycloliteFragmentShader,
+        transparent: true,
+        blending: AdditiveBlending,
+        depthWrite: false,
+        side: DoubleSide,
+    }));
+    bowl.name = 'cyclolite-light';
+    bowl.position.set(x, deckY + 0.05, z);
+    bowl.renderOrder = 2;
+    extras.push(bowl);
+    animated.push((time) => {
+        uniforms.time.value = still ? 0 : time;
+    });
+    // A body stands on its deck, short of the rim.
+    const floorAt = (px, pz) => (Math.hypot(px - x, pz - z) <= R - CYCLOLITE_KEEP ? deckY : null);
+    return { floorAt };
 }
 
 /** A pennant string or ribbon, with per-vertex "sway" so the flags can flutter. */

@@ -48,6 +48,8 @@ import { paint, pose } from './kit.js';
  * market's awnings, the cafés' valances and the lamps over the hostel's table.
  */
 export const FLIGHT = 1.3;
+/** How high it rests over a deck it waits on before it first sets off (the Cyclolite's: Elm, "start the PC's hum out on" it). */
+const PERCH = 0.34;
 /** Its size, over the bird as drawn below (about a sparrow's there): big enough that a phone's screen finds it. */
 const SIZE = 1.9;
 /** How quickly it rises or settles to its height over a new floor (per second). */
@@ -195,6 +197,8 @@ export function createHum({ gradientMap, reducedMotion }) {
     /** Where it flies (the camera looks near here): above the one casting the shadow, at its height over their floor. */
     const position = new Vector3();
     let placed = false;
+    /** Resting low over the deck it waits on (the Cyclolite: walk.js), until it first sets off. */
+    let perched = false;
     let lift = 0;
     let twirl = 0;
     let roll = 0;
@@ -211,7 +215,7 @@ export function createHum({ gradientMap, reducedMotion }) {
          * @param {Vector3} feet - where the one casting the shadow stands
          */
         fly(dt, feet) {
-            const want = feet.y + FLIGHT;
+            const want = feet.y + (perched ? PERCH : FLIGHT);
             if (!placed || reducedMotion) {
                 position.set(feet.x, want, feet.z);
                 placed = true;
@@ -227,6 +231,19 @@ export function createHum({ gradientMap, reducedMotion }) {
             placed = false;
             lastHeading = null;
             roll = 0;
+        },
+
+        /**
+         * Rest low over the deck it waits on (true), or rise to its flight (false): it eases up as it does over a
+         * step, so the first moment of going lifts it off.
+         */
+        perch(on) {
+            perched = Boolean(on);
+        },
+
+        /** Whether it's resting low, waiting to set off. */
+        get perched() {
+            return perched;
         },
 
         /**
