@@ -31,11 +31,13 @@
 
 import {
     AddEquation,
+    BackSide,
     Box3,
     BufferAttribute,
     BufferGeometry,
     CustomBlending,
     DoubleSide,
+    FrontSide,
     Group,
     Mesh,
     OneFactor,
@@ -96,6 +98,11 @@ const MOTE_SHARE = 0.36;
 const MOTE_BRIGHT = 1.15;
 /** At the opening's edge, the ink draws no line (ink.js reads it): so a surface fades into its dust, not cut off. */
 const RIM = 0.07;
+/**
+ * The insides, black (a trial: ?inside=off), show only while walking, and only so far about the openings (this many
+ * times their own reach), thinning out in grains toward it: what's seen through an opening, and nothing far from one.
+ */
+const INSIDE_REACH = 2.0;
 /** Nothing lingers on the lens itself: the dust is whole only this far out from it (world units). */
 const LINGER_LENS = [0.3, 1.0];
 /** The lingering dust is drawn only where it can be: the city in squares this wide, those near an opening. */
@@ -116,10 +123,11 @@ const DUST_GLSL = /* glsl */ `
     varying vec3 vDustWorld;
     varying float vDustUp;
     float dustGrain(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
-    float dustAt(vec3 p) {
-        float dust = 1.0 - smoothstep(dustNear.x, dustNear.y, distance(p, cameraPosition));
+    // (wide: the openings as they are, at 1, or that many times as wide, for what's seen through them.)
+    float dustWithin(vec3 p, float wide) {
+        float dust = 1.0 - smoothstep(dustNear.x * wide, dustNear.y * wide, distance(p, cameraPosition));
         vec3 fromLens = p - cameraPosition;
-        if (dustSight.w > 0.5 && dot(fromLens, fromLens) < dustSight.x) {
+        if (dustSight.w > 0.5 && dot(fromLens, fromLens) < dustSight.x * wide * wide) {
             for (int i = 0; i < ${DUST_TARGETS}; i++) {
                 vec4 target = dustTargets[i];
                 if (target.w < 0.0) continue;
@@ -128,14 +136,15 @@ const DUST_GLSL = /* glsl */ `
                 float t = clamp(dot(fromLens, ab) / (reach * reach), 0.0, 1.0);
                 float off = distance(p, cameraPosition + ab * t);
                 float stop = 1.0 - target.w / reach;
-                float open = mix(${SIGHT_OPEN.toFixed(2)}, ${SIGHT_OPEN_NEAR.toFixed(2)}, t);
-                float whole = mix(${SIGHT_FADE.toFixed(2)}, ${SIGHT_FADE_NEAR.toFixed(2)}, t);
+                float open = mix(${SIGHT_OPEN.toFixed(2)}, ${SIGHT_OPEN_NEAR.toFixed(2)}, t) * wide;
+                float whole = mix(${SIGHT_FADE.toFixed(2)}, ${SIGHT_FADE_NEAR.toFixed(2)}, t) * wide;
                 dust = max(dust, (1.0 - smoothstep(open, whole, off))
                     * smoothstep(0.0, 0.04, t) * (1.0 - smoothstep(stop - 0.04, stop, t)));
             }
         }
         return dust;
     }
+    float dustAt(vec3 p) { return dustWithin(p, 1.0); }
 `;
 
 /**
@@ -152,6 +161,20 @@ const DUST_EDGE_GLSL = /* glsl */ `
         return vDustWorld.y < dustSight.y + ${LOW_KEPT.toFixed(2)} || (vDustUp > 0.6 && vDustWorld.y < dustSight.y + ${FLOOR_KEPT.toFixed(2)});
     }
     float dustEdge(vec2 cell) { return 0.42 + 0.03 * dustGrain(cell); }
+`;
+
+/**
+ * Toward an opening's edge, more and more of the surface is gold grains (gilt, 0 to 1), each coming and going at a
+ * pace of its own, a few of them bright.
+ */
+const GILD_GLSL = /* glsl */ `
+    vec3 dustGild(vec3 light, vec2 cell, float gilt) {
+        float grain = dustGrain(cell);
+        float phase = dustGrain(cell + 7.31);
+        float shows = step(fract(phase + dustTime * (0.35 + 0.5 * grain)), gilt * 0.85);
+        vec3 gold = vec3(1.0, 0.72, 0.3) * (0.8 + 0.9 * step(0.92, grain));
+        return mix(light, gold, shows * ${GILT.toFixed(2)});
+    }
 `;
 
 /**
@@ -309,8 +332,9 @@ function segmentNear(a, b, box, reach, grown) {
 /**
  * @param {object} options
  * @param {boolean} options.reducedMotion - the glitter holds still
+ * @param {boolean} [options.inside] - what comes apart shows its inside pure black, not empty (a trial: ?inside=off)
  */
-export function createDust({ reducedMotion }) {
+export function createDust({ reducedMotion, inside = false }) {
     const uniforms = {
         dustNear: { value: new Vector2(NEAR_OPEN, NEAR_FADE) },
         dustSight: { value: new Vector4(0, 0, 0, 0) },
@@ -319,6 +343,8 @@ export function createDust({ reducedMotion }) {
     };
     /** The squares of lingering dust (linger), and what cull reckons with. */
     const lingering = [];
+    /** The materials whose insides show black while walking (dissolve, showInsides). */
+    const insides = [];
     const reachOf = new Vector3();
     const grown = new Box3();
 
@@ -338,19 +364,34 @@ export function createDust({ reducedMotion }) {
          * Teach a material to come apart where the camera passes, its edges gilded. (Any of three's own materials:
          * it needs their common, begin_vertex and opaque_fragment chunks.)
          * @param {import('three').Material} material
+         * @param {{ solid?: boolean }} [options] - solid: whether what it draws is the city's, whose insides show
+         *   black while walking (inside); the givers and Allison aren't buildings, and keep theirs unseen
          */
-        dissolve(material) {
+        dissolve(material, { solid = true } = {}) {
             // (A material the city's pieces share may be found again among what's drawn with materials of its own:
             // taught once is enough, and twice would say everything twice over in its shader.)
             if (material.userData.dust) return material;
             material.userData.dust = true;
+            // Where something comes apart while walking, its inside shows pure black (a trial, ?inside=off: a friend's
+            // idea, through Elm, "make all backfaces render as pure black ... in the edge case where the dissolve shows
+            // bits of the inside of a building the building looks empty currently - if the backfaces are pure black
+            // then it'll look neater visually"). A solid's inner faces are drawn then (showInsides), black, near the
+            // openings; whole, they lie hidden behind its outside, so they show only through an opening. (What was
+            // already drawn from both sides, a flag, a ribbon, a bridge, keeps its own two faces; what's see-through
+            // stays as it was; and the city's long shadows fall as they did.)
+            const blackInside = inside && solid && material.side === FrontSide && !material.transparent;
+            if (blackInside) {
+                material.shadowSide = BackSide;
+                material.userData.dustInside = true;
+                insides.push(material);
+            }
             alsoBeforeCompile(material, 'dust', (shader) => {
                 Object.assign(shader.uniforms, uniforms);
                 shader.vertexShader = shader.vertexShader
                     .replace('#include <common>', '#include <common>\nvarying vec3 vDustWorld;\nvarying float vDustUp;')
                     .replace('#include <begin_vertex>', '#include <begin_vertex>\nvDustWorld = (modelMatrix * vec4(transformed, 1.0)).xyz;\nvDustUp = normalize(mat3(modelMatrix) * normal).y;');
                 shader.fragmentShader = shader.fragmentShader
-                    .replace('#include <common>', `#include <common>\n${DUST_GLSL}\n${DUST_EDGE_GLSL}`)
+                    .replace('#include <common>', `#include <common>\n${DUST_GLSL}\n${DUST_EDGE_GLSL}\n${GILD_GLSL}`)
                     // (Nothing is worked out for the grain where there's no dust at all, which is almost everywhere.)
                     .replace('void main() {', [
                         'void main() {',
@@ -366,17 +407,24 @@ export function createDust({ reducedMotion }) {
                         '        if (dustHere > edgeHere) discard;',
                         `        dustGilt = smoothstep(edgeHere - ${GILT_BAND.toFixed(2)}, edgeHere, dustHere);`,
                         '    }',
+                        // (Its inside, seen through an opening: black, and its edge gilded as the outside's is, thinning
+                        // out in grains away from the openings; nothing more is worked out for it, so the inner faces cost
+                        // almost nothing where they're hidden.)
+                        ...(blackInside ? [
+                            '    if (!gl_FrontFacing) {',
+                            `        if (dustSight.w < 0.5 || dustWithin(vDustWorld, ${INSIDE_REACH.toFixed(2)}) <= 0.5 * dustGrain(dustCell + 3.7)) discard;`,
+                            '        gl_FragColor = vec4(dustGilt > 0.0 ? dustGild(vec3(0.0), dustCell, dustGilt) : vec3(0.0), 1.0);',
+                            '        #include <tonemapping_fragment>',
+                            '        #include <colorspace_fragment>',
+                            '        #include <fog_fragment>',
+                            '        return;',
+                            '    }',
+                        ] : []),
                     ].join('\n'))
                     // (Toward the edge, more and more of the surface is gold grains, each coming and going at a
                     // pace of its own, a few of them bright.)
                     .replace('#include <opaque_fragment>', [
-                        '    if (dustGilt > 0.0) {',
-                        '        float grain = dustGrain(dustCell);',
-                        '        float phase = dustGrain(dustCell + 7.31);',
-                        '        float shows = step(fract(phase + dustTime * (0.35 + 0.5 * grain)), dustGilt * 0.85);',
-                        '        vec3 gold = vec3(1.0, 0.72, 0.3) * (0.8 + 0.9 * step(0.92, grain));',
-                        `        outgoingLight = mix(outgoingLight, gold, shows * ${GILT.toFixed(2)});`,
-                        '    }',
+                        '    if (dustGilt > 0.0) outgoingLight = dustGild(outgoingLight, dustCell, dustGilt);',
                         '#include <opaque_fragment>',
                     ].join('\n'));
             });
@@ -464,6 +512,17 @@ export function createDust({ reducedMotion }) {
         /** How many squares of lingering dust are drawn this frame, of how many (for the local checks). */
         get lingeringShown() {
             return { shown: lingering.filter((cell) => cell.visible).length, of: lingering.length };
+        },
+
+        /**
+         * Around drawing the city, every frame: its insides drawn (on, while walking), then not (off), so nothing
+         * else that looks at the city (a touch, what hides a reading point) ever finds an inside. (The shader stays
+         * the same either way: only which faces are drawn changes.)
+         * @param {boolean} on
+         */
+        showInsides(on) {
+            const side = on ? DoubleSide : FrontSide;
+            for (const material of insides) material.side = side;
         },
 
         /** Every frame: the glitter's clock. */

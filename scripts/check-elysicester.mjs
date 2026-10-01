@@ -21,7 +21,10 @@
  *     serves that address from the diorama's own files
  *   - the page makes no outside requests beyond the site's Google Fonts link,
  *     doesn't load the shared site.js, and carries noindex until it is listed
- *     in sitemap.xml
+ *     in sitemap.xml (in an HTML page, what's checked is what could ask for
+ *     something: attributes, scripts and styles, not the words of its text)
+ *   - the texts (read.html) mark every lost page the city gives exactly once,
+ *     holding its words exactly; the old plain page's address goes on to them
  */
 
 // =============================================================================
@@ -31,9 +34,8 @@
 import { readFile, readdir, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { loadRedirects, servedPath } from './redirects.mjs';
+import { loadRedirects, matchRedirect, servedPath } from './redirects.mjs';
 import { currentStamp, stampsIn } from './stamp-elysicester.mjs';
-import { PLAINLY_PAGE, plainlyHtml, readOnHere } from './plainly-elysicester.mjs';
 
 // =============================================================================
 // Constants
@@ -147,6 +149,17 @@ async function checkTarget(where, target) {
     return ALLOWED_TEXTS.includes(base)
         ? null
         : `${where}: ${JSON.stringify(target)} is outside the Overland and Adelaide texts`;
+}
+
+/**
+ * Of an HTML page, what could ask for something: its attributes' values, and its scripts and styles. (Its words are
+ * only words: the addresses a bibliography lists in its text, as the texts' page carries, are never requested.)
+ */
+function requestable(html) {
+    const parts = [];
+    for (const match of html.matchAll(/\s(?:src|href|srcset|poster|action|data|content|style)\s*=\s*(['"])([\s\S]*?)\1/gi)) parts.push(match[2]);
+    for (const match of html.matchAll(/<(script|style)\b[^>]*>([\s\S]*?)<\/\1>/gi)) parts.push(match[2]);
+    return parts.join('\n');
 }
 
 function isVector(value) {
@@ -401,6 +414,78 @@ async function checkBudget(files) {
 }
 
 // -----------------------------------------------------------------------------
+// The texts ("Stay - Read") and the lost pages
+// -----------------------------------------------------------------------------
+
+/**
+ * The texts (read.html: both works whole on one page, made by the mission's build_reading_room.py from the essay
+ * pages) and the city's lost pages (data/lost-pages.json, in the order a reader meets them there; the givers in
+ * data/creatures.json give them): every lost page is a passage of the city's, given by a giver (Numbers by Paint)
+ * or at its point of light (President Oedipus); each is marked in the texts exactly once, and the mark holds its words
+ * exactly, so a passage changed in the city can't leave the texts behind.
+ */
+async function checkTexts(fragmentsData, placeIds, placesData) {
+    const textsPath = `${DIORAMA_DIR}/read.html`;
+    const texts = await readFile(path.join(ROOT, textsPath), 'utf8').catch(() => null);
+    if (texts === null) {
+        fail(`${textsPath}: missing (where "Stay - Read" and the one option's "back" go)`);
+        return;
+    }
+    const lostPath = `${DIORAMA_DIR}/data/lost-pages.json`;
+    const creaturesPath = `${DIORAMA_DIR}/data/creatures.json`;
+    let lost;
+    let creatures;
+    try {
+        lost = JSON.parse(await readFile(path.join(ROOT, lostPath), 'utf8')).lost;
+        creatures = JSON.parse(await readFile(path.join(ROOT, creaturesPath), 'utf8'));
+    } catch (error) {
+        fail(`${lostPath} or ${creaturesPath}: ${error.message}`);
+        return;
+    }
+    if (!Array.isArray(lost) || lost.length === 0) {
+        fail(`${lostPath}: needs a "lost" list of passage ids`);
+        return;
+    }
+    const fragments = fragmentsData?.fragments ?? [];
+    const byId = new Map(fragments.map((fragment) => [fragment.id, fragment]));
+    const tier = new Map((placesData?.places ?? []).map((place) => [place.id, place.tier]));
+    const given = new Set();
+    for (const creature of creatures.creatures ?? []) {
+        if (!byId.has(creature.fragment)) fail(`${creaturesPath}: a ${creature.kind} gives ${JSON.stringify(creature.fragment)}, which isn't a passage`);
+        if (!['pug', 'hum'].includes(creature.kind)) fail(`${creaturesPath}: ${creature.fragment} is given by a ${JSON.stringify(creature.kind)} (pugs and hums only)`);
+        if (!isVector(creature.at)) fail(`${creaturesPath}: ${creature.fragment}'s giver needs an "at" of three numbers`);
+        given.add(creature.fragment);
+    }
+    if (creatures.allison && (!placeIds.has(creatures.allison.place) || !isVector(creatures.allison.at))) {
+        fail(`${creaturesPath}: Allison needs a real place and an "at" of three numbers`);
+    }
+    const expected = fragments
+        .filter((fragment) => tier.get(fragment.place) === 1 && (fragment.work === 'po' || given.has(fragment.id)))
+        .map((fragment) => fragment.id);
+    const missing = expected.filter((id) => !lost.includes(id));
+    const extra = lost.filter((id) => !expected.includes(id));
+    if (missing.length) fail(`${lostPath}: missing ${missing.join(', ')} (rebuild the texts)`);
+    if (extra.length) fail(`${lostPath}: ${extra.join(', ')} isn't given in the city`);
+    if (new Set(lost).size !== lost.length) fail(`${lostPath}: a lost page is listed twice`);
+
+    // (Compared as the builder compares them: tags and spaces aside, an excerpt's leading or trailing ellipsis aside.)
+    const bare = (text) => decodeEntities(text.replace(/<[^>]+>/g, ''))
+        .replace(/­/g, '')
+        .replace(/[\s ]+/g, '')
+        .replace(/^…+|…+$/g, '');
+    for (const id of lost) {
+        const fragment = byId.get(id);
+        if (!fragment) continue;
+        const chips = texts.split(`id="lost-${id}"`).length - 1;
+        if (chips !== 1) fail(`${textsPath}: lost page ${id} is marked ${chips} times, not once (rebuild the texts)`);
+        const held = [...texts.matchAll(new RegExp(`<mark class="lost" data-lost="${id}">([\\s\\S]*?)</mark>`, 'g'))]
+            .map((match) => match[1])
+            .join('');
+        if (bare(held) !== bare(fragment.text)) fail(`${textsPath}: lost page ${id} doesn't hold its passage word for word (rebuild the texts from the essays)`);
+    }
+}
+
+// -----------------------------------------------------------------------------
 // Page, import map, vendored three.js, outside requests
 // -----------------------------------------------------------------------------
 
@@ -453,32 +538,23 @@ async function checkPage(files) {
     if (stamps.some((value) => value !== stamp)) {
         fail(`${pagePath}: stamp ${[...new Set(stamps)].join(', ')} is stale (the code is now ${stamp}); run npm run stamp:elysicester`);
     }
-    // The plain page holds exactly the passages the city does (plainly-elysicester.mjs).
-    const plainly = await readFile(path.join(ROOT, PLAINLY_PAGE), 'utf8').catch(() => null);
-    if (plainly === null) fail(`${PLAINLY_PAGE}: missing; run npm run plainly:elysicester`);
-    else if (plainly.replaceAll('\r\n', '\n') !== await plainlyHtml(ROOT)) fail(`${PLAINLY_PAGE}: out of date with the city's passages; run npm run plainly:elysicester`);
-    // Its "read on" links land on the whole works hosted among the essays: each page there, each page mark (#p60) named.
-    const fragments = JSON.parse(await readFile(path.join(ROOT, DIORAMA_DIR, 'data', 'fragments.json'), 'utf8')).fragments ?? [];
-    const wholePages = new Map();
-    for (const fragment of fragments) {
-        const target = readOnHere(fragment.read_on);
-        if (/^https?:/.test(target)) continue;
-        const [file, hash = ''] = target.split('#');
-        if (!wholePages.has(file)) wholePages.set(file, await readFile(path.join(ROOT, DIORAMA_DIR, file), 'utf8').catch(() => null));
-        const page = wholePages.get(file);
-        const shown = path.posix.normalize(`${DIORAMA_DIR}/${file}`);
-        if (page === null) fail(`${shown}: missing (a passage reads on there: ${fragment.id})`);
-        else if (/^p\d+$/.test(hash) && !page.includes(`id="${hash}"`)) fail(`${shown}: no page mark #${hash} (${fragment.id} reads on there)`);
-    }
     const redirects = await loadRedirects(ROOT);
     const served = servedPath(redirects, `/${DIORAMA_DIR}/v/${stamp}/main.js`);
     if (served !== `/${DIORAMA_DIR}/main.js`) {
         fail(`_redirects: /${DIORAMA_DIR}/v/<stamp>/* must be served from /${DIORAMA_DIR}/ (a 200 rewrite); it gives ${served}`);
     }
+    // The city's plain page gave way to its texts (read.html): an old link to it still finds them.
+    for (const old of [`/${DIORAMA_DIR}/plainly.html`, `/${DIORAMA_DIR}/plainly`]) {
+        const goes = matchRedirect(redirects, old);
+        if (goes?.status !== 301 || goes.location !== `/${DIORAMA_DIR}/read.html`) {
+            fail(`_redirects: ${old} must go on to /${DIORAMA_DIR}/read.html (301); it gives ${goes ? `${goes.status} ${goes.location}` : 'nothing'}`);
+        }
+    }
 
     const outsideUrl = /\bhttps?:\/\/[^\s"'<>)`\\]+/g;
     for (const file of files.filter((name) => TEXT_FILE.test(name) && !name.startsWith(`${DIORAMA_DIR}/vendor/`))) {
-        const text = await readFile(path.join(ROOT, file), 'utf8');
+        const whole = await readFile(path.join(ROOT, file), 'utf8');
+        const text = file.endsWith('.html') ? requestable(whole) : whole;
         for (const [raw] of text.matchAll(outsideUrl)) {
             if (INERT_URL_PREFIXES.some((prefix) => raw.startsWith(prefix))) continue;
             let url;
@@ -525,6 +601,7 @@ if (!await exists(DIORAMA_DIR)) {
     if (data['fragments.json']) await checkFragments(data['fragments.json'], placeIds);
     if (data['signs.json']) await checkSigns(data['signs.json'], placeIds);
     if (data['paper.json']) await checkPaper(data['paper.json'], placeIds);
+    await checkTexts(data['fragments.json'], placeIds, data['places.json']);
     await checkPage(files);
     await checkVendor();
     const total = await checkBudget(files);

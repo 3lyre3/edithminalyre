@@ -25,10 +25,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;1,300;1,400&amp;family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&amp;display=swap" rel="stylesheet">
     <title>Elysicester – Edith Mina Lyre</title>
     <script>
-        // Back within the same visit (modules/state.js keeps it): no card, not even for a moment before the city.
-        try { if (sessionStorage.getItem('elysicester:crossed') === 'yes') document.documentElement.dataset.returning = ''; } catch (error) {}
+        // Back within the same visit (modules/state.js keeps it), or come to read a passage (#read-…): no card and no
+        // choice, not even for a moment before the city. Otherwise the choice comes first (a trial: ?choice=off keeps
+        // the card), from the very first paint.
+        (() => {
+            const asked = new URLSearchParams(location.search);
+            const choosing = asked.get('choice') !== 'off' && asked.get('trials') !== 'off';
+            let crossed = false;
+            try { crossed = sessionStorage.getItem('elysicester:crossed') === 'yes'; } catch (error) {}
+            if (crossed || (choosing && location.hash.startsWith('#read-'))) document.documentElement.dataset.returning = '';
+            else if (choosing) document.documentElement.dataset.choosing = '';
+        })();
     </script>
-    <link rel="stylesheet" href="v/cbbb26e13e/style.css">
+    <link rel="stylesheet" href="v/6dd815243d/style.css">
     <noscript><style>.threshold, .veil, .controls { display: none; }</style></noscript>
     <script type="importmap">
     {
@@ -38,11 +47,11 @@
         }
     }
     </script>
-    <script type="module" src="v/cbbb26e13e/main.js"></script>
+    <script type="module" src="v/6dd815243d/main.js"></script>
 </head>
 <body>
     <nav class="plainly" aria-label="Leave the diorama">
-        <a href="plainly.html">read plainly</a>
+        <a href="read.html">the texts</a>
         <span class="sep" aria-hidden="true">·</span>
         <a href="https://digital.library.adelaide.edu.au/server/api/core/bitstreams/9cbedc1a-5eac-4ee5-b909-320c83028bba/content" target="_blank" rel="noopener">Numbers by Paint<span class="visually-hidden"> (the book, opens in a new tab)</span></a>
         <span class="sep" aria-hidden="true">·</span>
@@ -54,6 +63,7 @@
         <button type="button" id="home-view" class="control" hidden>the whole city</button>
     </div>
     <button type="button" id="one-button" class="one-button" hidden>zoom out</button>
+    <button type="button" id="inventory-toggle" class="inventory-toggle" aria-haspopup="dialog" aria-controls="inventory" hidden><span class="visually-hidden">Lost pages found: </span><span data-inventory-count>0 / 0</span></button>
 
     <main id="diorama" class="diorama">
         <h1 id="diorama-title" class="visually-hidden" tabindex="-1">Elysicester</h1>
@@ -96,7 +106,7 @@
         <section id="choice" class="choice" aria-labelledby="choice-title" hidden>
             <h2 id="choice-title" class="visually-hidden">Explore the city, or stay and read</h2>
             <button type="button" id="choice-explore" class="choice-side choice-explore"><span class="choice-words">Explore - Win</span></button>
-            <a id="choice-read" class="choice-side choice-read" href="plainly.html"><span class="choice-words">Stay - Read</span></a>
+            <a id="choice-read" class="choice-side choice-read" href="read.html"><span class="choice-words">Stay - Read</span></a>
         </section>
         <div id="veil" class="veil" aria-hidden="true"></div>
     </main>
@@ -119,6 +129,23 @@
                 <button type="button" class="reader-on" data-reader-walk hidden>walk from here</button>
                 <span class="reader-count" data-reader-count></span>
             </p>
+        </article>
+    </dialog>
+
+    <dialog id="inventory" class="reader inventory" aria-labelledby="inventory-title">
+        <article class="reader-body">
+            <header class="reader-head">
+                <h2 id="inventory-title" class="reader-place">Lost pages</h2>
+                <button type="button" class="reader-close" data-inventory-close aria-label="Close">&times;</button>
+            </header>
+            <p class="inventory-note" data-inventory-note></p>
+            <section class="inventory-win" data-inventory-win aria-labelledby="inventory-win-title" hidden>
+                <h3 id="inventory-win-title" class="inventory-win-title">Won</h3>
+                <p>All of it, written out by hand as you scroll, to take away: one page.</p>
+                <button type="button" class="reader-on inventory-write" data-inventory-write>take it, written by hand</button>
+                <p class="inventory-status" data-inventory-status role="status"></p>
+            </section>
+            <ol class="inventory-list" data-inventory-list></ol>
         </article>
     </dialog>
 

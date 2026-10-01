@@ -24,8 +24,9 @@ export const WORKS = Object.freeze({
     po: 'President Oedipus',
 });
 
-/** What a tap outside the panel may land on and still be answered. */
-const CORNERS = '.controls button:not([hidden]), .plainly a';
+/** What a tap outside the panel may land on and still be answered (the one option at the top, the count of what's
+ * gathered, the corners' words and buttons). */
+const CORNERS = '.controls button:not([hidden]), .plainly a, .one-button:not([hidden]), .inventory-toggle:not([hidden]), .sound-corner';
 
 // =============================================================================
 // Main Code
@@ -143,14 +144,15 @@ export function createReader({ dialog, places, onClose, onward, onOnward, canWal
             const place = places.get(fragment.place);
             current = fragment;
             if (opener !== undefined) returnTo = opener ?? null;
-            placeName.textContent = place?.label ?? '';
+            // (Allison's bio, a trial, has a heading of its own, and no work: main.js.)
+            placeName.textContent = fragment.heading ?? place?.label ?? '';
             body.replaceChildren();
             for (const paragraphText of fragment.text.split(/\n{2,}/)) {
                 const paragraph = document.createElement('p');
                 appendWithItalics(paragraph, paragraphText, fragment.italic ?? []);
                 body.append(paragraph);
             }
-            source.textContent = `${WORKS[fragment.work] ?? ''}, ${fragment.source}`;
+            source.textContent = WORKS[fragment.work] ? `${WORKS[fragment.work]}, ${fragment.source}` : fragment.source;
             readOn.href = fragment.read_on;
             // Phones' PDF viewers open at the first page whatever the address asks, so the link names its page.
             const page = /#page=(\d+)/.exec(fragment.read_on)?.[1];
@@ -158,7 +160,7 @@ export function createReader({ dialog, places, onClose, onward, onOnward, canWal
 
             // They open beside the city (a new tab), so coming back finds it as it was left.
             alsoList.replaceChildren();
-            for (const link of place?.links ?? []) {
+            for (const link of fragment.links ?? place?.links ?? []) {
                 const item = document.createElement('li');
                 const anchor = document.createElement('a');
                 anchor.href = link.href;
@@ -188,7 +190,7 @@ export function createReader({ dialog, places, onClose, onward, onOnward, canWal
                     // (The hint, on trial: once only a few are left, where they wait.)
                     const left = way.total - way.read;
                     const where = way.lastAt?.length ? listed(way.lastAt.map((id) => inSentence(places.get(id)?.label ?? ''))) : '';
-                    count.textContent = `${way.read} of ${way.total} read${where ? ` · the last ${left === 1 ? 'waits' : 'wait'} at ${where}` : ''}`;
+                    count.textContent = `${way.read} of ${way.total} ${way.word ?? 'read'}${where ? ` · the last ${left === 1 ? 'waits' : 'wait'} at ${where}` : ''}`;
                 }
             }
             if (walkButton) walkButton.hidden = !(canWalk?.(fragment) ?? false);

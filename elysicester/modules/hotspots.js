@@ -55,6 +55,7 @@ const vertexShader = /* glsl */ `
     attribute float aLit;
     attribute float aSeed;
     attribute float aGlint;
+    attribute float aGiver;
 
     uniform float time;
     uniform float pulse;
@@ -64,6 +65,7 @@ const vertexShader = /* glsl */ `
     varying float vRead;
     varying float vLit;
     varying float vGlint;
+    varying float vGiver;
 
     void main() {
         vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
@@ -77,6 +79,7 @@ const vertexShader = /* glsl */ `
         gl_Position = projectionMatrix * mvPosition;
         vRead = aRead;
         vLit = aLit;
+        vGiver = aGiver;
     }
 `;
 
@@ -86,6 +89,7 @@ const fragmentShader = /* glsl */ `
     varying float vRead;
     varying float vLit;
     varying float vGlint;
+    varying float vGiver;
 
     void main() {
         float room = vGlint >= 0.0 ? ${GLINT_ROOM.toFixed(2)} : 1.0;
@@ -96,8 +100,9 @@ const fragmentShader = /* glsl */ `
         vec3 seen = vec3(0.55, 0.47, 0.4);
         vec3 color = mix(unread, seen, min(vRead, 1.0));
         color = mix(color, vec3(3.6, 3.0, 2.0), vLit);
-        // (A touch's ripple, read as 2, is a ring alone, with no light at its heart.)
-        vec4 result = vRead > 1.5 ? vec4(0.0) : vec4(color * glow.rgb, glow.a);
+        // (A touch's ripple, read as 2, is a ring alone, with no light at its heart; so is a passage with a giver,
+        // who is there to be seen: creatures.js.)
+        vec4 result = vRead > 1.5 || vGiver > 0.5 ? vec4(0.0) : vec4(color * glow.rgb, glow.a);
         if (vGlint >= 0.0) {
             // The ring, going out and fading as it goes.
             float radius = length(gl_PointCoord - 0.5) * 2.0;
@@ -138,12 +143,17 @@ export function createPointList({ nav, fragments, places, read, onOpen, onFocusP
         const link = document.createElement('a');
         link.href = `#read-${fragment.id}`;
         link.dataset.fragment = fragment.id;
-        link.append(`${place.label}, from `);
-        const work = document.createElement('cite');
-        work.textContent = WORKS[fragment.work];
         const mark = document.createElement('span');
         mark.className = 'read-mark';
-        link.append(work, mark);
+        if (fragment.listLabel) {
+            // (Allison's bio, a trial, is named for him: main.js.)
+            link.append(fragment.listLabel, mark);
+        } else {
+            link.append(`${place.label}, from `);
+            const work = document.createElement('cite');
+            work.textContent = WORKS[fragment.work];
+            link.append(work, mark);
+        }
         setRead(link, read.has(fragment.id));
         link.addEventListener('click', (event) => {
             event.preventDefault();
@@ -206,14 +216,26 @@ function glowTexture() {
  *   point (touch.js may find something else there)
  * @param {() => number | null} [options.glintEvery] - how often (seconds) an unread point glints again, if
  *   not at the usual pace (the hint, on trial: the last few unread glint more often)
+ * @param {(fragment: object) => Vector3 | null} [options.giverAt] - where a passage's giver is, if it has one (the
+ *   givers, a trial: creatures.js): its point is there, with no light of its own (the giver is there to be seen)
+ * @param {(fragment: object) => string | null} [options.speechOf] - what a passage's giver says, shown where a
+ *   place's name would be
+ * @param {(fragment: object) => { center: Vector3, radius: number } | null} [options.giverBody] - the giver's body (a
+ *   tap anywhere on it finds it, however near it's seen)
+ * @param {(fragment: object | null) => void} [options.onLight] - a point has been lit (or none is)
  */
-export function createHotspots({ stage, fragments, read, places, label, reducedMotion, onPick, yieldTap, onMiss, glintEvery }) {
+export function createHotspots({ stage, fragments, read, places, label, reducedMotion, onPick, yieldTap, onMiss, glintEvery, giverAt, giverBody, speechOf, onLight }) {
     const { scene, camera, canvas, renderer, rig } = stage;
-    const entries = fragments.map((fragment, index) => ({
-        fragment,
-        index,
-        position: stage.anchors.get(fragment.place).clone().add(new Vector3().fromArray(fragment.offset ?? [0, 0, 0])),
-    }));
+    const entries = fragments.map((fragment, index) => {
+        const giver = giverAt?.(fragment) ?? null;
+        return {
+            fragment,
+            index,
+            giver: Boolean(giver),
+            body: giver ? giverBody?.(fragment) ?? null : null,
+            position: giver ? giver.clone() : stage.anchors.get(fragment.place).clone().add(new Vector3().fromArray(fragment.offset ?? [0, 0, 0])),
+        };
+    });
 
     const geometry = new BufferGeometry();
     geometry.setAttribute('position', new Float32BufferAttribute(entries.flatMap((entry) => entry.position.toArray()), 3));
@@ -222,6 +244,7 @@ export function createHotspots({ stage, fragments, read, places, label, reducedM
     geometry.setAttribute('aSeed', new Float32BufferAttribute(entries.map((entry) => (entry.index * 0.618) % 1), 1));
     // When each point's glint begins (in the stage's seconds); long ago, until one is asked for.
     geometry.setAttribute('aGlint', new Float32BufferAttribute(entries.map(() => -1000), 1));
+    geometry.setAttribute('aGiver', new Float32BufferAttribute(entries.map((entry) => (entry.giver ? 1 : 0)), 1));
 
     const uniforms = {
         map: { value: glowTexture() },
@@ -244,8 +267,9 @@ export function createHotspots({ stage, fragments, read, places, label, reducedM
     points.renderOrder = 5;
     scene.add(points);
 
-    // Glass, cloth and water don't hide a point; the sky and sea never stand in front of one, nor a passing hum.
-    const occluders = scene.children.filter((child) => child instanceof Mesh && !['sky', 'sea', 'glass', 'turquoise', 'hums', 'verti-pool', 'footlight-wash', 'walk-ring', 'walk-target', 'sun-dock-light', 'bridge', 'bridge-dust', 'fountain-fall'].includes(child.name));
+    // Glass, cloth and water don't hide a point; the sky and sea never stand in front of one, nor a passing hum, nor
+    // the givers (each stands at its own point) and their boards and shades.
+    const occluders = scene.children.filter((child) => child instanceof Mesh && !['sky', 'sea', 'glass', 'turquoise', 'hums', 'verti-pool', 'footlight-wash', 'walk-ring', 'walk-target', 'sun-dock-light', 'bridge', 'bridge-dust', 'fountain-fall', 'pugs', 'pug-boards', 'giver-hums', 'giver-hums-blur', 'giver-shades'].includes(child.name));
     const raycaster = new Raycaster();
     const projected = new Vector3();
     const drawingBuffer = new Vector2();
@@ -272,13 +296,27 @@ export function createHotspots({ stage, fragments, read, places, label, reducedM
         return raycaster.intersectObjects(occluders, false).length === 0;
     }
 
+    const bodyAt = new Vector3();
+    /** How far (CSS px) (x, y) is from a giver's body as it's seen (0 anywhere on it), or Infinity if it's behind. */
+    function offBody(entry, x, y) {
+        bodyAt.copy(entry.body.center).project(camera);
+        if (bodyAt.z >= 1) return Infinity;
+        const rect = canvas.getBoundingClientRect();
+        const away = camera.position.distanceTo(entry.body.center);
+        const across = (entry.body.radius / Math.max(0.01, away)) * (rect.height / (2 * Math.tan(MathUtils.degToRad(camera.fov) / 2)));
+        const sx = rect.left + ((bodyAt.x + 1) / 2) * rect.width;
+        const sy = rect.top + ((1 - bodyAt.y) / 2) * rect.height;
+        return Math.max(0, Math.hypot(sx - x, sy - y) - across);
+    }
+
     /** The closest point to (x, y) within radius that the city doesn't hide: { entry, distance }. */
     function nearest(x, y, radius) {
         const candidates = [];
         for (const entry of entries) {
             const screen = screenOf(entry);
             if (!screen.inFront) continue;
-            const distance = Math.hypot(screen.x - x, screen.y - y);
+            // (A giver is found by its point, or anywhere on its body.)
+            const distance = Math.min(Math.hypot(screen.x - x, screen.y - y), entry.body ? offBody(entry, x, y) : Infinity);
             if (distance < radius) candidates.push({ entry, distance });
         }
         candidates.sort((a, b) => a.distance - b.distance);
@@ -292,13 +330,17 @@ export function createHotspots({ stage, fragments, read, places, label, reducedM
         if (lit) attribute.setX(lit.index, 1);
         attribute.needsUpdate = true;
         label.hidden = !lit;
+        // (A giver says its word where a place's name would be: creatures.js.)
+        const speech = lit && speechOf ? speechOf(lit.fragment) : null;
         if (lit) {
-            label.textContent = places.get(lit.fragment.place).label;
+            label.textContent = speech ?? places.get(lit.fragment.place).label;
             label.dataset.fragment = lit.fragment.id;
         } else {
             delete label.dataset.fragment;
         }
+        label.classList.toggle('is-speech', Boolean(speech));
         label.classList.toggle('is-near', Boolean(lit) && lit === pinned);
+        onLight?.(lit?.fragment ?? null);
     }
 
     rig.onTap((x, y, pointerType) => {
@@ -318,6 +360,7 @@ export function createHotspots({ stage, fragments, read, places, label, reducedM
     rippleGeometry.setAttribute('aLit', new Float32BufferAttribute([0], 1));
     rippleGeometry.setAttribute('aSeed', new Float32BufferAttribute([0], 1));
     rippleGeometry.setAttribute('aGlint', new Float32BufferAttribute([-1000], 1));
+    rippleGeometry.setAttribute('aGiver', new Float32BufferAttribute([0], 1));
     const ripplePoint = new Points(rippleGeometry, material);
     ripplePoint.name = 'touch-ripple';
     ripplePoint.frustumCulled = false;

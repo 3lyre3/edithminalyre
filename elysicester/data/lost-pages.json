@@ -1,0 +1,27 @@
+{
+ "about": "The lost pages, in the order a reader meets them in the texts (read.html): the city's inventory numbers them so. Written by the mission's sources/build_reading_room.py.",
+ "lost": [
+  "po-gas-station-1",
+  "po-sun-dock-2",
+  "po-edge-1",
+  "nbp-e1-edge-2",
+  "nbp-e1-gas-station-2",
+  "nbp-e1-underside-1",
+  "nbp-e1-sea-wall-1",
+  "nbp-e1-sea-wall-2",
+  "nbp-e3-sun-dock-1",
+  "nbp-e3-jetty-cafes-1",
+  "nbp-e3-flags-1",
+  "nbp-e3-steel-garden-1",
+  "nbp-e3-steel-garden-2",
+  "nbp-e3-flags-2",
+  "nbp-e3-jetty-cafes-2",
+  "nbp-e3-bridge-1",
+  "nbp-e3-bridge-2",
+  "nbp-e3-sky-grottos-1",
+  "nbp-e3-sky-grottos-2",
+  "nbp-e4-door-in-the-floor-1",
+  "nbp-e4-door-in-the-floor-2",
+  "nbp-e5-jetty-end-1"
+ ]
+}

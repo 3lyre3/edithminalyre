@@ -550,6 +550,187 @@ a:focus-visible {
 }
 
 /*
+ * What a giver says (a trial: creatures.js), where a place's name would be: its word, in italics, as Elm wrote them
+ * (*squur*, *chirp*); Allison's line is longer, and wraps (allison.js).
+ */
+.point-label.is-speech {
+    font-style: italic;
+    letter-spacing: 0.04em;
+    white-space: normal;
+    width: max-content;
+    max-width: min(17em, calc(100vw - 40px));
+    text-align: center;
+}
+
+/*
+ * What's been gathered (with the givers, a trial: inventory.js): a small count high on the right, once there's
+ * something in it, as quiet as the one option; it opens the inventory. Won, it glows.
+ */
+.inventory-toggle {
+    position: fixed;
+    top: max(12px, env(safe-area-inset-top));
+    right: max(14px, env(safe-area-inset-right));
+    z-index: 50;
+    padding: 4px 6px;
+    font-family: var(--font-display);
+    font-size: 17px;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+    color: var(--bone);
+    background: none;
+    border: 0;
+    cursor: pointer;
+}
+
+.inventory-toggle::before {
+    content: '';
+    position: absolute;
+    inset: -8px -16px;
+    z-index: -1;
+    background: radial-gradient(closest-side, rgba(4, 3, 8, 0.6), rgba(4, 3, 8, 0.36) 62%, transparent);
+    pointer-events: none;
+}
+
+.inventory-toggle:hover,
+.inventory-toggle:focus-visible {
+    color: var(--honey);
+}
+
+.inventory-toggle.is-won {
+    color: var(--honey);
+    text-shadow: 0 0 12px rgba(240, 190, 90, 0.75);
+}
+
+.inventory-toggle[hidden] {
+    display: none;
+}
+
+.inventory-note {
+    margin: 10px 0 12px;
+    font-size: 16px;
+    color: var(--bone);
+}
+
+.inventory-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.inventory-list li {
+    margin: 0;
+    padding: 6px 0;
+    border-top: 1px solid rgba(160, 150, 170, 0.14);
+}
+
+.inventory-list li {
+    display: grid;
+    grid-template-columns: 1.9rem 1fr auto;
+    align-items: start;
+    gap: 0 0.7rem;
+}
+
+.inventory-list li.is-waiting {
+    font-family: var(--font-display);
+    font-size: 16px;
+    letter-spacing: 0.04em;
+    color: rgba(200, 190, 175, 0.55);
+}
+
+/* Each lost page's number, as the texts number it (read.html): a ring, filled with gold once it's found. */
+.inventory-number {
+    display: grid;
+    place-items: center;
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 50%;
+    border: 1px solid rgba(160, 80, 32, 0.8);
+    font-family: var(--font-display);
+    font-size: 14px;
+    color: var(--amber);
+}
+
+.inventory-list li.is-found .inventory-number {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: #0a0a0c;
+}
+
+.inventory-piece {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+    padding: 2px 0;
+    font: inherit;
+    text-align: left;
+    color: var(--silver);
+    background: none;
+    border: 0;
+    cursor: pointer;
+}
+
+.inventory-piece:hover,
+.inventory-piece:focus-visible {
+    color: var(--ivory);
+}
+
+.inventory-texts {
+    font-family: var(--font-display);
+    font-size: 14px;
+    letter-spacing: 0.05em;
+    color: var(--amber);
+    white-space: nowrap;
+}
+
+.inventory-waiting {
+    grid-column: 2 / -1;
+    padding-top: 0.15rem;
+}
+
+.inventory-words {
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 1.4;
+}
+
+.inventory-where {
+    font-family: var(--font-display);
+    font-size: 14px;
+    letter-spacing: 0.06em;
+    color: var(--bone);
+}
+
+/* (Won, it stands first, over the list, where the inventory opens.) */
+.inventory-win {
+    margin: 4px 0 16px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(217, 174, 95, 0.4);
+}
+
+.inventory-win[hidden] {
+    display: none;
+}
+
+.inventory-win-title {
+    margin: 0 0 6px;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 24px;
+    letter-spacing: 0.08em;
+    color: var(--honey);
+}
+
+.inventory-win p {
+    margin: 0 0 8px;
+}
+
+.inventory-status {
+    min-height: 1.4em;
+    font-size: 15px;
+    color: var(--bone);
+}
+
+/*
  * With the one option (a trial), the rest stands aside: the corner's words go with the first screen (the card),
  * the controls stay for keyboards (Tab brings them into view, as a skip link comes), and sound has a quiet corner
  * of its own, low on the left.
@@ -605,8 +786,24 @@ html[data-onebutton] .controls:not(:focus-within)::before {
     opacity: 1;
 }
 
+.choice.is-leaving {
+    pointer-events: none;
+}
+
 .choice[hidden] {
     display: none;
+}
+
+/* The choice first (a trial): it's the page's first paint, before any script, and the card waits (main.js takes the
+ * choice over from here; "Explore - Win" fades it, the Mega-Screen's card beneath it). */
+html[data-choosing] .threshold {
+    display: none;
+}
+
+html[data-choosing] .choice {
+    display: flex;
+    opacity: 1;
+    transition: none;
 }
 
 .choice-side {
