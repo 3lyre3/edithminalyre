@@ -54,6 +54,7 @@ import {
     Vector4,
 } from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { paleFace, shadowFigure, starCeiling } from './cassandra.js';
 import { doorCanOpen, doorOpen, shadowTexture } from './extras.js';
 import { createHums } from './hums.js';
 import { silhouetteAtlas } from './silhouette.js';
@@ -3180,8 +3181,11 @@ function unindexed(geometry) {
     return geometry.index ? geometry.toNonIndexed() : geometry;
 }
 
-function buildDressing(buckets, { halls, spires, byId, extras, animated, still }) {
+function buildDressing(buckets, { halls, spires, byId, extras, animated, still, keepOff = null }) {
     const random = createRandom(7331);
+    // (Where another place stands that came after the dressing, Cassandra's house, a trial: what would stand there is
+    // laid out as ever, from the same stream, taking its room, but isn't built.)
+    const into = (x, z, r) => (keepOff?.(x, z, r) ? UNBUILT : buckets);
     const pick = (list) => list[Math.floor(random() * list.length)];
     const trunks = spires.filter((spire) => !spire.leans && spire.girth(0) > 1);
     const [gx, , gz] = byId.get('steel-garden').position;
@@ -3216,10 +3220,11 @@ function buildDressing(buckets, { halls, spires, byId, extras, animated, still }
 
     const lamp = (x, z) => {
         const y = ground(x, z);
-        buckets.add('steel', cylinder(0.11, 0.13, 0.22, 6, { x, y: y + 0.11, z }, IRON));
-        buckets.add('steel', cylinder(0.045, 0.06, 2.3, 6, { x, y: y + 1.35, z }, IRON));
-        buckets.add('steel', cone(0.15, 0.16, 6, { x, y: y + 2.76, z }, IRON));
-        buckets.add('glow', ball(0.12, { x, y: y + 2.58, z }, LAMP, 8, 6));
+        const at = into(x, z, 0.2);
+        at.add('steel', cylinder(0.11, 0.13, 0.22, 6, { x, y: y + 0.11, z }, IRON));
+        at.add('steel', cylinder(0.045, 0.06, 2.3, 6, { x, y: y + 1.35, z }, IRON));
+        at.add('steel', cone(0.15, 0.16, 6, { x, y: y + 2.76, z }, IRON));
+        at.add('glow', ball(0.12, { x, y: y + 2.58, z }, LAMP, 8, 6));
         take(x, z, 0.3);
         counts.lamps += 1;
     };
@@ -3238,8 +3243,9 @@ function buildDressing(buckets, { halls, spires, byId, extras, animated, still }
             iron.push(box(0.05, 0.88, 0.05, { x: side, y: 0.44, z: -0.16 }, IRON));
             iron.push(box(0.05, 0.05, 0.36, { x: side, y: 0.6, z: 0 }, IRON));
         }
-        for (const piece of frame(planks, at)) buckets.add('stone', piece);
-        for (const piece of frame(iron, at)) buckets.add('steel', piece);
+        const laid = into(x, z, 0.62);
+        for (const piece of frame(planks, at)) laid.add('stone', piece);
+        for (const piece of frame(iron, at)) laid.add('steel', piece);
         take(x, z, 0.65);
         counts.benches += 1;
     };
@@ -3901,18 +3907,18 @@ function archShape(width, spring) {
 }
 
 /** An arch-topped slab, `thick` deep, facing +z (its back at -thick/2), posed at `at`. */
-function arched(width, spring, thick, at, color) {
-    const geometry = new ExtrudeGeometry(archShape(width, spring), { depth: thick, bevelEnabled: false, curveSegments: 10 });
+function arched(width, spring, thick, at, color, segments = 10) {
+    const geometry = new ExtrudeGeometry(archShape(width, spring), { depth: thick, bevelEnabled: false, curveSegments: segments });
     geometry.translate(0, 0, -thick / 2);
     return paint(pose(geometry, at), color);
 }
 
 /** An arch-topped ring round an opening: `band` wide, `thick` deep, facing +z. */
-function archRing(width, spring, band, thick, at, color) {
+function archRing(width, spring, band, thick, at, color, segments = 10) {
     const shape = archShape(width + band * 2, spring + band);
     shape.holes.push(archShape(width, spring));
     // (The outer arch stands on y = 0 too: the hole's straight sides run down to it.)
-    const geometry = new ExtrudeGeometry(shape, { depth: thick, bevelEnabled: false, curveSegments: 10 });
+    const geometry = new ExtrudeGeometry(shape, { depth: thick, bevelEnabled: false, curveSegments: segments });
     geometry.translate(0, 0, -thick / 2);
     return paint(pose(geometry, at), color);
 }
@@ -4247,6 +4253,589 @@ function buildHostel({ buckets, extras, still, materials }) {
     };
 }
 
+/** Cassandra's house: its walls (x runs from its back to its face on the street, z along its face). */
+const CASSANDRA_BACK = -27.4;
+const CASSANDRA_FRONT = -23.6;
+const CASSANDRA_NORTH = -4.6;
+const CASSANDRA_SOUTH = 0.4;
+/** Its storeys, its plinth (the doorway's sill is the plinth's top), and the rise of its gable over the eaves. */
+const CASSANDRA_STOREY = 2.5;
+const CASSANDRA_PLINTH = 0.24;
+const CASSANDRA_RISE = 2.7;
+/** The face's thickness, and the hall behind the door (how deep, how wide, how tall): lit, and hers. */
+const CASSANDRA_FACE = 0.2;
+const CASSANDRA_HALL = 1.25;
+const CASSANDRA_HALL_WIDE = 1.24;
+const CASSANDRA_HALL_TALL = 2.36;
+/** The seeress' door: its middle (z), its width, and where its arch springs. */
+const CASSANDRA_DOOR_Z = -2.1;
+const CASSANDRA_DOOR_WIDE = 1.0;
+const CASSANDRA_DOOR_SPRING = 1.72;
+/** How far the door opens when it's answered (warily, not all the way). */
+const CASSANDRA_DOOR_OPEN = 1.15;
+/**
+ * The wrought-gold fence: its line along the street (x), the yard's ends (z), and its height, which a hum flies over
+ * (hollows-map.js: a hum's band begins at 1.1 above the ground) and a walker can't pass.
+ */
+const CASSANDRA_FENCE = -20.2;
+const CASSANDRA_YARD_NORTH = -4.95;
+const CASSANDRA_YARD_SOUTH = 0.75;
+const CASSANDRA_FENCE_TALL = 0.98;
+/**
+ * The boulevard of golden pebbles, along the fence: x0, x1, z0, z1; and how far it, and the yard, lie over the ground
+ * (over the high street's paving, which runs on to her fence: buildPavements lays it 0.05 up).
+ */
+const CASSANDRA_BOULEVARD = [-20.05, -17.55, -4.95, 1.35];
+const CASSANDRA_PAVED = 0.068;
+/** The shadow's first answer (the book's words, p. 64), and the scene's beats (seconds from the knock). */
+const CASSANDRA_SAYS = 'She’s not in, but this is her address, sure.';
+const KNOCK_ANSWERED = 0.95;
+const KNOCK_SPEAKS = 1.6;
+const KNOCK_SLAMS = 5.6;
+/** The faces at the street's windows, after the slam: how long until they're all lit, how long they stay. */
+const FACES_RISE = 1.6;
+const FACES_STAY = 8.5;
+/** Who comes this near the door (or to the gate, from the street) knocks; gone this far, they may knock again. */
+const KNOCK_NEAR = 2.6;
+const KNOCK_AT_GATE = 1.25;
+const KNOCK_AGAIN = 6;
+
+/** Whether (x, z), give or take r, is on Cassandra's lot: the house, its yard, and the boulevard along its fence. */
+function onCassandrasLot(x, z, r = 0) {
+    const [bx0, bx1, bz0, bz1] = CASSANDRA_BOULEVARD;
+    const houseAndYard = x > CASSANDRA_BACK - 0.3 - r && x < CASSANDRA_FENCE + 0.15 + r && z > CASSANDRA_YARD_NORTH - 0.15 - r && z < CASSANDRA_YARD_SOUTH + 0.15 + r;
+    return houseAndYard || (x > bx0 - r && x < bx1 + r && z > bz0 - r && z < bz1 + r);
+}
+
+/**
+ * Cassandra's house (Numbers by Paint, Episode 4, pp. 63-65; Episode 6, p. 90; Elm's next place after the hostel; a
+ * trial: ?cassandra=off). Allison: "It's somewhere near all the plazas, near the centre, where all the bridges meet."
+ * So it stands at the plaza's west end, past the golden trees, where the halls rise either side and the golden bridges
+ * cross between them, the city's outer edge behind it ("her little townhouse in the shining fray, the golden mess of
+ * the outer city"). "Some time passed before she found the house, a wrought-gold fence barring a yard littered with
+ * rocks the shape of ferns. She hopped the fence and knocked on the seeress' door. Cassandra's shadow answered."
+ *
+ * A tall, narrow townhouse of pale gold under a gable of violet slate, its door a seeress' violet, the round window
+ * high in its gable onto her bedroom's ceiling and its glow-in-the-dark stars and moon (cassandra.js); the fence "all
+ * wrought of gold", spear-tipped, low enough to hop (a hum flies over it; a walker knocks at its gate); in the yard,
+ * "her bare, neglected garden plot" and the rocks the shape of ferns; along the fence, "the golden pebbles of the
+ * boulevard". Behind the door, a hall, lit.
+ *
+ * Come near the door (or to the gate) and it's knocked on: it opens, warily, and Cassandra's shadow stands in the
+ * light ("She's not in, but this is her address, sure."); then she "yanked shut the door – its slam reverberated
+ * through the neighbourhood", and "pale faces lit up half the windows on the street". A stream of its own, so nothing
+ * else in the city moves. Returns its floors (the boulevard, the doorstep), the door's scene (stage.js steps it; main.js
+ * gives it its sounds and her words), and what a touch finds (the door: a knock).
+ */
+function buildCassandra({ buckets, extras, still, materials, halls = [] }) {
+    const random = createRandom(6406);
+    const corners = [[CASSANDRA_BACK, CASSANDRA_NORTH], [CASSANDRA_BACK, CASSANDRA_SOUTH], [CASSANDRA_FRONT, CASSANDRA_NORTH], [CASSANDRA_FRONT, CASSANDRA_SOUTH]];
+    const ground = Math.min(...corners.map(([x, z]) => groundY(x, z))) - 0.03;
+    const sill = ground + CASSANDRA_PLINTH;
+    const depth = CASSANDRA_FRONT - CASSANDRA_BACK;
+    const width = CASSANDRA_SOUTH - CASSANDRA_NORTH;
+    const cx = (CASSANDRA_FRONT + CASSANDRA_BACK) / 2;
+    const cz = (CASSANDRA_NORTH + CASSANDRA_SOUTH) / 2;
+    const eaves = sill + CASSANDRA_STOREY * 3;
+    const WALL = 0xeecb88;
+    const TRIM = 0xc9a868;
+    const STONE = 0xb7a88c;
+    const SLATE = 0x5a4a6c;
+    const SLATE_RIDGE = 0x3e3250;
+    const VIOLET = 0x4a2c62;
+    const VIOLET_PANEL = 0x5e3a78;
+    const DARK_WINDOW = 0x221a22;
+    const FENCE_GOLD = 0xf2c75a;
+    const FENCE_GOLD_DEEP = 0xd9a63e;
+    const HALL_LIGHT = light(0xffb066, 1.3);
+    const FACE = Math.PI / 2;
+    const hallBack = CASSANDRA_FRONT - CASSANDRA_HALL;
+    const hallSide = CASSANDRA_HALL_WIDE / 2;
+
+    // The plinth; the face, one piece, with the doorway through it; the house behind, around the hall inside the
+    // door (plain blocks, their joins hidden: the corners have quoins).
+    buckets.add('stone', box(depth + 0.24, CASSANDRA_PLINTH, width + 0.24, { x: cx, y: ground + CASSANDRA_PLINTH / 2, z: cz }, STONE));
+    const faceShape = new Shape();
+    faceShape.moveTo(-width / 2, 0);
+    faceShape.lineTo(width / 2, 0);
+    faceShape.lineTo(width / 2, eaves - sill);
+    faceShape.lineTo(-width / 2, eaves - sill);
+    faceShape.closePath();
+    // (The face's own x runs against the world's z, turned to face the street: the doorway at its middle.)
+    const doorAlong = cz - CASSANDRA_DOOR_Z;
+    const hole = new Shape(archShape(CASSANDRA_DOOR_WIDE, CASSANDRA_DOOR_SPRING).getPoints(6).map((point) => new Vector2(point.x + doorAlong, point.y)));
+    faceShape.holes.push(hole);
+    const faceGeometry = new ExtrudeGeometry(faceShape, { depth: CASSANDRA_FACE, bevelEnabled: false, curveSegments: 10 });
+    faceGeometry.translate(0, 0, -CASSANDRA_FACE);
+    buckets.add('gold', paint(pose(faceGeometry, { x: CASSANDRA_FRONT, y: sill, z: cz, ry: FACE }), WALL));
+    const tall = eaves - sill;
+    const behind = CASSANDRA_FRONT - CASSANDRA_FACE;
+    const block = (x0, x1, z0, z1, y0 = sill, y1 = eaves) => buckets.add('gold', box(x1 - x0, y1 - y0, z1 - z0, { x: (x0 + x1) / 2, y: (y0 + y1) / 2, z: (z0 + z1) / 2 }, WALL));
+    block(CASSANDRA_BACK, behind, CASSANDRA_NORTH, CASSANDRA_DOOR_Z - hallSide);
+    block(CASSANDRA_BACK, behind, CASSANDRA_DOOR_Z + hallSide, CASSANDRA_SOUTH);
+    block(CASSANDRA_BACK, hallBack, CASSANDRA_DOOR_Z - hallSide, CASSANDRA_DOOR_Z + hallSide);
+    block(hallBack, behind, CASSANDRA_DOOR_Z - hallSide, CASSANDRA_DOOR_Z + hallSide, sill + CASSANDRA_HALL_TALL, eaves);
+    for (const [x, z] of corners) {
+        buckets.add('stone', box(0.2, tall, 0.2, { x: x + (x > cx ? -0.07 : 0.07), y: sill + tall / 2, z: z + (z > cz ? -0.07 : 0.07) }, TRIM));
+    }
+    // The hall: its far wall lit (a lamp further in), its walls and ceiling in the lamp's warmth, a dark floor.
+    buckets.add('glow', box(0.02, CASSANDRA_HALL_TALL - 0.01, CASSANDRA_HALL_WIDE - 0.02, { x: hallBack + 0.012, y: sill + CASSANDRA_HALL_TALL / 2, z: CASSANDRA_DOOR_Z }, HALL_LIGHT));
+    for (const side of [-1, 1]) {
+        buckets.add('brick', box(CASSANDRA_HALL - CASSANDRA_FACE, CASSANDRA_HALL_TALL - 0.01, 0.02, { x: (hallBack + behind) / 2, y: sill + CASSANDRA_HALL_TALL / 2, z: CASSANDRA_DOOR_Z + side * (hallSide - 0.012) }, 0x8a5a3a));
+    }
+    buckets.add('brick', box(CASSANDRA_HALL - CASSANDRA_FACE, 0.02, CASSANDRA_HALL_WIDE - 0.02, { x: (hallBack + behind) / 2, y: sill + CASSANDRA_HALL_TALL - 0.012, z: CASSANDRA_DOOR_Z }, 0x5a3a2c));
+    buckets.add('brick', box(CASSANDRA_HALL, 0.02, CASSANDRA_HALL_WIDE - 0.02, { x: hallBack + CASSANDRA_HALL / 2, y: sill + 0.01, z: CASSANDRA_DOOR_Z }, 0x3e2a22));
+
+    // The doorstep, two steps up to the sill.
+    for (const [step, out] of [[0, 0.62], [1, 0.32]]) {
+        const rise = 0.12 * (step + 1);
+        buckets.add('stone', box(out, rise, 1.5 - step * 0.2, { x: CASSANDRA_FRONT + out / 2, y: ground + rise / 2, z: CASSANDRA_DOOR_Z }, STONE));
+    }
+    // A drawn course at each floor, along the face and round the sides; the cornice under the gable.
+    for (let storey = 1; storey <= 3; storey += 1) {
+        const y = sill + CASSANDRA_STOREY * storey - (storey === 3 ? 0.04 : 0.06);
+        const band = storey === 3 ? 0.18 : 0.1;
+        buckets.add('stone', box(0.12, band, width + 0.16, { x: CASSANDRA_FRONT + 0.05, y, z: cz }, TRIM));
+        for (const z of [CASSANDRA_NORTH - 0.05, CASSANDRA_SOUTH + 0.05]) buckets.add('stone', box(depth + 0.1, band, 0.12, { x: cx, y, z }, TRIM));
+    }
+
+    // The gable, turned to the street, under two slopes of violet slate; its ridge, a finial, a chimney at the back.
+    buckets.add('gold', gable(width, CASSANDRA_RISE, depth, { x: cx, y: eaves, z: cz, ry: FACE }, WALL));
+    const half = width / 2 + 0.3;
+    const slope = Math.atan2(CASSANDRA_RISE, width / 2);
+    const slant = half / Math.cos(slope);
+    for (const side of [-1, 1]) {
+        buckets.add('brick', box(depth + 0.5, 0.12, slant, {
+            x: cx, y: eaves + CASSANDRA_RISE - (half / 2) * Math.tan(slope) + 0.07, z: cz + side * (half / 2), rx: side * slope,
+        }, SLATE));
+    }
+    buckets.add('brick', box(depth + 0.56, 0.16, 0.24, { x: cx, y: eaves + CASSANDRA_RISE + 0.07, z: cz }, SLATE_RIDGE));
+    buckets.add('gold', cone(0.1, 0.62, 6, { x: CASSANDRA_FRONT + 0.2, y: eaves + CASSANDRA_RISE + 0.5, z: cz }, FENCE_GOLD));
+    buckets.add('gold', ball(0.09, { x: CASSANDRA_FRONT + 0.2, y: eaves + CASSANDRA_RISE + 0.17, z: cz }, FENCE_GOLD, 6, 4));
+    buckets.add('gold', box(0.62, 1.8, 0.62, { x: CASSANDRA_BACK + 0.8, y: eaves + CASSANDRA_RISE * 0.62 + 0.4, z: cz + 1.25 }, WALL));
+    buckets.add('stone', box(0.76, 0.1, 0.76, { x: CASSANDRA_BACK + 0.8, y: eaves + CASSANDRA_RISE * 0.62 + 1.32, z: cz + 1.25 }, TRIM));
+
+    // The windows, arched, lit and dark: one either side of the door below, three to each floor above, two along the
+    // south side; and high in the gable, the round window onto her bedroom's ceiling (cassandra.js), its stars aglow.
+    // (Small, and seen from the street: arches of a few segments, light on triangles.)
+    const windowAt = (x, y, z, ry, lit, wide = 0.62, spring = 0.92) => {
+        const at = { x, y, z, ry };
+        if (lit) buckets.add('glow', arched(wide, spring, 0.04, at, WINDOW_LOW, 4));
+        else buckets.add('brick', arched(wide, spring, 0.04, at, DARK_WINDOW, 4));
+        buckets.add('stone', archRing(wide, spring, 0.07, 0.07, at, TRIM, 4));
+        for (const piece of frame([box(wide + 0.22, 0.07, 0.14, { y: -0.035, z: 0.04 }, TRIM)], at)) buckets.add('stone', piece);
+    };
+    const face = CASSANDRA_FRONT + 0.012;
+    const storeyAt = (storey) => sill + CASSANDRA_STOREY * storey;
+    windowAt(face, storeyAt(0) + 0.62, CASSANDRA_DOOR_Z - 1.45, FACE, true);
+    windowAt(face, storeyAt(0) + 0.62, CASSANDRA_DOOR_Z + 1.45, FACE, false);
+    [[false, true, false], [true, false, false]].forEach((lights, index) => {
+        [-1.45, 0, 1.45].forEach((along, bay) => windowAt(face, storeyAt(index + 1) + 0.62, CASSANDRA_DOOR_Z + along, FACE, lights[bay]));
+    });
+    for (const [x, storey, lit] of [[cx - 0.7, 1, true], [cx + 0.6, 2, false]]) windowAt(x, storeyAt(storey) + 0.62, CASSANDRA_SOUTH + 0.012, 0, lit, 0.5, 0.8);
+    const roundAt = { x: CASSANDRA_FRONT + 0.03, y: eaves + 1.05, z: cz };
+    buckets.add('stone', paint(pose(new RingGeometry(0.42, 0.54, 14), { x: roundAt.x + 0.012, y: roundAt.y, z: roundAt.z, ry: FACE }), TRIM));
+
+    // Round the doorway, an arch of stone; beside it, a lamp on its bracket.
+    buckets.add('stone', archRing(CASSANDRA_DOOR_WIDE + 0.04, CASSANDRA_DOOR_SPRING, 0.13, 0.12, { x: CASSANDRA_FRONT + 0.03, y: sill, z: CASSANDRA_DOOR_Z, ry: FACE }, TRIM, 6));
+    buckets.add('steel', box(0.36, 0.05, 0.05, { x: CASSANDRA_FRONT + 0.18, y: sill + 2.42, z: CASSANDRA_DOOR_Z + 0.95 }, STEEL_DARK), { passable: true });
+    buckets.add('steel', cylinder(0.02, 0.02, 0.2, 4, { x: CASSANDRA_FRONT + 0.34, y: sill + 2.3, z: CASSANDRA_DOOR_Z + 0.95 }, STEEL_DARK), { passable: true });
+    buckets.add('glow', ball(0.11, { x: CASSANDRA_FRONT + 0.34, y: sill + 2.12, z: CASSANDRA_DOOR_Z + 0.95 }, LAMP, 6, 4));
+
+    // The yard: gravel, the flagstones to the door, the bare plot, and the rocks the shape of ferns. (What lies on
+    // the ground, the pebbles too, is drawn as a mesh of its own, in the city's own materials: floors never come
+    // apart in the dust, so it needs no dust of its own lingering, and the frame doesn't draw it unless it's in sight.)
+    const lying = { gold: [], stone: [] };
+    const yard = { x0: CASSANDRA_FRONT + 0.05, x1: CASSANDRA_FENCE - 0.06, z0: CASSANDRA_YARD_NORTH + 0.06, z1: CASSANDRA_YARD_SOUTH - 0.06 };
+    lying.stone.push(groundStrip(yard.x0, (yard.z0 + yard.z1) / 2, yard.x1, (yard.z0 + yard.z1) / 2, yard.z1 - yard.z0, 0xa48e6c, CASSANDRA_PAVED));
+    for (let slab = 0; slab < 4; slab += 1) {
+        const x = CASSANDRA_FRONT + 0.95 + slab * 0.66;
+        lying.stone.push(box(0.5, 0.05, 0.62, { x, y: groundY(x, CASSANDRA_DOOR_Z) + CASSANDRA_PAVED + 0.012, z: CASSANDRA_DOOR_Z + random.range(-0.05, 0.05), ry: random.range(-0.08, 0.08) }, 0xc4b494));
+    }
+    const plot = { x0: yard.x0 + 0.3, x1: -21.4, z0: yard.z0 + 0.22, z1: CASSANDRA_DOOR_Z - 0.75 };
+    lying.stone.push(groundStrip(plot.x0, (plot.z0 + plot.z1) / 2, plot.x1, (plot.z0 + plot.z1) / 2, plot.z1 - plot.z0, 0x4a3226, CASSANDRA_PAVED + 0.02));
+    for (let stalk = 0; stalk < 9; stalk += 1) {
+        const x = random.range(plot.x0 + 0.15, plot.x1 - 0.15);
+        const z = random.range(plot.z0 + 0.12, plot.z1 - 0.12);
+        const high = random.range(0.25, 0.6);
+        const lean = random.range(-0.4, 0.4);
+        lying.stone.push(paint(pose(new CylinderGeometry(0.008, 0.016, high, 3, 1, true), { x: x + Math.sin(lean) * high * 0.4, y: groundY(x, z) + CASSANDRA_PAVED + 0.02 + high / 2, z, rz: lean }), 0x7a6248));
+    }
+    const fernShape = (pinnae) => {
+        // A frond: its stem bending a little, its leaflets either side shortening toward the tip; lying flat, as a
+        // rock does.
+        const shape = new Shape();
+        const bend = (t) => 0.06 * Math.sin(t * Math.PI * 0.9);
+        const stem = 0.025;
+        const right = [];
+        const left = [];
+        for (let index = 0; index <= pinnae; index += 1) {
+            const t = index / pinnae;
+            const reach = 0.24 * (1 - t) ** 0.8 + 0.02;
+            const x = bend(t);
+            right.push([x + stem, t], [x + stem + reach, t + 0.1], [x + stem + reach * 0.12, t + 0.15]);
+            left.push([x - stem, t], [x - stem - reach, t + 0.1], [x - stem - reach * 0.12, t + 0.15]);
+        }
+        shape.moveTo(stem, 0);
+        for (const [x, y] of right) shape.lineTo(x, y);
+        shape.lineTo(bend(1), 1.08);
+        for (const [x, y] of left.reverse()) shape.lineTo(x, y);
+        shape.closePath();
+        return shape;
+    };
+    const fernRocks = [[-23.0, -0.9, 0.8], [-22.1, 0.15, 0.9], [-21.3, -0.75, 0.75], [-20.75, 0.3, 0.6], [-22.55, -1.2, 0.45], [-20.75, -4.2, 0.7], [-20.8, -3.15, 0.55]];
+    fernRocks.forEach(([x, z, size], index) => {
+        const geometry = new ExtrudeGeometry(fernShape(5), { depth: 0.07, bevelEnabled: false, curveSegments: 1 });
+        geometry.translate(0, -0.5, 0);
+        geometry.scale(size, size, 1);
+        geometry.rotateX(-Math.PI / 2);
+        const tone = [0xc2bba4, 0xb4ae96, 0xcbc2a8, 0xa9a68e][index % 4];
+        const propped = index % 3 === 2;
+        lying.stone.push(paint(pose(geometry, {
+            x, y: groundY(x, z) + CASSANDRA_PAVED + 0.035 + (propped ? 0.1 : 0), z, ry: random.range(0, Math.PI * 2), rx: propped ? random.range(0.18, 0.32) : 0,
+        }), tone));
+    });
+
+    // The fence, all wrought of gold: posts with spear finials, two rails, spear-tipped pickets, and its gate, shut.
+    const fence = [];
+    const run = (x0, z0, x1, z1) => {
+        const length = Math.hypot(x1 - x0, z1 - z0);
+        const angle = Math.atan2(x1 - x0, z1 - z0);
+        const mx = (x0 + x1) / 2;
+        const mz = (z0 + z1) / 2;
+        for (const y of [0.16, CASSANDRA_FENCE_TALL - 0.2]) fence.push(box(0.04, 0.05, length, { x: mx, y: groundY(mx, mz) + y, z: mz, ry: angle }, FENCE_GOLD_DEEP));
+        const count = Math.max(2, Math.round(length / 0.17));
+        for (let index = 1; index < count; index += 1) {
+            const t = index / count;
+            const x = x0 + (x1 - x0) * t;
+            const z = z0 + (z1 - z0) * t;
+            const base = groundY(x, z);
+            fence.push(paint(pose(new CylinderGeometry(0.022, 0.022, CASSANDRA_FENCE_TALL - 0.12, 3, 1, true), { x, y: base + (CASSANDRA_FENCE_TALL - 0.12) / 2, z, ry: angle }), FENCE_GOLD));
+            fence.push(paint(pose(new ConeGeometry(0.038, 0.12, 3, 1, true), { x, y: base + CASSANDRA_FENCE_TALL - 0.06, z, ry: angle }), FENCE_GOLD));
+        }
+    };
+    const post = (x, z, high = CASSANDRA_FENCE_TALL + 0.02) => {
+        const base = groundY(x, z);
+        fence.push(box(0.09, high, 0.09, { x, y: base + high / 2, z }, FENCE_GOLD_DEEP));
+        fence.push(paint(pose(new ConeGeometry(0.06, 0.16, 4, 1, true), { x, y: base + high + 0.08, z, ry: Math.PI / 4 }), FENCE_GOLD));
+    };
+    const gate = [CASSANDRA_DOOR_Z - 0.6, CASSANDRA_DOOR_Z + 0.6];
+    run(CASSANDRA_FENCE, CASSANDRA_YARD_NORTH, CASSANDRA_FENCE, gate[0]);
+    run(CASSANDRA_FENCE, gate[0], CASSANDRA_FENCE, gate[1]);
+    run(CASSANDRA_FENCE, gate[1], CASSANDRA_FENCE, CASSANDRA_YARD_SOUTH);
+    run(CASSANDRA_FRONT + 0.12, CASSANDRA_YARD_NORTH, CASSANDRA_FENCE, CASSANDRA_YARD_NORTH);
+    run(CASSANDRA_FRONT + 0.12, CASSANDRA_YARD_SOUTH, CASSANDRA_FENCE, CASSANDRA_YARD_SOUTH);
+    for (const z of [CASSANDRA_YARD_NORTH, CASSANDRA_YARD_SOUTH]) {
+        post(CASSANDRA_FENCE, z);
+        post((CASSANDRA_FRONT + CASSANDRA_FENCE) / 2, z);
+    }
+    for (const z of gate) post(CASSANDRA_FENCE, z, CASSANDRA_FENCE_TALL + 0.1);
+    for (const piece of fence) buckets.add('gold', piece);
+
+    // The boulevard of golden pebbles, along the fence: its bed, and every pebble its own gold, a little proud of it.
+    const [bx0, bx1, bz0, bz1] = CASSANDRA_BOULEVARD;
+    // (Its floor is given, a little over the pebbles, so the givers' shades lie on them: creatures.js.)
+    buckets.add('dimGold', groundStrip((bx0 + bx1) / 2, bz0, (bx0 + bx1) / 2, bz1, bx1 - bx0, 0x94702e, CASSANDRA_PAVED));
+    const cell = 0.3;
+    const pebbles = [];
+    for (let x = bx0; x < bx1 - 0.01; x += cell) {
+        for (let z = bz0; z < bz1 - 0.01; z += cell) {
+            const tone = new Color(GOLDS[Math.floor(random() * GOLDS.length)]).multiplyScalar(random.range(0.66, 0.92));
+            // (Every other row set half a pebble over, as stones are laid; each a rounded flat stone, turned its own way.)
+            const offset = Math.round((z - bz0) / cell) % 2 ? cell / 2 : 0;
+            const px = x + offset + cell / 4 + random.range(-0.02, 0.02);
+            if (px > bx1 - 0.08) continue;
+            const pz = z + cell / 2 + random.range(-0.02, 0.02);
+            const pebble = new CircleGeometry(0.5, 5);
+            pebble.rotateX(-Math.PI / 2);
+            pebbles.push(paint(pose(pebble, {
+                x: px, y: groundY(px, pz) + CASSANDRA_PAVED + random.range(0.006, 0.016), z: pz, ry: random.range(0, Math.PI), sx: cell * random.range(0.86, 1.02), sz: cell * random.range(0.68, 0.86),
+            }), tone));
+        }
+    }
+    lying.gold.push(...pebbles);
+
+    // What moves: the door on its hinge, her shadow in the hall, her ceiling in the round window; and the faces at
+    // the street's windows (one draw for all).
+    const group = new Group();
+    group.name = 'cassandra';
+    const hinge = new Group();
+    hinge.name = 'cassandra-door';
+    // (Hung at the doorway's south side, in its reveal; its own x runs along the leaf, north, and swinging it on
+    // the hinge's y opens it inward.)
+    hinge.position.set(CASSANDRA_FRONT - 0.14, sill, CASSANDRA_DOOR_Z + CASSANDRA_DOOR_WIDE / 2);
+    hinge.rotation.y = FACE;
+    const swing = new Group();
+    hinge.add(swing);
+    const leafWide = CASSANDRA_DOOR_WIDE - 0.03;
+    const leafPieces = [arched(leafWide, CASSANDRA_DOOR_SPRING, 0.06, { x: leafWide / 2, z: 0.03 }, VIOLET)];
+    for (const [py, ph] of [[0.28, 0.62], [1.04, 0.62]]) {
+        for (const side of [-1, 1]) leafPieces.push(box(0.33, ph, 0.02, { x: leafWide / 2 + side * 0.2, y: py + ph / 2, z: 0.065 }, VIOLET_PANEL));
+    }
+    leafPieces.push(ball(0.035, { x: leafWide - 0.12, y: 1.0, z: 0.085 }, FENCE_GOLD, 8, 6));
+    leafPieces.push(ball(0.035, { x: leafWide - 0.12, y: 1.0, z: -0.025 }, FENCE_GOLD, 8, 6));
+    const leaf = new Mesh(mergeGeometries(leafPieces.map((piece) => unindexed(piece)), false), materials.brick);
+    leaf.name = 'cassandra-door-leaf';
+    swing.add(leaf);
+    group.add(hinge);
+
+    // Her shadow, standing in the hall's light, a hand up to the door's edge (cassandra.js).
+    const figure = new Mesh(new PlaneGeometry(0.95, 1.95), new MeshBasicMaterial({
+        map: shadowFigure(), color: 0x1a0f24, transparent: true, opacity: 0, depthWrite: false,
+    }));
+    figure.name = 'cassandra-shadow';
+    figure.rotation.y = FACE;
+    figure.position.set(CASSANDRA_FRONT - 0.38, sill + 0.975, CASSANDRA_DOOR_Z - 0.1);
+    figure.visible = false;
+    group.add(figure);
+
+    // And her shadow cast: the hall's light spilling out of the door, warm, over the doorstep and down the path, and
+    // in it, long, where it doesn't reach, her shadow, laid toward whoever knocked (seen from close over their
+    // shoulder, as well as her in the doorway). It comes as the door opens and goes as it shuts. Light added over the
+    // floor, so it marks nothing for the ink. (Its own pieces, out of the dust: floors never come apart.)
+    const spillFrom = CASSANDRA_FRONT - 0.42;
+    const spillTo = CASSANDRA_FRONT + 3.0;
+    const stations = [
+        [spillFrom, sill + 0.012], [CASSANDRA_FRONT + 0.315, sill + 0.012],
+        [CASSANDRA_FRONT + 0.325, ground + 0.132], [CASSANDRA_FRONT + 0.615, ground + 0.132],
+    ];
+    for (let x = CASSANDRA_FRONT + 0.625; x <= spillTo + 1e-6; x += (spillTo - CASSANDRA_FRONT - 0.625) / 5) {
+        // (Just over the flagstones' tops.)
+        stations.push([x, groundY(x, CASSANDRA_DOOR_Z) + CASSANDRA_PAVED + 0.042]);
+    }
+    const spillPositions = [];
+    const spillUvs = [];
+    for (const [x, y] of stations) {
+        const halfWide = 0.46 + Math.max(0, x - CASSANDRA_FRONT) * 0.22;
+        const along = (x - spillFrom) / (spillTo - spillFrom);
+        // (Across: 0 on the south, her raised hand's side, as the figure has it.)
+        spillPositions.push(x, y, CASSANDRA_DOOR_Z + halfWide, x, y, CASSANDRA_DOOR_Z - halfWide);
+        spillUvs.push(0, along, 1, along);
+    }
+    const spillIndex = [];
+    for (let station = 0; station < stations.length - 1; station += 1) {
+        const a = station * 2;
+        spillIndex.push(a, a + 1, a + 2, a + 1, a + 3, a + 2);
+    }
+    const spillGeometry = new BufferGeometry();
+    spillGeometry.setAttribute('position', new Float32BufferAttribute(spillPositions, 3));
+    spillGeometry.setAttribute('uv', new Float32BufferAttribute(spillUvs, 2));
+    spillGeometry.setIndex(spillIndex);
+    const spillUniforms = { shadowMap: { value: figure.material.map }, open: { value: 0 } };
+    const spill = new Mesh(spillGeometry, new ShaderMaterial({
+        uniforms: spillUniforms,
+        vertexShader: /* glsl */ `
+            varying vec2 vUv;
+            void main() {
+                vUv = uv;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+        `,
+        fragmentShader: /* glsl */ `
+            uniform sampler2D shadowMap;
+            uniform float open;
+            varying vec2 vUv;
+            void main() {
+                // The light through the door: strongest at the threshold, fading down the path and to its sides.
+                float across = vUv.x;
+                float along = vUv.y;
+                float light = open * (0.95 - 0.6 * along) * (1.0 - smoothstep(0.6, 1.0, along))
+                    * smoothstep(0.0, 0.2, across) * smoothstep(1.0, 0.8, across);
+                // Her shadow in it, from her feet, as long as most of the light.
+                float height = along / 0.8;
+                float shade = height < 1.0 ? texture2D(shadowMap, vec2(across, height)).a : 0.0;
+                gl_FragColor = vec4(vec3(1.0, 0.56, 0.26) * 0.62 * light * (1.0 - 0.94 * shade), 1.0);
+            }
+        `,
+        transparent: true,
+        blending: AdditiveBlending,
+        depthWrite: false,
+        side: DoubleSide,
+    }));
+    spill.name = 'cassandra-spill';
+    spill.visible = false;
+    extras.push(spill);
+
+    for (const [key, pieces] of Object.entries(lying)) {
+        const lies = new Mesh(mergeGeometries(pieces.map((piece) => unindexed(piece)), false), materials[key]);
+        lies.name = `cassandra-ground-${key}`;
+        group.add(lies);
+    }
+
+    const ceiling = new Mesh(new CircleGeometry(0.44, 18), new MeshBasicMaterial({ map: starCeiling(), color: new Color(1.3, 1.36, 1.4) }));
+    ceiling.name = 'cassandra-ceiling';
+    ceiling.rotation.y = FACE;
+    ceiling.position.set(roundAt.x, roundAt.y, roundAt.z);
+    group.add(ceiling);
+    extras.push(group);
+
+    // The street's windows: the halls standing round the plaza, their dot windows (as addHall lays them) on the
+    // faces turned toward the house; half of them will show a face.
+    const quads = [];
+    const delays = [];
+    const yardMiddle = new Vector2((CASSANDRA_FRONT + CASSANDRA_FENCE) / 2 + 2, CASSANDRA_DOOR_Z);
+    for (const hall of halls) {
+        if (Math.hypot(hall.x - yardMiddle.x, hall.z - yardMiddle.y) > 20) continue;
+        const sides = [
+            { across: hall.width, out: hall.depth / 2 + 0.02, turn: 0 },
+            { across: hall.width, out: hall.depth / 2 + 0.02, turn: Math.PI },
+            { across: hall.depth, out: hall.width / 2 + 0.02, turn: Math.PI / 2 },
+            { across: hall.depth, out: hall.width / 2 + 0.02, turn: -Math.PI / 2 },
+        ];
+        for (const side of sides) {
+            const turn = side.turn + hall.turn;
+            const normal = new Vector2(Math.sin(turn), Math.cos(turn));
+            const middle = new Vector2(hall.x + normal.x * side.out, hall.z + normal.y * side.out);
+            const toYard = yardMiddle.clone().sub(middle);
+            if (toYard.length() > 19 || normal.dot(toYard.normalize()) < 0.25) continue;
+            const columns = Math.max(1, Math.floor((side.across - 0.5) / 0.72));
+            const spacing = (side.across - 0.5) / columns;
+            let row = 0;
+            for (let y = 0.45 + HALL_STOREY + 0.75; y + 0.3 < hall.height - 0.35; y += HALL_STOREY, row += 1) {
+                for (let column = 0; column < columns; column += 1) {
+                    const hash = Math.sin(hall.x * 3.17 + hall.z * 7.31 + row * 1.91 + column * 2.73 + side.turn * 5.1) * 9187.13;
+                    if (hash - Math.floor(hash) > 0.5) continue;
+                    const along = -side.across / 2 + 0.25 + spacing * (column + 0.5);
+                    const out = side.out + 0.032;
+                    const local = new Vector3(along * Math.cos(side.turn) + out * Math.sin(side.turn), y, -along * Math.sin(side.turn) + out * Math.cos(side.turn));
+                    local.applyAxisAngle(UP, hall.turn);
+                    // (The window's own size: it lights up, with the face in it.)
+                    const quad = new PlaneGeometry(0.22, 0.3);
+                    quad.rotateY(turn);
+                    quad.translate(hall.x + local.x, hall.base + local.y, hall.z + local.z);
+                    quads.push(quad);
+                    const delay = still ? 0 : random.range(0, FACES_RISE);
+                    for (let vertex = 0; vertex < 4; vertex += 1) delays.push(delay);
+                }
+            }
+        }
+    }
+    const sinceSlam = { value: 1e4 };
+    let faces = null;
+    if (quads.length) {
+        const geometry = mergeGeometries(quads, false);
+        geometry.setAttribute('delay', new Float32BufferAttribute(delays, 1));
+        // (Lit as the street's lit windows are, the faces glowing a little, as the ink draws light: ink.js.)
+        const material = new MeshBasicMaterial({ map: paleFace(), color: new Color(2.05, 2.0, 1.95), transparent: true, depthWrite: false });
+        // (Each face comes up at its own moment after the slam, stays, and goes, the last a little after the first.)
+        alsoBeforeCompile(material, 'cassandra-faces', (shader) => {
+            shader.uniforms.sinceSlam = sinceSlam;
+            shader.vertexShader = shader.vertexShader
+                .replace('#include <common>', '#include <common>\nattribute float delay;\nuniform float sinceSlam;\nvarying float vShown;')
+                .replace('#include <begin_vertex>', [
+                    '#include <begin_vertex>',
+                    `vShown = smoothstep(delay, delay + 0.35, sinceSlam) * (1.0 - smoothstep(${(FACES_RISE + FACES_STAY).toFixed(2)}, ${(FACES_RISE + FACES_STAY + 1.6).toFixed(2)}, sinceSlam - delay * 0.5));`,
+                ].join('\n'));
+            shader.fragmentShader = shader.fragmentShader
+                .replace('#include <common>', '#include <common>\nvarying float vShown;')
+                .replace('#include <map_fragment>', '#include <map_fragment>\ndiffuseColor.a *= vShown;\nif (diffuseColor.a < 0.02) discard;');
+        });
+        faces = new Mesh(geometry, material);
+        faces.name = 'cassandra-faces';
+        faces.frustumCulled = false;
+        faces.visible = false;
+        extras.push(faces);
+    }
+
+    // The knock, the answer, the slam: a scene on a clock of its own (stage.js steps it with the walk's state; main.js
+    // gives it its sounds and her words, through onSound and onSay).
+    const doorPoint = new Vector3(CASSANDRA_FRONT - 0.3, sill + 1.75, CASSANDRA_DOOR_Z);
+    const gatePoint = new Vector2(CASSANDRA_FENCE + 0.5, CASSANDRA_DOOR_Z);
+    let since = null;
+    let slammedAt = null;
+    let open = 0;
+    let spoke = false;
+    let slammed = false;
+    let armed = true;
+    // (A hum hops the fence, as E did, and knocks at the door; a walker, who can't, knocks at the gate.)
+    const hops = trialOn('hum');
+    const scene = {
+        /** Called with 'knock' or 'slam'. */
+        onSound: null,
+        /** Called with her words and where she says them (a world point), and with null when she's done. */
+        onSay: null,
+        /** Her words, and where they're said. */
+        says: CASSANDRA_SAYS,
+        point: doorPoint,
+        /**
+         * Where a body can't go: before the doorway, where she stands (walk.js standsIn); far enough out that the camera,
+         * behind and above whoever's come, sees her over them.
+         */
+        bars: { x: CASSANDRA_FRONT + 0.05, z: CASSANDRA_DOOR_Z, radius: 1.55 },
+        /** Whether the scene is playing (from the knock until the faces have gone). */
+        get playing() {
+            return since !== null && since < KNOCK_SLAMS + FACES_RISE + FACES_STAY + 2;
+        },
+        /** Knock on the door, unless it's being answered already. */
+        knock() {
+            if (since !== null && since < KNOCK_SLAMS + 1.2) return false;
+            since = 0;
+            spoke = false;
+            slammed = false;
+            armed = false;
+            scene.onSound?.('knock');
+            return true;
+        },
+        /** Every frame: the scene's clock, and whoever's walking (or flying) coming to the door, or to the gate. */
+        update(dt, walker) {
+            if (walker?.walking) {
+                const { x, z } = walker.position;
+                const inYard = x > CASSANDRA_FRONT && x < CASSANDRA_FENCE && z > CASSANDRA_YARD_NORTH && z < CASSANDRA_YARD_SOUTH;
+                const nearDoor = inYard && Math.hypot(x - CASSANDRA_FRONT, z - CASSANDRA_DOOR_Z) < KNOCK_NEAR;
+                const atGate = !hops && x >= CASSANDRA_FENCE && Math.hypot(x - gatePoint.x, z - gatePoint.y) < KNOCK_AT_GATE;
+                if (armed && (nearDoor || atGate)) scene.knock();
+                else if (!armed && !scene.playing && Math.hypot(x - gatePoint.x, z - gatePoint.y) > KNOCK_AGAIN) armed = true;
+            } else if (!scene.playing) {
+                armed = true;
+            }
+            if (since !== null) {
+                since += dt;
+                if (!spoke && since >= KNOCK_SPEAKS) {
+                    spoke = true;
+                    scene.onSay?.(CASSANDRA_SAYS, doorPoint);
+                }
+                if (!slammed && since >= KNOCK_SLAMS) {
+                    slammed = true;
+                    slammedAt = 0;
+                    scene.onSay?.(null);
+                    scene.onSound?.('slam');
+                }
+            }
+            const wanted = since !== null && since >= KNOCK_ANSWERED && !slammed ? CASSANDRA_DOOR_OPEN : 0;
+            // (It opens slowly, warily; it's yanked shut.)
+            const pace = wanted > open ? 2.6 : 30;
+            open += (wanted - open) * (still ? 1 : 1 - Math.exp(-pace * dt));
+            if (Math.abs(open) < 1e-3) open = 0;
+            swing.rotation.y = open;
+            figure.visible = open > 0.02;
+            figure.material.opacity = Math.min(1, open / CASSANDRA_DOOR_OPEN * 1.6) * 0.94;
+            spill.visible = figure.visible;
+            spillUniforms.open.value = Math.min(1, open / CASSANDRA_DOOR_OPEN);
+            if (slammedAt !== null) {
+                slammedAt += dt;
+                sinceSlam.value = slammedAt;
+                if (faces) faces.visible = slammedAt < FACES_RISE + FACES_STAY + 2.2;
+                if (slammedAt > FACES_RISE + FACES_STAY + 2.2) slammedAt = null;
+            }
+        },
+    };
+
+    // Where a body may stand that the ground doesn't give: the boulevard, and the doorstep's two steps. (The house's
+    // walls, the fence and the doorway, where she stands, keep it out of the rest.)
+    const floorAt = (x, z) => {
+        if (x > bx0 && x < bx1 && z > bz0 && z < bz1) return groundY(x, z) + CASSANDRA_PAVED + 0.016;
+        if (Math.abs(z - CASSANDRA_DOOR_Z) < 0.7 && x >= CASSANDRA_FRONT && x < CASSANDRA_FRONT + 0.62) return ground + (x < CASSANDRA_FRONT + 0.32 ? 0.24 : 0.12);
+        return null;
+    };
+
+    return {
+        floor: { floorAt },
+        door: scene,
+        // A touch on the door knocks (main.js).
+        touch: [{ kind: 'cassandra-door', center: new Vector3(CASSANDRA_FRONT, sill + 1.1, CASSANDRA_DOOR_Z), radius: 0.8, fragment: null }],
+    };
+}
+
 // =============================================================================
 // Main Code
 // =============================================================================
@@ -4262,6 +4851,7 @@ const BUILDERS = {
     'gas-station': buildGasStation,
     edge: buildEdge,
     'door-in-the-floor': buildHostel,
+    'cassandras-house': buildCassandra,
 };
 
 /**
@@ -4294,7 +4884,7 @@ export async function buildPlaces(buckets, placeData, materials, pause = async (
     for (const place of placeData.places.filter((entry) => entry.tier === 1 && (!entry.trial || trialOn(entry.trial)))) {
         const builder = BUILDERS[place.id];
         if (builder) {
-            built.set(place.id, builder({ buckets, place, random, byId, extras, animated, materials, mounts, wanted, still, grand }));
+            built.set(place.id, builder({ buckets, place, random, byId, extras, animated, materials, mounts, wanted, still, grand, halls: houses.hallSpecs ?? [] }));
             await pause();
         }
         anchors.set(place.id, new Vector3().fromArray(place.position));
@@ -4315,7 +4905,7 @@ export async function buildPlaces(buckets, placeData, materials, pause = async (
     // own; the grand city's; ?dressing=off leaves it out).
     const dressed = new URLSearchParams(globalThis.location?.search ?? '').get('dressing') !== 'off';
     const dressing = dressed && houses.hallSpecs
-        ? buildDressing(buckets, { halls: houses.hallSpecs, spires: spires ?? [], byId, extras, animated, still })
+        ? buildDressing(buckets, { halls: houses.hallSpecs, spires: spires ?? [], byId, extras, animated, still, keepOff: built.has('cassandras-house') ? onCassandrasLot : null })
         : null;
 
     return {
@@ -4334,6 +4924,8 @@ export async function buildPlaces(buckets, placeData, materials, pause = async (
         sunLight: built.get('sun-dock')?.light ?? null,
         /** The Door in the Floor's white door (a trial), which swings in as the walk's shadow comes to it, or null. */
         hostelDoor: built.get('door-in-the-floor')?.door ?? null,
+        /** Cassandra's house (a trial): its door's scene (the knock, her shadow's answer, the slam, the faces), or null. */
+        cassandra: built.get('cassandras-house')?.door ?? null,
         /** The golden bridges: how many, of which kinds, and the sight line their dust keeps clear (walk.js keeps it). */
         bridges: bridges ? { count: bridges.count, kinds: bridges.kinds, ends: bridges.ends } : null,
         bridgeSight: bridges?.uniforms.bridgeSight.value ?? null,

@@ -211,6 +211,28 @@
    "facing": 3.93,
    "board": "door",
    "boardBack": 0.26
+  },
+  {
+   "fragment": "nbp-e4-cassandras-house-1",
+   "kind": "hum",
+   "at": [
+    -19.55,
+    2.76,
+    0.05
+   ],
+   "facing": 1.57,
+   "floor": 1.01
+  },
+  {
+   "fragment": "nbp-e6-cassandras-house-2",
+   "kind": "pug",
+   "at": [
+    -18.3,
+    0.92,
+    0.55
+   ],
+   "facing": 1.57,
+   "board": "star"
   }
  ],
  "allison": {

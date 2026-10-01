@@ -125,10 +125,12 @@ ${body}
  * @param {string} [options.texts] - the texts' page (read.html), where each lost page is marked (#lost-ID)
  * @param {(fragment: object, opener: HTMLElement) => void} options.onRead - read a found page again
  * @param {() => Promise<object>} options.loadEngine - Elm's engine (data/handwrite.json)
+ * @param {(id: string) => number | null} [options.numberOf] - a lost page's number as the texts number it (all of
+ *   them, read.html's), so a place whose trial is off leaves a gap rather than renumbering the rest; else by order
  */
-export function createInventory({ toggle, dialog, pieces, gathered, places, kindOf, texts = 'read.html', onRead, loadEngine }) {
+export function createInventory({ toggle, dialog, pieces, gathered, places, kindOf, texts = 'read.html', onRead, loadEngine, numberOf = null }) {
     const ordered = [...pieces];
-    const numbers = new Map(ordered.map((fragment, index) => [fragment.id, index + 1]));
+    const numbers = new Map(ordered.map((fragment, index) => [fragment.id, numberOf?.(fragment.id) ?? index + 1]));
     const count = toggle.querySelector('[data-inventory-count]');
     const list = dialog.querySelector('[data-inventory-list]');
     const note = dialog.querySelector('[data-inventory-note]');
