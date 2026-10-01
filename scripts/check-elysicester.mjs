@@ -33,7 +33,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadRedirects, servedPath } from './redirects.mjs';
 import { currentStamp, stampsIn } from './stamp-elysicester.mjs';
-import { PLAINLY_PAGE, plainlyHtml } from './plainly-elysicester.mjs';
+import { PLAINLY_PAGE, plainlyHtml, readOnHere } from './plainly-elysicester.mjs';
 
 // =============================================================================
 // Constants
@@ -457,6 +457,19 @@ async function checkPage(files) {
     const plainly = await readFile(path.join(ROOT, PLAINLY_PAGE), 'utf8').catch(() => null);
     if (plainly === null) fail(`${PLAINLY_PAGE}: missing; run npm run plainly:elysicester`);
     else if (plainly.replaceAll('\r\n', '\n') !== await plainlyHtml(ROOT)) fail(`${PLAINLY_PAGE}: out of date with the city's passages; run npm run plainly:elysicester`);
+    // Its "read on" links land on the whole works hosted among the essays: each page there, each page mark (#p60) named.
+    const fragments = JSON.parse(await readFile(path.join(ROOT, DIORAMA_DIR, 'data', 'fragments.json'), 'utf8')).fragments ?? [];
+    const wholePages = new Map();
+    for (const fragment of fragments) {
+        const target = readOnHere(fragment.read_on);
+        if (/^https?:/.test(target)) continue;
+        const [file, hash = ''] = target.split('#');
+        if (!wholePages.has(file)) wholePages.set(file, await readFile(path.join(ROOT, DIORAMA_DIR, file), 'utf8').catch(() => null));
+        const page = wholePages.get(file);
+        const shown = path.posix.normalize(`${DIORAMA_DIR}/${file}`);
+        if (page === null) fail(`${shown}: missing (a passage reads on there: ${fragment.id})`);
+        else if (/^p\d+$/.test(hash) && !page.includes(`id="${hash}"`)) fail(`${shown}: no page mark #${hash} (${fragment.id} reads on there)`);
+    }
     const redirects = await loadRedirects(ROOT);
     const served = servedPath(redirects, `/${DIORAMA_DIR}/v/${stamp}/main.js`);
     if (served !== `/${DIORAMA_DIR}/main.js`) {
