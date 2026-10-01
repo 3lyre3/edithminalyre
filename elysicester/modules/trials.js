@@ -41,13 +41,16 @@
  * - megascreen: the Mega-Screen's card as a still shot, like the city: an endless red desert, and the screen, as tall as
  *   a station's tower, wheeling into the shot as INSERT BLUTIX rolls over it (Elm's ask; megascreen.js); off, the card
  *   is the flat one it was
+ * - cassandra: Cassandra's house, at the plaza's west end where the bridges meet: the wrought-gold fence, the yard of
+ *   rocks the shape of ferns, the knock, her shadow's answer, the slam, and the pale faces at the street's windows (Elm's
+ *   next place; places.js, cassandra.js)
  */
 
 // =============================================================================
 // Constants
 // =============================================================================
 
-export const TRIALS = Object.freeze(['jetty', 'whisper', 'names', 'hint', 'wraith', 'dust', 'dock', 'hostel', 'hum', 'choice', 'onebutton', 'jettysigns', 'cyclolite', 'creatures', 'allison', 'inside', 'megascreen']);
+export const TRIALS = Object.freeze(['jetty', 'whisper', 'names', 'hint', 'wraith', 'dust', 'dock', 'hostel', 'hum', 'choice', 'onebutton', 'jettysigns', 'cyclolite', 'creatures', 'allison', 'inside', 'megascreen', 'cassandra']);
 
 // =============================================================================
 // Main Code

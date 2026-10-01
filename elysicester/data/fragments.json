@@ -317,6 +317,28 @@
       "status": "approved"
     },
     {
+      "id": "nbp-e4-cassandras-house-1",
+      "place": "cassandras-house",
+      "work": "nbp",
+      "source": "Agamemnon, Episode 4 (thesis p. 64)",
+      "text": "Some time passed before she found the house, a wrought-gold fence barring a yard littered with rocks the shape of ferns. She hopped the fence and knocked on the seeress’ door. Cassandra’s shadow answered.",
+      "read_on": "https://digital.library.adelaide.edu.au/server/api/core/bitstreams/9cbedc1a-5eac-4ee5-b909-320c83028bba/content#page=64",
+      "offset": [2.35, -1.24, 2.15],
+      "trial": "cassandra",
+      "status": "draft"
+    },
+    {
+      "id": "nbp-e6-cassandras-house-2",
+      "place": "cassandras-house",
+      "work": "nbp",
+      "source": "Agamemnon, Episode 6 (thesis p. 90)",
+      "text": "Air blasted their hair, eyelids, on rapid descent to Cassandra’s little townhouse — she envisioned an exhausted lean against the door, a hunched waddle then breakneck lunge for her pillow, her bed, the safe, softly lit environs of that room, lamp dimming until nothing interrupted the warm, gentle dark but the yang-white fluorescence of the glow-in-the-dark stars and moon above …",
+      "read_on": "https://digital.library.adelaide.edu.au/server/api/core/bitstreams/9cbedc1a-5eac-4ee5-b909-320c83028bba/content#page=90",
+      "offset": [3.6, -2.3, 2.65],
+      "trial": "cassandra",
+      "status": "draft"
+    },
+    {
       "id": "nbp-e1-mega-screen-1",
       "place": "mega-screen",
       "work": "nbp",

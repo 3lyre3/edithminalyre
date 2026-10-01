@@ -69,7 +69,7 @@ const TAKES_SHADOW = new Set(['dimGold', 'green', 'sand']);
  */
 const DUST_DISSOLVES = ['gold', 'bricking', 'dimGold', 'brick', 'stone', 'rock', 'steel', 'copper', 'turquoise', 'weed', 'amethyst', 'glass', 'arch', 'cloth', 'green', 'sign', 'glow', 'bridge', 'sand'];
 /** And what's drawn with materials of its own: what's laid on the cafés' walls, the hums, the paper. */
-const DUST_ON_WALLS = ['cafe-shadow', 'footlight-wash', 'hums', 'paper', 'hostel'];
+const DUST_ON_WALLS = ['cafe-shadow', 'footlight-wash', 'hums', 'paper', 'hostel', 'cassandra', 'cassandra-faces'];
 /**
  * A safety net for slower phones: if frames run slower than this (seconds) for a sustained stretch,
  * the drawing buffer steps down a quarter at a time, never below 1. It only ever steps down, so it can't
@@ -232,6 +232,8 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
     const walk = walking ? createWalk({ light: KEY_DIRECTION, reducedMotion, gradientMap: materials.gold.gradientMap }) : null;
     // (The hum you fly as, drawn in the city from the first, so its bronze is compiled with the rest.)
     if (walk?.bird) scene.add(walk.bird);
+    // (Cassandra's doorway, where her shadow stands: a body goes round, not in. A trial: places.js.)
+    if (walk && places.cassandra) walk.standsIn(places.cassandra.bars.x, places.cassandra.bars.z, places.cassandra.bars.radius);
     if (walk) {
         for (const key of [...HOLLOWED, 'rock']) walkerShadow(materials[key], walk);
         walkerClears(materials.steel, walk);
@@ -372,6 +374,7 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         sea.update(elapsed);
         places.update(elapsed);
         places.hostelDoor?.update(dt, walk?.state);
+        places.cassandra?.update(dt, walk?.state);
         dust?.update(elapsed);
         dust?.cull(camera);
         hollowMap.update(dt);
@@ -418,6 +421,8 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         walk,
         /** What a touch may find in the city, and the words each opens (places.js; touch.js reads it). */
         touch: places.touch,
+        /** Cassandra's house (a trial): its door's scene, for main.js to give its sounds and her words; or null. */
+        cassandra: places.cassandra,
         /** The city's toon steps, for what's drawn later in its light (creatures.js). */
         gradientMap: materials.gold.gradientMap,
         /** The way to the light the shadows fall from: the walk's (flying as a hum, its higher sun), else the key light. */

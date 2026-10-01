@@ -476,6 +476,11 @@ async function boot() {
             texts: TEXT_PAGE,
             onRead: (fragment, opener) => open(fragment, opener),
             loadEngine: () => loadData('handwrite'),
+            // (Numbered as the texts number them, every lost page counted, trials on or off.)
+            numberOf: (id) => {
+                const at = lostData?.lost?.indexOf(id) ?? -1;
+                return at >= 0 ? at + 1 : null;
+            },
         });
         if (debug) window.elysicesterDebug.inventory = inventory;
     }
@@ -558,6 +563,12 @@ async function boot() {
                     onMiss: (x, y) => {
                         if (!touch || stage.walk?.claimsTap(x, y) || signOverlay?.claimsTap(x, y, Infinity)) return;
                         const found = touch.find(x, y);
+                        // (Cassandra's door, touched, is knocked on: places.js plays the rest.)
+                        if (found?.kind === 'cassandra-door') {
+                            if (!reducedMotion) hotspots.ripple(found.point);
+                            stage.cassandra?.knock();
+                            return;
+                        }
                         const fragment = found ? readable.find((candidate) => candidate.id === found.fragment) : null;
                         if (!fragment) {
                             stage.walk?.walkToward(x, y);
@@ -570,6 +581,32 @@ async function boot() {
                     },
                 });
                 touch = createTouch({ stage, occluders: hotspots.occluders });
+                // Cassandra's door (a trial: places.js): its knock and its slam, and her shadow's words where she
+                // stands, while she says them.
+                const doorWords = byId('door-words');
+                if (stage.cassandra && doorWords) {
+                    let saidAt = null;
+                    let seenAt = null;
+                    stage.cassandra.onSound = (kind) => audio.answer(kind);
+                    stage.cassandra.onSay = (words, point) => {
+                        saidAt = words ? point : null;
+                        seenAt = saidAt?.clone() ?? null;
+                        doorWords.textContent = words ?? '';
+                        doorWords.hidden = !words;
+                    };
+                    stage.onFrame(() => {
+                        if (!saidAt) return;
+                        seenAt.copy(saidAt).project(stage.camera);
+                        const rect = stage.canvas.getBoundingClientRect();
+                        // (Over her, and kept on the screen, however near the camera has come: it's drawn above
+                        // its point, so its point stays at least its own height and a margin below the top.)
+                        const half = doorWords.offsetWidth / 2 + 8;
+                        const x = Math.min(Math.max(half, window.innerWidth - half), Math.max(half, rect.left + ((seenAt.x + 1) / 2) * rect.width));
+                        const y = Math.min(window.innerHeight - 8, Math.max(doorWords.offsetHeight + 26, rect.top + ((1 - seenAt.y) / 2) * rect.height));
+                        doorWords.style.translate = `${Math.round(x)}px ${Math.round(y)}px`;
+                        doorWords.hidden = seenAt.z >= 1;
+                    });
+                }
                 // The shadow hears a tap first; a reading point nearer the tap than the shadow keeps it, and so
                 // does a sign the tap lands squarely on.
                 stage.walk?.yieldsTo((x, y, pointerType) => (signOverlay?.claimsTap(x, y, Infinity)

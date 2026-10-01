@@ -77,9 +77,35 @@ function breaker(context, output, noise) {
     source.start(now, Math.random() * Math.max(0, noise.duration - length), length);
 }
 
+/** The street's answer to a slam (made once for each context): walls across it giving it back, and a long fall. */
+const streets = new WeakMap();
+
+function street(context) {
+    if (streets.has(context)) return streets.get(context);
+    const seconds = 2.6;
+    const length = Math.floor(context.sampleRate * seconds);
+    const response = context.createBuffer(2, length, context.sampleRate);
+    // (The walls across the street, and the halls further off: an echo from each, softer the further.)
+    const walls = [[0.07, 0.5], [0.13, 0.42], [0.21, 0.3], [0.34, 0.22], [0.5, 0.14], [0.71, 0.08]];
+    for (let channel = 0; channel < 2; channel += 1) {
+        const data = response.getChannelData(channel);
+        for (let index = 0; index < length; index += 1) {
+            const t = index / context.sampleRate;
+            data[index] = (Math.random() * 2 - 1) * Math.exp(-t / 0.5) * 0.32;
+        }
+        for (const [at, level] of walls) {
+            const index = Math.floor((at + channel * 0.011) * context.sampleRate);
+            for (let k = 0; k < 160; k += 1) data[index + k] += (Math.random() * 2 - 1) * level * Math.exp(-k / 40);
+        }
+    }
+    streets.set(context, response);
+    return response;
+}
+
 /**
  * A touch answered, softly, in the thing's own voice: the steel sycamore's leaves rustle, a bird statue rings
- * like struck metal, a small dog's feet patter, and the rock's underside gives a deep swell.
+ * like struck metal, a small dog's feet patter, and the rock's underside gives a deep swell. (And Cassandra's
+ * door: a knock, then its slam.)
  */
 function answer(context, output, noise, kind) {
     const now = context.currentTime;
@@ -145,6 +171,78 @@ function answer(context, output, noise, kind) {
         squeak.connect(small).connect(output);
         squeak.start(squeakAt);
         squeak.stop(squeakAt + 0.12);
+    } else if (kind === 'knock') {
+        // Cassandra's door, knocked on (places.js): three firm knocks on heavy wood, a knuckle's click in each.
+        for (const knock of [0, 0.23, 0.46]) {
+            const at = now + knock;
+            const tone = context.createOscillator();
+            tone.type = 'triangle';
+            tone.frequency.setValueAtTime(150, at);
+            tone.frequency.exponentialRampToValueAtTime(68, at + 0.07);
+            const body = context.createGain();
+            body.gain.setValueAtTime(0.0001, at);
+            body.gain.exponentialRampToValueAtTime(0.6, at + 0.004);
+            body.gain.exponentialRampToValueAtTime(0.0001, at + 0.14);
+            tone.connect(body).connect(output);
+            tone.start(at);
+            tone.stop(at + 0.16);
+            const click = context.createBufferSource();
+            click.buffer = noise;
+            const band = context.createBiquadFilter();
+            band.type = 'bandpass';
+            band.frequency.value = 1100;
+            band.Q.value = 1.6;
+            const snap = context.createGain();
+            snap.gain.setValueAtTime(0.0001, at);
+            snap.gain.exponentialRampToValueAtTime(0.3, at + 0.002);
+            snap.gain.exponentialRampToValueAtTime(0.0001, at + 0.04);
+            click.connect(band).connect(snap).connect(output);
+            click.start(at, Math.random() * (noise.duration - 0.1), 0.06);
+        }
+    } else if (kind === 'slam') {
+        // The door yanked shut: a heavy thud and the crack of the latch, and the slam "reverberated through the
+        // neighbourhood": the street's walls give it back, and it dies away slowly.
+        const echo = context.createConvolver();
+        echo.buffer = street(context);
+        const far = context.createBiquadFilter();
+        far.type = 'lowpass';
+        far.frequency.value = 2200;
+        const wet = context.createGain();
+        wet.gain.value = 0.85;
+        echo.connect(far).connect(wet).connect(output);
+        const thump = context.createOscillator();
+        thump.frequency.setValueAtTime(64, now);
+        thump.frequency.exponentialRampToValueAtTime(36, now + 0.4);
+        const thumpLevel = context.createGain();
+        envelope(thumpLevel, 0.95, 0.004, 0.45);
+        thump.connect(thumpLevel);
+        thumpLevel.connect(output);
+        thumpLevel.connect(echo);
+        thump.start(now);
+        thump.stop(now + 0.5);
+        const burst = context.createBufferSource();
+        burst.buffer = noise;
+        const low = context.createBiquadFilter();
+        low.type = 'lowpass';
+        low.frequency.value = 650;
+        const burstLevel = context.createGain();
+        envelope(burstLevel, 1.0, 0.003, 0.32);
+        burst.connect(low).connect(burstLevel);
+        burstLevel.connect(output);
+        burstLevel.connect(echo);
+        burst.start(now, Math.random() * (noise.duration - 0.5), 0.4);
+        const latch = context.createBufferSource();
+        latch.buffer = noise;
+        const crack = context.createBiquadFilter();
+        crack.type = 'bandpass';
+        crack.frequency.value = 1800;
+        crack.Q.value = 2.2;
+        const latchLevel = context.createGain();
+        envelope(latchLevel, 0.4, 0.002, 0.06);
+        latch.connect(crack).connect(latchLevel);
+        latchLevel.connect(output);
+        latchLevel.connect(echo);
+        latch.start(now + 0.01, Math.random() * (noise.duration - 0.2), 0.1);
     } else if (kind === 'chirp') {
         // A hum's "chirp" (creatures.js): two quick bright chips, rising, as a hummingbird's are.
         for (const chip of [0, 0.085]) {
@@ -339,7 +437,7 @@ export function createAudio() {
         },
         /**
          * A touch answered (touch.js): 'tree', 'statue', 'dog', 'door' or 'underside'; or a giver's word (creatures.js):
-         * 'chirp' or 'squur'. Silent unless the sound is on.
+         * 'chirp' or 'squur'; or Cassandra's door (places.js): 'knock', then 'slam'. Silent unless the sound is on.
          */
         answer(kind) {
             if (!on || !context || context.state !== 'running') return;

@@ -109,6 +109,15 @@
       "trial": "hostel"
     },
     {
+      "id": "cassandras-house",
+      "tier": 1,
+      "district": "spires",
+      "label": "Cassandra’s house",
+      "position": [-21.9, 4.0, -2.1],
+      "focus": { "distance": 15, "height": 4.2, "azimuth": 90 },
+      "trial": "cassandra"
+    },
+    {
       "id": "blue-beach",
       "tier": 2,
       "district": "mainland",
