@@ -38,13 +38,16 @@
  *   gives Elm's bio (Elm's ask; allison.js)
  * - inside: where the dust opens something, its inside shows pure black, not empty (a friend's idea, through Elm;
  *   dust.js)
+ * - megascreen: the Mega-Screen's card as a still shot, like the city: an endless red desert, and the screen, as tall as
+ *   a station's tower, wheeling into the shot as INSERT BLUTIX rolls over it (Elm's ask; megascreen.js); off, the card
+ *   is the flat one it was
  */
 
 // =============================================================================
 // Constants
 // =============================================================================
 
-export const TRIALS = Object.freeze(['jetty', 'whisper', 'names', 'hint', 'wraith', 'dust', 'dock', 'hostel', 'hum', 'choice', 'onebutton', 'jettysigns', 'cyclolite', 'creatures', 'allison', 'inside']);
+export const TRIALS = Object.freeze(['jetty', 'whisper', 'names', 'hint', 'wraith', 'dust', 'dock', 'hostel', 'hum', 'choice', 'onebutton', 'jettysigns', 'cyclolite', 'creatures', 'allison', 'inside', 'megascreen']);
 
 // =============================================================================
 // Main Code

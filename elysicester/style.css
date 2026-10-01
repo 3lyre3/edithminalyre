@@ -957,6 +957,20 @@ html[data-choosing] .choice {
     pointer-events: none;
 }
 
+/* The Mega-Screen as a still shot in the desert (a trial: megascreen.js): once its first frame is on the canvas
+ * beneath, the card lets it show through, keeping only its words. */
+.threshold.is-scene {
+    background: none;
+}
+
+.threshold.is-scene .mega-screen {
+    visibility: hidden;
+}
+
+.threshold.is-scene .threshold-prompt {
+    text-shadow: 0 0 14px rgba(24, 4, 4, 0.85), 0 0 3px rgba(24, 4, 4, 0.9);
+}
+
 .threshold[hidden] {
     display: none;
 }
