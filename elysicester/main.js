@@ -30,6 +30,7 @@ import { createCreatures } from './modules/creatures.js';
 import { speak, wantedExtras } from './modules/extras.js';
 import { createHotspots, createPointList } from './modules/hotspots.js';
 import { createInventory } from './modules/inventory.js';
+import { showMegaScreen } from './modules/megascreen.js';
 import { createNames } from './modules/names.js';
 import { WORKS, createReader } from './modules/reader.js';
 import { createSignList, createSignOverlay } from './modules/signs.js';
@@ -157,7 +158,7 @@ function fillPrompt(fragment) {
  * "Explore - Win" brings the Mega-Screen's card up beneath it as it fades (Elm: "the mega screen could show up after
  * the choice page and before the ascii swirl"), and the card's gesture begins the swirl, as it always did.
  */
-function offerChoice(threshold) {
+function offerChoice(threshold, onCard) {
     const choice = byId('choice');
     const explore = byId('choice-explore');
     choice.hidden = false;
@@ -173,6 +174,7 @@ function offerChoice(threshold) {
             choice.hidden = true;
         }, reducedMotion ? 0 : 900);
         threshold.showCard();
+        onCard?.();
     }, { once: true });
 }
 
@@ -249,7 +251,26 @@ async function boot() {
         returning,
         choosing,
     });
-    if (choosing) offerChoice(threshold);
+    // The Mega-Screen as a still shot in the Desert Eternal (a trial: megascreen.js), drawn on the city's canvas while
+    // the card is up, once there's a renderer to draw it with (the card itself, flat, until its first frame is in).
+    let sceneRenderer = null;
+    let sceneStarted = false;
+    const startMegaScreen = () => {
+        if (sceneStarted || !sceneRenderer || !trialOn('megascreen') || root.dataset.threshold !== 'card') return;
+        sceneStarted = true;
+        const card = byId('threshold');
+        showMegaScreen({
+            renderer: sceneRenderer,
+            fit: () => fitRenderer(sceneRenderer, byId('stage')),
+            reducedMotion,
+            showing: () => root.dataset.threshold === 'card',
+            onShown: () => card.classList.add('is-scene'),
+        }).catch((error) => {
+            card.classList.remove('is-scene');
+            console.error('The Mega-Screen could not be drawn:', error);
+        });
+    };
+    if (choosing) offerChoice(threshold, startMegaScreen);
     // Until the city is entered, its reading points wait behind the card.
     const pointsNav = byId('points');
     pointsNav.inert = true;
@@ -465,6 +486,9 @@ async function boot() {
     let building;
     if (hasWebGL2()) {
         renderer = createRenderer(canvas);
+        // (If the card is up already, the Mega-Screen can be drawn now.)
+        sceneRenderer = renderer;
+        startMegaScreen();
         building = createStage({ renderer, canvas, data: { places: placeData, paper, signs: signData }, reducedMotion, debug, onLost: showStill, extras })
             .then(async (built) => {
                 stage = built;
