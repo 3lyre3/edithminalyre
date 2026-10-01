@@ -303,7 +303,7 @@
       "read_on": "https://digital.library.adelaide.edu.au/server/api/core/bitstreams/9cbedc1a-5eac-4ee5-b909-320c83028bba/content#page=60",
       "offset": [0, 0, 0],
       "trial": "hostel",
-      "status": "draft"
+      "status": "approved"
     },
     {
       "id": "nbp-e4-door-in-the-floor-2",
@@ -314,7 +314,7 @@
       "read_on": "https://digital.library.adelaide.edu.au/server/api/core/bitstreams/9cbedc1a-5eac-4ee5-b909-320c83028bba/content#page=61",
       "offset": [2.1, 4.95, 1.26],
       "trial": "hostel",
-      "status": "draft"
+      "status": "approved"
     },
     {
       "id": "nbp-e3-intermaze-2",
