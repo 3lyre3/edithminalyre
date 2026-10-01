@@ -33,6 +33,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadRedirects, servedPath } from './redirects.mjs';
 import { currentStamp, stampsIn } from './stamp-elysicester.mjs';
+import { PLAINLY_PAGE, plainlyHtml } from './plainly-elysicester.mjs';
 
 // =============================================================================
 // Constants
@@ -452,6 +453,10 @@ async function checkPage(files) {
     if (stamps.some((value) => value !== stamp)) {
         fail(`${pagePath}: stamp ${[...new Set(stamps)].join(', ')} is stale (the code is now ${stamp}); run npm run stamp:elysicester`);
     }
+    // The plain page holds exactly the passages the city does (plainly-elysicester.mjs).
+    const plainly = await readFile(path.join(ROOT, PLAINLY_PAGE), 'utf8').catch(() => null);
+    if (plainly === null) fail(`${PLAINLY_PAGE}: missing; run npm run plainly:elysicester`);
+    else if (plainly.replaceAll('\r\n', '\n') !== await plainlyHtml(ROOT)) fail(`${PLAINLY_PAGE}: out of date with the city's passages; run npm run plainly:elysicester`);
     const redirects = await loadRedirects(ROOT);
     const served = servedPath(redirects, `/${DIORAMA_DIR}/v/${stamp}/main.js`);
     if (served !== `/${DIORAMA_DIR}/main.js`) {

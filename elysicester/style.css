@@ -141,7 +141,7 @@ a:focus-visible {
     color: var(--stone);
 }
 
-/* On a narrow screen the book's name and dúrrync stand one above the other, clear of the controls opposite. */
+/* On a narrow screen the corner's words (read plainly, the book's name, dúrrync) stand one above another, clear of the controls opposite. */
 @media (max-width: 560px) {
     .plainly {
         display: flex;
