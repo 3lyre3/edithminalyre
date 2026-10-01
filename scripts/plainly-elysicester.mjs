@@ -6,7 +6,9 @@
  * data/fragments.json), so it holds exactly the passages the city holds, place by place, in the city's order: each
  * as the reading panel shows it (its paragraphs, its italics, the work and section it comes from, and a link to
  * read on from its page), with the place's other links ("also here"); then the whole works. It wears the site's
- * own pages' look (style.css), so it reads as they do; it needs no script.
+ * own pages' look (style.css), so it reads as they do; it needs no script. Its "read on" links stay on the site: the
+ * whole works are hosted among the essays (essays/numbers-by-paint.html, essays/president-oedipus.html), and each link
+ * opens the right one at the passage's page (or words).
  *
  *   npm run plainly:elysicester                  write elysicester/plainly.html
  *   node scripts/plainly-elysicester.mjs --check  say whether it is current (exit 1 if not)
@@ -33,6 +35,10 @@ export const PLAINLY_PAGE = `${DIORAMA_DIR}/plainly.html`;
 const WORKS = { nbp: 'Numbers by Paint', po: 'President Oedipus' };
 const BOOK = 'https://digital.library.adelaide.edu.au/server/api/core/bitstreams/9cbedc1a-5eac-4ee5-b909-320c83028bba/content';
 const OEDIPUS = 'https://overland.org.au/previous-issues/issue-239/feature-president-oedipus-or-the-democratisation-of-schizophrenia/';
+/** The whole works, hosted on the site as plain pages too, among the essays (Elm: "the normal pages should also host
+ * all of Numbers by Paint on one of them and all of President Oedipus on another"): the thesis with page marks #p1 to
+ * #p129, the essay whole. (Paths from this page.) */
+export const WHOLE_WORKS = { [BOOK]: '../essays/numbers-by-paint.html', [OEDIPUS]: '../essays/president-oedipus.html' };
 
 // =============================================================================
 // Main Code
@@ -69,6 +75,17 @@ function readOnWords(url) {
     return page ? `read on from p. ${page}` : 'read on';
 }
 
+/** A passage's "read on" link, kept on the site: the whole work's plain page here, at the same page of the thesis
+ * (#page=60 -> #p60) or at the same words (an Overland text fragment works as well on the copy here). */
+export function readOnHere(url) {
+    const [base, hash = ''] = url.split('#');
+    const page = WHOLE_WORKS[base];
+    if (!page) return url;
+    const pdfPage = /^page=(\d+)$/.exec(hash)?.[1];
+    if (pdfPage) return `${page}#p${pdfPage}`;
+    return hash ? `${page}#${hash}` : page;
+}
+
 /** Whether a link leaves the site (it opens beside the page, as the city's do). */
 function leaves(url) {
     return /^https?:\/\//.test(url);
@@ -93,7 +110,7 @@ export async function plainlyHtml(root = ROOT) {
             lines.push('            <div class="passage">');
             for (const paragraph of fragment.text.split(/\n{2,}/)) lines.push(`                <p>${withItalics(paragraph, fragment.italic ?? [])}</p>`);
             const source = `${WORKS[fragment.work] ?? ''}, ${fragment.source}`;
-            lines.push(`                <p class="passage-source">${escape(source)} · ${link(fragment.read_on, readOnWords(fragment.read_on))}</p>`);
+            lines.push(`                <p class="passage-source">${escape(source)} · ${link(readOnHere(fragment.read_on), readOnWords(fragment.read_on))}</p>`);
             lines.push('            </div>');
         }
         if (place.links?.length) {
@@ -141,7 +158,7 @@ ${sections.join('\n\n')}
 
         <section class="place" id="whole-works">
             <h2>The whole works</h2>
-            <p>${link(BOOK, 'Numbers by Paint')} (the book) · ${link(OEDIPUS, 'President Oedipus')} (Overland) · <a href="../essays.html">essays</a> · <a href="../bio.html">bio</a> · <a href="../cv.html">cv</a></p>
+            <p><a href="${WHOLE_WORKS[BOOK]}"><em>Numbers by Paint</em></a>, the whole thesis · <a href="${WHOLE_WORKS[OEDIPUS]}"><em>President Oedipus</em></a>, the whole essay · <a href="../essays.html">essays</a> · <a href="../bio.html">bio</a> · <a href="../cv.html">cv</a></p>
         </section>
     </main>
 

@@ -63,7 +63,29 @@ function resolveLocalReference(fromFile, rawReference) {
         return null;
     }
     if (!target || target.endsWith('/')) target += 'index.html';
-    return { target, fragment: decodeURIComponent(url.hash.slice(1)), reference };
+    return { target, fragment: decodeURIComponent(url.hash.slice(1)), rawFragment: url.hash.slice(1), reference };
+}
+
+const ENTITIES = { nbsp: ' ', amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", lsquo: '‘', rsquo: '’', ldquo: '“', rdquo: '”', ndash: '–', mdash: '—', hellip: '…', uacute: 'ú', middot: '·' };
+
+/** A page's visible text, flattened (tags gone, entities read, whitespace single), for finding a text fragment's words. */
+function visibleText(html) {
+    return html
+        .replace(/<(script|style)\b[\s\S]*?<\/\1>/gi, ' ')
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCodePoint(parseInt(hex, 16)))
+        .replace(/&#(\d+);/g, (_, decimal) => String.fromCodePoint(Number(decimal)))
+        .replace(/&([a-z]+);/gi, (match, name) => ENTITIES[name.toLowerCase()] ?? match)
+        .replace(/\s+/g, ' ')
+        .toLowerCase();
+}
+
+/** The words a text fragment (#:~:text=[prefix-,]start[,end][,-suffix]) asks the browser to find on the page. */
+function textFragmentWords(rawFragment) {
+    const directives = rawFragment.slice(rawFragment.indexOf(':~:') + 3).split('&').filter((d) => d.startsWith('text='));
+    return directives.flatMap((directive) => directive.slice('text='.length).split(',')
+        .filter((part) => !part.endsWith('-') && !part.startsWith('-'))
+        .map((part) => decodeURIComponent(part).replace(/\s+/g, ' ').toLowerCase()));
 }
 
 const idsByFile = new Map();
@@ -86,6 +108,14 @@ function checkReference(fromFile, rawReference) {
     if (!fileSet.has(resolved.target)) {
         if (intentionalMissingLinks.has(`${fromFile}:${resolved.target}`)) return;
         errors.push(`${fromFile}: ${JSON.stringify(rawReference)} points to missing ${resolved.target}`);
+        return;
+    }
+    if (resolved.fragment.startsWith(':~:') && resolved.target.endsWith('.html')) {
+        // A text fragment names no id: the browser finds its words on the page, so the words must be there.
+        const text = visibleText(textByFile.get(resolved.target) ?? '');
+        for (const words of textFragmentWords(resolved.rawFragment)) {
+            if (!text.includes(words)) errors.push(`${fromFile}: ${JSON.stringify(rawReference)} looks for words not on ${resolved.target}: ${JSON.stringify(words)}`);
+        }
         return;
     }
     if (resolved.fragment && resolved.target.endsWith('.html')) {
