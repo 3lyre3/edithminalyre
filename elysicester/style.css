@@ -509,6 +509,198 @@ a:focus-visible {
     color: var(--honey);
 }
 
+/* One option at the top of the screen (a trial: main.js), in Elm's words: "zoom out", "zoom out", "back". */
+.one-button {
+    position: fixed;
+    top: max(12px, env(safe-area-inset-top));
+    left: 50%;
+    z-index: 50;
+    transform: translateX(-50%);
+    padding: 4px 14px;
+    font-family: var(--font-display);
+    font-size: 19px;
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+    color: var(--amber);
+    background: none;
+    border: 0;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.22em;
+    text-shadow: 0 0 3px rgba(4, 3, 8, 1), 0 0 8px rgba(4, 3, 8, 0.9), 0 0 2px rgba(4, 3, 8, 1);
+    cursor: pointer;
+}
+
+.one-button::before {
+    content: '';
+    position: absolute;
+    inset: -10px -24px;
+    z-index: -1;
+    background: radial-gradient(closest-side, rgba(4, 3, 8, 0.62), rgba(4, 3, 8, 0.4) 62%, transparent);
+    pointer-events: none;
+}
+
+.one-button:hover,
+.one-button:focus-visible {
+    color: var(--honey);
+}
+
+.one-button[hidden] {
+    display: none;
+}
+
+/*
+ * With the one option (a trial), the rest stands aside: the corner's words go with the first screen (the card),
+ * the controls stay for keyboards (Tab brings them into view, as a skip link comes), and sound has a quiet corner
+ * of its own, low on the left.
+ */
+html[data-onebutton]:not([data-threshold="card"]) .plainly {
+    display: none;
+}
+
+html[data-onebutton] .controls:not(:focus-within) {
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+html[data-onebutton] .controls:not(:focus-within)::before {
+    display: none;
+}
+
+.control.sound-corner {
+    position: fixed;
+    left: max(14px, env(safe-area-inset-left));
+    bottom: max(10px, env(safe-area-inset-bottom));
+    z-index: 50;
+    font-size: 15px;
+    color: var(--bone);
+}
+
+.control.sound-corner:hover,
+.control.sound-corner:focus-visible,
+.control.sound-corner[aria-pressed="true"] {
+    color: var(--honey);
+}
+
+/*
+ * Out of the Intermaze, a choice of two sides (a trial: main.js), in Elm's words: "Explore - Win" on one side, "Stay -
+ * Read" on the other. Each side is the whole of its half of the screen: the city's warmth behind the first, the page's
+ * paler light behind the second, a gold hairline between them. (On a screen held upright they stand one above the
+ * other.)
+ */
+.choice {
+    position: fixed;
+    inset: 0;
+    z-index: 47;
+    display: flex;
+    background: #040305;
+    opacity: 0;
+    transition: opacity 0.9s ease;
+}
+
+.choice.is-shown {
+    opacity: 1;
+}
+
+.choice[hidden] {
+    display: none;
+}
+
+.choice-side {
+    position: relative;
+    flex: 1 1 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 24px;
+    font: inherit;
+    color: var(--ivory);
+    text-decoration: none;
+    border: 0;
+    cursor: pointer;
+    transition: background 0.6s ease;
+}
+
+.choice-explore {
+    background: radial-gradient(ellipse 80% 70% at 50% 58%, rgba(216, 152, 64, 0.16), transparent 70%);
+}
+
+.choice-explore:hover,
+.choice-explore:focus-visible {
+    background: radial-gradient(ellipse 80% 70% at 50% 58%, rgba(216, 152, 64, 0.3), transparent 72%);
+}
+
+.choice-read {
+    background: radial-gradient(ellipse 80% 70% at 50% 58%, rgba(200, 200, 208, 0.08), transparent 70%);
+}
+
+.choice-read:hover,
+.choice-read:focus-visible {
+    background: radial-gradient(ellipse 80% 70% at 50% 58%, rgba(200, 200, 208, 0.16), transparent 72%);
+}
+
+.choice-read::before {
+    content: '';
+    position: absolute;
+    top: 18%;
+    bottom: 18%;
+    left: 0;
+    width: 1px;
+    background: linear-gradient(transparent, rgba(216, 152, 64, 0.55), transparent);
+}
+
+.choice-words {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(30px, 5.4vw, 68px);
+    line-height: 1.15;
+    letter-spacing: 0.06em;
+    text-align: center;
+    color: #f1e6cf;
+    text-shadow: 0 0 18px rgba(216, 152, 64, 0.35);
+}
+
+.choice-read .choice-words {
+    color: #e6e6ee;
+    text-shadow: 0 0 18px rgba(200, 200, 230, 0.25);
+}
+
+.choice-side:focus-visible {
+    outline: none;
+}
+
+.choice-side:focus-visible .choice-words {
+    outline: 1px solid var(--honey);
+    outline-offset: 10px;
+}
+
+@media (max-aspect-ratio: 4/5) {
+    .choice {
+        flex-direction: column;
+    }
+
+    .choice-read::before {
+        top: 0;
+        bottom: auto;
+        left: 18%;
+        right: 18%;
+        width: auto;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(216, 152, 64, 0.55), transparent);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .choice,
+    .choice-side {
+        transition: none;
+    }
+}
+
 /*
  * Walking as the shadow (walk.js): where a thumb comes down and drags, a soft
  * ring appears under it, and a knob that follows it, as in Messenger. The ring

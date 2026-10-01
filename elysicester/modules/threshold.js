@@ -257,8 +257,12 @@ function glyphAtlas() {
  * @param {boolean} [options.returning] - back within the same visit: no card and
  *   no flight; begun at once, with no gesture (so any sound waits for the
  *   visitor's first touch); see comeBack
+ * @param {boolean} [options.choosing] - the way in ends at a choice (a trial,
+ *   main.js: "Explore - Win" or "Stay - Read"), so the flight leaves the
+ *   threshold at 'choice' rather than 'done'; main.js marks it done once the
+ *   visitor has chosen to explore
  */
-export function createThreshold({ root, card, begin, voice, onBegin, returning = false }) {
+export function createThreshold({ root, card, begin, voice, onBegin, returning = false, choosing = false }) {
     root.dataset.threshold = returning ? 'returning' : 'card';
     let resolveBegun;
     const begun = new Promise((resolve) => {
@@ -309,7 +313,8 @@ export function createThreshold({ root, card, begin, voice, onBegin, returning =
     const leave = () => {
         card.hidden = true;
         voice.textContent = '';
-        root.dataset.threshold = 'done';
+        // (Coming back within the same visit there's no choice: the visitor goes straight into the city.)
+        root.dataset.threshold = choosing && !returning ? 'choice' : 'done';
     };
 
     return {

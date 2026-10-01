@@ -225,6 +225,17 @@ const HUM_PHI_FAR = 0.85;
 const HUM_SUN = (45 * Math.PI) / 180;
 /** What taking it is called: the hum's (Elm: "i think just "fly" would work"), or the shadow's. */
 const TAKE_WORDS = HUM ? 'fly' : 'walk as the shadow';
+/**
+ * With one option at the top of the screen (a trial, trials.js: "zoom out, zoom out, back"; main.js), taking the hum
+ * again brings the camera back in close over it, so the option's round begins again from its first "zoom out".
+ */
+const ONE_BUTTON = trialOn('onebutton');
+/**
+ * Beginning on the Cyclolite (a trial, places.js), the camera stands back this far at first, so the little boat, its
+ * opened bowl of light, the hum and the wraith's shadow on its deck are in view whole, the jetty and its signs ahead.
+ */
+const CYCLOLITE = trialOn('cyclolite');
+const ARRIVE_FOLLOW = CYCLOLITE ? 6.2 : FOLLOW_START;
 
 /**
  * The walker's shadow map: its size in texels, and how much of the light's view it covers (world units). (The
@@ -330,7 +341,8 @@ function buildBody() {
  * Returns floor(x, z): a deck's height there, or null where there's only water.
  */
 function waterfrontDecks(meshes) {
-    const region = { x0: 4, x1: 25, z0: -34, z1: 34 };
+    // (Out to x 27: the Cyclolite, a trial, is moored off the jetty's end, its deck reaching to about 26.)
+    const region = { x0: 4, x1: 27, z0: -34, z1: 34 };
     const cell = 0.2;
     const width = Math.round((region.x1 - region.x0) / cell);
     const depth = Math.round((region.z1 - region.z0) / cell);
@@ -1288,6 +1300,15 @@ export function createWalk({ light, reducedMotion, gradientMap = null }) {
             followDistance = MathUtils.clamp(followDistance * factor, FOLLOW_NEAR, FOLLOW_FAR);
         },
 
+        /** Walking, set how far back the camera stands (it eases there), from close over the shadow to FOLLOW_FAR. */
+        zoomTo(distance) {
+            if (!state.walking) return;
+            followDistance = MathUtils.clamp(distance, FOLLOW_NEAR, FOLLOW_FAR);
+        },
+
+        /** How far back the walking camera may draw (the one button's first "zoom out" goes there: main.js). */
+        followFar: FOLLOW_FAR,
+
         /** How far back the walking camera stands (for the local checks). */
         get followDistance() {
             return followDistance;
@@ -1592,6 +1613,7 @@ export function createWalk({ light, reducedMotion, gradientMap = null }) {
                 }
             }
             state.walking = true;
+            if (ONE_BUTTON) followDistance = FOLLOW_START;
             // (Taken, the banshee gives a little lift of delight, and so does the hum.)
             justTaken = true;
             humNews.taken = true;
@@ -1629,6 +1651,13 @@ export function createWalk({ light, reducedMotion, gradientMap = null }) {
         arrive() {
             walk.take();
             if (!state.walking) return false;
+            followDistance = ARRIVE_FOLLOW;
+            // (On the Cyclolite, the hum begins resting on its deck: Elm, "start the PC's hum out on" it.)
+            if (CYCLOLITE && hum) {
+                hum.perch(true);
+                hum.reset();
+                hum.fly(0, state.position);
+            }
             follow(0);
             rig.now.target.copy(rig.goal.target);
             rig.now.radius = rig.goal.radius;
@@ -1652,6 +1681,12 @@ export function createWalk({ light, reducedMotion, gradientMap = null }) {
             rise = 0;
             settling = 0;
             if (!state.walking) walk.take();
+            // (Back on the Cyclolite, it rests on the deck again until it sets off.)
+            if (CYCLOLITE && hum) {
+                hum.perch(true);
+                hum.reset();
+                hum.fly(0, state.position);
+            }
             announce('Back at the end of the jetty.');
         },
 
@@ -1744,6 +1779,8 @@ export function createWalk({ light, reducedMotion, gradientMap = null }) {
             }
             const steps = Math.max(1, Math.ceil(walkDt / 0.05 - 1e-6));
             for (let step = 0; step < steps; step += 1) stepWalker(walkDt / steps);
+            // (Resting on the Cyclolite, the hum lifts off into its flight the moment it first sets off.)
+            if (hum?.perched && velocity.lengthSq() > 0.02) hum.perch(false);
             // (The hum goes with the one beneath it, rising and settling with their floor, before the camera looks.)
             hum?.fly(walkDt, state.position);
             follow(dt);

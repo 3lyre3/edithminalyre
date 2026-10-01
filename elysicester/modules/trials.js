@@ -19,13 +19,22 @@
  *   places.js buildHostel, silhouette.js)
  * - hum: you fly as one of the bronze hums, low and in the middle of the view, over the benches, kerbs and edges
  *   that caught the walker, the wraith's shadow going beneath it as if it were its own (Elm's idea; hum.js, walk.js)
+ * - choice: out of the Intermaze, a screen of two sides, "Explore - Win" and "Stay - Read" (Elm's ask, so the way in
+ *   is less overwhelming): the first lifts the city out of the dark, the second goes to the city's text (main.js)
+ * - onebutton: one option at the top of the screen, "zoom out", "zoom out", "back" (Elm's ask): back to the far
+ *   follow, out to the whole city, then back to the text; the other controls stand aside (main.js)
+ * - jettysigns: two signs along the jetty, "Click the hum to let go. Click again to keep going." (the word "hum" a
+ *   tiny hummingbird) and "Pinch to control the camera", with arrows pointing in and out (Elm's words; guides.js)
+ * - cyclolite: the hum begins on a Cyclolite, a little golden disc-boat floating off the end of the jetty, its roof
+ *   of hard yellow light open and spread wide so the bird and its shadow show in full (Elm's idea, after Numbers by
+ *   Paint p. 94; places.js buildCyclolite)
  */
 
 // =============================================================================
 // Constants
 // =============================================================================
 
-export const TRIALS = Object.freeze(['jetty', 'whisper', 'names', 'hint', 'wraith', 'dust', 'dock', 'hostel', 'hum']);
+export const TRIALS = Object.freeze(['jetty', 'whisper', 'names', 'hint', 'wraith', 'dust', 'dock', 'hostel', 'hum', 'choice', 'onebutton', 'jettysigns', 'cyclolite']);
 
 // =============================================================================
 // Main Code
