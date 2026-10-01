@@ -188,8 +188,9 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
     flutter(materials.turquoise, wind);
     flutter(materials.sign, wind);
     flutter(materials.weed, wind);
-    // Where the camera passes, the city comes apart into gold dust (a trial: ?dust=off).
-    const dust = trialOn('dust') ? createDust({ reducedMotion }) : null;
+    // Where the camera passes, the city comes apart into gold dust (a trial: ?dust=off), and what comes apart shows
+    // its inside pure black, not empty (a trial too: ?inside=off).
+    const dust = trialOn('dust') ? createDust({ reducedMotion, inside: trialOn('inside') }) : null;
     if (dust) for (const key of DUST_DISSOLVES) dust.dissolve(materials[key]);
     const buckets = new Buckets();
     await pause();
@@ -383,7 +384,10 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         }
         walk?.render(renderer, elapsed);
         if (bridgeDust) bridgeDust.visible = Boolean(walk?.state.walking) || bridgeReach.containsPoint(camera.position);
+        // (Walking, what the dust opens shows its inside black: dust.js. Only while the city is drawn.)
+        dust?.showInsides(Boolean(walk?.state.walking));
         ink.render(scene, camera, elapsed, rig.home.radius / Math.max(rig.now.radius, 1e-3));
+        dust?.showInsides(false);
 
         const { calls, triangles, points, lines } = renderer.info.render;
         lastInfo = { calls, triangles, points, lines };
@@ -414,6 +418,27 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         walk,
         /** What a touch may find in the city, and the words each opens (places.js; touch.js reads it). */
         touch: places.touch,
+        /** The city's toon steps, for what's drawn later in its light (creatures.js). */
+        gradientMap: materials.gold.gradientMap,
+        /** The way to the light the shadows fall from: the walk's (flying as a hum, its higher sun), else the key light. */
+        shadowLight: walk?.light ?? KEY_DIRECTION.clone(),
+        /**
+         * Take in what's built after the city (the givers: creatures.js): into the scene, its materials taught to
+         * come apart in the dust as the city's do, its textures sent to the screen and its materials compiled before
+         * it's first seen (so the city isn't called ready while any of it is still being drawn: the swirl's last
+         * frames, and the city's first, wait for nothing).
+         * @param {{ objects: import('three').Object3D[], materials: import('three').Material[], textures?: import('three').Texture[] }} more
+         */
+        async adopt({ objects, materials: own, textures = [] }) {
+            for (const object of objects) scene.add(object);
+            // (Not buildings: their insides aren't shown.)
+            if (dust) for (const material of own) dust.dissolve(material, { solid: false });
+            for (const texture of textures) renderer.initTexture(texture);
+            renderer.setRenderTarget(ink.target);
+            if (renderer.extensions.has('KHR_parallel_shader_compile')) await renderer.compileAsync(scene, camera);
+            else renderer.compile(scene, camera);
+            renderer.setRenderTarget(null);
+        },
         start() {
             if (running) return;
             running = true;
@@ -438,6 +463,6 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         },
     };
 
-    if (debug) Object.assign(window.elysicesterDebug ??= {}, { info: () => stage.info(), rig, stage, solids, houses: places.houses, bridges: places.bridges, dressing: places.dressing, pixelRatio: () => renderer.getPixelRatio(), hollows: hollowMap, walk });
+    if (debug) Object.assign(window.elysicesterDebug ??= {}, { info: () => stage.info(), rig, stage, solids, houses: places.houses, bridges: places.bridges, dressing: places.dressing, pixelRatio: () => renderer.getPixelRatio(), hollows: hollowMap, walk, dust });
     return stage;
 }

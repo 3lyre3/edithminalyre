@@ -19,22 +19,32 @@
  *   places.js buildHostel, silhouette.js)
  * - hum: you fly as one of the bronze hums, low and in the middle of the view, over the benches, kerbs and edges
  *   that caught the walker, the wraith's shadow going beneath it as if it were its own (Elm's idea; hum.js, walk.js)
- * - choice: out of the Intermaze, a screen of two sides, "Explore - Win" and "Stay - Read" (Elm's ask, so the way in
- *   is less overwhelming): the first lifts the city out of the dark, the second goes to the city's text (main.js)
+ * - choice: before anything else, a screen of two sides, "Explore - Win" and "Stay - Read" (Elm's asks, so the way in
+ *   is less overwhelming, and nothing comes before it): the first brings the Mega-Screen's card, then the Intermaze
+ *   and the way into the city; the second goes to the texts, President Oedipus and Numbers by Paint on one page
+ *   (read.html; main.js, threshold.js)
  * - onebutton: one option at the top of the screen, "zoom out", "zoom out", "back" (Elm's ask): back to the far
- *   follow, out to the whole city, then back to the text; the other controls stand aside (main.js)
+ *   follow, out to the whole city, then back to the texts; the other controls stand aside (main.js)
  * - jettysigns: two signs along the jetty, "Click the hum to let go. Click again to keep going." (the word "hum" a
  *   tiny hummingbird) and "Pinch to control the camera", with arrows pointing in and out (Elm's words; guides.js)
  * - cyclolite: the hum begins on a Cyclolite, a little golden disc-boat floating off the end of the jetty, its roof
  *   of hard yellow light open and spread wide so the bird and its shadow show in full (Elm's idea, after Numbers by
  *   Paint p. 94; places.js buildCyclolite)
+ * - creatures: the passages of Numbers by Paint are given by pugs (human faces, the bodies of tiny bulls; they say
+ *   "squur") and hums (they say "chirp"), each with a shade of its own beneath it; a pug stands in front of a board
+ *   that paints itself in when it gives; what's given is gathered, and all of it gathered is the win, written out by
+ *   hand to take away (Elm's asks; creatures.js, inventory.js); off, the passages are points of light, as before
+ * - allison: Allison the Sirenian, by the sea-wall's old plaque, trying to read it ("It's all Latin"); a tap on him
+ *   gives Elm's bio (Elm's ask; allison.js)
+ * - inside: where the dust opens something, its inside shows pure black, not empty (a friend's idea, through Elm;
+ *   dust.js)
  */
 
 // =============================================================================
 // Constants
 // =============================================================================
 
-export const TRIALS = Object.freeze(['jetty', 'whisper', 'names', 'hint', 'wraith', 'dust', 'dock', 'hostel', 'hum', 'choice', 'onebutton', 'jettysigns', 'cyclolite']);
+export const TRIALS = Object.freeze(['jetty', 'whisper', 'names', 'hint', 'wraith', 'dust', 'dock', 'hostel', 'hum', 'choice', 'onebutton', 'jettysigns', 'cyclolite', 'creatures', 'allison', 'inside']);
 
 // =============================================================================
 // Main Code

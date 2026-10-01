@@ -35,10 +35,12 @@
  * desktop pass drives the camera hard at three places, tilted all the way
  * down, as close as it comes, round and round, and it must keep clear of
  * every surface.
- * Out of the Intermaze comes the choice (a trial): every first visit must find
- * it worded as Elm worded it ("Explore - Win", "Stay - Read"), "Stay - Read"
- * leading to the city's text, focus on "Explore - Win"; each pass chooses to
- * explore the way it began (a click, a tap or a key), and the choice must go.
+ * The choice comes first, before anything else (a trial): every first visit
+ * must find it worded as Elm worded it ("Explore - Win", "Stay - Read"), "Stay -
+ * Read" leading to the texts (read.html), focus on "Explore - Win", the card
+ * not yet shown; each pass chooses to explore the way it begins (a click, a tap
+ * or a key), the choice must go, and the Mega-Screen's card must follow, its way
+ * in holding the focus, before the Intermaze.
  * The visit begins as the hum on the Cyclolite at the jetty's end (the dock and
  * cyclolite trials), so the passes above run with ?dock=off, from the whole
  * city, as they were written; and the desktop, mobile and reduced passes then
@@ -46,7 +48,7 @@
  * hum perched there and the camera close behind it, the jetty's signs standing,
  * and come back there on a reload; and the one option at the top of the screen
  * must go "zoom out" (drawn back, still flying), "zoom out" (let go, out to the
- * whole city), then "back", to the city's text.
+ * whole city), then "back", to the texts.
  * Before the passes, every outside "read on" address is asked whether it
  * answers. Headless frame rates mean nothing; Elm's phone judges smoothness.
  *
@@ -102,7 +104,7 @@ const MIME = {
  * toggle round; soundOn: arrive with "sound on" remembered from a past visit.
  */
 const PASSES = {
-    desktop: { viewport: { width: 1280, height: 800 }, keyboard: true, begin: 'click', then: 'watch', expect: 'flight', sound: true, camera: true, dock: true },
+    desktop: { viewport: { width: 1280, height: 800 }, keyboard: true, begin: 'click', then: 'watch', expect: 'flight', sound: true, camera: true, dock: true, creatures: true },
     mobile: { viewport: { width: 390, height: 844 }, deviceScaleFactor: 3, isMobile: true, hasTouch: true, begin: 'tap', then: 'skip', expect: 'flight', dock: true },
     reduced: { viewport: { width: 1280, height: 800 }, reducedMotion: 'reduce', checkStillness: true, keyboard: true, begin: 'key', expect: 'crossfade', sound: true, soundOn: true, dock: true },
     nogl: { viewport: { width: 1280, height: 800 }, noWebGL: true, keyboard: true, begin: 'click', expect: 'crossfade' },
@@ -236,10 +238,11 @@ async function soundState(page, want) {
 }
 
 /**
- * Cross the threshold as a visitor would: wait for the card (screenshot it),
- * begin (click, tap or a key), then watch the flight, or skip it with a tap or
- * Esc, and wait until the city (or its still) has arrived. Returns what the
- * threshold did, with timings in page milliseconds.
+ * Cross the threshold as a visitor would: choose to explore (where the choice
+ * is on), wait for the card (screenshot it), begin (click, tap or a key), then
+ * watch the flight, or skip it with a tap or Esc, and wait until the city (or
+ * its still) has arrived. Returns what the threshold did, with timings in page
+ * milliseconds.
  */
 /** Screenshot the flight while one of E's lines is fully surfaced. */
 async function shotWhenSpoken(page, line, file) {
@@ -252,11 +255,47 @@ async function shotWhenSpoken(page, line, file) {
 
 async function enter(page, context, pass, { begin, then = 'watch', shots = null, voiceLines = null }) {
     const lines = voiceLines?.length ?? null;
-    await page.waitForFunction(() => document.documentElement.dataset.threshold === 'card', null, { timeout: LOAD_TIMEOUT });
+    const { width, height } = pass.viewport;
+    // The choice first (a trial, trials.js), unless the address turned it off, and nothing before it: both sides as Elm
+    // worded them, "Stay - Read" leading to the texts (and answering), focus on "Explore - Win", the card not yet
+    // shown; explore is chosen the way the visitor begins (a click, a tap, or a key), and the Mega-Screen's card
+    // follows it, its way in holding the focus.
+    const expectChoice = await page.evaluate(() => !/[?&](choice|trials)=off\b/.test(window.location.search));
+    await page.waitForFunction(() => ['choice', 'card'].includes(document.documentElement.dataset.threshold), null, { timeout: LOAD_TIMEOUT });
     await page.evaluate(() => document.fonts.ready.then(() => undefined));
+    let choice = null;
+    if (await page.evaluate(() => document.documentElement.dataset.threshold === 'choice')) {
+        choice = await page.evaluate(() => ({
+            explore: document.getElementById('choice-explore').textContent.trim(),
+            read: document.getElementById('choice-read').textContent.trim(),
+            readTo: document.getElementById('choice-read').getAttribute('href'),
+            focus: document.activeElement?.id || null,
+            cardShown: getComputedStyle(document.getElementById('threshold')).display !== 'none',
+            pointsInert: document.getElementById('points').inert,
+        }));
+        choice.readAnswers = await fetch(new URL(choice.readTo, page.url())).then((response) => response.status, (error) => `error: ${error.message}`);
+        if (shots) {
+            await page.waitForTimeout(1200);
+            await page.screenshot({ path: `${shots}-choice.png` });
+        }
+        if (begin === 'tap') {
+            const box = await page.locator('#choice-explore').boundingBox();
+            await touch(context, page, [{ x: box.x + box.width / 2, y: box.y + box.height / 2 }]);
+        } else if (begin === 'key') {
+            await page.keyboard.press('Enter');
+        } else {
+            await page.click('#choice-explore');
+        }
+        await page.waitForFunction(() => document.documentElement.dataset.threshold === 'card', null, { timeout: 10_000 }).catch(() => {});
+        // (The choice fades over the card, then is hidden.)
+        await page.waitForFunction(() => document.getElementById('choice').hidden, null, { timeout: 5000 }).catch(() => {});
+    }
+    await page.waitForFunction(() => document.documentElement.dataset.threshold === 'card', null, { timeout: LOAD_TIMEOUT });
     const card = await page.evaluate(() => ({
         prompt: document.getElementById('threshold-prompt').innerHTML,
         pointsInert: document.getElementById('points').inert,
+        focus: document.activeElement?.id || null,
+        shown: getComputedStyle(document.getElementById('threshold')).display !== 'none',
     }));
     card.sound = await soundReading(page);
     if (shots) {
@@ -264,7 +303,6 @@ async function enter(page, context, pass, { begin, then = 'watch', shots = null,
         await page.screenshot({ path: `${shots}-card.png` });
     }
 
-    const { width, height } = pass.viewport;
     if (begin === 'tap') await touch(context, page, [{ x: width / 2, y: height / 2 }]);
     else if (begin === 'key') await page.keyboard.press('Enter');
     else await page.click('#threshold-begin');
@@ -287,37 +325,8 @@ async function enter(page, context, pass, { begin, then = 'watch', shots = null,
             }
         }
     }
-    // Out of the Intermaze, the choice (a trial, trials.js), unless the address turned it off: both sides as Elm worded
-    // them, "Stay - Read" leading to the city's text (and answering), focus on "Explore - Win"; explore is chosen the
-    // way the visitor began (a click, a tap, or a key).
-    const expectChoice = await page.evaluate(() => !/[?&](choice|trials)=off\b/.test(window.location.search));
-    await page.waitForFunction(() => ['choice', 'done'].includes(document.documentElement.dataset.threshold), null, { timeout: LOAD_TIMEOUT });
-    let choice = null;
-    if (await page.evaluate(() => document.documentElement.dataset.threshold === 'choice')) {
-        choice = await page.evaluate(() => ({
-            explore: document.getElementById('choice-explore').textContent.trim(),
-            read: document.getElementById('choice-read').textContent.trim(),
-            readTo: document.getElementById('choice-read').getAttribute('href'),
-            focus: document.activeElement?.id || null,
-        }));
-        choice.readAnswers = await fetch(new URL(choice.readTo, page.url())).then((response) => response.status, (error) => `error: ${error.message}`);
-        if (shots) {
-            await page.waitForTimeout(1200);
-            await page.screenshot({ path: `${shots}-choice.png` });
-        }
-        if (begin === 'tap') {
-            const box = await page.locator('#choice-explore').boundingBox();
-            await touch(context, page, [{ x: box.x + box.width / 2, y: box.y + box.height / 2 }]);
-        } else if (begin === 'key') {
-            await page.keyboard.press('Enter');
-        } else {
-            await page.click('#choice-explore');
-        }
-    }
     await page.waitForFunction(() => document.documentElement.dataset.threshold === 'done', null, { timeout: LOAD_TIMEOUT });
     const mode = await settle(page);
-    // (The choice fades, then is hidden.)
-    if (choice) await page.waitForFunction(() => document.getElementById('choice').hidden, null, { timeout: 5000 }).catch(() => {});
     const after = await page.evaluate(() => ({
         log: window.__elysicesterLog ?? [],
         passage: window.elysicesterDebug?.threshold ?? null,
@@ -330,8 +339,8 @@ async function enter(page, context, pass, { begin, then = 'watch', shots = null,
         veilDark: document.getElementById('veil').classList.contains('is-dark'),
     }));
     const sequence = after.log.filter((entry) => entry.name === 'data-threshold').map((entry) => entry.value);
-    // Where the passage lands: the choice, where there is one, else the city.
-    const landedAt = after.log.find((entry) => entry.name === 'data-threshold' && ['choice', 'done'].includes(entry.value))?.at ?? null;
+    // Where the passage lands: the city.
+    const landedAt = after.log.find((entry) => entry.name === 'data-threshold' && entry.value === 'done')?.at ?? null;
     const result = {
         mode,
         sequence: sequence.join(' > '),
@@ -350,15 +359,19 @@ async function enter(page, context, pass, { begin, then = 'watch', shots = null,
         veilDark: after.veilDark,
     };
     const problems = [];
-    if (result.sequence !== `card > ${pass.expect}${expectChoice ? ' > choice' : ''} > done`) problems.push(`sequence was ${result.sequence}`);
+    if (result.sequence !== `${expectChoice ? 'choice > ' : ''}card > ${pass.expect} > done`) problems.push(`sequence was ${result.sequence}`);
     if (expectChoice && !choice) problems.push('the choice did not show');
     if (choice) {
         if (choice.explore !== 'Explore - Win') problems.push(`the choice's explore side read ${JSON.stringify(choice.explore)}`);
         if (choice.read !== 'Stay - Read') problems.push(`the choice's read side read ${JSON.stringify(choice.read)}`);
-        if (choice.readTo !== 'plainly.html') problems.push(`"Stay - Read" led to ${choice.readTo}`);
+        if (choice.readTo !== 'read.html') problems.push(`"Stay - Read" led to ${choice.readTo}`);
         if (choice.readAnswers !== 200) problems.push(`"Stay - Read" answered ${choice.readAnswers}`);
         if (choice.focus !== 'choice-explore') problems.push(`focus on the choice was on ${choice.focus}`);
+        if (choice.cardShown) problems.push('the card showed before the choice was made');
+        if (!choice.pointsInert) problems.push('the points were reachable behind the choice');
         if (!after.choiceHidden) problems.push('the choice is still there');
+        if (!card.shown) problems.push('the card did not follow "Explore - Win"');
+        if (card.focus !== 'threshold-begin') problems.push(`focus on the card was on ${card.focus}`);
     }
     if (pass.expect === 'crossfade' && after.passage?.frames !== 0) problems.push('the tunnel drew frames under a crossfade');
     if (pass.expect === 'flight' && !(after.passage?.frames > 0)) problems.push('no flight frames');
@@ -498,7 +511,7 @@ async function drag(page, context, isTouch, from, to) {
 
 async function hideChrome(page) {
     // The page lays the site's grain over the still as over the scene, so the still itself is shot without it.
-    await page.addStyleTag({ content: '.plainly, .debug-readout, .controls, .one-button, .sound-corner, .choice, .threshold-voice, .veil, .point-label, .sign-label, .place-names, .place-name, .whisper, .grain { visibility: hidden !important; }' });
+    await page.addStyleTag({ content: '.plainly, .debug-readout, .controls, .one-button, .inventory-toggle, .sound-corner, .choice, .threshold-voice, .veil, .point-label, .sign-label, .place-names, .place-name, .whisper, .grain { visibility: hidden !important; }' });
 }
 
 /** Encode a PNG as a WebP of the given size, using the browser's own encoder. */
@@ -859,7 +872,7 @@ async function checkReadOn() {
  * on the Cyclolite (past the jetty's end, on its deck), the hum perched there, the camera close behind it, and the
  * jetty's signs standing; a reload (within the visit) must come back there; and the one option at the top of the
  * screen must go "zoom out" (the camera drawn back as far as it follows, still flying), "zoom out" (letting go, out to
- * the whole city, where it says "back"), and "back", to the city's text. Its own browser, as a first visit.
+ * the whole city, where it says "back"), and "back", to the texts (read.html). Its own browser, as a first visit.
  */
 async function dockRound(chromium, pass, shots) {
     const { browser, context, page, messages, failures } = await openPass(chromium, pass);
@@ -929,13 +942,168 @@ async function dockRound(chromium, pass, shots) {
         if (!result.whole.atHome) problems.push('the second "zoom out" did not draw back to the whole city');
         if (result.whole.one !== 'back') problems.push(`at the whole city the option says ${JSON.stringify(result.whole.one)}, not "back"`);
         await page.screenshot({ path: `${shots}-dock-whole.png` });
-        // ... and "back" goes to the city's text.
+        // ... and "back" goes to the texts.
         await Promise.all([
-            page.waitForURL(/\/elysicester\/plainly\.html$/, { timeout: 15_000 }).catch(() => {}),
+            page.waitForURL(/\/elysicester\/read\.html$/, { timeout: 15_000 }).catch(() => {}),
             page.click('#one-button'),
         ]);
         result.back = new URL(page.url()).pathname;
-        if (result.back !== '/elysicester/plainly.html') problems.push(`"back" went to ${result.back}`);
+        if (result.back !== '/elysicester/read.html') problems.push(`"back" went to ${result.back}`);
+    } catch (error) {
+        problems.push(`the round broke off: ${error.message.split('\n')[0]}`);
+    } finally {
+        await browser.close();
+    }
+    for (const line of [...messages, ...failures]) problems.push(line);
+    return { ...result, problems, ok: problems.length === 0 };
+}
+
+/**
+ * The givers (creatures.js), Allison (allison.js) and the win (inventory.js), on trial: every passage of Numbers by
+ * Paint has a giver (a pug or a hum) and no other passage does; a pug says "squur" and a hum "chirp" where a place's
+ * name would be; Allison says his line (Elm's words) and gives the bio, in English, from the site's bio page; the lost
+ * pages are counted (data/lost-pages.json: Numbers by Paint's from the givers, President Oedipus's from its points of
+ * light), each found one in the inventory leading to its mark in the texts; with all but the last gathered (remembered
+ * from an earlier visit), the last one given brings the win, once its passage is closed, and the win writes the whole
+ * of it by hand (Elm's engine) as a page to take away, which must hold every lost page. Its own browser, as a
+ * returning reader.
+ */
+async function creaturesRound(chromium, pass, outDir, name) {
+    const { browser, context, page, messages, failures } = await openPass(chromium, pass);
+    const problems = [];
+    const result = {};
+    try {
+        const data = JSON.parse(await readFile(path.join(ROOT, 'elysicester', 'data', 'creatures.json'), 'utf8'));
+        const pieces = JSON.parse(await readFile(path.join(ROOT, 'elysicester', 'data', 'lost-pages.json'), 'utf8')).lost;
+        const texts = await readFile(path.join(ROOT, 'elysicester', 'read.html'), 'utf8');
+        const last = pieces[pieces.length - 1];
+        // Every piece but the last gathered on an earlier visit (remembered on this origin before the city loads).
+        await page.goto(`${origin}/elysicester/data/places.json`);
+        await page.evaluate((seen) => window.localStorage.setItem('elysicester:read', JSON.stringify(seen)), pieces.slice(0, -1));
+        await page.goto(`${origin}/elysicester/?debug=1&dock=off`, { waitUntil: 'load' });
+        const entered = await enter(page, context, pass, { begin: pass.begin, then: 'skip' });
+        for (const line of entered.problems) problems.push(`threshold: ${line}`);
+        result.city = await page.evaluate(() => {
+            const { creatures, allison, fragments, stage } = window.elysicesterDebug;
+            const count = (name) => stage.scene.getObjectByName(name)?.count ?? null;
+            const toggle = document.getElementById('inventory-toggle');
+            return {
+                built: Boolean(creatures),
+                pugs: count('pugs'),
+                hums: count('giver-hums'),
+                shades: stage.scene.getObjectByName('giver-shades')?.geometry.attributes.position.count ?? 0,
+                allison: Boolean(allison) && Boolean(stage.scene.getObjectByName('allison')),
+                nbp: fragments.filter((fragment) => fragment.work === 'nbp').map((fragment) => ({ id: fragment.id, giver: creatures?.kindOf(fragment.id) ?? null })),
+                others: fragments.filter((fragment) => fragment.work !== 'nbp' && creatures?.has(fragment.id)).map((fragment) => fragment.id),
+                toggle: toggle.hidden ? null : toggle.querySelector('[data-inventory-count]').textContent,
+            };
+        });
+        const { city } = result;
+        if (!city.built) problems.push('no givers');
+        const kinds = data.creatures.reduce((sum, creature) => ({ ...sum, [creature.kind]: (sum[creature.kind] ?? 0) + 1 }), {});
+        if (city.pugs !== (kinds.pug ?? 0)) problems.push(`${city.pugs} pugs drawn, ${kinds.pug} meant`);
+        if (city.hums !== (kinds.hum ?? 0)) problems.push(`${city.hums} hums drawn, ${kinds.hum} meant`);
+        if (!(city.shades > 0)) problems.push('no shades beneath them');
+        for (const piece of city.nbp) if (!piece.giver) problems.push(`${piece.id} has no giver`);
+        if (city.others.length) problems.push(`passages not of Numbers by Paint have givers: ${city.others.join(', ')}`);
+        if (!city.allison) problems.push('no Allison');
+        if (city.toggle !== `${pieces.length - 1} / ${pieces.length}`) problems.push(`the count said ${JSON.stringify(city.toggle)}`);
+        // What they say.
+        result.speech = await page.evaluate((wanted) => {
+            const { hotspots, fragments } = window.elysicesterDebug;
+            const said = {};
+            for (const id of wanted) {
+                hotspots.light(fragments.find((fragment) => fragment.id === id));
+                const label = document.getElementById('point-label');
+                said[id] = { words: label.textContent, speech: label.classList.contains('is-speech') };
+            }
+            hotspots.light(null);
+            return said;
+        }, [data.creatures.find((creature) => creature.kind === 'pug')?.fragment, data.creatures.find((creature) => creature.kind === 'hum')?.fragment, 'allison-bio'].filter(Boolean));
+        for (const [id, said] of Object.entries(result.speech)) {
+            const kind = id === 'allison-bio' ? 'allison' : data.creatures.find((creature) => creature.fragment === id)?.kind;
+            const want = { pug: 'squur', hum: 'chirp', allison: 'I’ve been trying to read this old plaque. It’s all Latin. What could it mean?' }[kind];
+            if (said.words !== want || !said.speech) problems.push(`${id} said ${JSON.stringify(said.words)}`);
+        }
+        // The inventory: every lost page numbered in the texts' order; each found one leads to its mark in the texts.
+        await page.click('#inventory-toggle');
+        await page.waitForFunction(() => document.getElementById('inventory').open, null, { timeout: 8000 }).catch(() => {});
+        result.inventory = await page.evaluate(() => ({
+            items: document.querySelectorAll('[data-inventory-list] > li').length,
+            links: [...document.querySelectorAll('[data-inventory-list] a.inventory-texts')].map((link) => link.getAttribute('href')),
+        }));
+        await page.screenshot({ path: path.join(outDir, `${name}-inventory.png`) });
+        if (result.inventory.items !== pieces.length) problems.push(`the inventory lists ${result.inventory.items} lost pages, not ${pieces.length}`);
+        if (result.inventory.links.length !== pieces.length - 1) problems.push(`${result.inventory.links.length} found pages lead to the texts, not ${pieces.length - 1}`);
+        for (const href of result.inventory.links) {
+            const id = /^read\.html#(lost-[a-z0-9-]+)$/.exec(href)?.[1];
+            if (!id || !texts.includes(`id="${id}"`)) problems.push(`the inventory's ${JSON.stringify(href)} leads nowhere in the texts`);
+        }
+        await page.keyboard.press('Escape');
+        await page.waitForTimeout(400);
+        // Allison's bio, from the site's own page, in English. (From the reading points' list, as keys reach it: it
+        // shows only while it holds the focus.)
+        await page.focus('#points a[data-fragment="allison-bio"]');
+        await page.keyboard.press('Enter');
+        await page.waitForFunction(() => document.getElementById('reader').open, null, { timeout: 8000 }).catch(() => {});
+        result.bio = await page.evaluate(() => ({
+            heading: document.querySelector('[data-reader-place]').textContent,
+            text: document.querySelector('[data-reader-text]').textContent,
+        }));
+        await page.screenshot({ path: path.join(outDir, `${name}-bio.png`) });
+        const bioPage = await readFile(path.join(ROOT, 'bio.html'), 'utf8');
+        if (result.bio.heading !== 'Bio') problems.push(`the bio's heading was ${JSON.stringify(result.bio.heading)}`);
+        for (const words of ['President Oedipus', 'False Cows']) {
+            if (!bioPage.includes(words)) problems.push(`(bio.html itself lacks "${words}": the check needs updating)`);
+            else if (!result.bio.text.includes(words)) problems.push(`the bio lacks "${words}"`);
+        }
+        await page.keyboard.press('Escape');
+        await page.waitForTimeout(400);
+        // The last piece, given: when its passage closes, the win.
+        const downloading = page.waitForEvent('download', { timeout: 30_000 }).catch(() => null);
+        await page.focus(`#points a[data-fragment="${last}"]`);
+        await page.keyboard.press('Enter');
+        await page.waitForFunction(() => document.getElementById('reader').open, null, { timeout: 8000 }).catch(() => {});
+        await page.keyboard.press('Escape');
+        await page.waitForFunction(() => document.getElementById('inventory').open, null, { timeout: 8000 }).catch(() => {});
+        result.win = await page.evaluate(() => ({
+            open: document.getElementById('inventory').open,
+            won: !document.querySelector('[data-inventory-win]').hidden,
+            toggle: document.querySelector('#inventory-toggle [data-inventory-count]').textContent,
+            focus: document.activeElement?.dataset?.inventoryWrite !== undefined ? 'write' : document.activeElement?.tagName ?? null,
+        }));
+        await page.screenshot({ path: path.join(outDir, `${name}-win.png`) });
+        if (!result.win.open) problems.push('the win did not show');
+        if (!result.win.won) problems.push('the inventory did not say it was won');
+        if (result.win.toggle !== `${pieces.length} / ${pieces.length}`) problems.push(`the count said ${JSON.stringify(result.win.toggle)} at the end`);
+        if (result.win.focus !== 'write') problems.push(`focus on the win was on ${result.win.focus}`);
+        // The page the win writes.
+        await page.click('[data-inventory-write]');
+        const download = await downloading;
+        if (!download) {
+            problems.push('nothing was written to take away');
+        } else {
+            const file = path.join(outDir, `${name}-${download.suggestedFilename()}`);
+            await download.saveAs(file);
+            const html = await readFile(file, 'utf8');
+            const fragments = JSON.parse(await readFile(path.join(ROOT, 'elysicester', 'data', 'fragments.json'), 'utf8')).fragments;
+            // (Each lost page's first words, as the page writes them: its own escaping aside.)
+            const plain = html.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
+            const missing = pieces.filter((id) => !plain.includes(fragments.find((fragment) => fragment.id === id).text.replace(/^…\s*/, '').split(/\s+/).slice(0, 4).join(' ')));
+            if (missing.length) problems.push(`the written page lacks ${missing.join(', ')}`);
+            if (!html.includes('handToggle') || !html.includes('const G = {')) problems.push('the written page lacks the handwrite engine');
+            result.written = { file: path.basename(file), bytes: html.length, missing };
+            // And it writes itself by hand, as it's scrolled.
+            const reading = await context.newPage();
+            await reading.goto(`file://${file.replace(/\\/g, '/')}`);
+            await reading.waitForTimeout(2500);
+            await reading.mouse.wheel(0, 900);
+            await reading.waitForTimeout(2500);
+            result.written.strokes = await reading.evaluate(() => document.querySelectorAll('.hand-svg path').length);
+            await reading.screenshot({ path: path.join(outDir, `${name}-written.png`) });
+            await reading.close();
+            if (!(result.written.strokes > 0)) problems.push('the written page drew no handwriting');
+        }
     } catch (error) {
         problems.push(`the round broke off: ${error.message.split('\n')[0]}`);
     } finally {
@@ -1005,8 +1173,11 @@ try {
             const result = { mode, threshold, messages, failures };
             await page.screenshot({ path: path.join(outDir, `${name}.png`) });
             if (pass.sound) result.sound = await soundRound(page, pass, threshold);
-            const fragments = await page.evaluate(() => [...document.querySelectorAll('#points a')].map((link) => link.dataset.fragment));
-            const ordered = fragments.map((id) => data.fragments.find((fragment) => fragment.id === id));
+            // (The city's own list of what it reads: Allison's bio, a trial, isn't among the data's passages.)
+            const ordered = await page.evaluate(() => {
+                const readable = window.elysicesterDebug?.fragments ?? [];
+                return [...document.querySelectorAll('#points a')].map((link) => readable.find((fragment) => fragment.id === link.dataset.fragment) ?? { id: link.dataset.fragment });
+            });
 
             if (mode === 'live') {
                 result.info = await page.evaluate(() => window.elysicesterDebug.info());
@@ -1045,6 +1216,7 @@ try {
             }
             await browser.close();
             if (pass.dock) result.dock = await dockRound(chromium, pass, path.join(outDir, name));
+            if (pass.creatures) result.creatures = await creaturesRound(chromium, pass, outDir, name);
             report.passes[name] = result;
         }
 
@@ -1073,10 +1245,14 @@ try {
                 : '';
             const extras = result.extras ? `extras ${result.extras.ok ? 'sky, shadow, door, voice and hums all there' : 'NOT OK'}` : '';
             const camera = result.camera ? `camera ${result.camera.ok ? `kept clear (closest ${Math.min(...result.camera.rows.map((row) => row.closest))})` : 'WENT INTO SOMETHING'}` : '';
-            const dock = result.dock ? `dock ${result.dock.ok ? 'arrives perched on the Cyclolite by the signs, again on reload; zoom out, zoom out, back to the text' : 'NOT OK'}` : '';
-            process.stdout.write(`${name.padEnd(8)} ${result.mode.padEnd(6)} ${problems === 0 ? 'clean' : `${problems} problem(s)`}  ${[crossing, sound, info, orbit, still, camera, signs, extras, pointer, keys, axe, back, kept, dock].filter(Boolean).join(' · ')}\n`);
+            const dock = result.dock ? `dock ${result.dock.ok ? 'arrives perched on the Cyclolite by the signs, again on reload; zoom out, zoom out, back to the texts' : 'NOT OK'}` : '';
+            const givers = result.creatures
+                ? `givers ${result.creatures.ok ? `${result.creatures.city.pugs} pugs, ${result.creatures.city.hums} hums, Allison; squur, chirp, his line, the bio; ${result.creatures.inventory.items} lost pages; won, written by hand (${result.creatures.written?.strokes ?? 0} strokes)` : 'NOT OK'}`
+                : '';
+            process.stdout.write(`${name.padEnd(8)} ${result.mode.padEnd(6)} ${problems === 0 ? 'clean' : `${problems} problem(s)`}  ${[crossing, sound, info, orbit, still, camera, signs, extras, pointer, keys, axe, back, kept, dock, givers].filter(Boolean).join(' · ')}\n`);
             for (const line of [...result.messages, ...result.failures]) process.stdout.write(`    ${line}\n`);
             for (const line of result.dock?.problems ?? []) process.stdout.write(`    dock not ok: ${line}\n`);
+            for (const line of result.creatures?.problems ?? []) process.stdout.write(`    givers not ok: ${line}\n`);
             for (const line of result.extras?.problems ?? []) process.stdout.write(`    extras not ok: ${line}\n`);
             for (const line of result.camera?.problems ?? []) process.stdout.write(`    camera not ok: ${line}\n`);
             for (const line of [...result.threshold.problems, ...(result.reentered?.problems ?? []).map((text) => `on return: ${text}`), ...(result.sound?.problems ?? [])]) {

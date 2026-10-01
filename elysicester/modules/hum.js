@@ -83,9 +83,10 @@ function weighed(geometry, weight = 0) {
 
 /**
  * The hum as it's seen near, looking along +z: body, breast, throat, head, eyes, beak and tail (still), and the two
- * wings (their tips weighted, so hums.js's shader beats them about the body's long axis).
+ * wings (their tips weighted, so hums.js's shader beats them about the body's long axis). (Also the givers' hums:
+ * creatures.js.)
  */
-function humGeometry() {
+export function humGeometry() {
     const body = pose(new SphereGeometry(1, 12, 9), { sx: 0.062, sy: 0.066, sz: 0.118, z: -0.01 });
     // (The breast paler beneath, the throat copper, as the light takes them.)
     paint(body, BRONZE);
@@ -134,9 +135,9 @@ function humGeometry() {
 
 /**
  * The blur of its wings: on each side, a faint fan of bronze over the arc a wing sweeps as it beats, in the plane it
- * beats in (a hummingbird's wings are seen as the haze they make).
+ * beats in (a hummingbird's wings are seen as the haze they make). (Also the givers' hums: creatures.js.)
  */
-function blurGeometry() {
+export function blurGeometry() {
     const positions = [];
     const segments = 10;
     for (const side of [-1, 1]) {

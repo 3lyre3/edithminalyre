@@ -24,9 +24,12 @@
 // Imports
 // =============================================================================
 
+import { ALLISON_SAYS, bioFrom, createAllison } from './modules/allison.js';
 import { createAudio } from './modules/audio.js';
+import { createCreatures } from './modules/creatures.js';
 import { speak, wantedExtras } from './modules/extras.js';
 import { createHotspots, createPointList } from './modules/hotspots.js';
+import { createInventory } from './modules/inventory.js';
 import { createNames } from './modules/names.js';
 import { WORKS, createReader } from './modules/reader.js';
 import { createSignList, createSignOverlay } from './modules/signs.js';
@@ -44,14 +47,21 @@ import { createWhisper } from './modules/whisper.js';
 const PROMPT_FRAGMENT = 'nbp-e1-mega-screen-1';
 /** E's lines in the Intermaze (Elm, 1 Oct, cut "They?" and the rail, so they end on "You never remember the dreams."). */
 const VOICE_FRAGMENTS = ['nbp-e3-intermaze-1'];
-/** Where "Stay - Read" and the one option's "back" go: the city's text, plainly (Elm: "back can take you to the text interface"). */
-const TEXT_PAGE = 'plainly.html';
+/**
+ * Where "Stay - Read" and the one option's "back" go: the texts, whole, with the lost pages marked (Elm: "back can take
+ * you to the text interface"; "you go directly there when you click zoom out and zoom out and back").
+ */
+const TEXT_PAGE = 'read.html';
 
 /** Walking as the shadow, a reading point within this of its head names its place. */
 const NEAR_POINT = 3.2;
 
 /** A touched thing answers (its ring, its sound), and this long after, its words open (ms). */
 const TOUCH_PAUSE = 450;
+
+/** Allison's bio (a trial: allison.js), as a passage the city holds: read from the site's own bio page. */
+const BIO_ID = 'allison-bio';
+const BIO_PAGE = '../bio.html';
 
 /** The hint (a trial, trials.js): once no more than this many passages are left unread, the count says where. */
 const HINT_FEW = 3;
@@ -141,28 +151,29 @@ function fillPrompt(fragment) {
 }
 
 /**
- * Out of the Intermaze, the choice (a trial, trials.js; Elm: "a screen that offers 'Explore - Win' on one side and
- * 'Stay - Read' on the other. Right as we come out of the ascii portal"). "Stay - Read" is a link, to the city's text;
- * this resolves once the visitor chooses to explore (their tap may start the sound, if it's wanted and isn't on yet).
+ * The choice, first (a trial, trials.js; Elm: "a screen that offers 'Explore - Win' on one side and 'Stay - Read' on
+ * the other", and "the choice ... should come before the ascii swirl"). It's already on the screen (the page's first
+ * paint shows it: index.html, style.css); this takes it over. "Stay - Read" is a link, to the texts (read.html);
+ * "Explore - Win" brings the Mega-Screen's card up beneath it as it fades (Elm: "the mega screen could show up after
+ * the choice page and before the ascii swirl"), and the card's gesture begins the swirl, as it always did.
  */
-function choose({ audio }) {
+function offerChoice(threshold) {
     const choice = byId('choice');
     const explore = byId('choice-explore');
-    byId('veil').classList.add('is-dark');
     choice.hidden = false;
-    requestAnimationFrame(() => requestAnimationFrame(() => choice.classList.add('is-shown')));
+    choice.classList.add('is-shown');
+    delete root.dataset.choosing;
     explore.focus({ preventScroll: true });
-    return new Promise((resolve) => {
-        explore.addEventListener('click', () => {
-            if (soundWanted() && audio.state !== 'running') audio.start();
-            choice.classList.remove('is-shown');
-            root.dataset.threshold = 'done';
-            window.setTimeout(() => {
-                choice.hidden = true;
-            }, reducedMotion ? 0 : 900);
-            resolve();
-        }, { once: true });
-    });
+    explore.addEventListener('click', () => {
+        // (Fading, it's out of reach: a second tap meets the card beneath it, not "Stay - Read".)
+        choice.classList.remove('is-shown');
+        choice.classList.add('is-leaving');
+        choice.inert = true;
+        window.setTimeout(() => {
+            choice.hidden = true;
+        }, reducedMotion ? 0 : 900);
+        threshold.showCard();
+    }, { once: true });
 }
 
 /**
@@ -221,10 +232,11 @@ async function boot() {
     }
     wireSound(audio);
     if (debug) window.elysicesterDebug.audio = audio;
-    const returning = crossedThisVisit();
-    // Out of the Intermaze, a choice (a trial): not when coming back within the visit, nor for an address that came to
-    // read a passage (#read-…), which goes straight to it.
-    const choosing = trialOn('choice') && !returning && !window.location.hash.startsWith('#read-');
+    // The choice first (a trial): not when coming back within the visit (straight into the city), and an address that
+    // came to read a passage (#read-…) goes straight to it, as one coming back does.
+    const reading = window.location.hash.startsWith('#read-');
+    const returning = crossedThisVisit() || (trialOn('choice') && reading);
+    const choosing = trialOn('choice') && !returning;
     const threshold = createThreshold({
         root,
         card: byId('threshold'),
@@ -237,6 +249,7 @@ async function boot() {
         returning,
         choosing,
     });
+    if (choosing) offerChoice(threshold);
     // Until the city is entered, its reading points wait behind the card.
     const pointsNav = byId('points');
     pointsNav.inert = true;
@@ -257,14 +270,50 @@ async function boot() {
         }
     }
 
-    const [placeData, fragmentData, paper, signData] = await Promise.all([
+    // The givers and Allison (trials: creatures.js, allison.js) stand where data/creatures.json puts them; Allison's
+    // bio is read from the site's own bio page (if it can't be, he isn't there).
+    const giving = trialOn('creatures');
+    const allisonOn = trialOn('allison');
+    const [placeData, fragmentData, paper, signData, creatureData, bioPage, lostData] = await Promise.all([
         loadData('places'), loadData('fragments'), loadData('paper'), loadData('signs'),
+        giving || allisonOn ? loadData('creatures').catch(() => null) : null,
+        allisonOn ? fetch(new URL(BIO_PAGE, window.location.href)).then((response) => (response.ok ? response.text() : null)).catch(() => null) : null,
+        giving ? loadData('lost-pages').catch(() => null) : null,
     ]);
     const places = new Map(placeData.places.map((place) => [place.id, place]));
     const fragmentById = new Map(fragmentData.fragments.map((fragment) => [fragment.id, fragment]));
     // (A passage on trial, trials.js, is read only while its trial is on.)
     const readable = fragmentData.fragments.filter((fragment) => places.get(fragment.place)?.tier === 1
         && (!fragment.trial || trialOn(fragment.trial)));
+    const bio = bioPage ? bioFrom(bioPage) : null;
+    const allisonAt = allisonOn && bio ? creatureData?.allison ?? null : null;
+    if (allisonAt) {
+        // His bio, held by the city as a passage is (its list entry, its point at him, the reader), in Elm's words.
+        readable.push({
+            id: BIO_ID,
+            place: allisonAt.place,
+            work: 'bio',
+            heading: 'Bio',
+            source: 'Edith Mina Lyre, from her bio page',
+            listLabel: `Allison, by the old plaque at ${places.get(allisonAt.place)?.label.replace(/^The /, 'the ') ?? 'the sea-wall'}: the bio`,
+            text: bio.text,
+            italic: bio.italic,
+            links: bio.links,
+            read_on: new URL(BIO_PAGE, window.location.href).href,
+            status: 'approved',
+        });
+    }
+    // The passages of Numbers by Paint the givers hold (each found as it's given: inventory.js).
+    const givers = giving && creatureData ? creatureData.creatures.filter((creature) => readable.some((fragment) => fragment.id === creature.fragment)) : [];
+    const giverOf = new Map(givers.map((creature) => [creature.fragment, creature]));
+    // The lost pages: those, and President Oedipus's at its points of light, numbered as the texts number them
+    // (read.html; data/lost-pages.json, written with it), else in the book's order.
+    const isLost = (fragment) => giverOf.has(fragment.id) || (fragment.work === 'po' && givers.length > 0);
+    const pageOf = (fragment) => Number(/p\. (\d+)/.exec(fragment.source)?.[1] ?? 0);
+    const lostPages = (lostData?.lost
+        ? lostData.lost.map((id) => readable.find((fragment) => fragment.id === id))
+        : [...readable].sort((a, b) => (a.work === 'po' ? 0 : 1) - (b.work === 'po' ? 0 : 1) || pageOf(a) - pageOf(b)))
+        .filter((fragment) => fragment && isLost(fragment));
     const lines = VOICE_FRAGMENTS.map((id) => fragmentById.get(id)).filter(Boolean).flatMap((fragment, index) => (
         index === 0 ? fragment.text.split(/\n{2,}/) : [fragment.text]
     ));
@@ -306,18 +355,31 @@ async function boot() {
         }
         // (A place read at before is gone "back to", so a thread that comes round again says so.)
         const returning = Boolean(next) && next.place !== fragment.place && visited.has(next.place);
-        // (The hint, on trial: the last few left unread, and where they are.)
-        const left = readable.filter((candidate) => !read.has(candidate.id));
+        // (The hint, on trial: the last few left unread, and where they are. With the givers, a trial, what's counted
+        // is what's been gathered, as the corner counts it: inventory.js.)
+        const counted = inventory ? inventory.pieces : readable;
+        const left = counted.filter((candidate) => !read.has(candidate.id));
         const lastAt = hinting && left.length > 0 && left.length <= HINT_FEW ? [...new Set(left.map((candidate) => candidate.place))] : null;
-        return { next, returning, read: readable.length - left.length, total: readable.length, lastAt };
+        return { next, returning, read: counted.length - left.length, total: counted.length, lastAt, word: inventory ? 'lost pages found' : 'read' };
     };
     let open = null;
+    let inventory = null;
+    let creatures = null;
+    let allison = null;
+    /** The stage's own clock (seconds), for the givers' moments. */
+    let stageTime = 0;
+    /** The last piece has just been gathered: the win shows once its passage is closed. */
+    let winWaiting = false;
     const reader = createReader({
         dialog: byId('reader'),
         places,
         // (Walking, the camera is the shadow's: it doesn't drift off when a passage closes.)
         onClose: () => {
             if (!stage?.walk?.state.walking) stage?.rig.setDrifting(true);
+            if (winWaiting) {
+                winWaiting = false;
+                window.setTimeout(() => inventory?.open(), 350);
+            }
         },
         onward,
         onOnward: (next) => open(next, undefined),
@@ -355,6 +417,10 @@ async function boot() {
         list.markRead(fragment.id);
         hotspots?.markRead(fragment.id);
         signOverlay?.hide();
+        // Its giver gives it (a pug's board paints itself in; a hum loops), and it's gathered: if it was the last,
+        // the win waits for the passage to be closed.
+        creatures?.give(fragment.id, stageTime);
+        if (inventory?.gathered(fragment.id)) winWaiting = true;
         if (stage) {
             stage.rig.setDrifting(false);
             focusFragment(fragment);
@@ -376,6 +442,23 @@ async function boot() {
         },
     });
 
+    // What's been gathered, and the win (with the givers: inventory.js). Its count shows once there's something in it;
+    // the list gathers as the givers do (a passage read is a passage given), so keys and the still can win too.
+    if (givers.length) {
+        inventory = createInventory({
+            toggle: byId('inventory-toggle'),
+            dialog: byId('inventory'),
+            pieces: lostPages,
+            gathered: read,
+            places,
+            kindOf: (id) => giverOf.get(id)?.kind ?? 'light',
+            texts: TEXT_PAGE,
+            onRead: (fragment, opener) => open(fragment, opener),
+            loadEngine: () => loadData('handwrite'),
+        });
+        if (debug) window.elysicesterDebug.inventory = inventory;
+    }
+
     // Build the city now, behind the card, while the visitor reads the Mega-Screen.
     const canvas = byId('stage');
     let renderer = null;
@@ -383,8 +466,40 @@ async function boot() {
     if (hasWebGL2()) {
         renderer = createRenderer(canvas);
         building = createStage({ renderer, canvas, data: { places: placeData, paper, signs: signData }, reducedMotion, debug, onLost: showStill, extras })
-            .then((built) => {
+            .then(async (built) => {
                 stage = built;
+                // The givers (pugs and hums, each with its shade) and Allison, built into the city before it's seen.
+                if (givers.length) {
+                    creatures = createCreatures({
+                        creatures: givers,
+                        given: read,
+                        gradientMap: stage.gradientMap,
+                        light: stage.shadowLight,
+                        floorAt: stage.walk ? (x, z, near) => stage.walk.floorNear(x, z, near) : null,
+                        reducedMotion,
+                    });
+                }
+                if (allisonAt) {
+                    allison = createAllison({ at: allisonAt.at, facing: allisonAt.facing, gradientMap: stage.gradientMap, reducedMotion });
+                    // (A body doesn't fly through him.)
+                    stage.walk?.standsIn(allisonAt.at[0], allisonAt.at[2], 0.32);
+                }
+                const more = {
+                    objects: [...(creatures?.objects ?? []), ...(allison ? [allison.object] : [])],
+                    materials: [...(creatures?.materials ?? []), ...(allison ? [allison.material] : [])],
+                    textures: creatures?.textures ?? [],
+                };
+                if (more.objects.length) await stage.adopt(more);
+                stage.onFrame((dt, elapsed) => {
+                    stageTime = elapsed;
+                    // They turn to the one who's come, flying near.
+                    const visitor = stage.walk?.state.walking ? stage.walk.humAt ?? stage.walk.state.position : null;
+                    creatures?.notice(visitor);
+                    allison?.notice(visitor);
+                    creatures?.update(elapsed);
+                    allison?.update(elapsed);
+                });
+                if (debug) Object.assign(window.elysicesterDebug, { creatures, allison });
                 let touch = null;
                 hotspots = createHotspots({
                     stage,
@@ -396,12 +511,26 @@ async function boot() {
                     // (The hint, on trial: the last few unread glint more often.)
                     glintEvery: () => (hinting && unreadCount() <= HINT_FEW ? HINT_GLINT : null),
                     onPick: (fragment) => open(fragment, null),
+                    // (The givers, and Allison: each passage's point is at its giver, who says its word.)
+                    giverAt: (fragment) => (fragment.id === BIO_ID ? allison?.point : creatures?.pointOf(fragment.id)) ?? null,
+                    giverBody: (fragment) => (fragment.id === BIO_ID ? allison?.body : creatures?.bodyOf(fragment.id)) ?? null,
+                    speechOf: (fragment) => (fragment.id === BIO_ID ? ALLISON_SAYS : creatures?.speechOf(fragment.id) ?? null),
+                    onLight: (fragment) => {
+                        if (!fragment) return;
+                        if (fragment.id === BIO_ID) {
+                            allison?.greet(stageTime);
+                            return;
+                        }
+                        const word = creatures?.speechOf(fragment.id);
+                        if (word && creatures.greet(fragment.id, stageTime)) audio.answer(word);
+                    },
                     // A tap on the shadow is the shadow's (walk.js); one squarely on a sign is the sign's.
                     yieldTap: (x, y, pointDistance) => (stage.walk?.claimsTap(x, y) ?? false)
                         || (signOverlay?.claimsTap(x, y, pointDistance) ?? false),
                     // A tap no point took may have found something else that answers (touch.js): a ring where
-                    // it was touched, its own sound, then its words. Walking as the shadow, a tap nothing
-                    // answers walks it there.
+                    // it was touched, its own sound, then its words (with the givers, a trial, only they give the
+                    // passages of Numbers by Paint: a touched thing answers, and gives nothing). Walking as the
+                    // shadow, a tap nothing answers walks it there.
                     onMiss: (x, y) => {
                         if (!touch || stage.walk?.claimsTap(x, y) || signOverlay?.claimsTap(x, y, Infinity)) return;
                         const found = touch.find(x, y);
@@ -412,6 +541,7 @@ async function boot() {
                         }
                         if (!reducedMotion) hotspots.ripple(found.point);
                         audio.answer(found.kind);
+                        if (giverOf.has(fragment.id)) return;
                         window.setTimeout(() => open(fragment, null), TOUCH_PAUSE);
                     },
                 });
@@ -460,17 +590,6 @@ async function boot() {
         liftVeil(arrive);
     } else if (renderer && !reducedMotion) {
         passage = await threshold.fly({ renderer, ready: built, lines, fit: () => fitRenderer(renderer, canvas) });
-        if (choosing) {
-            // (Crossed: a visitor who stays to read and comes back to the city comes straight in.)
-            rememberCrossed();
-            await choose({ audio });
-        }
-        liftVeil(arrive);
-    } else if (choosing) {
-        passage = await threshold.crossfade({ ready: built });
-        rememberCrossed();
-        await choose({ audio });
-        // (The choice darkened the veil behind it: the city lifts out of that dark, as after a flight.)
         liftVeil(arrive);
     } else {
         passage = await threshold.crossfade({ ready: built.then(arrive) });
@@ -479,7 +598,7 @@ async function boot() {
     hotspots?.welcome();
     if (debug) window.elysicesterDebug.threshold = passage;
     pointsNav.inert = false;
-    if (extras.has('voice')) speak(readable.filter((fragment) => fragment.status === 'approved'), WORKS);
+    if (extras.has('voice')) speak(readable.filter((fragment) => fragment.status === 'approved' && WORKS[fragment.work]), WORKS);
 
     // The trials (trials.js): a whisper after a long stillness, taken up where the flight's lines left off;
     // and the places' faint names from far out.

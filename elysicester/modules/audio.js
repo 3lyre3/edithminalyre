@@ -145,6 +145,57 @@ function answer(context, output, noise, kind) {
         squeak.connect(small).connect(output);
         squeak.start(squeakAt);
         squeak.stop(squeakAt + 0.12);
+    } else if (kind === 'chirp') {
+        // A hum's "chirp" (creatures.js): two quick bright chips, rising, as a hummingbird's are.
+        for (const chip of [0, 0.085]) {
+            const at = now + chip;
+            const tone = context.createOscillator();
+            tone.frequency.setValueAtTime(3300, at);
+            tone.frequency.exponentialRampToValueAtTime(5200, at + 0.045);
+            const gain = context.createGain();
+            gain.gain.setValueAtTime(0.0001, at);
+            gain.gain.exponentialRampToValueAtTime(0.05, at + 0.008);
+            gain.gain.exponentialRampToValueAtTime(0.0001, at + 0.06);
+            tone.connect(gain).connect(output);
+            tone.start(at);
+            tone.stop(at + 0.07);
+        }
+    } else if (kind === 'squur') {
+        // A pug's "squur" (creatures.js): a snuffle through the squashed nose, and a low calf's voice that rolls its r.
+        const snort = context.createBufferSource();
+        snort.buffer = noise;
+        const nose = context.createBiquadFilter();
+        nose.type = 'bandpass';
+        nose.frequency.value = 950;
+        nose.Q.value = 1.3;
+        const breath = context.createGain();
+        envelope(breath, 0.16, 0.02, 0.17);
+        snort.connect(nose).connect(breath).connect(output);
+        snort.start(now, Math.random() * (noise.duration - 0.3), 0.3);
+        const voice = context.createOscillator();
+        voice.type = 'sawtooth';
+        voice.frequency.setValueAtTime(175, now + 0.08);
+        voice.frequency.exponentialRampToValueAtTime(122, now + 0.46);
+        const throat = context.createBiquadFilter();
+        throat.type = 'lowpass';
+        throat.frequency.value = 650;
+        const level = context.createGain();
+        level.gain.setValueAtTime(0.0001, now + 0.08);
+        level.gain.exponentialRampToValueAtTime(0.09, now + 0.14);
+        level.gain.exponentialRampToValueAtTime(0.0001, now + 0.5);
+        // (The roll of the r: the voice beating at a purr's pace.)
+        const roll = context.createOscillator();
+        roll.frequency.value = 26;
+        const rollDepth = context.createGain();
+        rollDepth.gain.value = 0.045;
+        const rolled = context.createGain();
+        rolled.gain.value = 0.5;
+        roll.connect(rollDepth).connect(rolled.gain);
+        voice.connect(throat).connect(rolled).connect(level).connect(output);
+        voice.start(now + 0.08);
+        voice.stop(now + 0.52);
+        roll.start(now + 0.08);
+        roll.stop(now + 0.52);
     } else if (kind === 'dog') {
         // A little patter: two soft, low taps.
         for (const step of [0, 0.11]) {
@@ -286,7 +337,10 @@ export function createAudio() {
                 if (!on) context.suspend();
             }, 1500);
         },
-        /** A touch answered (touch.js): 'tree', 'statue', 'dog' or 'underside'. Silent unless the sound is on. */
+        /**
+         * A touch answered (touch.js): 'tree', 'statue', 'dog', 'door' or 'underside'; or a giver's word (creatures.js):
+         * 'chirp' or 'squur'. Silent unless the sound is on.
+         */
         answer(kind) {
             if (!on || !context || context.state !== 'running') return;
             answer(context, master, noise, kind);

@@ -486,6 +486,8 @@ export function createWalk({ light, reducedMotion, gradientMap = null }) {
         walking: false,
     };
 
+    /** Who stands in the city (standsIn): a body goes round them. */
+    const standing = [];
     // Set by attach(), once the stage is built.
     let rig = null;
     let camera = null;
@@ -685,6 +687,8 @@ export function createWalk({ light, reducedMotion, gradientMap = null }) {
      * laid, which is long before anyone walks, nothing stops it.)
      */
     function blocked(x, z) {
+        // (Someone standing in the city, as Allison does at his plaque: a body goes round, not through.)
+        for (const one of standing) if (Math.hypot(x - one.x, z - one.z) < one.radius) return true;
         const walls = moveWalls();
         if (!walls) return false;
         const across = hollowMap.wallsAcross;
@@ -1225,6 +1229,14 @@ export function createWalk({ light, reducedMotion, gradientMap = null }) {
         state,
         /** The floor under (x, z), or null (for the local checks). */
         floorAt: (x, z) => floorAt(x, z),
+        /** The floor under (x, z) nearest the height `near` (where two lie there: beside steps, a deck), or null. */
+        floorNear: (x, z, near) => floorAt(x, z, near),
+        /** Someone stands at (x, z), this broad (Allison, at his plaque: allison.js): a body goes round them. */
+        standsIn(x, z, radius) {
+            standing.push({ x, z, radius });
+        },
+        /** The way to the light its shadow falls from (flying as a hum, the higher sun: HUM_SUN). */
+        light: toLight.clone(),
         /** The floor given exactly at (x, z) (the steps, the balcony, the sun-dock's light), or null (for the local checks). */
         lookoutAt: (x, z) => givenFloor(x, z),
         /** Whether a wall stops a body at (x, z) (for the local checks). */

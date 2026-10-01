@@ -1,7 +1,13 @@
 /**
- * threshold.js — the way in: the Mega-Screen, then the Intermaze.
+ * threshold.js — the way in: a choice, then the Mega-Screen, then the Intermaze (with ?choice=off, the Mega-Screen
+ * first).
  *
- * The Mega-Screen's title card comes first: a dark screen across which
+ * On trial (choice: trials.js; main.js), the choice comes first, and nothing before it (Elm: "the choice of staying and
+ * reading or playing and winning should come before the ascii swirl"); "Explore - Win" brings the Mega-Screen's card
+ * (showCard: Elm, "the mega-screen card was still good ... is there any chance though that the mega screen could show
+ * up after the choice page and before the ascii swirl?"), and the card's own gesture begins the Intermaze.
+ *
+ * The Mega-Screen's title card: a dark screen across which
  * enormous letters roll in from the right, a short step left with each
  * flicker, spelling INSERT BLUTIX (Numbers by Paint, Episode 1, p. 29). One tap
  * or keypress begins, and that same gesture unlocks sound if the visitor has
@@ -257,13 +263,12 @@ function glyphAtlas() {
  * @param {boolean} [options.returning] - back within the same visit: no card and
  *   no flight; begun at once, with no gesture (so any sound waits for the
  *   visitor's first touch); see comeBack
- * @param {boolean} [options.choosing] - the way in ends at a choice (a trial,
- *   main.js: "Explore - Win" or "Stay - Read"), so the flight leaves the
- *   threshold at 'choice' rather than 'done'; main.js marks it done once the
- *   visitor has chosen to explore
+ * @param {boolean} [options.choosing] - the way in begins at a choice (a trial,
+ *   main.js: "Explore - Win" or "Stay - Read"): no card yet; the threshold waits
+ *   at 'choice' until main.js calls showCard (the visitor chose to explore)
  */
 export function createThreshold({ root, card, begin, voice, onBegin, returning = false, choosing = false }) {
-    root.dataset.threshold = returning ? 'returning' : 'card';
+    root.dataset.threshold = returning ? 'returning' : choosing ? 'choice' : 'card';
     let resolveBegun;
     const begun = new Promise((resolve) => {
         resolveBegun = resolve;
@@ -286,7 +291,8 @@ export function createThreshold({ root, card, begin, voice, onBegin, returning =
             document.removeEventListener('keydown', onKey, true);
             return;
         }
-        if (['Tab', 'Shift', 'Control', 'Alt', 'Meta'].includes(event.key) || event.altKey || event.ctrlKey || event.metaKey) return;
+        // (Nor a key still held from the choice before it.)
+        if (['Tab', 'Shift', 'Control', 'Alt', 'Meta'].includes(event.key) || event.altKey || event.ctrlKey || event.metaKey || event.repeat) return;
         const target = event.target;
         if (target === begin && (event.key === 'Enter' || event.key === ' ')) return;
         if (target instanceof Element && target !== begin && target.closest('a, button, input, select, textarea')) return;
@@ -298,6 +304,9 @@ export function createThreshold({ root, card, begin, voice, onBegin, returning =
         started = true;
         card.hidden = true;
         resolveBegun();
+    } else if (choosing) {
+        // (The choice's own "Explore - Win" brings the card: main.js calls showCard.)
+        card.hidden = true;
     } else {
         document.addEventListener('keydown', onKey, true);
     }
@@ -313,13 +322,27 @@ export function createThreshold({ root, card, begin, voice, onBegin, returning =
     const leave = () => {
         card.hidden = true;
         voice.textContent = '';
-        // (Coming back within the same visit there's no choice: the visitor goes straight into the city.)
-        root.dataset.threshold = choosing && !returning ? 'choice' : 'done';
+        root.dataset.threshold = 'done';
     };
 
     return {
         /** Resolves on the first tap, click or keypress (at once, coming back within the same visit). */
         begun,
+
+        /** Begin, as the card's gesture does. Runs onBegin within it. */
+        start,
+
+        /**
+         * After the choice ("Explore - Win": main.js): the Mega-Screen's card, its letters rolling in from the start,
+         * waiting for its own tap, click or keypress to begin.
+         */
+        showCard() {
+            if (started || root.dataset.threshold !== 'choice') return;
+            root.dataset.threshold = 'card';
+            card.hidden = false;
+            document.addEventListener('keydown', onKey, true);
+            begin.focus({ preventScroll: true });
+        },
 
         /** Coming back within the same visit: wait for the city, then step aside (it lifts from the dark). */
         async comeBack({ ready }) {

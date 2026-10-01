@@ -30,6 +30,10 @@ const fileSet = new Set(relativeFiles);
 const intentionalMissingLinks = new Set([
     'index.html:xma-explained.html',
 ]);
+// Elysicester opens a passage named in its address (#read-<passage id>: elysicester/main.js), so those name its
+// passages, not ids on its page (its texts, elysicester/read.html, link each lost page back to the city so).
+const cityPassages = new Set(JSON.parse(await readFile(path.join(root, 'elysicester', 'data', 'fragments.json'), 'utf8'))
+    .fragments.map((fragment) => `read-${fragment.id}`));
 const htmlFiles = relativeFiles.filter((file) => file.endsWith('.html'));
 const cssFiles = relativeFiles.filter((file) => file.endsWith('.css'));
 const textByFile = new Map();
@@ -118,6 +122,7 @@ function checkReference(fromFile, rawReference) {
         }
         return;
     }
+    if (resolved.target === 'elysicester/index.html' && cityPassages.has(resolved.fragment)) return;
     if (resolved.fragment && resolved.target.endsWith('.html')) {
         const targetIds = idsByFile.get(resolved.target);
         if (targetIds && !targetIds.has(resolved.fragment)) {

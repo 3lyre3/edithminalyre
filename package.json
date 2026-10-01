@@ -9,7 +9,6 @@
     "check:html": "html-validate \"**/*.html\"",
     "check:elysicester": "node scripts/check-elysicester.mjs",
     "stamp:elysicester": "node scripts/stamp-elysicester.mjs",
-    "plainly:elysicester": "node scripts/plainly-elysicester.mjs",
     "vendor:three": "node scripts/vendor-three.mjs",
     "shoot:elysicester": "node scripts/shoot-elysicester.mjs",
     "test": "npm run check:site && npm run check:html && npm run check:elysicester"
