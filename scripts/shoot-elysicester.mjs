@@ -627,7 +627,7 @@ async function pointerRound(page, context, pass, fragments, outDir, name) {
  * touch passes tap the plate itself. A close-up of each plate is kept.
  */
 async function signRound(page, context, pass, outDir, name) {
-    const data = JSON.parse(await readFile(path.join(ROOT, 'elysicester', 'data', 'signs.json'), 'utf8'));
+    const data = JSON.parse(await readFile(path.join(ROOT, 'data', 'signs.json'), 'utf8'));
     const coverage = await page.evaluate(() => window.elysicesterDebug.signCoverage);
     const results = [];
     let navViolations = [];
@@ -710,7 +710,7 @@ async function signRound(page, context, pass, outDir, name) {
 
 /** In the still, the signs are plain words in the list: each marked as Danæam, glossed only where the site glosses it. */
 async function stillSignCheck(page) {
-    const data = JSON.parse(await readFile(path.join(ROOT, 'elysicester', 'data', 'signs.json'), 'utf8'));
+    const data = JSON.parse(await readFile(path.join(ROOT, 'data', 'signs.json'), 'utf8'));
     const shown = await page.evaluate(() => [...document.querySelectorAll('#signs-list [data-sign]')].map((node) => ({
         id: node.dataset.sign,
         tag: node.tagName,
@@ -852,7 +852,7 @@ async function extrasRound(page, spoken, outDir, name) {
 }
 
 async function checkReadOn() {
-    const data = JSON.parse(await readFile(path.join(ROOT, 'elysicester', 'data', 'fragments.json'), 'utf8'));
+    const data = JSON.parse(await readFile(path.join(ROOT, 'data', 'fragments.json'), 'utf8'));
     const urls = [...new Set(data.fragments.map((fragment) => fragment.read_on.split('#')[0]).filter((url) => /^https?:/.test(url)))];
     const answers = [];
     for (const url of urls) {
@@ -914,7 +914,7 @@ async function dockRound(chromium, pass, shots) {
     const followFor = (wanted) => page.waitForFunction((distance) => Math.abs(window.elysicesterDebug.walk.followDistance - distance) < 0.06, wanted, { timeout: 10_000 }).catch(() => {});
     const result = {};
     try {
-        await page.goto(`${origin}/elysicester/?debug=1`, { waitUntil: 'load' });
+        await page.goto(`${origin}/?debug=1`, { waitUntil: 'load' });
         const entered = await enter(page, context, pass, { begin: pass.begin, then: 'skip' });
         if (entered.mode !== 'live') problems.push(`the city did not go live (${entered.mode})`);
         for (const line of entered.problems) problems.push(`threshold: ${line}`);
@@ -1009,14 +1009,14 @@ async function creaturesRound(chromium, pass, outDir, name) {
     const problems = [];
     const result = {};
     try {
-        const data = JSON.parse(await readFile(path.join(ROOT, 'elysicester', 'data', 'creatures.json'), 'utf8'));
-        const pieces = JSON.parse(await readFile(path.join(ROOT, 'elysicester', 'data', 'lost-pages.json'), 'utf8')).lost;
-        const texts = await readFile(path.join(ROOT, 'elysicester', 'read.html'), 'utf8');
+        const data = JSON.parse(await readFile(path.join(ROOT, 'data', 'creatures.json'), 'utf8'));
+        const pieces = JSON.parse(await readFile(path.join(ROOT, 'data', 'lost-pages.json'), 'utf8')).lost;
+        const texts = await readFile(path.join(ROOT, 'read.html'), 'utf8');
         const last = pieces[pieces.length - 1];
         // Every piece but the last gathered on an earlier visit (remembered on this origin before the city loads).
-        await page.goto(`${origin}/elysicester/data/places.json`);
+        await page.goto(`${origin}/data/places.json`);
         await page.evaluate((seen) => window.localStorage.setItem('elysicester:read', JSON.stringify(seen)), pieces.slice(0, -1));
-        await page.goto(`${origin}/elysicester/?debug=1&dock=off`, { waitUntil: 'load' });
+        await page.goto(`${origin}/?debug=1&dock=off`, { waitUntil: 'load' });
         const entered = await enter(page, context, pass, { begin: pass.begin, then: 'skip' });
         for (const line of entered.problems) problems.push(`threshold: ${line}`);
         result.city = await page.evaluate(() => {
@@ -1122,7 +1122,7 @@ async function creaturesRound(chromium, pass, outDir, name) {
             const file = path.join(outDir, `${name}-${download.suggestedFilename()}`);
             await download.saveAs(file);
             const html = await readFile(file, 'utf8');
-            const fragments = JSON.parse(await readFile(path.join(ROOT, 'elysicester', 'data', 'fragments.json'), 'utf8')).fragments;
+            const fragments = JSON.parse(await readFile(path.join(ROOT, 'data', 'fragments.json'), 'utf8')).fragments;
             // (Each lost page's first words, as the page writes them: its own escaping aside.)
             const plain = html.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
             const missing = pieces.filter((id) => !plain.includes(fragments.find((fragment) => fragment.id === id).text.replace(/^…\s*/, '').split(/\s+/).slice(0, 4).join(' ')));
@@ -1170,7 +1170,7 @@ try {
         for (const still of STILLS) {
             const session = await openPass(chromium, PASSES[still.pass]);
             // (The still is for those who can't walk the city: its shadow keeps to the café wall there.)
-            await session.page.goto(`${origin}/elysicester/?debug=1&walk=off`, { waitUntil: 'load' });
+            await session.page.goto(`${origin}/?debug=1&walk=off`, { waitUntil: 'load' });
             const { mode } = await enter(session.page, session.context, PASSES[still.pass], { begin: 'click', then: 'skip' });
             if (mode !== 'live') throw new Error(`${still.pass}: the scene did not go live (${mode})`);
             await hideChrome(session.page);
@@ -1178,7 +1178,7 @@ try {
             await session.page.waitForTimeout(9000);
             const png = await session.page.locator('#stage').screenshot();
             const webp = Buffer.from(await toWebP(session.page, png, still.width, still.height), 'base64');
-            await writeFile(path.join(ROOT, 'elysicester', still.file), webp);
+            await writeFile(path.join(ROOT, still.file), webp);
             process.stdout.write(`${still.file}: ${webp.length} bytes\n`);
             await session.browser.close();
         }
@@ -1188,7 +1188,7 @@ try {
         const quick = process.argv.includes('--quick');
         await mkdir(outDir, { recursive: true });
         const report = { origin, readOn: await checkReadOn(), passes: {} };
-        const data = JSON.parse(await readFile(path.join(ROOT, 'elysicester', 'data', 'fragments.json'), 'utf8'));
+        const data = JSON.parse(await readFile(path.join(ROOT, 'data', 'fragments.json'), 'utf8'));
         // (As main.js's VOICE_FRAGMENTS: E's lines, which the flight surfaces one by one.)
         const voice = ['nbp-e3-intermaze-1'].map((id) => data.fragments.find((fragment) => fragment.id === id));
         const voiceLines = voice.filter(Boolean).flatMap((fragment, index) => (index === 0 ? fragment.text.split(/\n{2,}/) : [fragment.text]));
@@ -1197,13 +1197,13 @@ try {
             const { browser, context, page, messages, failures } = await openPass(chromium, pass);
             if (pass.soundOn) {
                 // A past visit that chose sound: remembered on this origin before the diorama loads.
-                await page.goto(`${origin}/elysicester/data/places.json`);
+                await page.goto(`${origin}/data/places.json`);
                 await page.evaluate(() => window.localStorage.setItem('elysicester:sound', JSON.stringify('on')));
             }
             const spoken = [];
             if (pass.extras) page.on('console', (message) => { if (message.type() === 'log') spoken.push(message.text()); });
             // (From the whole city, as these checks were written: the dock start has its own round, dockRound.)
-            await page.goto(`${origin}/elysicester/?debug=1&dock=off${pass.query ? `&${pass.query}` : ''}`, { waitUntil: 'load' });
+            await page.goto(`${origin}/?debug=1&dock=off${pass.query ? `&${pass.query}` : ''}`, { waitUntil: 'load' });
             const threshold = await enter(page, context, pass, { begin: pass.begin, then: pass.then, shots: path.join(outDir, name), voiceLines });
             const { mode } = threshold;
             const result = { mode, threshold, messages, failures };

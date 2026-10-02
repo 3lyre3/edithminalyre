@@ -1,5 +1,5 @@
 /**
- * vendor-three.mjs — copy the pinned three.js into elysicester/vendor/three/.
+ * vendor-three.mjs — copy the pinned three.js into vendor/three/.
  *
  * The site has no build step: the diorama loads plain ES modules through an
  * import map, so three.js has to live in the repo. This script copies the
@@ -12,10 +12,10 @@
  * copied. Nothing else changes. Paths mirror the npm package, so the addons'
  * own imports keep working:
  *
- *   elysicester/vendor/three/build/three.module.js
- *   elysicester/vendor/three/build/three.core.js
- *   elysicester/vendor/three/examples/jsm/<addon>.js
- *   elysicester/vendor/three/LICENSE
+ *   vendor/three/build/three.module.js
+ *   vendor/three/build/three.core.js
+ *   vendor/three/examples/jsm/<addon>.js
+ *   vendor/three/LICENSE
  *
  * Every vendored file starts with a header naming the exact version, and
  * scripts/check-elysicester.mjs compares that header with package.json.
@@ -38,7 +38,7 @@ import { transform } from 'esbuild-wasm';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const SOURCE = path.join(ROOT, 'node_modules', 'three');
-const TARGET = path.join(ROOT, 'elysicester', 'vendor', 'three');
+const TARGET = path.join(ROOT, 'vendor', 'three');
 
 /** Files copied from the package, relative to node_modules/three. */
 const FILES = [
@@ -75,7 +75,7 @@ async function pinnedVersion() {
 async function vendorFile(version, relativePath) {
     const source = await readFile(path.join(SOURCE, relativePath), 'utf8');
     const header = `/* three@${version} ${relativePath}, minified by scripts/vendor-three.mjs (esbuild). `
-        + 'MIT licence, © 2010-2026 three.js authors: see elysicester/vendor/three/LICENSE */';
+        + 'MIT licence, © 2010-2026 three.js authors: see vendor/three/LICENSE */';
     const result = await transform(source, {
         loader: 'js',
         format: 'esm',
@@ -102,4 +102,4 @@ await copyFile(path.join(SOURCE, 'LICENSE'), path.join(TARGET, 'LICENSE'));
 for (const { relativePath, before, after } of results) {
     console.log(`${relativePath.padEnd(44)} ${String(before).padStart(9)} → ${String(after).padStart(9)} bytes`);
 }
-console.log(`Vendored three@${version} into elysicester/vendor/three/.`);
+console.log(`Vendored three@${version} into vendor/three/.`);

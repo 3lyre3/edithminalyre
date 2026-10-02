@@ -27,8 +27,8 @@ const REWARD_FILE = 'lost-pages-found-in-elysicester.html';
 const REWARD_TITLE = 'The lost pages, found in Elysicester';
 const REWARD_AUTHOR = 'Edith Lyre';
 const REWARD_CREDIT = 'From President Oedipus (Overland 239, Winter 2020) and Numbers by Paint: Quantifying aesthetic receptions (MPhil thesis, Adelaide University, October 2021)';
-const REWARD_CREDIT_URL = 'https://edithminalyre.com/elysicester/read.html';
-const CITY_URL = 'https://edithminalyre.com/elysicester/';
+const REWARD_CREDIT_URL = 'https://edithminalyre.com/read.html';
+const CITY_URL = 'https://edithminalyre.com/';
 
 /** Who holds a lost page, in a few words. */
 const HOLDERS = { pug: 'a pug', hum: 'a hum', light: 'a point of light' };
@@ -178,7 +178,9 @@ export function createInventory({ toggle, dialog, pieces, gathered, places, kind
                 const inTexts = document.createElement('a');
                 inTexts.className = 'inventory-texts';
                 inTexts.href = `${texts}#lost-${fragment.id}`;
-                inTexts.textContent = 'in the texts';
+                // (Out of the game, into a new tab: the city stays as it was.)
+                Object.assign(inTexts, { target: '_blank', rel: 'noopener', textContent: 'in the texts' });
+                inTexts.append(Object.assign(document.createElement('span'), { className: 'visually-hidden', textContent: ' (opens in a new tab)' }));
                 item.append(number, button, inTexts);
             } else {
                 item.className = 'is-waiting';

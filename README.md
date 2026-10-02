@@ -6,11 +6,10 @@ Plain HTML, CSS, and JavaScript.
 
 | Path | Content |
 | --- | --- |
-| `index.html` | Foyer and primary |
-| `style.css`, `site.js` | Visual system |
-| `stories/`, `essays/`, `poems/` | Work |
-| `secret_s3cret_secr3t/` | Secret |
-| `llms.txt`, `index.json`, `agents.txt` | Machine-readables |
+| `index.html`, `main.js`, `style.css`, `modules/`, `data/`, `assets/`, `vendor/` | Elysicester, the city at the front door |
+| `read.html` | Stay - Read: both works whole, the city's lost pages marked |
+| `essays/`, `stories/`, `bio.html` | The texts the city reads from |
+| `site.css`, `site.js` | The texts' visual system |
 | `scripts/` | Meta |
 
 ## Rights

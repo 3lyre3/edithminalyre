@@ -42,7 +42,12 @@ import { currentStamp, stampsIn } from './stamp-elysicester.mjs';
 // =============================================================================
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
-const DIORAMA_DIR = 'elysicester';
+/**
+ * The diorama's own files, at the front door (Elm, 2 Oct 2026: "replace the entirety of my website with the elysicester
+ * subpage"). Its texts (read.html) and the pages it reads from stand beside it, outside its budget (Elm: the reading
+ * page "should probably just live outside the diorama").
+ */
+const DIORAMA = ['index.html', 'main.js', 'style.css', 'modules', 'data', 'assets', 'vendor', 'fallback.webp', 'fallback-portrait.webp'];
 const DATA_FILES = ['places.json', 'fragments.json', 'signs.json', 'paper.json'];
 
 const BUDGET_TOTAL_BYTES = 2_500_000;
@@ -136,7 +141,7 @@ async function checkTarget(where, target) {
     if (typeof target !== 'string' || target.trim() === '') return `${where}: missing URL`;
     let url;
     try {
-        url = new URL(target, 'https://edithminalyre.com/elysicester/');
+        url = new URL(target, 'https://edithminalyre.com/');
     } catch {
         return `${where}: malformed URL ${JSON.stringify(target)}`;
     }
@@ -177,7 +182,7 @@ function wordCount(text) {
 async function loadData() {
     const data = {};
     for (const name of DATA_FILES) {
-        const relativePath = `${DIORAMA_DIR}/data/${name}`;
+        const relativePath = `data/${name}`;
         if (!await exists(relativePath)) {
             fail(`${relativePath}: missing data file`);
             continue;
@@ -208,7 +213,7 @@ function uniqueIds(list, label) {
 }
 
 async function checkPlaces(places) {
-    const label = `${DIORAMA_DIR}/data/places.json`;
+    const label = `data/places.json`;
     if (!Array.isArray(places?.places)) {
         fail(`${label}: needs a "places" array`);
         return new Set();
@@ -236,7 +241,7 @@ async function checkPlaces(places) {
 }
 
 async function checkFragments(fragments, placeIds) {
-    const label = `${DIORAMA_DIR}/data/fragments.json`;
+    const label = `data/fragments.json`;
     if (!Array.isArray(fragments?.fragments)) {
         fail(`${label}: needs a "fragments" array`);
         return;
@@ -268,7 +273,7 @@ async function checkFragments(fragments, placeIds) {
 }
 
 async function checkSigns(signs, placeIds) {
-    const label = `${DIORAMA_DIR}/data/signs.json`;
+    const label = `data/signs.json`;
     if (!Array.isArray(signs?.signs)) {
         fail(`${label}: needs a "signs" array`);
         return;
@@ -340,7 +345,7 @@ function glossBeside(text, word, gloss, reach = 48) {
 }
 
 async function checkPaper(paper, placeIds) {
-    const label = `${DIORAMA_DIR}/data/paper.json`;
+    const label = `data/paper.json`;
     if (!Array.isArray(paper?.layers)) {
         fail(`${label}: needs a "layers" array`);
         return;
@@ -349,7 +354,7 @@ async function checkPaper(paper, placeIds) {
         const where = `${label} layer ${index}`;
         if (!placeIds.has(layer.place)) fail(`${where}: unknown place ${JSON.stringify(layer.place)}`);
         if (typeof layer.src !== 'string' || !/\.png$/i.test(layer.src)) fail(`${where}: src must be a PNG`);
-        else if (!await exists(`${DIORAMA_DIR}/${layer.src}`)) fail(`${where}: ${layer.src} is missing`);
+        else if (!await exists(layer.src)) fail(`${where}: ${layer.src} is missing`);
         if (!Number.isFinite(layer.depth)) fail(`${where}: needs a numeric depth offset`);
         if (!Number.isFinite(layer.scale)) fail(`${where}: needs a numeric scale`);
     }
@@ -409,7 +414,7 @@ async function checkBudget(files) {
             }
         }
     }
-    if (total > BUDGET_TOTAL_BYTES) fail(`${DIORAMA_DIR}/: ${total} bytes is over the ${BUDGET_TOTAL_BYTES}-byte budget`);
+    if (total > BUDGET_TOTAL_BYTES) fail(`the diorama: ${total} bytes is over the ${BUDGET_TOTAL_BYTES}-byte budget`);
     return total;
 }
 
@@ -425,14 +430,14 @@ async function checkBudget(files) {
  * exactly, so a passage changed in the city can't leave the texts behind.
  */
 async function checkTexts(fragmentsData, placeIds, placesData) {
-    const textsPath = `${DIORAMA_DIR}/read.html`;
+    const textsPath = 'read.html';
     const texts = await readFile(path.join(ROOT, textsPath), 'utf8').catch(() => null);
     if (texts === null) {
         fail(`${textsPath}: missing (where "Stay - Read" goes)`);
         return;
     }
-    const lostPath = `${DIORAMA_DIR}/data/lost-pages.json`;
-    const creaturesPath = `${DIORAMA_DIR}/data/creatures.json`;
+    const lostPath = `data/lost-pages.json`;
+    const creaturesPath = `data/creatures.json`;
     let lost;
     let creatures;
     try {
@@ -490,7 +495,7 @@ async function checkTexts(fragmentsData, placeIds, placesData) {
 // -----------------------------------------------------------------------------
 
 async function checkPage(files) {
-    const pagePath = `${DIORAMA_DIR}/index.html`;
+    const pagePath = 'index.html';
     if (!await exists(pagePath)) {
         fail(`${pagePath}: missing`);
         return;
@@ -502,7 +507,7 @@ async function checkPage(files) {
     }
 
     const sitemap = await readFile(path.join(ROOT, 'sitemap.xml'), 'utf8');
-    const listed = sitemap.includes('https://edithminalyre.com/elysicester/');
+    const listed = sitemap.includes('<loc>https://edithminalyre.com/</loc>');
     const noindex = /<meta\s+name=(['"])robots\1\s+content=(['"])[^'"]*noindex/i.test(html);
     if (!listed && !noindex) fail(`${pagePath}: needs <meta name="robots" content="noindex"> until the door opens (M7)`);
     if (listed && noindex) fail(`${pagePath}: is in sitemap.xml but still carries noindex`);
@@ -518,8 +523,8 @@ async function checkPage(files) {
             fail(`${pagePath}: import map is not valid JSON (${error.message})`);
         }
         for (const [specifier, target] of Object.entries(map?.imports ?? {})) {
-            const resolved = path.posix.normalize(`${DIORAMA_DIR}/${target}`);
-            if (!resolved.startsWith(`${DIORAMA_DIR}/vendor/`)) {
+            const resolved = path.posix.normalize(target);
+            if (!resolved.startsWith('vendor/')) {
                 fail(`${pagePath}: import map entry ${JSON.stringify(specifier)} must point into vendor/`);
             } else if (!await exists(resolved)) {
                 fail(`${pagePath}: import map entry ${JSON.stringify(specifier)} points to missing ${resolved}`);
@@ -539,20 +544,24 @@ async function checkPage(files) {
         fail(`${pagePath}: stamp ${[...new Set(stamps)].join(', ')} is stale (the code is now ${stamp}); run npm run stamp:elysicester`);
     }
     const redirects = await loadRedirects(ROOT);
-    const served = servedPath(redirects, `/${DIORAMA_DIR}/v/${stamp}/main.js`);
-    if (served !== `/${DIORAMA_DIR}/main.js`) {
-        fail(`_redirects: /${DIORAMA_DIR}/v/<stamp>/* must be served from /${DIORAMA_DIR}/ (a 200 rewrite); it gives ${served}`);
+    const served = servedPath(redirects, `/v/${stamp}/main.js`);
+    if (served !== '/main.js') {
+        fail(`_redirects: /v/<stamp>/* must be served from the root (a 200 rewrite); it gives ${served}`);
     }
-    // The city's plain page gave way to its texts (read.html): an old link to it still finds them.
-    for (const old of [`/${DIORAMA_DIR}/plainly.html`, `/${DIORAMA_DIR}/plainly`]) {
+    // The city came up to the front door, and its plain page gave way to its texts (read.html): old links still find
+    // them, however a phone keyboard capitalises the old address.
+    for (const [old, to] of [
+        ['/elysicester', '/'], ['/elysicester/', '/'], ['/Elysicester', '/'], ['/ELYSICESTER/', '/'],
+        ['/elysicester/read.html', '/read.html'], ['/elysicester/plainly.html', '/read.html'], ['/elysicester/plainly', '/read.html'],
+    ]) {
         const goes = matchRedirect(redirects, old);
-        if (goes?.status !== 301 || goes.location !== `/${DIORAMA_DIR}/read.html`) {
-            fail(`_redirects: ${old} must go on to /${DIORAMA_DIR}/read.html (301); it gives ${goes ? `${goes.status} ${goes.location}` : 'nothing'}`);
+        if (goes?.status !== 301 || goes.location !== to) {
+            fail(`_redirects: ${old} must go on to ${to} (301); it gives ${goes ? `${goes.status} ${goes.location}` : 'nothing'}`);
         }
     }
 
     const outsideUrl = /\bhttps?:\/\/[^\s"'<>)`\\]+/g;
-    for (const file of files.filter((name) => TEXT_FILE.test(name) && !name.startsWith(`${DIORAMA_DIR}/vendor/`))) {
+    for (const file of files.filter((name) => TEXT_FILE.test(name) && !name.startsWith('vendor/'))) {
         const whole = await readFile(path.join(ROOT, file), 'utf8');
         const text = file.endsWith('.html') ? requestable(whole) : whole;
         for (const [raw] of text.matchAll(outsideUrl)) {
@@ -576,7 +585,7 @@ async function checkVendor() {
     const manifest = JSON.parse(await readFile(path.join(ROOT, 'package.json'), 'utf8'));
     const pinned = manifest.devDependencies?.three;
     if (!/^\d+\.\d+\.\d+$/.test(pinned ?? '')) fail('package.json: three must be pinned to an exact version');
-    const vendorDir = `${DIORAMA_DIR}/vendor/three`;
+    const vendorDir = 'vendor/three';
     if (!await exists(`${vendorDir}/LICENSE`)) fail(`${vendorDir}/LICENSE: keep the MIT licence with the vendored copy`);
     if (!await exists(vendorDir)) return;
     for (const file of (await walk(vendorDir)).filter((name) => name.endsWith('.js'))) {
@@ -592,10 +601,13 @@ async function checkVendor() {
 // Run
 // -----------------------------------------------------------------------------
 
-if (!await exists(DIORAMA_DIR)) {
-    fail(`${DIORAMA_DIR}/: missing`);
+const missingParts = [];
+for (const entry of DIORAMA) if (!await exists(entry)) missingParts.push(entry);
+if (missingParts.length) {
+    fail(`the diorama is missing ${missingParts.join(', ')}`);
 } else {
-    const files = await walk(DIORAMA_DIR);
+    const files = [];
+    for (const entry of DIORAMA) files.push(...((await stat(path.join(ROOT, entry))).isDirectory() ? await walk(entry) : [entry]));
     const data = await loadData();
     const placeIds = data['places.json'] ? await checkPlaces(data['places.json']) : new Set();
     if (data['fragments.json']) await checkFragments(data['fragments.json'], placeIds);
