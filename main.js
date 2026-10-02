@@ -28,6 +28,7 @@ import { ALLISON_SAYS, bioFrom, createAllison } from './modules/allison.js';
 import { createAudio } from './modules/audio.js';
 import { createCreatures } from './modules/creatures.js';
 import { speak, wantedExtras } from './modules/extras.js';
+import { createFlowers } from './modules/flowers.js';
 import { createHotspots, createPointList } from './modules/hotspots.js';
 import { createInventory } from './modules/inventory.js';
 import { showMegaScreen } from './modules/megascreen.js';
@@ -64,6 +65,10 @@ const TOUCH_PAUSE = 450;
 const BIO_ID = 'allison-bio';
 const BIO_PAGE = 'bio.html';
 
+/** President Oedipus whole, as the site's own page holds it: the flowers' parts are read from it (plants, a trial). */
+const PO_PAGE = 'essays/president-oedipus.html';
+const ORDINALS = ['first', 'second', 'third', 'fourth', 'fifth'];
+
 /** The hint (a trial, trials.js): once no more than this many passages are left unread, the count says where. */
 const HINT_FEW = 3;
 /** And their points glint this often (seconds; else hotspots.js's own pace). */
@@ -97,6 +102,36 @@ async function loadData(name) {
     const response = await fetch(new URL(`./data/${name}.json`, import.meta.url));
     if (!response.ok) throw new Error(`data/${name}.json answered ${response.status}`);
     return response.json();
+}
+
+/**
+ * President Oedipus's five parts, as its own page divides it (#part-1 on its first paragraph, #part-2 to #part-5 on
+ * the ". . ." that open the rest; its note goes with the last): each part's elements, as the page has them (the
+ * reader shows them so: its quotations, its transcript's lines, its note), with any link in them sent to the page
+ * itself, beside the city.
+ */
+function poParts(pageHtml) {
+    const body = new DOMParser().parseFromString(pageHtml, 'text/html').querySelector('.work-body');
+    if (!body) return null;
+    const parts = [];
+    let current = null;
+    for (const element of body.children) {
+        const named = /^part-(\d)$/.exec(element.id);
+        if (named) {
+            current = { part: Number(named[1]), elements: [] };
+            parts.push(current);
+            if (named[1] !== '1') continue;
+        }
+        if (!current) continue;
+        for (const link of element.querySelectorAll('a[href^="#"]')) {
+            link.href = `${PO_PAGE}${link.getAttribute('href')}`;
+            link.target = '_blank';
+            link.rel = 'noopener';
+        }
+        for (const named of [element, ...element.querySelectorAll('[id]')]) named.removeAttribute('id');
+        current.elements.push(element);
+    }
+    return parts.length === 5 && parts.every((part, index) => part.part === index + 1 && part.elements.length) ? parts : null;
 }
 
 /** Hold the city still: the drawn plate instead of the live scene, the points as a list. */
@@ -356,11 +391,15 @@ async function boot() {
     // bio is read from the site's own bio page (if it can't be, he isn't there).
     const giving = trialOn('creatures');
     const allisonOn = trialOn('allison');
-    const [placeData, fragmentData, paper, signData, creatureData, bioPage, lostData] = await Promise.all([
+    // (President Oedipus's flowers, a trial, gather with the givers: each holds a part of the essay, read from its page.)
+    const plantsOn = giving && trialOn('plants');
+    const [placeData, fragmentData, paper, signData, creatureData, bioPage, lostData, flowerData, poPage] = await Promise.all([
         loadData('places'), loadData('fragments'), loadData('paper'), loadData('signs'),
         giving || allisonOn ? loadData('creatures').catch(() => null) : null,
         allisonOn ? fetch(new URL(BIO_PAGE, window.location.href)).then((response) => (response.ok ? response.text() : null)).catch(() => null) : null,
         giving ? loadData('lost-pages').catch(() => null) : null,
+        plantsOn ? loadData('flowers').catch(() => null) : null,
+        plantsOn ? fetch(new URL(PO_PAGE, window.location.href)).then((response) => (response.ok ? response.text() : null)).catch(() => null) : null,
     ]);
     const places = new Map(placeData.places.map((place) => [place.id, place]));
     const fragmentById = new Map(fragmentData.fragments.map((fragment) => [fragment.id, fragment]));
@@ -384,6 +423,29 @@ async function boot() {
             read_on: new URL(BIO_PAGE, window.location.href).href,
             status: 'approved',
         });
+    }
+    // President Oedipus's flowers (plants, a trial: flowers.js): the essay whole, a part to each flower, read from its
+    // own page. They take over from its points of light (whose passages are in their parts).
+    const parts = plantsOn && flowerData && poPage ? poParts(poPage) : null;
+    const flowerSpots = parts ? flowerData.flowers.filter((spot) => places.get(spot.place)?.tier === 1) : [];
+    if (flowerSpots.length) {
+        for (let index = readable.length - 1; index >= 0; index -= 1) if (readable[index].work === 'po') readable.splice(index, 1);
+        for (const spot of flowerSpots) {
+            const part = parts[spot.part - 1];
+            const where = places.get(spot.place).label.replace(/^The /, 'the ');
+            readable.push({
+                id: `po-part-${spot.part}`,
+                place: spot.place,
+                work: 'po',
+                part: spot.part,
+                source: `Overland 239 (2020): its ${ORDINALS[spot.part - 1]} part of five`,
+                listLabel: `A flower at ${where}: President Oedipus, its ${ORDINALS[spot.part - 1]} part`,
+                text: part.elements.map((element) => element.textContent.replace(/\s+/g, ' ').trim()).filter(Boolean).join('\n\n'),
+                nodes: () => part.elements.map((element) => element.cloneNode(true)),
+                read_on: `${PO_PAGE}#part-${spot.part}`,
+                status: 'approved',
+            });
+        }
     }
     // The passages of Numbers by Paint the givers hold (each found as it's given: inventory.js).
     const givers = giving && creatureData ? creatureData.creatures.filter((creature) => readable.some((fragment) => fragment.id === creature.fragment)) : [];
@@ -421,7 +483,8 @@ async function boot() {
     const apart = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
     const onward = (fragment) => {
         const from = whereIs(fragment);
-        const others = readable.filter((candidate) => candidate.id !== fragment.id);
+        // (A bud doesn't open yet, so the thread never leads to one: flowers.js.)
+        const others = readable.filter((candidate) => candidate.id !== fragment.id && (!flowers?.has(candidate.id) || flowers.opens(candidate.id)));
         const unread = others.filter((candidate) => !read.has(candidate.id));
         const visited = new Set(readable.filter((candidate) => read.has(candidate.id)).map((candidate) => candidate.place));
         const pools = [
@@ -447,6 +510,7 @@ async function boot() {
     let open = null;
     let inventory = null;
     let creatures = null;
+    let flowers = null;
     let allison = null;
     /** The stage's own clock (seconds), for the givers' moments. */
     let stageTime = 0;
@@ -493,9 +557,32 @@ async function boot() {
         stage.rig.focus(fragment.place, hotspots?.positionOf(fragment.id), fragment.facing ?? null);
     };
     let list = null;
+    // A bud won't open (plants, a trial: only the flower in bloom does): it shivers, the bloom glints wherever it stands,
+    // and a reader who can't see that is told where it is.
+    const refuseBud = (fragment) => {
+        flowers.refuse(fragment.id);
+        const bloom = readable.find((candidate) => candidate.id === flowers.blooming());
+        if (bloom) {
+            flowers.glint(bloom.id);
+            hotspots?.glint(bloom.id);
+        }
+        audio.answer('bud');
+        const status = byId('city-status');
+        if (status) status.textContent = `A bud: it won't open yet.${bloom ? ` The flower in bloom is at ${places.get(bloom.place).label.replace(/^The /, 'the ')}.` : ''}`;
+    };
     open = (fragment, opener) => {
+        if (flowers?.has(fragment.id) && !flowers.opens(fragment.id)) {
+            refuseBud(fragment);
+            return;
+        }
+        const firstTime = !read.has(fragment.id);
         read.add(fragment.id);
         markRead(fragment.id);
+        // An opened flower wilts, and the next bud along unfurls.
+        if (firstTime && flowers?.has(fragment.id)) {
+            flowers.wilt(fragment.id);
+            audio.answer('wilt');
+        }
         list.markRead(fragment.id);
         hotspots?.markRead(fragment.id);
         signOverlay?.hide();
@@ -533,7 +620,7 @@ async function boot() {
             pieces: lostPages,
             gathered: read,
             places,
-            kindOf: (id) => giverOf.get(id)?.kind ?? 'light',
+            kindOf: (id) => (id.startsWith('po-part-') ? 'flower' : giverOf.get(id)?.kind ?? 'light'),
             texts: TEXT_PAGE,
             onRead: (fragment, opener) => open(fragment, opener),
             loadEngine: () => loadData('handwrite'),
@@ -567,6 +654,8 @@ async function boot() {
                         light: stage.shadowLight,
                         floorAt: stage.walk ? (x, z, near) => stage.walk.floorNear(x, z, near) : null,
                         reducedMotion,
+                        // (Far from it, they aren't drawn: out at the whole city they're specks.)
+                        camera: stage.camera,
                     });
                 }
                 if (allisonAt) {
@@ -574,9 +663,14 @@ async function boot() {
                     // (A body doesn't fly through him.)
                     stage.walk?.standsIn(allisonAt.at[0], allisonAt.at[2], 0.32);
                 }
+                // President Oedipus's flowers (plants, a trial): the first not yet opened in bloom, the rest buds.
+                if (flowerSpots.length) {
+                    flowers = createFlowers({ flowers: flowerSpots, read, gradientMap: stage.gradientMap, stage, reducedMotion });
+                    for (const spot of flowerSpots.filter((candidate) => !candidate.floats)) stage.walk?.standsIn(spot.at[0], spot.at[2], 0.22);
+                }
                 const more = {
-                    objects: [...(creatures?.objects ?? []), ...(allison ? [allison.object] : [])],
-                    materials: [...(creatures?.materials ?? []), ...(allison ? [allison.material] : [])],
+                    objects: [...(creatures?.objects ?? []), ...(flowers?.objects ?? []), ...(allison ? [allison.object] : [])],
+                    materials: [...(creatures?.materials ?? []), ...(flowers?.materials ?? []), ...(allison ? [allison.material] : [])],
                     textures: creatures?.textures ?? [],
                 };
                 if (more.objects.length) await stage.adopt(more);
@@ -587,9 +681,10 @@ async function boot() {
                     creatures?.notice(visitor);
                     allison?.notice(visitor);
                     creatures?.update(elapsed);
+                    flowers?.update(elapsed, dt);
                     allison?.update(elapsed);
                 });
-                if (debug) Object.assign(window.elysicesterDebug, { creatures, allison });
+                if (debug) Object.assign(window.elysicesterDebug, { creatures, flowers, allison });
                 let touch = null;
                 hotspots = createHotspots({
                     stage,
@@ -602,8 +697,12 @@ async function boot() {
                     glintEvery: () => (hinting && unreadCount() <= HINT_FEW ? HINT_GLINT : null),
                     onPick: (fragment) => open(fragment, null),
                     // (The givers, and Allison: each passage's point is at its giver, who says its word.)
-                    giverAt: (fragment) => (fragment.id === BIO_ID ? allison?.point : creatures?.pointOf(fragment.id)) ?? null,
-                    giverBody: (fragment) => (fragment.id === BIO_ID ? allison?.body : creatures?.bodyOf(fragment.id)) ?? null,
+                    giverAt: (fragment) => (fragment.id === BIO_ID ? allison?.point : flowers?.has(fragment.id) ? flowers.pointOf(fragment.id) : creatures?.pointOf(fragment.id)) ?? null,
+                    giverBody: (fragment) => (fragment.id === BIO_ID ? allison?.body : flowers?.has(fragment.id) ? flowers.bodyOf(fragment.id) : creatures?.bodyOf(fragment.id)) ?? null,
+                    // (Of the flowers, only the bloom asks to be touched: a bud glinting would invite what it refuses.)
+                    glints: (fragment) => !flowers?.has(fragment.id) || flowers.stateOf(fragment.id) === 'bloom',
+                    // (A flower bows as it wilts: its point and its body go with it.)
+                    moving: (fragment) => Boolean(flowers?.has(fragment.id)),
                     speechOf: (fragment) => (fragment.id === BIO_ID ? ALLISON_SAYS : creatures?.speechOf(fragment.id) ?? null),
                     onLight: (fragment) => {
                         if (!fragment) return;
@@ -835,7 +934,12 @@ async function boot() {
         });
     }
 
-    if (wanted) open(wanted, list.linkFor(wanted.id));
+    if (wanted) {
+        // (A flower asked for out of its turn, from the texts' index, say: the camera goes to it, and it refuses as a
+        // touched bud does, the bloom glinting where it stands.)
+        if (flowers?.has(wanted.id) && !flowers.opens(wanted.id)) focusFragment(wanted);
+        open(wanted, list.linkFor(wanted.id));
+    }
 }
 
 boot().catch((error) => {

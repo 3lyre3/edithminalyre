@@ -425,9 +425,10 @@ async function checkBudget(files) {
 /**
  * The texts (read.html: both works whole on one page, made by the mission's build_reading_room.py from the essay
  * pages) and the city's lost pages (data/lost-pages.json, in the order a reader meets them there; the givers in
- * data/creatures.json give them): every lost page is a passage of the city's, given by a giver (Numbers by Paint)
- * or at its point of light (President Oedipus); each is marked in the texts exactly once, and the mark holds its words
- * exactly, so a passage changed in the city can't leave the texts behind.
+ * data/creatures.json give them): every lost page is a passage of the city's, given by a giver (Numbers by Paint),
+ * or one of President Oedipus's five parts, whole, each held by a flower (data/flowers.json; without the flowers, its
+ * passages at their points of light); each is marked in the texts exactly once, and the mark holds its words exactly,
+ * so a passage changed in the city (or a part on the essay's page) can't leave the texts behind.
  */
 async function checkTexts(fragmentsData, placeIds, placesData) {
     const textsPath = 'read.html';
@@ -464,9 +465,15 @@ async function checkTexts(fragmentsData, placeIds, placesData) {
     if (creatures.allison && (!placeIds.has(creatures.allison.place) || !isVector(creatures.allison.at))) {
         fail(`${creaturesPath}: Allison needs a real place and an "at" of three numbers`);
     }
-    const expected = fragments
-        .filter((fragment) => tier.get(fragment.place) === 1 && (fragment.work === 'po' || given.has(fragment.id)))
-        .map((fragment) => fragment.id);
+    // President Oedipus's flowers (a trial, plants): one for each of the five parts the essay divides itself into,
+    // each part a lost page whole (the city reads them from the essay's page, so they're checked against it here).
+    const parts = await checkFlowers(placeIds);
+    const expected = [
+        ...parts.keys(),
+        ...fragments
+            .filter((fragment) => tier.get(fragment.place) === 1 && (given.has(fragment.id) || (fragment.work === 'po' && parts.size === 0)))
+            .map((fragment) => fragment.id),
+    ];
     const missing = expected.filter((id) => !lost.includes(id));
     const extra = lost.filter((id) => !expected.includes(id));
     if (missing.length) fail(`${lostPath}: missing ${missing.join(', ')} (rebuild the texts)`);
@@ -480,14 +487,75 @@ async function checkTexts(fragmentsData, placeIds, placesData) {
         .replace(/^…+|…+$/g, '');
     for (const id of lost) {
         const fragment = byId.get(id);
-        if (!fragment) continue;
+        const part = parts.get(id);
+        if (!fragment && part === undefined) continue;
         const chips = texts.split(`id="lost-${id}"`).length - 1;
         if (chips !== 1) fail(`${textsPath}: lost page ${id} is marked ${chips} times, not once (rebuild the texts)`);
-        const held = [...texts.matchAll(new RegExp(`<mark class="lost" data-lost="${id}">([\\s\\S]*?)</mark>`, 'g'))]
+        // (A part is marked whole, paragraph by paragraph.)
+        const held = [...texts.matchAll(new RegExp(`<mark class="lost${part === undefined ? '' : ' whole'}" data-lost="${id}">([\\s\\S]*?)</mark>`, 'g'))]
             .map((match) => match[1])
             .join('');
-        if (bare(held) !== bare(fragment.text)) fail(`${textsPath}: lost page ${id} doesn't hold its passage word for word (rebuild the texts from the essays)`);
+        if (bare(held) !== bare(part ?? fragment.text)) fail(`${textsPath}: lost page ${id} doesn't hold its ${part === undefined ? 'passage' : 'part of the essay'} word for word (rebuild the texts from the essays)`);
     }
+}
+
+/**
+ * The flowers (data/flowers.json): five, one for each part of President Oedipus, each where a place is, each its own
+ * bloom; and the essay's page marks its five parts (id="part-1" to "part-5", made by the mission's
+ * build_president_oedipus.py). Gives each part's id (po-part-N) and its words as the page has them (from its mark to
+ * the next part's: the first takes in its own paragraph, the rest begin after their ". . ."; the note goes with the
+ * last), or nothing if there are no flowers.
+ */
+async function checkFlowers(placeIds) {
+    const flowersPath = 'data/flowers.json';
+    const parts = new Map();
+    let data;
+    try {
+        data = JSON.parse(await readFile(path.join(ROOT, flowersPath), 'utf8'));
+    } catch (error) {
+        if (error.code !== 'ENOENT') fail(`${flowersPath}: ${error.message}`);
+        return parts;
+    }
+    const BLOOMS = ['coral', 'sun', 'steel', 'crimson', 'lotus'];
+    const PAGE = 'essays/president-oedipus.html';
+    const flowers = Array.isArray(data.flowers) ? data.flowers : [];
+    if (data.schema !== 1) fail(`${flowersPath}: schema must be 1`);
+    if (data.page !== PAGE) fail(`${flowersPath}: "page" must be ${PAGE} (the city reads the parts from it)`);
+    const numbers = flowers.map((flower) => flower.part);
+    if (flowers.length !== 5 || [1, 2, 3, 4, 5].some((number) => !numbers.includes(number))) {
+        fail(`${flowersPath}: needs one flower for each of the essay's five parts (1 to 5), and no more`);
+    }
+    for (const flower of flowers) {
+        const which = `part ${flower.part}'s flower`;
+        if (!placeIds.has(flower.place)) fail(`${flowersPath}: ${which} is at ${JSON.stringify(flower.place)}, which isn't a place`);
+        if (!isVector(flower.at)) fail(`${flowersPath}: ${which} needs an "at" of three numbers`);
+        if (!BLOOMS.includes(flower.bloom)) fail(`${flowersPath}: ${which} is a ${JSON.stringify(flower.bloom)} (blooms: ${BLOOMS.join(', ')})`);
+        if (typeof flower.droop !== 'number' || !Number.isFinite(flower.droop)) fail(`${flowersPath}: ${which} needs a "droop" (radians)`);
+        if ('floats' in flower && typeof flower.floats !== 'boolean') fail(`${flowersPath}: ${which}'s "floats" is true or false`);
+    }
+    const essay = await readFile(path.join(ROOT, PAGE), 'utf8').catch(() => null);
+    if (essay === null) {
+        fail(`${PAGE}: missing (the flowers' parts are read from it)`);
+        return parts;
+    }
+    const marks = [1, 2, 3, 4, 5].map((number) => {
+        const found = new RegExp(`<p[^>]*\\bid="part-${number}"[^>]*>[\\s\\S]*?</p>`).exec(essay);
+        return found ? { number, start: found.index, end: found.index + found[0].length } : null;
+    });
+    if (marks.some((mark) => mark === null) || marks.some((mark, index) => index > 0 && mark.start < marks[index - 1].end)) {
+        fail(`${PAGE}: needs its five parts marked in order, id="part-1" to "part-5" (rebuild it with the mission's build_president_oedipus.py)`);
+        return parts;
+    }
+    const related = essay.indexOf('<div class="related">', marks[4].end);
+    const bodyEnd = related < 0 ? -1 : essay.lastIndexOf('</div>', related);
+    if (bodyEnd < marks[4].end) {
+        fail(`${PAGE}: can't find where its body ends (before <div class="related">)`);
+        return parts;
+    }
+    for (const { number, start, end } of marks) {
+        parts.set(`po-part-${number}`, essay.slice(number === 1 ? start : end, number < 5 ? marks[number].start : bodyEnd));
+    }
+    return parts;
 }
 
 // -----------------------------------------------------------------------------

@@ -31,7 +31,7 @@ const REWARD_CREDIT_URL = 'https://edithminalyre.com/read.html';
 const CITY_URL = 'https://edithminalyre.com/';
 
 /** Who holds a lost page, in a few words. */
-const HOLDERS = { pug: 'a pug', hum: 'a hum', light: 'a point of light' };
+const HOLDERS = { pug: 'a pug', hum: 'a hum', light: 'a point of light', flower: 'a flower' };
 
 /**
  * The engine's page in the city's dusk (laid over its own colours; Elm: "feel free to adjust aesthetics and stuff with

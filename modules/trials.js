@@ -49,13 +49,16 @@
  * - ball: the charity ball, a hall out beyond the north rim over the ocean: the old Greek's aphorisms at the podium,
  *   the applause, Cassandra's thanks, the band; the hidden door with its bar of gold, the corridor of lockers, and the
  *   balcony where she sits with her cognac (Elm's next place; places.js, ball.js)
+ * - plants: President Oedipus's flowers, a part of the essay to each, read whole from its own page: only the one in
+ *   bloom opens, the rest wait as buds (one touched shivers, and the bloom glints); opened, a flower wilts and the next
+ *   unfurls (Elm: "flowers ... that wilt when you open them ... you gotta click them in order"; flowers.js)
  */
 
 // =============================================================================
 // Constants
 // =============================================================================
 
-export const TRIALS = Object.freeze(['jetty', 'whisper', 'names', 'hint', 'wraith', 'dust', 'dock', 'hostel', 'hum', 'choice', 'onebutton', 'jettysigns', 'cyclolite', 'creatures', 'allison', 'inside', 'megascreen', 'cassandra', 'ball']);
+export const TRIALS = Object.freeze(['jetty', 'whisper', 'names', 'hint', 'wraith', 'dust', 'dock', 'hostel', 'hum', 'choice', 'onebutton', 'jettysigns', 'cyclolite', 'creatures', 'allison', 'inside', 'megascreen', 'cassandra', 'ball', 'plants']);
 
 // =============================================================================
 // Main Code

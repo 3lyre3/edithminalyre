@@ -472,6 +472,61 @@ function answer(context, output, noise, kind) {
             hiss.connect(gain).connect(bright);
             hiss.start(from, Math.random() * (noise.duration - 0.3), 0.25);
         }
+    } else if (kind === 'bud') {
+        // A bud touched before its turn (flowers.js): a small dry rustle of closed petals, and a soft "not yet".
+        for (const brush of [0, 0.07]) {
+            const at = now + brush;
+            const source = context.createBufferSource();
+            source.buffer = noise;
+            const band = context.createBiquadFilter();
+            band.type = 'bandpass';
+            band.frequency.value = 2600 - brush * 3000;
+            band.Q.value = 2.2;
+            const gain = context.createGain();
+            gain.gain.setValueAtTime(0.0001, at);
+            gain.gain.exponentialRampToValueAtTime(0.5, at + 0.012);
+            gain.gain.exponentialRampToValueAtTime(0.0001, at + 0.14);
+            source.connect(band).connect(gain).connect(output);
+            source.start(at, Math.random() * (noise.duration - 0.2), 0.16);
+        }
+        const tut = context.createOscillator();
+        tut.frequency.setValueAtTime(330, now + 0.05);
+        tut.frequency.exponentialRampToValueAtTime(247, now + 0.16);
+        const tutLevel = context.createGain();
+        tutLevel.gain.setValueAtTime(0.0001, now + 0.05);
+        tutLevel.gain.exponentialRampToValueAtTime(0.06, now + 0.07);
+        tutLevel.gain.exponentialRampToValueAtTime(0.0001, now + 0.24);
+        tut.connect(tutLevel).connect(output);
+        tut.start(now + 0.05);
+        tut.stop(now + 0.26);
+    } else if (kind === 'wilt') {
+        // A flower opened (flowers.js), wilting: a soft sigh falling, and a breath going out of it.
+        const sigh = context.createOscillator();
+        sigh.type = 'triangle';
+        sigh.frequency.setValueAtTime(740, now);
+        sigh.frequency.exponentialRampToValueAtTime(311, now + 1.9);
+        const waver = context.createOscillator();
+        waver.frequency.value = 5.2;
+        const waverDepth = context.createGain();
+        waverDepth.gain.value = 9;
+        waver.connect(waverDepth).connect(sigh.frequency);
+        const sighLevel = context.createGain();
+        envelope(sighLevel, 0.07, 0.25, 1.9);
+        sigh.connect(sighLevel).connect(output);
+        for (const tone of [sigh, waver]) {
+            tone.start(now);
+            tone.stop(now + 2.3);
+        }
+        const breath = context.createBufferSource();
+        breath.buffer = noise;
+        const soft = context.createBiquadFilter();
+        soft.type = 'lowpass';
+        soft.frequency.setValueAtTime(1800, now);
+        soft.frequency.exponentialRampToValueAtTime(400, now + 1.8);
+        const breathLevel = context.createGain();
+        envelope(breathLevel, 0.18, 0.4, 1.6);
+        breath.connect(soft).connect(breathLevel).connect(output);
+        breath.start(now, Math.random() * (noise.duration - 2.2), 2.1);
     } else if (kind === 'dog') {
         // A little patter: two soft, low taps.
         for (const step of [0, 0.11]) {

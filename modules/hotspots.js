@@ -223,8 +223,12 @@ function glowTexture() {
  * @param {(fragment: object) => { center: Vector3, radius: number } | null} [options.giverBody] - the giver's body (a
  *   tap anywhere on it finds it, however near it's seen)
  * @param {(fragment: object | null) => void} [options.onLight] - a point has been lit (or none is)
+ * @param {(fragment: object) => boolean} [options.glints] - whether an unread point may glint unasked (a flower's bud
+ *   doesn't: flowers.js)
+ * @param {(fragment: object) => boolean} [options.moving] - whether a giver moves (a flower bowing as it wilts), so its
+ *   point is followed (giverAt read each frame; its body, giverBody's, must be live too)
  */
-export function createHotspots({ stage, fragments, read, places, label, reducedMotion, onPick, yieldTap, onMiss, glintEvery, giverAt, giverBody, speechOf, onLight }) {
+export function createHotspots({ stage, fragments, read, places, label, reducedMotion, onPick, yieldTap, onMiss, glintEvery, giverAt, giverBody, speechOf, onLight, glints = () => true, moving = () => false }) {
     const { scene, camera, canvas, renderer, rig } = stage;
     const entries = fragments.map((fragment, index) => {
         const giver = giverAt?.(fragment) ?? null;
@@ -232,10 +236,13 @@ export function createHotspots({ stage, fragments, read, places, label, reducedM
             fragment,
             index,
             giver: Boolean(giver),
+            // (A giver that moves, a flower as it wilts, is followed: its point read again each frame.)
+            follows: Boolean(giver) && moving(fragment),
             body: giver ? giverBody?.(fragment) ?? null : null,
             position: giver ? giver.clone() : stage.anchors.get(fragment.place).clone().add(new Vector3().fromArray(fragment.offset ?? [0, 0, 0])),
         };
     });
+    const following = entries.filter((entry) => entry.follows);
 
     const geometry = new BufferGeometry();
     geometry.setAttribute('position', new Float32BufferAttribute(entries.flatMap((entry) => entry.position.toArray()), 3));
@@ -268,8 +275,9 @@ export function createHotspots({ stage, fragments, read, places, label, reducedM
     scene.add(points);
 
     // Glass, cloth and water don't hide a point; the sky and sea never stand in front of one, nor a passing hum, nor
-    // the givers (each stands at its own point) and their boards and shades.
-    const occluders = scene.children.filter((child) => child instanceof Mesh && !['sky', 'sea', 'glass', 'turquoise', 'hums', 'verti-pool', 'footlight-wash', 'walk-ring', 'walk-target', 'sun-dock-light', 'bridge', 'bridge-dust', 'fountain-fall', 'pugs', 'pug-boards', 'giver-hums', 'giver-hums-blur', 'giver-shades'].includes(child.name));
+    // the givers (each stands at its own point) and their boards and shades, nor the flowers (their shapes are made in
+    // the shader, so a ray would meet them where they aren't).
+    const occluders = scene.children.filter((child) => child instanceof Mesh && !['sky', 'sea', 'glass', 'turquoise', 'hums', 'verti-pool', 'footlight-wash', 'walk-ring', 'walk-target', 'sun-dock-light', 'bridge', 'bridge-dust', 'fountain-fall', 'pugs', 'pug-boards', 'giver-hums', 'giver-hums-blur', 'giver-shades', 'flowers', 'flower-shades'].includes(child.name));
     const raycaster = new Raycaster();
     const projected = new Vector3();
     const drawingBuffer = new Vector2();
@@ -317,9 +325,10 @@ export function createHotspots({ stage, fragments, read, places, label, reducedM
             if (!screen.inFront) continue;
             // (A giver is found by its point, or anywhere on its body.)
             const distance = Math.min(Math.hypot(screen.x - x, screen.y - y), entry.body ? offBody(entry, x, y) : Infinity);
-            if (distance < radius) candidates.push({ entry, distance });
+            if (distance < radius) candidates.push({ entry, distance, depth: camera.position.distanceTo(entry.position) });
         }
-        candidates.sort((a, b) => a.distance - b.distance);
+        // (Touched on two at once, a bud with a pug's body behind it, say, the one nearer the eye has it.)
+        candidates.sort((a, b) => a.distance - b.distance || a.depth - b.depth);
         return candidates.find(({ entry }) => visible(entry)) ?? null;
     }
 
@@ -391,10 +400,17 @@ export function createHotspots({ stage, fragments, read, places, label, reducedM
 
     stage.onFrame((dt, elapsed) => {
         uniforms.time.value = elapsed;
+        for (const entry of following) {
+            const now = giverAt(entry.fragment);
+            if (!now || now.equals(entry.position)) continue;
+            entry.position.copy(now);
+            geometry.attributes.position.setXYZ(entry.index, now.x, now.y, now.z);
+            geometry.attributes.position.needsUpdate = true;
+        }
         // Now and then, one unread point in sight glints again (never under reduced motion).
         if (!reducedMotion && elapsed >= nextIdleGlint) {
             nextIdleGlint = elapsed + (glintEvery?.() ?? IDLE_GLINT);
-            const waiting = entries.filter((entry) => !isRead(entry) && screenOf(entry).inFront);
+            const waiting = entries.filter((entry) => !isRead(entry) && glints(entry.fragment) && screenOf(entry).inFront);
             if (waiting.length) glintAt(waiting[Math.floor(Math.random() * waiting.length)], elapsed);
         }
         renderer.getDrawingBufferSize(drawingBuffer);
@@ -415,13 +431,18 @@ export function createHotspots({ stage, fragments, read, places, label, reducedM
         welcome() {
             if (reducedMotion) return;
             const now = uniforms.time.value;
-            const unread = entries.filter((entry) => !isRead(entry));
+            const unread = entries.filter((entry) => !isRead(entry) && glints(entry.fragment));
             for (let index = unread.length - 1; index > 0; index -= 1) {
                 const swap = Math.floor(Math.random() * (index + 1));
                 [unread[index], unread[swap]] = [unread[swap], unread[index]];
             }
             unread.forEach((entry, order) => glintAt(entry, now + WELCOME_DELAY + order * WELCOME_STEP));
             nextIdleGlint = now + WELCOME_DELAY + unread.length * WELCOME_STEP + IDLE_GLINT;
+        },
+        /** One passage's point glints now (a bud refused shows the bloom so: main.js), read or not. */
+        glint(id) {
+            const entry = entries.find((candidate) => candidate.fragment.id === id);
+            if (entry && !reducedMotion) glintAt(entry, uniforms.time.value);
         },
         /** A ring of light going out from a point in the city (where something was touched). */
         ripple(point) {

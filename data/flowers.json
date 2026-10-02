@@ -1,0 +1,12 @@
+{
+ "schema": 1,
+ "about": "President Oedipus's flowers (Elm, 1 Oct 2026: \"a succession of flowers around the city that wilt when you open them and they're all sections of president oedipus, but you gotta click them in order\"; a trial: plants). One for each of the five parts the essay divides itself into with its own '. . .' (essays/president-oedipus.html, #part-1 to #part-5; its note goes with the last). Each stands where the city already held a passage from its part (the gas station, the sun-dock, the edge), or on the way between (the Steel Garden, the cafés' quay). droop: the way it bows as it wilts (radians round y from +z). floats: on the bay's water.",
+ "page": "essays/president-oedipus.html",
+ "flowers": [
+  { "part": 1, "place": "gas-station", "at": [-1.2, -0.06, 11.7], "droop": 3.14, "bloom": "coral" },
+  { "part": 2, "place": "sun-dock", "at": [11.3, -0.18, 4.4], "droop": 1.57, "bloom": "sun" },
+  { "part": 3, "place": "steel-garden", "at": [6.3, 0.16, 5.7], "droop": 1.57, "bloom": "steel" },
+  { "part": 4, "place": "jetty-cafes", "at": [13.89, 0.3, -1.94], "droop": 1.57, "bloom": "crimson" },
+  { "part": 5, "place": "edge", "at": [25.6, -0.6, -9.9], "droop": -1.57, "bloom": "lotus", "floats": true }
+ ]
+}

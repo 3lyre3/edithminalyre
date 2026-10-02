@@ -29,9 +29,18 @@ const relativeFiles = files.map((file) => path.relative(root, file).split(path.s
 const fileSet = new Set(relativeFiles);
 const intentionalMissingLinks = new Set();
 // Elysicester, at the front door, opens a passage named in its address (#read-<passage id>: main.js), so those name
-// its passages, not ids on its page (its texts, read.html, link each lost page back to the city so).
-const cityPassages = new Set(JSON.parse(await readFile(path.join(root, 'data', 'fragments.json'), 'utf8'))
-    .fragments.map((fragment) => `read-${fragment.id}`));
+// its passages, not ids on its page (its texts, read.html, link each lost page back to the city so). Its passages
+// are those in data/fragments.json and, with President Oedipus's flowers (data/flowers.json), the essay's five parts.
+const flowerParts = await readFile(path.join(root, 'data', 'flowers.json'), 'utf8')
+    .then((text) => JSON.parse(text).flowers.map((flower) => `read-po-part-${flower.part}`))
+    .catch((error) => {
+        if (error.code === 'ENOENT') return [];
+        throw error;
+    });
+const cityPassages = new Set([
+    ...JSON.parse(await readFile(path.join(root, 'data', 'fragments.json'), 'utf8')).fragments.map((fragment) => `read-${fragment.id}`),
+    ...flowerParts,
+]);
 const htmlFiles = relativeFiles.filter((file) => file.endsWith('.html'));
 const cssFiles = relativeFiles.filter((file) => file.endsWith('.css'));
 const textByFile = new Map();

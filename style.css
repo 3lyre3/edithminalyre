@@ -1251,6 +1251,27 @@ html[data-returning] .veil {
     margin: 0 0 0.8em;
 }
 
+/* A flower's part, whole, as President Oedipus's page sets it (its lines kept by their own breaks). */
+.reader-text.is-whole {
+    white-space: normal;
+}
+
+.reader-text.is-whole blockquote {
+    margin: 0 0 0.9em 0.9em;
+    padding-left: 0.9em;
+    border-left: 1px solid var(--stone);
+    font-size: 0.92em;
+}
+
+.reader-text.is-whole .footnote {
+    font-size: 0.8em;
+    color: var(--bone);
+}
+
+.reader-text.is-whole a {
+    color: var(--honey);
+}
+
 .reader-source {
     margin: 0 0 6px;
     font-size: 16px;
