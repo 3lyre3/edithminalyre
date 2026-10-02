@@ -26,7 +26,7 @@ export const WORKS = Object.freeze({
 
 /** What a tap outside the panel may land on and still be answered (the one option at the top, the count of what's
  * gathered, the corners' words and buttons). */
-const CORNERS = '.controls button:not([hidden]), .plainly a, .one-button:not([hidden]), .inventory-toggle:not([hidden]), .sound-corner';
+const CORNERS = '.controls button:not([hidden]), .plainly a, .one-button:not([hidden]), .hum-button:not([hidden]), .inventory-toggle:not([hidden]), .sound-corner';
 
 // =============================================================================
 // Main Code

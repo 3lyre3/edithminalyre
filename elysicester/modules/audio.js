@@ -105,7 +105,8 @@ function street(context) {
 /**
  * A touch answered, softly, in the thing's own voice: the steel sycamore's leaves rustle, a bird statue rings
  * like struck metal, a small dog's feet patter, and the rock's underside gives a deep swell. (And Cassandra's
- * door: a knock, then its slam.)
+ * door: a knock, then its slam; and the charity ball: the old Greek's muttering, the applause, the band, the hidden
+ * door's bar, and Cassandra talking to herself.)
  */
 function answer(context, output, noise, kind) {
     const now = context.currentTime;
@@ -294,6 +295,183 @@ function answer(context, output, noise, kind) {
         voice.stop(now + 0.52);
         roll.start(now + 0.08);
         roll.stop(now + 0.52);
+    } else if (kind === 'mutter' || kind === 'murmur') {
+        // The old Greek's aphorisms at the charity ball (places.js): "a handful of trochaic syllables rising with his
+        // eyebrows, then a clutch of iambs closing as his lips pursed", an old man's low voice through a closed mouth.
+        // (And Cassandra on the balcony, "talking to herself": the same, higher, softer and quicker.)
+        const hers = kind === 'murmur';
+        const pace = hers ? 0.8 : 1;
+        const mouth = context.createBiquadFilter();
+        mouth.type = 'bandpass';
+        mouth.frequency.value = hers ? 900 : 620;
+        mouth.Q.value = 1.1;
+        const closed = context.createBiquadFilter();
+        closed.type = 'lowpass';
+        closed.frequency.value = hers ? 1800 : 1200;
+        const voice = context.createGain();
+        voice.gain.value = hers ? 1.25 : 1.85;
+        mouth.connect(closed).connect(voice).connect(output);
+        let at = now + 0.05;
+        // (Three trochees, long-short, each a little higher; then two iambs, short-long, falling and closing.)
+        [[1, 0], [1, 0], [1, 0], [0, 1], [0, 1]].forEach((foot, index) => {
+            for (const stressed of foot) {
+                const rise = index < 3 ? index * 0.06 + (stressed ? 0.03 : 0) : 0.1 - (index - 3) * 0.12 - (stressed ? 0 : 0.03);
+                const length = (stressed ? 0.2 : 0.11) * pace;
+                const tone = context.createOscillator();
+                tone.type = 'sawtooth';
+                tone.frequency.setValueAtTime(108 * (hers ? 1.9 : 1) * (1 + rise), at);
+                tone.frequency.linearRampToValueAtTime(108 * (hers ? 1.9 : 1) * (1 + rise) * 0.94, at + length);
+                const gain = context.createGain();
+                gain.gain.setValueAtTime(0.0001, at);
+                gain.gain.exponentialRampToValueAtTime(stressed ? 0.5 : 0.28, at + 0.03);
+                gain.gain.exponentialRampToValueAtTime(0.0001, at + length);
+                tone.connect(gain).connect(mouth);
+                tone.start(at);
+                tone.stop(at + length + 0.02);
+                at += (stressed ? 0.26 : 0.15) * pace;
+            }
+        });
+    } else if (kind === 'applause') {
+        // "two hundred guests stood to fill the hall with whistles and applause" (the charity ball, places.js): claps
+        // by the dozen, thick at first and thinning as she takes the podium, and a whistle or two.
+        const hall = context.createBiquadFilter();
+        hall.type = 'lowpass';
+        hall.frequency.value = 5200;
+        const level = context.createGain();
+        level.gain.value = 1.15;
+        hall.connect(level).connect(output);
+        const length = 2.2;
+        for (let clap = 0; clap < 110; clap += 1) {
+            const t = length * Math.random() ** 1.35;
+            const at = now + 0.04 + t;
+            const source = context.createBufferSource();
+            source.buffer = noise;
+            const band = context.createBiquadFilter();
+            band.type = 'bandpass';
+            band.frequency.value = 1100 + Math.random() * 1600;
+            band.Q.value = 1.2 + Math.random();
+            const gain = context.createGain();
+            gain.gain.setValueAtTime(0.0001, at);
+            gain.gain.exponentialRampToValueAtTime((1.0 + Math.random() * 1.0) * (1 - 0.6 * (t / length)), at + 0.002);
+            gain.gain.exponentialRampToValueAtTime(0.0001, at + 0.05 + Math.random() * 0.03);
+            source.connect(band).connect(gain).connect(hall);
+            source.start(at, Math.random() * (noise.duration - 0.1), 0.09);
+        }
+        for (const [start, from, to] of [[0.25, 1500, 2600], [0.8, 1900, 3000]]) {
+            const at = now + start;
+            const tone = context.createOscillator();
+            tone.frequency.setValueAtTime(from, at);
+            tone.frequency.exponentialRampToValueAtTime(to, at + 0.22);
+            tone.frequency.exponentialRampToValueAtTime(from * 1.05, at + 0.5);
+            const gain = context.createGain();
+            gain.gain.setValueAtTime(0.0001, at);
+            gain.gain.exponentialRampToValueAtTime(0.09, at + 0.04);
+            gain.gain.exponentialRampToValueAtTime(0.0001, at + 0.55);
+            tone.connect(gain).connect(output);
+            tone.start(at);
+            tone.stop(at + 0.6);
+        }
+    } else if (kind === 'bar') {
+        // The hidden door's bar of polished gold, shoved (the charity ball, places.js): the latch's metal clack, a
+        // ring in it, and the door's weight giving.
+        const clack = context.createBufferSource();
+        clack.buffer = noise;
+        const ring = context.createBiquadFilter();
+        ring.type = 'bandpass';
+        ring.frequency.value = 2600;
+        ring.Q.value = 3;
+        const clackLevel = context.createGain();
+        envelope(clackLevel, 0.95, 0.002, 0.07);
+        clack.connect(ring).connect(clackLevel).connect(output);
+        clack.start(now, Math.random() * (noise.duration - 0.2), 0.12);
+        const tone = context.createOscillator();
+        tone.frequency.value = 1760;
+        const toneLevel = context.createGain();
+        envelope(toneLevel, 0.06, 0.003, 0.3);
+        tone.connect(toneLevel).connect(output);
+        tone.start(now);
+        tone.stop(now + 0.35);
+        const give = context.createOscillator();
+        give.type = 'triangle';
+        give.frequency.setValueAtTime(95, now + 0.05);
+        give.frequency.exponentialRampToValueAtTime(60, now + 0.25);
+        const giveLevel = context.createGain();
+        giveLevel.gain.setValueAtTime(0.0001, now + 0.05);
+        giveLevel.gain.exponentialRampToValueAtTime(0.75, now + 0.06);
+        giveLevel.gain.exponentialRampToValueAtTime(0.0001, now + 0.3);
+        give.connect(giveLevel).connect(output);
+        give.start(now + 0.05);
+        give.stop(now + 0.32);
+    } else if (kind === 'band') {
+        // The Kaitens take the stage (the charity ball, places.js): two bars of a walking bass under the ride cymbal's
+        // swing, a chord on the off-beats, and a little phrase on the saxophone.
+        const beat = 60 / 132;
+        // (A beat, or its swung half: the "and" falls two-thirds of the way through the beat.)
+        const at = (position) => now + 0.06 + (Math.floor(position) + (position % 1 ? 0.66 : 0)) * beat;
+        const note = (type, frequency, from, length, peak, into) => {
+            const tone = context.createOscillator();
+            tone.type = type;
+            tone.frequency.value = frequency;
+            const gain = context.createGain();
+            gain.gain.setValueAtTime(0.0001, from);
+            gain.gain.exponentialRampToValueAtTime(peak, from + 0.012);
+            gain.gain.exponentialRampToValueAtTime(peak * 0.6, from + length * 0.6);
+            gain.gain.exponentialRampToValueAtTime(0.0001, from + length);
+            tone.connect(gain).connect(into);
+            tone.start(from);
+            tone.stop(from + length + 0.02);
+            return tone;
+        };
+        const low = context.createBiquadFilter();
+        low.type = 'lowpass';
+        low.frequency.value = 700;
+        low.connect(output);
+        [98, 110, 116.54, 123.47, 130.81, 164.81, 196, 164.81].forEach((frequency, index) => note('triangle', frequency, at(index), beat * 0.9, 0.48, low));
+        note('triangle', 130.81, at(8), beat * 1.8, 0.48, low);
+        const stabs = context.createBiquadFilter();
+        stabs.type = 'lowpass';
+        stabs.frequency.value = 1500;
+        stabs.connect(output);
+        for (const [position, chord] of [[1.5, [196, 246.94, 349.23]], [3.5, [196, 246.94, 349.23]], [5.5, [261.63, 329.63, 440]], [7.5, [261.63, 329.63, 440]]]) {
+            for (const frequency of chord) note('sawtooth', frequency, at(position), 0.2, 0.05, stabs);
+        }
+        const reed = context.createBiquadFilter();
+        reed.type = 'bandpass';
+        reed.frequency.value = 1100;
+        reed.Q.value = 0.8;
+        const soft = context.createBiquadFilter();
+        soft.type = 'lowpass';
+        soft.frequency.value = 2800;
+        reed.connect(soft).connect(output);
+        for (const [position, length, frequency] of [[0.5, 0.5, 587.33], [1, 0.5, 523.25], [1.5, 0.5, 466.16], [2, 1, 440], [3.5, 0.5, 392], [4, 0.5, 466.16], [4.5, 0.5, 523.25], [5, 2.6, 659.25]]) {
+            const tone = note('sawtooth', frequency, at(position), length * beat, 0.16, reed);
+            if (length > 2) {
+                // (The long note, held, with a singer's vibrato.)
+                const wobble = context.createOscillator();
+                wobble.frequency.value = 5.5;
+                const depth = context.createGain();
+                depth.gain.value = 6;
+                wobble.connect(depth).connect(tone.frequency);
+                wobble.start(at(position) + 0.3);
+                wobble.stop(at(position) + length * beat);
+            }
+        }
+        // (The ride cymbal: ding, ding-a ding.)
+        const bright = context.createBiquadFilter();
+        bright.type = 'highpass';
+        bright.frequency.value = 6500;
+        bright.connect(output);
+        for (const position of [0, 1, 1.5, 2, 3, 3.5, 4, 5, 5.5, 6, 7, 7.5, 8]) {
+            const from = at(position);
+            const hiss = context.createBufferSource();
+            hiss.buffer = noise;
+            const gain = context.createGain();
+            gain.gain.setValueAtTime(0.0001, from);
+            gain.gain.exponentialRampToValueAtTime(position % 2 === 1 ? 0.17 : 0.11, from + 0.004);
+            gain.gain.exponentialRampToValueAtTime(0.0001, from + 0.22);
+            hiss.connect(gain).connect(bright);
+            hiss.start(from, Math.random() * (noise.duration - 0.3), 0.25);
+        }
     } else if (kind === 'dog') {
         // A little patter: two soft, low taps.
         for (const step of [0, 0.11]) {
@@ -437,7 +615,8 @@ export function createAudio() {
         },
         /**
          * A touch answered (touch.js): 'tree', 'statue', 'dog', 'door' or 'underside'; or a giver's word (creatures.js):
-         * 'chirp' or 'squur'; or Cassandra's door (places.js): 'knock', then 'slam'. Silent unless the sound is on.
+         * 'chirp' or 'squur'; or Cassandra's door (places.js): 'knock', then 'slam'; or the charity ball (places.js):
+         * 'mutter', 'applause', 'band', 'bar' and 'murmur'. Silent unless the sound is on.
          */
         answer(kind) {
             if (!on || !context || context.state !== 'running') return;

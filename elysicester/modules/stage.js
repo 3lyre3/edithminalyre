@@ -69,7 +69,7 @@ const TAKES_SHADOW = new Set(['dimGold', 'green', 'sand']);
  */
 const DUST_DISSOLVES = ['gold', 'bricking', 'dimGold', 'brick', 'stone', 'rock', 'steel', 'copper', 'turquoise', 'weed', 'amethyst', 'glass', 'arch', 'cloth', 'green', 'sign', 'glow', 'bridge', 'sand'];
 /** And what's drawn with materials of its own: what's laid on the cafés' walls, the hums, the paper. */
-const DUST_ON_WALLS = ['cafe-shadow', 'footlight-wash', 'hums', 'paper', 'hostel', 'cassandra', 'cassandra-faces'];
+const DUST_ON_WALLS = ['cafe-shadow', 'footlight-wash', 'hums', 'paper', 'hostel', 'cassandra', 'cassandra-faces', 'ball'];
 /**
  * A safety net for slower phones: if frames run slower than this (seconds) for a sustained stretch,
  * the drawing buffer steps down a quarter at a time, never below 1. It only ever steps down, so it can't
@@ -234,6 +234,8 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
     if (walk?.bird) scene.add(walk.bird);
     // (Cassandra's doorway, where her shadow stands: a body goes round, not in. A trial: places.js.)
     if (walk && places.cassandra) walk.standsIn(places.cassandra.bars.x, places.cassandra.bars.z, places.cassandra.bars.radius);
+    // (The charity ball's speech, while it's given, is taken in by the walking camera along with the walker: places.js.)
+    if (walk && places.ball) places.ball.onWatch = (point) => walk.watch(point);
     if (walk) {
         for (const key of [...HOLLOWED, 'rock']) walkerShadow(materials[key], walk);
         walkerClears(materials.steel, walk);
@@ -341,6 +343,7 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
     // and would spend the one update on a scene with no shadows in it).
     let shadowsDrawn = false;
     let running = false;
+    let next = 0;
     let last = 0;
     let elapsed = 0;
     let lastInfo = { calls: 0, triangles: 0, points: 0, lines: 0 };
@@ -375,6 +378,7 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         places.update(elapsed);
         places.hostelDoor?.update(dt, walk?.state);
         places.cassandra?.update(dt, walk?.state);
+        places.ball?.update(dt, walk?.state, camera);
         dust?.update(elapsed);
         dust?.cull(camera);
         hollowMap.update(dt);
@@ -397,7 +401,7 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         for (const listener of frameListeners) listener(dt, elapsed);
         // The readout counts real time, so a slow device shows its true rate (dt is clamped for the animation).
         readout?.(Math.min(real, 1), lastInfo);
-        requestAnimationFrame(frame);
+        next = requestAnimationFrame(frame);
     }
 
     canvas.addEventListener('webglcontextlost', (event) => {
@@ -423,6 +427,8 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         touch: places.touch,
         /** Cassandra's house (a trial): its door's scene, for main.js to give its sounds and her words; or null. */
         cassandra: places.cassandra,
+        /** The charity ball (a trial): its scene, for main.js to give its sounds and the words; or null. */
+        ball: places.ball,
         /** The city's toon steps, for what's drawn later in its light (creatures.js). */
         gradientMap: materials.gold.gradientMap,
         /** The way to the light the shadows fall from: the walk's (flying as a hum, its higher sun), else the key light. */
@@ -448,10 +454,12 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
             if (running) return;
             running = true;
             last = 0;
-            requestAnimationFrame(frame);
+            next = requestAnimationFrame(frame);
         },
         stop() {
+            // (Called off, so starting again at once can't run two loops.)
             running = false;
+            cancelAnimationFrame(next);
         },
         /** Run something after every frame: (dt, elapsed) => void. */
         onFrame(listener) {

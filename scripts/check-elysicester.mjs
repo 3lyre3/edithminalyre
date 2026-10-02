@@ -428,7 +428,7 @@ async function checkTexts(fragmentsData, placeIds, placesData) {
     const textsPath = `${DIORAMA_DIR}/read.html`;
     const texts = await readFile(path.join(ROOT, textsPath), 'utf8').catch(() => null);
     if (texts === null) {
-        fail(`${textsPath}: missing (where "Stay - Read" and the one option's "back" go)`);
+        fail(`${textsPath}: missing (where "Stay - Read" goes)`);
         return;
     }
     const lostPath = `${DIORAMA_DIR}/data/lost-pages.json`;
