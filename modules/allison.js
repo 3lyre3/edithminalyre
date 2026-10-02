@@ -283,7 +283,9 @@ export function bioFrom(html) {
         for (const link of linked) {
             const href = link.getAttribute('href');
             if (!href || href.startsWith('mailto:') || /google\./.test(href)) continue;
-            if (!links.some((known) => known.href === href)) links.push({ href: new URL(href, new URL('../', window.location.href)).href, label: link.textContent.trim() });
+            // (Compared once resolved: an address with its closing slash and the same without are one place, listed once.)
+            const resolved = new URL(href, new URL('../', window.location.href)).href;
+            if (!links.some((known) => known.href === resolved)) links.push({ href: resolved, label: link.textContent.trim() });
         }
         // (The line of links alone, and the search link at its foot, are links to go on to, not words of the bio.)
         const bare = paragraph.cloneNode(true);

@@ -100,6 +100,8 @@ const FEEL = [[0, 0], [GIRTH, 0], [-GIRTH, 0], [0, GIRTH], [0, -GIRTH]];
 const EDGE = 0.35;
 /** "walk from here": how far about a place to look for somewhere to stand (in rings this far apart). */
 const STAND_SEARCH = 8;
+/** And, for "walk from here" where there's nowhere so near (a place out over the water), this far. */
+const STAND_SEARCH_FAR = 20;
 const STAND_STEP = 0.3;
 /** And set down there, how much open floor it wants ahead of it, facing the place, before it faces another way. */
 const OPEN_AHEAD = 1;
@@ -721,8 +723,8 @@ export function createWalk({ light, reducedMotion, gradientMap = null }) {
      * The nearest place about (x, z) a body can stand (floor there, no wall within its girth) and go on from (not a
      * pocket between walls, which it could be set down in but never leave), or null.
      */
-    function standingNear(x, z) {
-        for (let radius = 0; radius <= STAND_SEARCH; radius += STAND_STEP) {
+    function standingNear(x, z, reach = STAND_SEARCH) {
+        for (let radius = 0; radius <= reach; radius += STAND_STEP) {
             const around = radius === 0 ? 1 : Math.max(8, Math.round((radius * Math.PI * 2) / STAND_STEP));
             for (let k = 0; k < around; k += 1) {
                 const angle = (k / around) * Math.PI * 2;
@@ -1771,7 +1773,10 @@ export function createWalk({ light, reducedMotion, gradientMap = null }) {
          * nowhere to stand near enough.
          */
         walkFrom(x, z) {
-            const stand = standingNear(x, z);
+            // (A place out over the water, the edge's lotus in the bay, say, has nowhere to stand near it: then from the
+            // nearest place there is, further off, facing it. The playtester, 2 Oct: "fly from here" at the edge had
+            // left the hum where it was, at the jetty.)
+            const stand = standingNear(x, z) ?? standingNear(x, z, STAND_SEARCH_FAR);
             if (!stand) return false;
             const away = Math.hypot(x - stand.x, z - stand.z);
             let heading = away > 0.6 ? Math.atan2(x - stand.x, z - stand.z) : Math.atan2(-stand.x, -stand.z);

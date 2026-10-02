@@ -248,7 +248,8 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
     const signs = await createSigns({ data: data.signs, mounts: places.mounts, material: materials.sign, renderer });
     signs.mesh.castShadow = true;
     scene.add(signs.mesh);
-    // The jetty's two signs, in Elm's words (a trial: guides.js), where places.js mounted them.
+    // The jetty's signs, in Elm's words (a trial: guides.js), where places.js mounted them (the pinch sign on a touch
+    // screen only).
     const guides = await createGuides({ mounts: places.mounts, gradientMap: materials.gold.gradientMap, renderer });
     if (guides) {
         scene.add(guides.mesh);
@@ -417,7 +418,7 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         rig,
         anchors: places.anchors,
         signs,
-        /** The jetty's two signs (a trial: guides.js), or null. */
+        /** The jetty's signs (a trial: guides.js), or null. */
         guides,
         solids,
         canvas,

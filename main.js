@@ -50,7 +50,7 @@ const PROMPT_FRAGMENT = 'nbp-e1-mega-screen-1';
 /** E's lines in the Intermaze (Elm, 1 Oct, cut "They?" and the rail, so they end on "You never remember the dreams."). */
 const VOICE_FRAGMENTS = ['nbp-e3-intermaze-1'];
 /**
- * Where "Stay - Read" goes: the texts, whole, with the lost pages marked (and the one option's "leave", without the
+ * Where "Read" goes: the texts, whole, with the lost pages marked (and the one option's "leave", without the
  * choice, a trial; with it, "leave" goes back to the choice: Elm, 2 Oct).
  */
 const TEXT_PAGE = 'read.html';
@@ -175,11 +175,19 @@ async function lostPageWhole(id) {
     return { nodes: () => [...piece.cloneNode(true).childNodes], pages };
 }
 
-/** Hold the city still: the drawn plate instead of the live scene, the points as a list. */
-function showStill() {
+/**
+ * Hold the city still: the drawn plate instead of the live scene, the points as a list. failed: something it needed
+ * didn't arrive (not the browser lacking WebGL): then, with no list to promise, the way to the texts instead.
+ */
+function showStill(failed = false) {
     root.dataset.mode = 'still';
     const fallback = byId('fallback');
-    fallback.querySelector('.fallback-note').append(byId('points'));
+    const points = byId('points');
+    fallback.querySelector('.fallback-note').append(points);
+    const listed = points.querySelector('.points-list')?.children.length > 0;
+    fallback.querySelector('.fallback-webgl').hidden = failed || !listed;
+    fallback.querySelector('.fallback-failed').hidden = !(failed || !listed);
+    points.hidden = !listed;
     fallback.hidden = false;
     // With no camera to turn, a sign in the list is simply its words.
     for (const button of byId('signs-list').querySelectorAll('button')) {
@@ -230,8 +238,8 @@ function fillPrompt(fragment) {
 /**
  * The choice, first (a trial, trials.js; Elm: "a screen that offers 'Explore - Win' on one side and 'Stay - Read' on
  * the other", and "the choice ... should come before the ascii swirl"). It's already on the screen (the page's first
- * paint shows it: index.html, style.css); this takes it over. "Stay - Read" is a link, to the texts (read.html);
- * "Explore - Win" brings the Mega-Screen's card up beneath it as it fades (Elm: "the mega screen could show up after
+ * paint shows it: index.html, style.css); this takes it over (its sides just "Explore" and "Read" since 2 Oct, as Elm asked). "Read" is a link, to the texts (read.html);
+ * "Explore" brings the Mega-Screen's card up beneath it as it fades (Elm: "the mega screen could show up after
  * the choice page and before the ascii swirl"), and the card's gesture begins the swirl, as it always did.
  */
 function offerChoice(threshold, onCard) {
@@ -242,7 +250,7 @@ function offerChoice(threshold, onCard) {
     delete root.dataset.choosing;
     explore.focus({ preventScroll: true });
     explore.addEventListener('click', () => {
-        // (Fading, it's out of reach: a second tap meets the card beneath it, not "Stay - Read".)
+        // (Fading, it's out of reach: a second tap meets the card beneath it, not "Read".)
         choice.classList.remove('is-shown');
         choice.classList.add('is-leaving');
         choice.inert = true;
@@ -252,6 +260,11 @@ function offerChoice(threshold, onCard) {
         threshold.showCard();
         onCard?.();
     }, { once: true });
+    // ("Explore" pressed while the code was still arriving: index.html kept the wish, and here it's taken up.)
+    if (root.dataset.exploreWanted !== undefined) {
+        delete root.dataset.exploreWanted;
+        explore.click();
+    }
 }
 
 /**
@@ -318,8 +331,8 @@ function wireHumButton(stage) {
 }
 
 /**
- * Leave (the one option's last step): the choice again, over the city, which rests behind it. "Explore - Win" comes
- * back into the city just where it was left (the card and the Intermaze were the way in); "Stay - Read" opens the
+ * Leave (the one option's last step): the choice again, over the city, which rests behind it. "Explore" comes
+ * back into the city just where it was left (the card and the Intermaze were the way in); "Read" opens the
  * texts in a new tab, so the city stays where it was left (Elm: "links that make new tabs for ... stuff that takes us
  * out of the game").
  */
@@ -359,6 +372,8 @@ function liftVeil(arrive) {
 }
 
 async function boot() {
+    // (The code is here: index.html's own little script stands aside from now on.)
+    root.dataset.booted = '';
     const audio = createAudio();
     // With one option at the top of the screen (a trial), the rest stands aside (style.css), and the sound switch
     // keeps a quiet corner of its own.
@@ -483,7 +498,8 @@ async function boot() {
                 listLabel: `A flower at ${where}: President Oedipus, its ${ORDINALS[spot.part - 1]} part`,
                 text: part.elements.map((element) => element.textContent.replace(/\s+/g, ' ').trim()).filter(Boolean).join('\n\n'),
                 nodes: () => part.elements.map((element) => element.cloneNode(true)),
-                read_on: `${PO_PAGE}#part-${spot.part}`,
+                // (Read on in the texts, the works' one address: Elm, "all of it on one long page".)
+                read_on: `${TEXT_PAGE}#po-part-${spot.part}`,
                 status: 'approved',
             });
         }
@@ -996,7 +1012,7 @@ async function boot() {
 }
 
 boot().catch((error) => {
-    showStill();
+    showStill(true);
     byId('threshold').hidden = true;
     byId('points').inert = false;
     root.dataset.threshold = 'done';

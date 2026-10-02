@@ -1,0 +1,7 @@
+# The city's code at its stamped address (scripts/stamp-elysicester.mjs) never changes there: a browser may keep it.
+/v/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Always over HTTPS. (Not yet its subdomains: www doesn't answer yet.)
+/*
+  Strict-Transport-Security: max-age=31536000

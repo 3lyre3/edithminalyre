@@ -78,19 +78,28 @@
         return glow;
     }
 
+    // The glow follows the pointer, moved by transform alone (nothing laid out again), and rests when it has caught
+    // up; with no pointer that hovers (a touch screen), or under reduced motion, there's none.
     function animateGlow(glow) {
-        if (motionQuery.matches) return;
+        if (motionQuery.matches || window.matchMedia('(hover: none)').matches) return;
 
         let x = pointer.x;
         let y = pointer.y;
+        let running = false;
         const frame = () => {
             x += (pointer.x - x) * 0.08;
             y += (pointer.y - y) * 0.08;
-            glow.style.left = `${x}px`;
-            glow.style.top = `${y}px`;
+            glow.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) translate(-50%, -50%)`;
+            if (Math.abs(pointer.x - x) + Math.abs(pointer.y - y) > 0.5) requestAnimationFrame(frame);
+            else running = false;
+        };
+        const wake = () => {
+            if (running) return;
+            running = true;
             requestAnimationFrame(frame);
         };
-        requestAnimationFrame(frame);
+        document.addEventListener('mousemove', wake, { passive: true });
+        wake();
     }
 
     function mountWisp() {

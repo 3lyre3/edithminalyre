@@ -11,7 +11,7 @@
     --ink: #131316;
     --smoke: #1a1a1e;
     --ash: #2a2a2e;
-    --stone: #505058;
+    --stone: #777783;
     --bone: #808088;
     --pale: #a8a8b2;
     --silver: #c8c8d0;
@@ -60,8 +60,8 @@
     --ink: #e8e7e5;
     --smoke: #dddcd9;
     --ash: #c8c7c4;
-    --stone: #8a8987;
-    --bone: #6a6968;
+    --stone: #666564;
+    --bone: #5a5958;
     --pale: #4a4948;
     --silver: #3a3938;
     --ivory: #2a2928;
@@ -189,6 +189,18 @@ body {
 
 .theme-toggle:hover svg {
     fill: var(--accent);
+}
+
+.theme-toggle .sun path {
+    fill: none;
+    stroke: var(--text-secondary);
+    stroke-width: 2;
+    stroke-linecap: round;
+    transition: stroke 0.3s ease;
+}
+
+.theme-toggle:hover .sun path {
+    stroke: var(--accent);
 }
 
 /* Sun icon for night mode, moon for day */
@@ -930,6 +942,8 @@ a:hover {
 
 .cursor-glow {
     position: fixed;
+    left: 0;
+    top: 0;
     width: 400px;
     height: 400px;
     border-radius: 50%;
@@ -943,6 +957,12 @@ a:hover {
 
 body:hover .cursor-glow {
     opacity: 1;
+}
+
+@media (hover: none) {
+    .cursor-glow {
+        display: none;
+    }
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -1528,4 +1548,20 @@ body.foyer h1.title { animation: breathe 8s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) {
     .wisp { display: none; }
     body.foyer h1.title { animation: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   REDUCED MOTION: the pages hold still
+   ═══════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    body::after,
+    .grain,
+    main {
+        animation: none;
+    }
 }

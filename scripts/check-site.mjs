@@ -74,6 +74,8 @@ function resolveLocalReference(fromFile, rawReference) {
         return null;
     }
     if (!target || target.endsWith('/')) target += 'index.html';
+    // (The host serves a page without its ".html", and answers the ".html" form with a 308 to it: /read is read.html.)
+    if (!fileSet.has(target) && fileSet.has(`${target}.html`)) target = `${target}.html`;
     return { target, fragment: decodeURIComponent(url.hash.slice(1)), rawFragment: url.hash.slice(1), reference };
 }
 
@@ -171,10 +173,31 @@ for (const jsonFile of relativeFiles.filter((file) => file.endsWith('.json') || 
 const sitemap = await textFor('sitemap.xml');
 if (!sitemap.startsWith('<?xml') || !sitemap.trimEnd().endsWith('</urlset>')) errors.push('sitemap.xml: incomplete XML document');
 for (const match of sitemap.matchAll(/https:\/\/edithminalyre\.com(?:\/[^<\s"']*)?/g)) checkReference('sitemap.xml', match[0]);
-// (Every page of the site is listed, but the 404, which asks not to be indexed.)
+// Every page's addresses are as the host serves them, without ".html" (it answers that form with a redirect): its
+// canonical and og:url, one and the same; the sitemap lists every page that is its own canonical (not the 404, which
+// asks not to be indexed, nor a page that names another as its canonical: that one is listed instead); and a page
+// shared by its og:title shows a picture.
+const listed = new Set([...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map((match) => match[1]));
+for (const address of listed) if (/\.html$/.test(address)) errors.push(`sitemap.xml: ${address} ends in ".html" (the host redirects that form: list it without)`);
 for (const htmlFile of htmlFiles.filter((file) => file !== '404.html')) {
-    const address = `https://edithminalyre.com/${htmlFile.replace(/(^|\/)index\.html$/, '$1')}`;
-    if (!sitemap.includes(`<loc>${address}</loc>`)) errors.push(`sitemap.xml: doesn't list ${address}`);
+    const html = await textFor(htmlFile);
+    const own = `https://edithminalyre.com/${htmlFile.replace(/(^|\/)index\.html$/, '$1').replace(/\.html$/, '')}`;
+    const canonical = /<link\s+rel="canonical"\s+href="([^"]+)"/.exec(html)?.[1] ?? null;
+    const shared = /<meta\s+property="og:url"\s+content="([^"]+)"/.exec(html)?.[1] ?? null;
+    for (const [what, address] of [['canonical', canonical], ['og:url', shared]]) {
+        if (address && /\.html(?:$|[#?])/.test(address)) errors.push(`${htmlFile}: its ${what} ${address} ends in ".html" (the host redirects that form: name it without)`);
+    }
+    if (canonical && shared && canonical !== shared) errors.push(`${htmlFile}: its canonical (${canonical}) and og:url (${shared}) differ`);
+    if (!canonical || canonical === own) {
+        if (!listed.has(own)) errors.push(`sitemap.xml: doesn't list ${own}`);
+    } else if (listed.has(own)) {
+        errors.push(`sitemap.xml: lists ${own}, whose canonical is ${canonical}`);
+    } else if (!listed.has(canonical)) {
+        errors.push(`sitemap.xml: doesn't list ${canonical} (the canonical of ${htmlFile})`);
+    }
+    if (/<meta\s+property="og:title"/.test(html) && !/<meta\s+property="og:image"\s+content="https:\/\/edithminalyre\.com\/[^"]+"/.test(html)) {
+        errors.push(`${htmlFile}: shared by its og:title, it shows no og:image`);
+    }
 }
 
 for (const stalePath of [
