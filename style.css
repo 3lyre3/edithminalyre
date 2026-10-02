@@ -1049,8 +1049,11 @@ html[data-settling] .threshold-begin {
     cursor: default;
 }
 
-/* Diving into the Mega-Screen (a trial, dive: megascreen.js): its words step aside as the eye goes in. */
-.threshold.is-diving .threshold-prompt {
+/* Diving into the Mega-Screen (a trial, dive: megascreen.js): its words step aside as the eye goes in. And leaving for
+   the swirl without a dive, they go at once, not with the card (its fade let the prompt's box, a keyboard's focus
+   outline, sit over the swirl's first line: the playtester, 3 Oct, "a button prompt in the middle of a trance"). */
+.threshold.is-diving .threshold-prompt,
+.threshold.is-leaving .threshold-prompt {
     opacity: 0;
     transition: opacity 0.35s ease;
 }

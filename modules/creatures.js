@@ -890,9 +890,12 @@ const shadeFragment = /* glsl */ `
 
 /**
  * A shade's strip of floor: from (x, z) along `way` for `length`, `breadth` across, laid on the floor as it lies
- * (`floorAt`), fading out where the floor ends or drops away. uv runs over its cell, feet to head.
+ * (`floorAt`), fading out where the floor ends or drops away; and where a wall catches it (`wallAt`, once the walls are
+ * known), the rest climbs the wall from its foot, as high as the light's `slope` takes it, as the walker's own shadow
+ * does (walk.js: "as far as that wall ... and the rest climbs it"; Elm's ledger, the playtester's: "shades for the
+ * flying givers on walls ... as the visitor's hum has"). uv runs over its cell, feet to head.
  */
-function shadeStrip({ x, y, z, way, length, breadth, cell, floorAt, surfaceAt }) {
+function shadeStrip({ x, y, z, way, length, breadth, cell, floorAt, surfaceAt, wallAt = null, slope = 1 }) {
     const ALONG = 12;
     const ACROSS = 2;
     const across = new Vector3(-way.z, 0, way.x);
@@ -907,6 +910,8 @@ function shadeStrip({ x, y, z, way, length, breadth, cell, floorAt, surfaceAt })
     // may fall from a floor's edge onto the bay's water, as a shadow would.)
     const surfaced = surfaceAt?.(x, z) ?? null;
     const ended = new Array(ACROSS + 1).fill(false);
+    // (Where a wall has caught a column of it: the wall's foot, and how far along the shade it stands.)
+    const climbs = new Array(ACROSS + 1).fill(null);
     for (let i = 0; i <= ALONG; i += 1) {
         const row = [];
         let last = y;
@@ -917,6 +922,27 @@ function shadeStrip({ x, y, z, way, length, breadth, cell, floorAt, surfaceAt })
             const along = -0.08 + t * length;
             const px = x + way.x * along + across.x * s * breadth;
             const pz = z + way.z * along + across.z * s * breadth;
+            // A wall catches it here, where it lay on its floor until now: its foot found between the two (to the walls
+            // map's own cells), and from there on, the rest climbs it.
+            const before = i > 0 ? grid[i - 1][j] : null;
+            if (climbs[j] === null && before?.keep === 1 && !ended[j] && wallAt?.(px, pz)) {
+                let clear = 0;
+                let wall = 1;
+                const fromX = before.p[0];
+                const fromZ = before.p[2];
+                for (let k = 0; k < 6; k += 1) {
+                    const mid = (clear + wall) / 2;
+                    if (wallAt(fromX + (px - fromX) * mid, fromZ + (pz - fromZ) * mid)) wall = mid;
+                    else clear = mid;
+                }
+                const step = length / ALONG;
+                climbs[j] = { x: fromX + (px - fromX) * clear, z: fromZ + (pz - fromZ) * clear, y: before.p[1] - 0.018, along: along - step * (1 - clear) };
+            }
+            if (climbs[j] !== null) {
+                const foot = climbs[j];
+                row.push({ p: [foot.x, foot.y + (along - foot.along) * slope + 0.018, foot.z], uv: [cell[0] + (s + 0.5) * cell[2], cell[1] + t * cell[3]], keep: 1, water: 0, climbing: true });
+                continue;
+            }
             let floor;
             let water = false;
             if (surfaced !== null) {
@@ -947,8 +973,11 @@ function shadeStrip({ x, y, z, way, length, breadth, cell, floorAt, surfaceAt })
             const b = grid[i][j + 1];
             const c = grid[i + 1][j + 1];
             const d = grid[i + 1][j];
-            // (Where the floor steps by more than a stair, the shade doesn't hang across the gap.)
-            const step = Math.max(...[a, b, c, d].map((v) => v.p[1])) - Math.min(...[a, b, c, d].map((v) => v.p[1]));
+            // (Where the floor steps by more than a stair, the shade doesn't hang across the gap. Up a wall, its corners
+            // stand as high as the wall takes them, each column from where the wall caught it: only the floor's own
+            // corners are asked.)
+            const lying = [a, b, c, d].filter((v) => !v.climbing).map((v) => v.p[1]);
+            const step = lying.length > 1 ? Math.max(...lying) - Math.min(...lying) : 0;
             if (step > 0.3) continue;
             for (const vertex of [a, b, c, a, c, d]) push(vertex);
         }
@@ -1203,10 +1232,13 @@ function shortest(angle) {
  * @param {((x: number, z: number, near: number) => number | null) | null} options.floorAt - the floor, to lay shades on
  * @param {((x: number, z: number) => number | null) | null} [options.surfaceAt] - a surface drawn above the floor (the
  *   Steel Garden's disc, the hostel's room): a shade begun on one lies on it and ends where it ends
+ * @param {((x: number, z: number) => boolean | null) | null} [options.wallAt] - whether a wall stands there, at a
+ *   body's height (null until the walls are laid): where one catches a shade, the rest climbs it
+ * @param {Promise<boolean> | null} [options.wallsReady] - resolves once the walls are laid: the shades are laid again then
  * @param {boolean} options.reducedMotion
  * @param {import('three').Camera} [options.camera] - givers far from it aren't drawn (DRAW_FAR)
  */
-export function createCreatures({ creatures, given, gradientMap, light, floorAt, surfaceAt = null, reducedMotion, camera = null }) {
+export function createCreatures({ creatures, given, gradientMap, light, floorAt, surfaceAt = null, wallAt = null, wallsReady = null, reducedMotion, camera = null }) {
     const pugs = creatures.filter((creature) => creature.kind === 'pug');
     const hums = creatures.filter((creature) => creature.kind === 'hum');
     const group = { objects: [], materials: [] };
@@ -1291,25 +1323,34 @@ export function createCreatures({ creatures, given, gradientMap, light, floorAt,
     const shades = shadeAtlas();
     const toLight = light.clone().normalize();
     const way = new Vector3(-toLight.x, 0, -toLight.z).normalize();
-    let wraith = 0;
-    let bullBoy = 0;
-    const kindOf = new Map();
-    const strips = creatures.filter((creature) => !creature.noShade).map((creature) => {
-        const [x, y, z] = creature.at;
-        const kind = creature.kind === 'pug' ? 'pug' : 'hum';
-        const index = kind === 'pug' ? WRAITHS.length + ((creature.shade ?? bullBoy++) % BULL_BOYS.length) : (creature.shade ?? wraith++) % WRAITHS.length;
-        // The hums' shades lie on the floor beneath them (their spot's floor, given as `floor`, else straight down, or
-        // the bay's water), if there's one within reach below: a hum under the island hangs over nothing.
-        let ground = y;
-        if (kind === 'hum') {
-            ground = creature.floor ?? surfaceAt?.(x, z) ?? floorAt?.(x, z, y - 1) ?? (onBay(x, z) ? SEA_LEVEL : null);
-            if (ground === null || ground > y || y - ground > SHADE_REACH) return null;
+    // (How far up a wall a shade climbs for each step it would have gone on along the floor: the light's own slope.)
+    const slope = Math.tan(Math.asin(MathUtils.clamp(toLight.y, 0.05, 0.99)));
+    /**
+     * Every giver's shade strip, the pugs' and the hums' apart: laid on its floor, and, given the walls, climbing the
+     * wall that catches it.
+     */
+    const layStrips = (walls) => {
+        let wraith = 0;
+        let bullBoy = 0;
+        const laid = { pug: [], hum: [] };
+        for (const creature of creatures) {
+            if (creature.noShade) continue;
+            const [x, y, z] = creature.at;
+            const kind = creature.kind === 'pug' ? 'pug' : 'hum';
+            const index = kind === 'pug' ? WRAITHS.length + ((creature.shade ?? bullBoy++) % BULL_BOYS.length) : (creature.shade ?? wraith++) % WRAITHS.length;
+            // The hums' shades lie on the floor beneath them (their spot's floor, given as `floor`, else straight down,
+            // or the bay's water), if there's one within reach below: a hum under the island hangs over nothing.
+            let ground = y;
+            if (kind === 'hum') {
+                ground = creature.floor ?? surfaceAt?.(x, z) ?? floorAt?.(x, z, y - 1) ?? (onBay(x, z) ? SEA_LEVEL : null);
+                if (ground === null || ground > y || y - ground > SHADE_REACH) continue;
+            }
+            const [length, breadth] = SHADE_SIZE[kind];
+            laid[kind].push(shadeStrip({ x, y: ground, z, way, length, breadth, cell: shades.cell(index), floorAt, surfaceAt, wallAt: walls, slope }));
         }
-        const [length, breadth] = SHADE_SIZE[kind];
-        const strip = shadeStrip({ x, y: ground, z, way, length, breadth, cell: shades.cell(index), floorAt, surfaceAt });
-        kindOf.set(strip, kind);
-        return strip;
-    }).filter(Boolean);
+        return laid;
+    };
+    const laid = layStrips(null);
     const shadeUniforms = { map: { value: shades.texture }, tint: { value: SHADE_TINT }, depth: { value: SHADE_DEPTH }, pull: { value: SHADE_PULL }, time: { value: 0 } };
     const shadeMaterial = (late) => new ShaderMaterial({
         uniforms: shadeUniforms,
@@ -1329,14 +1370,26 @@ export function createCreatures({ creatures, given, gradientMap, light, floorAt,
     // The hums' are drawn last of all, after the city's lights (the sun-dock's glow on its shallows washed the Episode 2
     // hum's shade out, 2 Oct): a hum flies well above its shade, so drawn late, it darkens the light it lies in, and
     // never the hum.
-    const pugStrips = strips.filter((strip) => kindOf.get(strip) === 'pug');
-    const humStrips = strips.filter((strip) => kindOf.get(strip) === 'hum');
-    const shadeMesh = new Mesh(pugStrips.length ? mergeGeometries(pugStrips, false) : new BufferGeometry(), shadeMaterial(false));
+    const merged = (strips) => (strips.length ? mergeGeometries(strips, false) : new BufferGeometry());
+    const shadeMesh = new Mesh(merged(laid.pug), shadeMaterial(false));
     shadeMesh.name = 'giver-shades';
     shadeMesh.renderOrder = 1;
-    const humShadeMesh = new Mesh(humStrips.length ? mergeGeometries(humStrips, false) : new BufferGeometry(), shadeMaterial(true));
+    const humShadeMesh = new Mesh(merged(laid.hum), shadeMaterial(true));
     humShadeMesh.name = 'giver-shades-hums';
     humShadeMesh.renderOrder = 3;
+    // Once the walls are laid (the hollows' worker, done with the city as built), the shades are laid again: where a
+    // wall catches one, the rest climbs it, as the walker's own does. (Laid before, they'd stop at its foot.)
+    if (wallAt && wallsReady) {
+        wallsReady.then((ok) => {
+            if (!ok) return;
+            const again = layStrips(wallAt);
+            for (const [mesh, strips] of [[shadeMesh, again.pug], [humShadeMesh, again.hum]]) {
+                const old = mesh.geometry;
+                mesh.geometry = merged(strips);
+                old.dispose();
+            }
+        }, () => {});
+    }
     for (const mesh of [pugMesh, boardMesh, humMesh]) mesh.renderOrder = 2;
 
     // (They stand in the city's own long shadows, as everything does; they cast none of their own, having their shades.)

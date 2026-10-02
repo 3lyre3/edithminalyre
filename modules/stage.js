@@ -500,6 +500,11 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         cassandra: places.cassandra,
         /** The charity ball (a trial): its scene, for main.js to give its sounds and the words; or null. */
         ball: places.ball,
+        /**
+         * Resolves (true) once the walls are laid, the hollows' worker done with the city as built (hollows.js): what
+         * lies on the ground and climbs a wall where one catches it can then find them (walk.wallAt).
+         */
+        wallsReady: hollowMap.ready,
         /** The city's toon steps, for what's drawn later in its light (creatures.js). */
         gradientMap: materials.gold.gradientMap,
         /**
