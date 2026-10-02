@@ -172,11 +172,11 @@
    "kind": "hum",
    "at": [
     24.6,
-    3.1,
+    1.2,
     -6.8
    ],
    "facing": 0,
-   "noShade": true
+   "floor": -0.6
   },
   {
    "fragment": "nbp-e1-underside-1",

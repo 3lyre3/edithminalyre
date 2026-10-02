@@ -44,6 +44,7 @@ import {
     Vector2,
     WebGLRenderTarget,
 } from 'three';
+import { trialOn } from './trials.js';
 
 // =============================================================================
 // Constants
@@ -51,6 +52,15 @@ import {
 
 /** The most the lines' wobble is scaled up by, close to the city (at the whole city's distance, 1). */
 const WOBBLE_MOST = 3.2;
+
+/**
+ * On a touch screen (a phone, a tablet), drawn lighter (a trial, nimble: Elm, "Whatever we intend the visitor to
+ * experience must pass through the small machine in their hands"; ?nimble=off draws as on a computer): no multisampled
+ * render (on a phone's graphics, resolving it, and the depth the lines are read from, costs more memory traffic than
+ * all the rest of a frame; the ink's lines already draw the edges), and no more than one and a half pixels to each of
+ * the page's (as messenger.abeto.co draws: stage.js).
+ */
+export const NIMBLE = trialOn('nimble') && Boolean(globalThis.matchMedia?.('(pointer: coarse)').matches);
 
 // =============================================================================
 // Shaders
@@ -274,7 +284,7 @@ export function createInk(renderer, { reducedMotion }) {
     const canFloat = renderer.extensions.has('EXT_color_buffer_float') || renderer.extensions.has('EXT_color_buffer_half_float');
     const target = new WebGLRenderTarget(size.x, size.y, {
         type: canFloat ? HalfFloatType : UnsignedByteType,
-        samples: Math.min(4, renderer.capabilities.maxSamples ?? 0),
+        samples: NIMBLE ? 0 : Math.min(4, renderer.capabilities.maxSamples ?? 0),
         depthTexture: new DepthTexture(size.x, size.y),
     });
 

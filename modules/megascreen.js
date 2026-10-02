@@ -81,6 +81,8 @@ const WHEELS_AT = [-50, -25, 0, 25, 50];
 const EYE = 1.6;
 /** How long it takes to roll in and stand (seconds), from how far right (beyond the edge of the view). */
 const ROLL_SECONDS = 8.5;
+/** And once it stands, how long its one rock back on its wheels takes to die away (seconds): then it has settled. */
+const SETTLE_SECONDS = 1.2;
 /**
  * The letters: each flicker (this long), a short step left (this share of the face's height), as the book has it;
  * the letters stand this much of the face's height.
@@ -443,8 +445,10 @@ function createWheelDust(pixelRatio) {
  * @param {boolean} options.reducedMotion - it stands already, its letters still
  * @param {() => boolean} options.showing - whether the card is still up
  * @param {() => void} [options.onShown] - its first frame is on the canvas
+ * @param {() => void} [options.onSettled] - it has rolled in and stood, its rock died away (under reduced motion, it
+ *   stands from its first frame)
  */
-export async function showMegaScreen({ renderer, fit, reducedMotion, showing, onShown }) {
+export async function showMegaScreen({ renderer, fit, reducedMotion, showing, onShown, onSettled }) {
     if (!showing()) return;
     const strip = await letterStrip();
     if (!showing()) {
@@ -592,6 +596,7 @@ export async function showMegaScreen({ renderer, fit, reducedMotion, showing, on
     // motion nothing moves, so it's drawn only when the canvas changes.)
     let frames = 0;
     let drawnStill = 0;
+    let settled = false;
     await new Promise((resolve) => {
         const step = (now) => {
             if (!showing()) {
@@ -601,6 +606,10 @@ export async function showMegaScreen({ renderer, fit, reducedMotion, showing, on
             began ??= now;
             const t = (now - began) / 1000;
             frames += 1;
+            if (!settled && shown && (reducedMotion || t >= ROLL_SECONDS + SETTLE_SECONDS)) {
+                settled = true;
+                onSettled?.();
+            }
             const resized = fit();
             if (resized) {
                 frame();
