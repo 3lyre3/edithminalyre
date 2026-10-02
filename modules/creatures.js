@@ -132,6 +132,13 @@ const LIFE = 1.7;
 /** How near (metres) the one who's come must be for a creature to turn to them. */
 const NOTICE = 4.5;
 
+/**
+ * Givers further than this from the camera aren't drawn (out at the whole city they're specks, and that view keeps
+ * its triangles for the city itself); over the last stretch they sink into the floor rather than pop.
+ */
+const DRAW_FAR = 38;
+const DRAW_FADE = 6;
+
 // =============================================================================
 // Faces
 // =============================================================================
@@ -1140,8 +1147,9 @@ function shortest(angle) {
  * @param {Vector3} options.light - the way to the light the shades fall from (the hum's sun)
  * @param {((x: number, z: number, near: number) => number | null) | null} options.floorAt - the floor, to lay shades on
  * @param {boolean} options.reducedMotion
+ * @param {import('three').Camera} [options.camera] - givers far from it aren't drawn (DRAW_FAR)
  */
-export function createCreatures({ creatures, given, gradientMap, light, floorAt, reducedMotion }) {
+export function createCreatures({ creatures, given, gradientMap, light, floorAt, reducedMotion, camera = null }) {
     const pugs = creatures.filter((creature) => creature.kind === 'pug');
     const hums = creatures.filter((creature) => creature.kind === 'hum');
     const group = { objects: [], materials: [] };
@@ -1157,6 +1165,7 @@ export function createCreatures({ creatures, given, gradientMap, light, floorAt,
     pugMesh.name = 'pugs';
     pugMesh.count = pugs.length;
     pugMesh.frustumCulled = false;
+    // (Each pug's own, by its index; what's drawn is packed into the instances' slots each frame, near ones only.)
     const coat = new Float32Array(Math.max(1, pugs.length) * 3);
     const faceAt = new Float32Array(Math.max(1, pugs.length) * 2);
     const motion = new Float32Array(Math.max(1, pugs.length) * 4);
@@ -1164,10 +1173,13 @@ export function createCreatures({ creatures, given, gradientMap, light, floorAt,
         new Color(COATS[(pug.coat ?? index) % COATS.length]).toArray(coat, index * 3);
         faceAt.set(faceCell((pug.face ?? index) % FACES.length), index * 2);
     });
-    pugMesh.geometry.setAttribute('aCoat', new InstancedBufferAttribute(coat, 3));
-    pugMesh.geometry.setAttribute('aFace', new InstancedBufferAttribute(faceAt, 2));
-    const motionAttribute = new InstancedBufferAttribute(motion, 4);
+    const coatAttribute = new InstancedBufferAttribute(new Float32Array(coat.length), 3);
+    const faceAttribute = new InstancedBufferAttribute(new Float32Array(faceAt.length), 2);
+    const motionAttribute = new InstancedBufferAttribute(new Float32Array(motion.length), 4);
+    pugMesh.geometry.setAttribute('aCoat', coatAttribute);
+    pugMesh.geometry.setAttribute('aFace', faceAttribute);
     pugMesh.geometry.setAttribute('aMotion', motionAttribute);
+    const pugMatrices = pugs.map(() => new Matrix4());
 
     const boards = boardAtlas(pugs.map((pug) => pug.board ?? 'star'));
     const boardMesh = new InstancedMesh(boardGeometry(), boardMaterial(gradientMap, boards.texture), Math.max(1, pugs.length));
@@ -1180,18 +1192,18 @@ export function createCreatures({ creatures, given, gradientMap, light, floorAt,
         boardAt.set(boardCell(index), index * 2);
         paintAt[index] = given.has(pug.fragment) ? 1 : 0;
     });
-    boardMesh.geometry.setAttribute('aBoard', new InstancedBufferAttribute(boardAt, 2));
-    const paintAttribute = new InstancedBufferAttribute(paintAt, 1);
+    const boardAttribute = new InstancedBufferAttribute(new Float32Array(boardAt.length), 2);
+    const paintAttribute = new InstancedBufferAttribute(new Float32Array(paintAt.length), 1);
+    boardMesh.geometry.setAttribute('aBoard', boardAttribute);
     boardMesh.geometry.setAttribute('aPaint', paintAttribute);
     // The boards stand still: each behind its pug, facing the way the pug faces.
-    pugs.forEach((pug, index) => {
+    const boardMatrices = pugs.map((pug) => {
         const [x, y, z] = pug.at;
         const facing = pug.facing ?? 0;
         const back = pug.boardBack ?? 0.34;
         place.set(x - Math.sin(facing) * back, y, z - Math.cos(facing) * back);
-        boardMesh.setMatrixAt(index, matrix.compose(place, turn.setFromEuler(euler.set(0, facing, 0)), one));
+        return new Matrix4().compose(place, turn.setFromEuler(euler.set(0, facing, 0)), one);
     });
-    boardMesh.instanceMatrix.needsUpdate = true;
 
     // ---- The hums.
     const clock = { value: 0 };
@@ -1199,8 +1211,10 @@ export function createCreatures({ creatures, given, gradientMap, light, floorAt,
     humMesh.name = 'giver-hums';
     humMesh.count = hums.length;
     humMesh.frustumCulled = false;
-    hums.forEach((hum, index) => humMesh.setColorAt(index, new Color(PATINAS[(hum.patina ?? index) % PATINAS.length])));
+    const humColors = hums.map((hum, index) => new Color(PATINAS[(hum.patina ?? index) % PATINAS.length]));
+    humColors.forEach((color, index) => humMesh.setColorAt(index, color));
     if (humMesh.instanceColor) humMesh.instanceColor.needsUpdate = true;
+    const humMatrices = hums.map(() => new Matrix4());
     const blurMesh = new InstancedMesh(blurGeometry(), new MeshBasicMaterial({
         color: new Color(0xd09050), transparent: true, opacity: 0.14, depthWrite: false, side: DoubleSide, fog: false,
     }), Math.max(1, hums.length));
@@ -1287,7 +1301,7 @@ export function createCreatures({ creatures, given, gradientMap, light, floorAt,
         const wag = reducedMotion ? 0 : Math.sin(elapsed * (happy < 2 ? 14 : 3) + index) * (happy < 2 ? 0.5 : 0.2);
         motion.set([own.look, own.nod, own.tilt, wag], index * 4);
         place.set(x, y + hop, z);
-        pugMesh.setMatrixAt(index, matrix.compose(place, turn.setFromEuler(euler.set(0, facing, 0)), one));
+        pugMatrices[index].compose(place, turn.setFromEuler(euler.set(0, facing, 0)), one);
         // The board's paint going in, once given.
         if (own.given !== null) paintAt[index] = reducedMotion ? 1 : Math.min(1, Math.max(paintAt[index], (elapsed - own.given) / PAINT_SECONDS));
     }
@@ -1310,9 +1324,7 @@ export function createCreatures({ creatures, given, gradientMap, light, floorAt,
         const loop = reducedMotion || gave > 1.4 ? 0 : (gave / 1.4) * Math.PI * 2;
         place.set(x, y + bob + rise + (loop ? Math.sin(loop) * 0.35 : 0), z + (loop ? (1 - Math.cos(loop)) * 0.25 * Math.cos(own.look) : 0));
         euler.set(loop ? -loop : 0, own.look + twirl, 0);
-        matrix.compose(place, turn.setFromEuler(euler), scale);
-        humMesh.setMatrixAt(index, matrix);
-        blurMesh.setMatrixAt(index, matrix);
+        humMatrices[index].compose(place, turn.setFromEuler(euler), scale);
         // Steam, dripping off it.
         for (let puff = 0; puff < PUFFS; puff += 1) {
             const slot = index * PUFFS + puff;
@@ -1328,6 +1340,51 @@ export function createCreatures({ creatures, given, gradientMap, light, floorAt,
         }
     }
 
+    // ---- Which are drawn: those near the camera, packed into the instances' first slots (DRAW_FAR), each shrinking
+    // into its floor over the last stretch.
+    const shrink = new Matrix4();
+    const where = new Vector3();
+    const nearness = (at) => (camera ? MathUtils.clamp((DRAW_FAR - camera.position.distanceTo(where.fromArray(at))) / DRAW_FADE, 0, 1) : 1);
+    function pack() {
+        let drawn = 0;
+        pugs.forEach((pug, index) => {
+            const near = nearness(pug.at);
+            if (near <= 0) return;
+            shrink.makeScale(near, near, near);
+            pugMesh.setMatrixAt(drawn, matrix.multiplyMatrices(pugMatrices[index], shrink));
+            boardMesh.setMatrixAt(drawn, matrix.multiplyMatrices(boardMatrices[index], shrink));
+            coatAttribute.array.set(coat.subarray(index * 3, index * 3 + 3), drawn * 3);
+            faceAttribute.array.set(faceAt.subarray(index * 2, index * 2 + 2), drawn * 2);
+            motionAttribute.array.set(motion.subarray(index * 4, index * 4 + 4), drawn * 4);
+            boardAttribute.array.set(boardAt.subarray(index * 2, index * 2 + 2), drawn * 2);
+            paintAttribute.array[drawn] = paintAt[index];
+            drawn += 1;
+        });
+        pugMesh.count = drawn;
+        boardMesh.count = drawn;
+        let flying = 0;
+        hums.forEach((hum, index) => {
+            const near = nearness(hum.at);
+            if (near <= 0) {
+                // (Its steam goes with it, out of sight.)
+                for (let puff = 0; puff < PUFFS; puff += 1) steam.positions[(index * PUFFS + puff) * 3 + 1] = -1000;
+                return;
+            }
+            shrink.makeScale(near, near, near);
+            matrix.multiplyMatrices(humMatrices[index], shrink);
+            humMesh.setMatrixAt(flying, matrix);
+            blurMesh.setMatrixAt(flying, matrix);
+            humMesh.setColorAt(flying, humColors[index]);
+            flying += 1;
+        });
+        humMesh.count = flying;
+        blurMesh.count = flying;
+        for (const attribute of [pugMesh.instanceMatrix, boardMesh.instanceMatrix, coatAttribute, faceAttribute, motionAttribute, boardAttribute, paintAttribute, humMesh.instanceMatrix, blurMesh.instanceMatrix]) {
+            attribute.needsUpdate = true;
+        }
+        if (humMesh.instanceColor) humMesh.instanceColor.needsUpdate = true;
+    }
+
     let lastElapsed = 0;
     function update(elapsed) {
         const dt = Math.min(0.1, Math.max(0, elapsed - lastElapsed));
@@ -1335,11 +1392,7 @@ export function createCreatures({ creatures, given, gradientMap, light, floorAt,
         clock.value = reducedMotion ? 0.4 : elapsed;
         pugs.forEach((pug, index) => posePug(pug, index, elapsed, dt));
         hums.forEach((hum, index) => poseHum(hum, index, elapsed, dt));
-        pugMesh.instanceMatrix.needsUpdate = true;
-        motionAttribute.needsUpdate = true;
-        paintAttribute.needsUpdate = true;
-        humMesh.instanceMatrix.needsUpdate = true;
-        blurMesh.instanceMatrix.needsUpdate = true;
+        pack();
         steam.geometry.attributes.position.needsUpdate = true;
         steam.geometry.attributes.age.needsUpdate = true;
     }
@@ -1391,6 +1444,8 @@ export function createCreatures({ creatures, given, gradientMap, light, floorAt,
         notice(position) {
             visitor = position;
         },
+        /** For tests: how many there are, and how many are drawn now (those far off aren't). */
+        counts: () => ({ pugs: pugs.length, hums: hums.length, drawn: { pugs: pugMesh.count, hums: humMesh.count } }),
         update,
     };
 }

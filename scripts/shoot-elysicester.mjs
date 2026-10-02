@@ -104,8 +104,8 @@ const MIME = {
  * toggle round; soundOn: arrive with "sound on" remembered from a past visit.
  */
 const PASSES = {
-    desktop: { viewport: { width: 1280, height: 800 }, keyboard: true, begin: 'click', then: 'watch', expect: 'flight', sound: true, camera: true, dock: true, creatures: true },
-    mobile: { viewport: { width: 390, height: 844 }, deviceScaleFactor: 3, isMobile: true, hasTouch: true, begin: 'tap', then: 'skip', expect: 'flight', dock: true },
+    desktop: { viewport: { width: 1280, height: 800 }, keyboard: true, begin: 'click', then: 'watch', expect: 'flight', sound: true, camera: true, dock: true, creatures: true, plants: true },
+    mobile: { viewport: { width: 390, height: 844 }, deviceScaleFactor: 3, isMobile: true, hasTouch: true, begin: 'tap', then: 'skip', expect: 'flight', dock: true, plants: true },
     reduced: { viewport: { width: 1280, height: 800 }, reducedMotion: 'reduce', checkStillness: true, keyboard: true, begin: 'key', expect: 'crossfade', sound: true, soundOn: true, dock: true },
     nogl: { viewport: { width: 1280, height: 800 }, noWebGL: true, keyboard: true, begin: 'click', expect: 'crossfade' },
     // The optional extras, every one on (and the door made to open now): each must appear, and nothing else change.
@@ -998,8 +998,8 @@ async function dockRound(chromium, pass, shots) {
  * The givers (creatures.js), Allison (allison.js) and the win (inventory.js), on trial: every passage of Numbers by
  * Paint has a giver (a pug or a hum) and no other passage does; a pug says "squur" and a hum "chirp" where a place's
  * name would be; Allison says his line (Elm's words) and gives the bio, in English, from the site's bio page; the lost
- * pages are counted (data/lost-pages.json: Numbers by Paint's from the givers, President Oedipus's from its points of
- * light), each found one in the inventory leading to its mark in the texts; with all but the last gathered (remembered
+ * pages are counted (data/lost-pages.json: Numbers by Paint's from the givers, President Oedipus's five parts from its
+ * flowers), each found one in the inventory leading to its mark in the texts; with all but the last gathered (remembered
  * from an earlier visit), the last one given brings the win, once its passage is closed, and the win writes the whole
  * of it by hand (Elm's engine) as a page to take away, which must hold every lost page. Its own browser, as a
  * returning reader.
@@ -1021,12 +1021,13 @@ async function creaturesRound(chromium, pass, outDir, name) {
         for (const line of entered.problems) problems.push(`threshold: ${line}`);
         result.city = await page.evaluate(() => {
             const { creatures, allison, fragments, stage } = window.elysicesterDebug;
-            const count = (name) => stage.scene.getObjectByName(name)?.count ?? null;
             const toggle = document.getElementById('inventory-toggle');
+            // (All of them: those far from the camera aren't drawn, creatures.js.)
+            const counts = creatures?.counts() ?? { pugs: null, hums: null };
             return {
                 built: Boolean(creatures),
-                pugs: count('pugs'),
-                hums: count('giver-hums'),
+                pugs: counts.pugs,
+                hums: counts.hums,
                 shades: stage.scene.getObjectByName('giver-shades')?.geometry.attributes.position.count ?? 0,
                 allison: Boolean(allison) && Boolean(stage.scene.getObjectByName('allison')),
                 nbp: fragments.filter((fragment) => fragment.work === 'nbp').map((fragment) => ({ id: fragment.id, giver: creatures?.kindOf(fragment.id) ?? null })),
@@ -1035,6 +1036,8 @@ async function creaturesRound(chromium, pass, outDir, name) {
             };
         });
         const { city } = result;
+        // (Each lost page's words as the city has them: President Oedipus's parts are read from its page, not the data.)
+        const cityTexts = new Map(await page.evaluate(() => window.elysicesterDebug.fragments.map((fragment) => [fragment.id, fragment.text])));
         if (!city.built) problems.push('no givers');
         const kinds = data.creatures.reduce((sum, creature) => ({ ...sum, [creature.kind]: (sum[creature.kind] ?? 0) + 1 }), {});
         if (city.pugs !== (kinds.pug ?? 0)) problems.push(`${city.pugs} pugs drawn, ${kinds.pug} meant`);
@@ -1122,10 +1125,9 @@ async function creaturesRound(chromium, pass, outDir, name) {
             const file = path.join(outDir, `${name}-${download.suggestedFilename()}`);
             await download.saveAs(file);
             const html = await readFile(file, 'utf8');
-            const fragments = JSON.parse(await readFile(path.join(ROOT, 'data', 'fragments.json'), 'utf8')).fragments;
             // (Each lost page's first words, as the page writes them: its own escaping aside.)
             const plain = html.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
-            const missing = pieces.filter((id) => !plain.includes(fragments.find((fragment) => fragment.id === id).text.replace(/^…\s*/, '').split(/\s+/).slice(0, 4).join(' ')));
+            const missing = pieces.filter((id) => !cityTexts.has(id) || !plain.includes(cityTexts.get(id).replace(/^…\s*/, '').split(/\s+/).slice(0, 4).join(' ')));
             if (missing.length) problems.push(`the written page lacks ${missing.join(', ')}`);
             if (!html.includes('handToggle') || !html.includes('const G = {')) problems.push('the written page lacks the handwrite engine');
             result.written = { file: path.basename(file), bytes: html.length, missing };
@@ -1140,6 +1142,121 @@ async function creaturesRound(chromium, pass, outDir, name) {
             await reading.close();
             if (!(result.written.strokes > 0)) problems.push('the written page drew no handwriting');
         }
+    } catch (error) {
+        problems.push(`the round broke off: ${error.message.split('\n')[0]}`);
+    } finally {
+        await browser.close();
+    }
+    for (const line of [...messages, ...failures]) problems.push(line);
+    return { ...result, problems, ok: problems.length === 0 };
+}
+
+/**
+ * President Oedipus's five parts as its page has them (essays/president-oedipus.html, each marked id="part-N"; the
+ * first takes in its own paragraph, the rest begin after their ". . ."; the note goes with the last): id → its words,
+ * tags, entities and spaces aside (as check-elysicester.mjs cuts them).
+ */
+function essayParts(essay) {
+    const words = (html) => html.replace(/<[^>]+>/g, '')
+        .replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"')
+        .replace(/&#(\d+);/g, (_, code) => String.fromCodePoint(Number(code)))
+        .replace(/[\s ­]+/g, '');
+    const marks = [1, 2, 3, 4, 5].map((number) => {
+        const found = new RegExp(`<p[^>]*\\bid="part-${number}"[^>]*>[\\s\\S]*?</p>`).exec(essay);
+        return found ? { number, start: found.index, end: found.index + found[0].length } : null;
+    });
+    const parts = new Map();
+    if (marks.some((mark) => mark === null)) return parts;
+    const bodyEnd = essay.lastIndexOf('</div>', essay.indexOf('<div class="related">', marks[4].end));
+    for (const { number, start, end } of marks) parts.set(`po-part-${number}`, words(essay.slice(number === 1 ? start : end, number < 5 ? marks[number].start : bodyEnd)));
+    return parts;
+}
+
+/**
+ * President Oedipus's flowers (flowers.js), on trial (plants): on a first visit there are five, the first part in
+ * bloom and the rest in bud; a bud touched out of its turn doesn't open, and says where the bloom is (for a reader who
+ * can't see it glint); each, touched in its turn, opens its part whole, word for word as the essay's page has it, and
+ * wilts as the next comes into bloom; the lost pages count up as they're found. Its own browser, a first visit.
+ */
+async function plantsRound(chromium, pass, outDir, name) {
+    const { browser, context, page, messages, failures } = await openPass(chromium, pass);
+    const problems = [];
+    const result = { opened: [] };
+    try {
+        const flowerData = JSON.parse(await readFile(path.join(ROOT, 'data', 'flowers.json'), 'utf8'));
+        const parts = essayParts(await readFile(path.join(ROOT, flowerData.page), 'utf8'));
+        if (parts.size !== 5) problems.push(`${flowerData.page} doesn't mark its five parts`);
+        const pieces = JSON.parse(await readFile(path.join(ROOT, 'data', 'lost-pages.json'), 'utf8')).lost;
+        await page.goto(`${origin}/?debug=1&dock=off`, { waitUntil: 'load' });
+        const entered = await enter(page, context, pass, { begin: pass.begin, then: 'skip' });
+        for (const line of entered.problems) problems.push(`threshold: ${line}`);
+        const states = () => page.evaluate(() => window.elysicesterDebug.flowers?.snapshot().map((flower) => flower.state) ?? null);
+        result.first = await states();
+        if (!result.first) throw new Error('no flowers');
+        if (result.first.join(' ') !== 'bloom bud bud bud bud') problems.push(`at first the flowers were ${result.first.join(', ')}`);
+        // The camera brought to a flower, still, and the flower pressed (again, if the press was too slow to be a tap).
+        const pressFlower = async (id) => {
+            await page.evaluate((wanted) => {
+                window.elysicesterDebug.walk?.letGo?.();
+                window.elysicesterDebug.rig.setDrifting(false);
+                window.elysicesterDebug.focusFragment(wanted);
+            }, id);
+            await cameraSettled(page);
+            const spot = await page.evaluate((wanted) => window.elysicesterDebug.hotspots.screenPositions().find((entry) => entry.id === wanted), id);
+            if (!spot?.inFront || !spot.visible) return { pressed: false, spot };
+            for (let attempt = 0; attempt < PRESSES; attempt += 1) {
+                const press = await pressAt(page, context, pass, { x: spot.x, y: spot.y });
+                await page.waitForTimeout(600);
+                if (press < TAP_LIMIT || await page.evaluate(() => document.getElementById('reader').open)) break;
+            }
+            await page.waitForFunction(() => document.getElementById('reader').open, null, { timeout: 4000 }).catch(() => {});
+            return { pressed: true, spot };
+        };
+        // A bud, out of its turn.
+        const bud = await pressFlower('po-part-3');
+        result.bud = await page.evaluate(() => ({
+            open: document.getElementById('reader').open,
+            status: document.getElementById('city-status')?.textContent ?? '',
+        }));
+        await page.screenshot({ path: path.join(outDir, `${name}-plants-bud.png`) });
+        if (!bud.pressed) problems.push('the bud at the Steel Garden is hidden in its own view');
+        if (result.bud.open) {
+            problems.push('a bud opened out of its turn');
+            await page.keyboard.press('Escape');
+        }
+        if (!/won't open yet\. The flower in bloom is at the gas station\./.test(result.bud.status)) problems.push(`a bud said ${JSON.stringify(result.bud.status)}`);
+        // Each in its turn.
+        for (let number = 1; number <= 5; number += 1) {
+            const id = `po-part-${number}`;
+            const pressed = await pressFlower(id);
+            const reader = await page.evaluate(() => ({
+                open: document.getElementById('reader').open,
+                words: document.querySelector('[data-reader-text]').textContent.replace(/[\s ­]+/g, ''),
+                source: document.querySelector('[data-reader-source]').textContent,
+                count: document.querySelector('[data-reader-count]')?.textContent ?? '',
+            }));
+            const whole = reader.words === parts.get(id);
+            result.opened.push({ id, pressed: pressed.pressed, open: reader.open, whole, source: reader.source, count: reader.count });
+            if (number === 1) await page.screenshot({ path: path.join(outDir, `${name}-plants-part-1.png`) });
+            if (!pressed.pressed) problems.push(`${id}'s flower is hidden in its own view`);
+            else if (!reader.open) problems.push(`${id} didn't open in its turn`);
+            else {
+                if (!whole) problems.push(`${id} didn't hold its part word for word (${reader.words.length} letters, the page's ${parts.get(id)?.length})`);
+                if (!reader.source.includes(`part of five`)) problems.push(`${id}'s source said ${JSON.stringify(reader.source)}`);
+                if (reader.count !== `${number} of ${pieces.length} lost pages found`) problems.push(`${id}'s count said ${JSON.stringify(reader.count)}`);
+            }
+            await page.keyboard.press('Escape');
+            await page.waitForFunction(() => !document.getElementById('reader').open, null, { timeout: 4000 }).catch(() => {});
+            // (It's begun to wilt, and the next is the one in bloom. Its animation isn't waited out: under SwiftShader a
+            // frame takes a second or so and each steps the flowers 0.05 s, so a wilt takes the best part of a minute.)
+            await page.waitForFunction((index) => {
+                const flowers = window.elysicesterDebug.flowers.snapshot();
+                return flowers[index].state === 'wilted' && flowers[index].wilt > 0 && (index === 4 || flowers[index + 1].state === 'bloom');
+            }, number - 1, { timeout: 30_000, polling: 250 }).catch(() => problems.push(`${id} didn't begin to wilt, or the next didn't come into bloom`));
+        }
+        result.last = await states();
+        await page.screenshot({ path: path.join(outDir, `${name}-plants-wilted.png`) });
+        if (result.last.join(' ') !== 'wilted wilted wilted wilted wilted') problems.push(`at last the flowers were ${result.last.join(', ')}`);
     } catch (error) {
         problems.push(`the round broke off: ${error.message.split('\n')[0]}`);
     } finally {
@@ -1209,11 +1326,15 @@ try {
             const result = { mode, threshold, messages, failures };
             await page.screenshot({ path: path.join(outDir, `${name}.png`) });
             if (pass.sound) result.sound = await soundRound(page, pass, threshold);
-            // (The city's own list of what it reads: Allison's bio, a trial, isn't among the data's passages.)
-            const ordered = await page.evaluate(() => {
+            // (The city's own list of what it reads: Allison's bio, a trial, isn't among the data's passages. President
+            // Oedipus's flowers open only in their turn, so where the list has them, they're taken in their order.)
+            const listed = await page.evaluate(() => {
                 const readable = window.elysicesterDebug?.fragments ?? [];
                 return [...document.querySelectorAll('#points a')].map((link) => readable.find((fragment) => fragment.id === link.dataset.fragment) ?? { id: link.dataset.fragment });
             });
+            const isPart = (fragment) => /^po-part-\d$/.test(fragment.id);
+            const inTurn = listed.filter(isPart).sort((a, b) => a.id.localeCompare(b.id));
+            const ordered = listed.map((fragment) => (isPart(fragment) ? inTurn.shift() : fragment));
 
             if (mode === 'live') {
                 result.info = await page.evaluate(() => window.elysicesterDebug.info());
@@ -1253,6 +1374,7 @@ try {
             await browser.close();
             if (pass.dock) result.dock = await dockRound(chromium, pass, path.join(outDir, name));
             if (pass.creatures) result.creatures = await creaturesRound(chromium, pass, outDir, name);
+            if (pass.plants) result.plants = await plantsRound(chromium, pass, outDir, name);
             report.passes[name] = result;
         }
 
@@ -1285,10 +1407,14 @@ try {
             const givers = result.creatures
                 ? `givers ${result.creatures.ok ? `${result.creatures.city.pugs} pugs, ${result.creatures.city.hums} hums, Allison; squur, chirp, his line, the bio; ${result.creatures.inventory.items} lost pages; won, written by hand (${result.creatures.written?.strokes ?? 0} strokes)` : 'NOT OK'}`
                 : '';
-            process.stdout.write(`${name.padEnd(8)} ${result.mode.padEnd(6)} ${problems === 0 ? 'clean' : `${problems} problem(s)`}  ${[crossing, sound, info, orbit, still, camera, signs, extras, pointer, keys, axe, back, kept, dock, givers].filter(Boolean).join(' · ')}\n`);
+            const plants = result.plants
+                ? `flowers ${result.plants.ok ? 'a bud refused (the bloom named), five parts whole in their turn, each wilting as the next blooms' : 'NOT OK'}`
+                : '';
+            process.stdout.write(`${name.padEnd(8)} ${result.mode.padEnd(6)} ${problems === 0 ? 'clean' : `${problems} problem(s)`}  ${[crossing, sound, info, orbit, still, camera, signs, extras, pointer, keys, axe, back, kept, dock, givers, plants].filter(Boolean).join(' · ')}\n`);
             for (const line of [...result.messages, ...result.failures]) process.stdout.write(`    ${line}\n`);
             for (const line of result.dock?.problems ?? []) process.stdout.write(`    dock not ok: ${line}\n`);
             for (const line of result.creatures?.problems ?? []) process.stdout.write(`    givers not ok: ${line}\n`);
+            for (const line of result.plants?.problems ?? []) process.stdout.write(`    flowers not ok: ${line}\n`);
             for (const line of result.extras?.problems ?? []) process.stdout.write(`    extras not ok: ${line}\n`);
             for (const line of result.camera?.problems ?? []) process.stdout.write(`    camera not ok: ${line}\n`);
             for (const line of [...result.threshold.problems, ...(result.reentered?.problems ?? []).map((text) => `on return: ${text}`), ...(result.sound?.problems ?? [])]) {

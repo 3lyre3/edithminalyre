@@ -147,10 +147,15 @@ export function createReader({ dialog, places, onClose, onward, onOnward, canWal
             // (Allison's bio, a trial, has a heading of its own, and no work: main.js.)
             placeName.textContent = fragment.heading ?? place?.label ?? '';
             body.replaceChildren();
-            for (const paragraphText of fragment.text.split(/\n{2,}/)) {
-                const paragraph = document.createElement('p');
-                appendWithItalics(paragraph, paragraphText, fragment.italic ?? []);
-                body.append(paragraph);
+            // (A flower's part comes whole, as its own page has it: its quotations, its transcript's lines, its note.)
+            body.classList.toggle('is-whole', Boolean(fragment.nodes));
+            if (fragment.nodes) body.append(...fragment.nodes());
+            else {
+                for (const paragraphText of fragment.text.split(/\n{2,}/)) {
+                    const paragraph = document.createElement('p');
+                    appendWithItalics(paragraph, paragraphText, fragment.italic ?? []);
+                    body.append(paragraph);
+                }
             }
             source.textContent = WORKS[fragment.work] ? `${WORKS[fragment.work]}, ${fragment.source}` : fragment.source;
             readOn.href = fragment.read_on;

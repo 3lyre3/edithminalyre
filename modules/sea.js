@@ -38,6 +38,31 @@ const CUTS = 3;
 /** Within this much of the rim the swell dies away, so the water lies flat against the rock's edge. */
 const CALM = 2.2;
 
+/**
+ * The swell, as GLSL: seaSwell(p, time, height, slope) gives the water's rise above the sea level at p (world x, z)
+ * and its slope there, the rim's calm already in both. Shared, so what floats on the water (flowers.js) rides it.
+ * (Needs rimRadius: rimRadiusGLSL() first, unless the shader has it already.)
+ */
+export const SWELL_GLSL = /* glsl */ `
+    void seaWave(vec2 p, float time, vec2 direction, float frequency, float speed, float amplitude, inout float height, inout vec2 slope) {
+        float phase = dot(direction, p) * frequency + time * speed;
+        height += amplitude * sin(phase);
+        slope += amplitude * frequency * cos(phase) * direction;
+    }
+
+    void seaSwell(vec2 p, float time, out float height, out vec2 slope) {
+        height = 0.0;
+        slope = vec2(0.0);
+        seaWave(p, time, normalize(vec2(-1.0, 0.25)), 0.55, 1.1, 0.09, height, slope);
+        seaWave(p, time, normalize(vec2(-0.7, -0.7)), 0.95, 1.6, 0.045, height, slope);
+        seaWave(p, time, normalize(vec2(-0.3, 0.95)), 1.5, 2.2, 0.025, height, slope);
+        // The swell dies away toward the rim: the water meets the rock's edge flat, and exactly at its height.
+        float calm = smoothstep(0.0, ${CALM.toFixed(2)}, rimRadius(atan(p.y, p.x)) - length(p));
+        height *= calm;
+        slope *= calm;
+    }
+`;
+
 // =============================================================================
 // Shaders
 // =============================================================================
@@ -51,25 +76,16 @@ const vertexShader = /* glsl */ `
     #include <fog_pars_vertex>
 
     ${rimRadiusGLSL()}
-
-    void addWave(vec2 p, vec2 direction, float frequency, float speed, float amplitude, inout float height, inout vec2 slope) {
-        float phase = dot(direction, p) * frequency + time * speed;
-        height += amplitude * sin(phase);
-        slope += amplitude * frequency * cos(phase) * direction;
-    }
+    ${SWELL_GLSL}
 
     void main() {
         vec3 world = (modelMatrix * vec4(position, 1.0)).xyz;
-        float height = 0.0;
-        vec2 slope = vec2(0.0);
-        addWave(world.xz, normalize(vec2(-1.0, 0.25)), 0.55, 1.1, 0.09, height, slope);
-        addWave(world.xz, normalize(vec2(-0.7, -0.7)), 0.95, 1.6, 0.045, height, slope);
-        addWave(world.xz, normalize(vec2(-0.3, 0.95)), 1.5, 2.2, 0.025, height, slope);
-        // The swell dies away toward the rim: the water meets the rock's edge flat, and exactly at its height.
-        float calm = smoothstep(0.0, ${CALM.toFixed(2)}, rimRadius(atan(world.z, world.x)) - length(world.xz));
-        world.y += height * calm;
+        float height;
+        vec2 slope;
+        seaSwell(world.xz, time, height, slope);
+        world.y += height;
         vWorld = world;
-        vNormal = normalize(vec3(-slope.x * calm, 1.0, -slope.y * calm));
+        vNormal = normalize(vec3(-slope.x, 1.0, -slope.y));
         vec4 mvPosition = viewMatrix * vec4(world, 1.0);
         gl_Position = projectionMatrix * mvPosition;
         #include <fog_vertex>
