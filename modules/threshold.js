@@ -36,15 +36,14 @@
 
 import {
     BufferGeometry,
-    CanvasTexture,
     Float32BufferAttribute,
-    LinearFilter,
     Mesh,
     OrthographicCamera,
     Scene,
     ShaderMaterial,
     Vector2,
 } from 'three';
+import { ASCII_GLSL, asciiCell, glyphAtlas } from './ascii.js';
 
 // =============================================================================
 // Constants
@@ -63,22 +62,8 @@ const CROSSFADE_MS = 900;
  * (milliseconds from the card's showing): it rolls in and stands in under ten seconds once it's drawn.
  */
 const SETTLE_MOST_MS = 25000;
-
-/**
- * The Intermaze's characters: at least this many rows down the screen and columns across it (so a phone held
- * upright still draws the tunnel finely enough to see its shape), each cell this wide for its height.
- */
-const ROWS = 44;
-const COLUMNS = 48;
-const CELL_ASPECT = 0.6;
-
-/** The characters it may be drawn in (measured, then ranked from sparsest to densest), and how many ranks. */
-const CHARACTERS = ` .'\`,:;-~_^"=+!<>*icvxzuoaeX#%&@`;
-const RANKS = 16;
-
-/** A character's cell in the atlas, in pixels. */
-const GLYPH_WIDTH = 40;
-const GLYPH_HEIGHT = 64;
+/** From the dive's last frame (megascreen.js), how long the swirl takes to take over every cell of it (seconds). */
+const HANDOFF = 1.3;
 
 const vertexShader = /* glsl */ `
     void main() {
@@ -94,6 +79,10 @@ const fragmentShader = /* glsl */ `
     uniform float glyphCount;
     uniform vec2 cell;
     uniform float bars;
+    uniform sampler2D fromFrame;
+    uniform float handoff;
+
+    ${ASCII_GLSL}
 
     float hash12(vec2 p) {
         vec3 p3 = fract(vec3(p.xyx) * 0.1031);
@@ -164,12 +153,17 @@ const fragmentShader = /* glsl */ `
         // The maze, in characters: each cell takes its colour at the cell's middle, and a character as dense
         // as that colour is bright; a faint glow of the colour behind, so the tunnel's shape still carries.
         vec2 cellIndex = floor(gl_FragCoord.xy / cell);
+        // (Come from the dive, each cell goes on as the Mega-Screen's last frame left it until its own moment of
+        // the handoff, then turns: one grid, so nothing jumps.)
+        if (handoff < 1.0 && hash12(cellIndex + 17.31) >= handoff) {
+            gl_FragColor = vec4(texture2D(fromFrame, uv).rgb, 1.0);
+            return;
+        }
         vec2 middle = (cellIndex + 0.5) * cell;
         vec3 tone = maze((middle - 0.5 * resolution) / resolution.y);
         float bright = clamp(dot(tone, vec3(0.3, 0.55, 0.15)), 0.0, 1.0);
-        float rank = min(glyphCount - 1.0, floor(pow(bright, 0.8) * glyphCount));
         vec2 inCell = fract(gl_FragCoord.xy / cell);
-        float ink = texture2D(glyphs, vec2((rank + inCell.x) / glyphCount, inCell.y)).a;
+        float ink = asciiInk(bright, inCell);
         vec3 color = tone * 0.06 + (tone * 1.25 + 0.03) * ink;
 
         // (Asked for, ?bars=on: the bars of the Heltix's caged chassis, two to each side, swaying a little:
@@ -209,56 +203,6 @@ const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 function secondsFor(line) {
     const words = line.split(/\s+/).filter(Boolean).length;
     return Math.min(LINE_MAX, Math.max(LINE_MIN, LINE_BASE + LINE_PER_WORD * words));
-}
-
-/**
- * The characters the Intermaze is drawn in, as a strip of white glyphs on nothing, sparsest first. Each
- * candidate is drawn and its ink measured (fonts differ from one device to the next), then RANKS of them are
- * chosen at even steps of ink, from none to the densest.
- */
-function glyphAtlas() {
-    const font = `600 ${Math.round(GLYPH_HEIGHT * 0.78)}px ui-monospace, "SFMono-Regular", "Cascadia Mono", Consolas, "DejaVu Sans Mono", monospace`;
-    const draw = (context, character, x) => {
-        context.fillText(character, x + GLYPH_WIDTH / 2, GLYPH_HEIGHT / 2 + GLYPH_HEIGHT * 0.04);
-    };
-    const probe = document.createElement('canvas');
-    probe.width = GLYPH_WIDTH;
-    probe.height = GLYPH_HEIGHT;
-    const measure = probe.getContext('2d', { willReadFrequently: true });
-    measure.font = font;
-    measure.textAlign = 'center';
-    measure.textBaseline = 'middle';
-    measure.fillStyle = '#fff';
-    const inked = [...new Set(CHARACTERS)].map((character) => {
-        measure.clearRect(0, 0, GLYPH_WIDTH, GLYPH_HEIGHT);
-        draw(measure, character, 0);
-        const alpha = measure.getImageData(0, 0, GLYPH_WIDTH, GLYPH_HEIGHT).data;
-        let ink = 0;
-        for (let index = 3; index < alpha.length; index += 4) ink += alpha[index];
-        return { character, ink };
-    }).sort((a, b) => a.ink - b.ink);
-    const densest = inked[inked.length - 1].ink || 1;
-    const chosen = [];
-    for (let rank = 0; rank < RANKS; rank += 1) {
-        const want = (densest * rank) / (RANKS - 1);
-        const nearest = inked.reduce((best, entry) => (Math.abs(entry.ink - want) < Math.abs(best.ink - want) ? entry : best));
-        if (!chosen.includes(nearest.character)) chosen.push(nearest.character);
-    }
-
-    const canvas = document.createElement('canvas');
-    canvas.width = GLYPH_WIDTH * chosen.length;
-    canvas.height = GLYPH_HEIGHT;
-    const context = canvas.getContext('2d');
-    context.font = font;
-    context.textAlign = 'center';
-    context.textBaseline = 'middle';
-    context.fillStyle = '#fff';
-    chosen.forEach((character, index) => draw(context, character, index * GLYPH_WIDTH));
-    const texture = new CanvasTexture(canvas);
-    texture.minFilter = LinearFilter;
-    texture.magFilter = LinearFilter;
-    texture.generateMipmaps = false;
-    return { texture, count: chosen.length };
 }
 
 /**
@@ -304,6 +248,9 @@ export function createThreshold({ root, card, begin, voice, onBegin, returning =
     }
 
     let started = false;
+    // (A skip made while diving into the Mega-Screen, where skips are allowed: dive.)
+    let divingSkip = null;
+    let skippedEarly = false;
     const start = () => {
         if (started || settling) return;
         started = true;
@@ -388,14 +335,40 @@ export function createThreshold({ root, card, begin, voice, onBegin, returning =
         },
 
         /**
+         * Diving into the Mega-Screen (megascreen.js): the card's words step aside; the screen goes on being drawn (its
+         * own loop holds while the threshold is 'card' or 'dive').
+         */
+        dive() {
+            root.dataset.threshold = 'dive';
+            card.classList.add('is-diving');
+            // (Where the waits aren't made compulsory (?settle=off), a skip in the dive skips it, and the swirl with
+            // it, as a skip always did; resolved then. Waited through, it never is.)
+            if (waiting) return new Promise(() => {});
+            return new Promise((resolve) => {
+                divingSkip = (event) => {
+                    if (event.type === 'keydown' && event.key !== 'Escape') return;
+                    if (event.type === 'pointerdown') event.stopPropagation();
+                    skippedEarly = true;
+                    window.removeEventListener('keydown', divingSkip);
+                    window.removeEventListener('pointerdown', divingSkip, true);
+                    resolve(null);
+                };
+                window.addEventListener('keydown', divingSkip);
+                window.addEventListener('pointerdown', divingSkip, true);
+            });
+        },
+
+        /**
          * Fly the Intermaze until the city is ready and the passage is done.
          * @param {object} options
          * @param {import('three').WebGLRenderer} options.renderer
          * @param {Promise<unknown>} options.ready
          * @param {string[]} options.lines - E's lines, in order
          * @param {() => void} [options.fit] - keeps the renderer sized to its canvas
+         * @param {{ texture: import('three').Texture, dispose: () => void } | null} [options.from] - the dive's last frame
+         *   (megascreen.js), in the same grid of characters: the swirl takes it over cell by cell, rather than fading in
          */
-        async fly({ renderer, ready, lines, fit }) {
+        async fly({ renderer, ready, lines, fit, from = null }) {
             root.dataset.threshold = 'flight';
             card.classList.add('is-leaving');
             const size = new Vector2();
@@ -404,12 +377,14 @@ export function createThreshold({ root, card, begin, voice, onBegin, returning =
             const uniforms = {
                 time: { value: 0 },
                 resolution: { value: size },
-                fade: { value: 0 },
+                fade: { value: from ? 1 : 0 },
                 glyphs: { value: atlas.texture },
                 glyphCount: { value: atlas.count },
                 cell: { value: cell },
                 // The Heltix's bars and E's rail stand in front only when asked for (?bars=on): the swirl is the way in.
                 bars: { value: new URLSearchParams(window.location.search).get('bars') === 'on' ? 1 : 0 },
+                fromFrame: { value: from?.texture ?? null },
+                handoff: { value: from ? 0 : 1 },
             };
             const material = new ShaderMaterial({ uniforms, vertexShader, fragmentShader, depthTest: false, depthWrite: false });
             const triangle = new BufferGeometry();
@@ -426,7 +401,12 @@ export function createThreshold({ root, card, begin, voice, onBegin, returning =
             }, () => {
                 isReady = true;
             });
-            let skipped = false;
+            // (A skip already made in the dive holds.)
+            if (divingSkip) {
+                window.removeEventListener('keydown', divingSkip);
+                window.removeEventListener('pointerdown', divingSkip, true);
+            }
+            let skipped = skippedEarly;
             const skip = (event) => {
                 if (event.type === 'keydown' && event.key !== 'Escape') return;
                 // While flying, a tap belongs to the flight, not to the city waiting underneath.
@@ -450,14 +430,21 @@ export function createThreshold({ root, card, begin, voice, onBegin, returning =
                     const t = (now - began) / 1000;
                     fit?.();
                     renderer.getDrawingBufferSize(size);
-                    // At least ROWS of characters down the screen and COLUMNS across (never under 12 pixels tall).
-                    const tall = Math.max(12, Math.min(size.y / ROWS, size.x / (COLUMNS * CELL_ASPECT)));
-                    cell.set(tall * CELL_ASPECT, tall);
+                    // At least ROWS of characters down the screen and COLUMNS across (never under 12 pixels tall): ascii.js.
+                    asciiCell(size, cell);
                     uniforms.time.value = t;
                     if (endingAt === null && (skipped || t >= passage) && isReady) endingAt = t;
+                    // (From the dive, already in full: the swirl takes its cells over, rather than fading in.)
                     uniforms.fade.value = endingAt === null
-                        ? Math.min(1, t / FADE_IN)
+                        ? (from ? 1 : Math.min(1, t / FADE_IN))
                         : Math.max(0, 1 - (t - endingAt) / FADE_OUT);
+                    if (from) {
+                        uniforms.handoff.value = Math.min(1, t / HANDOFF);
+                        if (uniforms.handoff.value >= 1 && uniforms.fromFrame.value) {
+                            uniforms.fromFrame.value = null;
+                            from.dispose();
+                        }
+                    }
                     renderer.setRenderTarget(null);
                     renderer.render(scene, camera);
                     frames += 1;
@@ -478,11 +465,13 @@ export function createThreshold({ root, card, begin, voice, onBegin, returning =
 
             window.removeEventListener('keydown', skip);
             window.removeEventListener('pointerdown', skip, true);
+            if (from && uniforms.fromFrame.value) from.dispose();
             material.dispose();
             triangle.dispose();
             atlas.texture.dispose();
             leave();
-            return { frames, skipped, linesShown: shown + 1 };
+            // (dived: the swirl took over from the dive's last frame, cell by cell.)
+            return { frames, skipped, linesShown: shown + 1, dived: Boolean(from) };
         },
 
         /** No flight: hold the card until the city is ready, then crossfade. */

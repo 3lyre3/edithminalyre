@@ -66,13 +66,17 @@
  *   pass through the small machine in their hands"): no more than one and a half pixels to each of the page's, as
  *   messenger.abeto.co draws, no multisampled render (the ink's lines draw the edges), and, where frames still run slow,
  *   stepping down sooner (ink.js, stage.js); off, drawn as on a computer
+ * - dive: from the card, the eye goes in to the Mega-Screen's face as it turns into characters (the dark ground first,
+ *   the bright letters last), until the face fills the view past every edge, on a tall phone too; then the swirl takes
+ *   it over cell by cell, in the same grid of characters (Elm's clip of 3 Oct: "something sort of like this except
+ *   sort of tidier"; megascreen.js, ascii.js, threshold.js); off, the swirl begins from the card as before
  */
 
 // =============================================================================
 // Constants
 // =============================================================================
 
-export const TRIALS = Object.freeze(['jetty', 'whisper', 'names', 'hint', 'wraith', 'dust', 'dock', 'hostel', 'hum', 'choice', 'onebutton', 'jettysigns', 'cyclolite', 'creatures', 'allison', 'inside', 'megascreen', 'cassandra', 'ball', 'plants', 'sections', 'whole', 'settle', 'nimble']);
+export const TRIALS = Object.freeze(['jetty', 'whisper', 'names', 'hint', 'wraith', 'dust', 'dock', 'hostel', 'hum', 'choice', 'onebutton', 'jettysigns', 'cyclolite', 'creatures', 'allison', 'inside', 'megascreen', 'cassandra', 'ball', 'plants', 'sections', 'whole', 'settle', 'nimble', 'dive']);
 
 // =============================================================================
 // Main Code

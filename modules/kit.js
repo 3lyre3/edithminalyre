@@ -206,6 +206,22 @@ export function taperedTube(points, fromRadius, toRadius, color, segments = 24, 
     return paint(geometry, color);
 }
 
+/**
+ * Let the page breathe while the city is built: once this long has passed since it last did (ms), the building waits
+ * for the browser to take its turn (to draw the way in's next frame, to answer a tap), then goes on; otherwise it goes
+ * straight on. So no stretch of the building holds the page for long, even on a slow phone (3 Oct: at a phone's pace,
+ * stretches of up to a second held the Mega-Screen's roll-in still); and since the order of the building is kept,
+ * nothing built changes.
+ */
+const BREATHE_EVERY = 30;
+let breathed = 0;
+export async function breathe() {
+    const now = performance.now();
+    if (now - breathed < BREATHE_EVERY) return;
+    await (globalThis.scheduler?.yield?.() ?? new Promise((resolve) => { setTimeout(resolve, 0); }));
+    breathed = performance.now();
+}
+
 /** Bring a geometry to the shape every merged bucket shares. */
 function normalise(geometry, keep) {
     const flat = geometry.index ? geometry.toNonIndexed() : geometry;
@@ -242,29 +258,49 @@ export class Buckets {
     build(materials, keepAttributes = {}) {
         const meshes = new Map();
         for (const [key, geometries] of this.pieces) {
-            const material = materials[key];
-            if (!material) throw new Error(`No material for bucket "${key}"`);
             const keep = keepAttributes[key] ?? [];
-            const flats = geometries.map((geometry) => normalise(geometry, keep));
-            const merged = mergeGeometries(flats, false);
-            merged.computeBoundingSphere();
-            const mesh = new Mesh(merged, material);
-            mesh.name = key;
-            const solidRanges = [];
-            let first = 0;
-            flats.forEach((flat, index) => {
-                const count = flat.attributes.position.count;
-                if (!this.passable.has(geometries[index])) {
-                    const last = solidRanges[solidRanges.length - 1];
-                    if (last && last[0] + last[1] === first) last[1] += count;
-                    else solidRanges.push([first, count]);
-                }
-                first += count;
-            });
-            mesh.userData.solidRanges = solidRanges;
-            meshes.set(key, mesh);
+            meshes.set(key, this.mesh(key, materials, geometries, geometries.map((geometry) => normalise(geometry, keep))));
         }
         return meshes;
+    }
+
+    /** The same, breathing as it goes (breathe): for the city's own buckets, built while the way in plays. */
+    async buildBreathing(materials, keepAttributes = {}) {
+        const meshes = new Map();
+        for (const [key, geometries] of this.pieces) {
+            const keep = keepAttributes[key] ?? [];
+            const flats = [];
+            for (const geometry of geometries) {
+                flats.push(normalise(geometry, keep));
+                await breathe();
+            }
+            meshes.set(key, this.mesh(key, materials, geometries, flats));
+            await breathe();
+        }
+        return meshes;
+    }
+
+    /** One bucket's pieces, brought to one shape (flats), merged into its mesh. */
+    mesh(key, materials, geometries, flats) {
+        const material = materials[key];
+        if (!material) throw new Error(`No material for bucket "${key}"`);
+        const merged = mergeGeometries(flats, false);
+        merged.computeBoundingSphere();
+        const mesh = new Mesh(merged, material);
+        mesh.name = key;
+        const solidRanges = [];
+        let first = 0;
+        flats.forEach((flat, index) => {
+            const count = flat.attributes.position.count;
+            if (!this.passable.has(geometries[index])) {
+                const last = solidRanges[solidRanges.length - 1];
+                if (last && last[0] + last[1] === first) last[1] += count;
+                else solidRanges.push([first, count]);
+            }
+            first += count;
+        });
+        mesh.userData.solidRanges = solidRanges;
+        return mesh;
     }
 }
 

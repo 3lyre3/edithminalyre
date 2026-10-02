@@ -1049,6 +1049,16 @@ html[data-settling] .threshold-begin {
     cursor: default;
 }
 
+/* Diving into the Mega-Screen (a trial, dive: megascreen.js): its words step aside as the eye goes in. */
+.threshold.is-diving .threshold-prompt {
+    opacity: 0;
+    transition: opacity 0.35s ease;
+}
+
+.threshold.is-diving .threshold-begin {
+    cursor: default;
+}
+
 .threshold[hidden] {
     display: none;
 }

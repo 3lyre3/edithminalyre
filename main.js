@@ -411,6 +411,8 @@ async function boot() {
     // Waited through, its prompt comes once it has stood; with no Mega-Screen to wait for, at once.
     let sceneRenderer = null;
     let sceneStarted = false;
+    // (Once it's drawn, the Mega-Screen gives this its dive: megascreen.js.)
+    const megaScreen = {};
     const startMegaScreen = () => {
         if (sceneStarted || root.dataset.threshold !== 'card') return;
         if (!trialOn('megascreen')) {
@@ -424,7 +426,9 @@ async function boot() {
             renderer: sceneRenderer,
             fit: () => fitRenderer(sceneRenderer, byId('stage')),
             reducedMotion,
-            showing: () => root.dataset.threshold === 'card',
+            // (Drawn while the card is up, and through the dive into it.)
+            showing: () => root.dataset.threshold === 'card' || root.dataset.threshold === 'dive',
+            control: trialOn('dive') ? megaScreen : null,
             onShown: () => card.classList.add('is-scene'),
             onSettled: () => threshold.settled(),
         }).catch((error) => {
@@ -912,7 +916,19 @@ async function boot() {
         passage = await threshold.comeBack({ ready: built });
         liftVeil(arrive);
     } else if (renderer && !reducedMotion) {
-        passage = await threshold.fly({ renderer, ready: built, lines, fit: () => fitRenderer(renderer, canvas) });
+        // The dive (a trial: Elm's clip of 3 Oct): from the card, the eye goes in to the Mega-Screen's face as it turns
+        // into characters, until it fills the view; the swirl then takes it over cell by cell. (With no Mega-Screen
+        // drawn, the swirl begins from the card as it always did.)
+        let from = null;
+        if (megaScreen.dive) {
+            // (Skipped, where skips are allowed: the swirl begins at once, skipped too.)
+            const skipping = threshold.dive();
+            // (Should the screen stop being drawn, the swirl begins all the same; a frame come too late is let go.)
+            const diving = megaScreen.dive();
+            from = await Promise.race([diving, skipping, new Promise((resolve) => { window.setTimeout(() => resolve(null), 8000); })]);
+            if (!from) diving.then((late) => late?.dispose());
+        }
+        passage = await threshold.fly({ renderer, ready: built, lines, fit: () => fitRenderer(renderer, canvas), from });
         liftVeil(arrive);
     } else {
         passage = await threshold.crossfade({ ready: built.then(arrive) });
