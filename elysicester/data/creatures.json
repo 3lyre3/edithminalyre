@@ -220,19 +220,41 @@
     2.76,
     0.05
    ],
-   "facing": 1.57,
-   "floor": 1.01
+   "floor": 1.01,
+   "facing": 1.57
   },
   {
    "fragment": "nbp-e6-cassandras-house-2",
    "kind": "pug",
+   "board": "star",
    "at": [
     -18.3,
     0.92,
     0.55
    ],
-   "facing": 1.57,
-   "board": "star"
+   "facing": 1.57
+  },
+  {
+   "fragment": "nbp-e5-charity-ball-1",
+   "kind": "hum",
+   "at": [
+    6.5,
+    2,
+    -37.15
+   ],
+   "floor": 0.29,
+   "facing": -0.6
+  },
+  {
+   "fragment": "nbp-e5-charity-ball-2",
+   "kind": "pug",
+   "board": "wave",
+   "at": [
+    2.2,
+    0.29,
+    -40.95
+   ],
+   "facing": 1.57
   }
  ],
  "allison": {

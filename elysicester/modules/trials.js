@@ -23,8 +23,10 @@
  *   is less overwhelming, and nothing comes before it): the first brings the Mega-Screen's card, then the Intermaze
  *   and the way into the city; the second goes to the texts, President Oedipus and Numbers by Paint on one page
  *   (read.html; main.js, threshold.js)
- * - onebutton: one option at the top of the screen, "zoom out", "zoom out", "back" (Elm's ask): back to the far
- *   follow, out to the whole city, then back to the texts; the other controls stand aside (main.js)
+ * - onebutton: one option at the top of the screen, "zoom out", "zoom out", "leave" (Elm's asks): back to the far
+ *   follow, out to the whole city, then back to the choice ("Explore - Win" comes back to the city where it was);
+ *   beside it, flying as a hum, the hum's own symbol recentres the camera on it; the other controls stand aside
+ *   (main.js)
  * - jettysigns: two signs along the jetty, "Click the hum to let go. Click again to keep going." (the word "hum" a
  *   tiny hummingbird) and "Pinch to control the camera", with arrows pointing in and out (Elm's words; guides.js)
  * - cyclolite: the hum begins on a Cyclolite, a little golden disc-boat floating off the end of the jetty, its roof
@@ -44,13 +46,16 @@
  * - cassandra: Cassandra's house, at the plaza's west end where the bridges meet: the wrought-gold fence, the yard of
  *   rocks the shape of ferns, the knock, her shadow's answer, the slam, and the pale faces at the street's windows (Elm's
  *   next place; places.js, cassandra.js)
+ * - ball: the charity ball, a hall out beyond the north rim over the ocean: the old Greek's aphorisms at the podium,
+ *   the applause, Cassandra's thanks, the band; the hidden door with its bar of gold, the corridor of lockers, and the
+ *   balcony where she sits with her cognac (Elm's next place; places.js, ball.js)
  */
 
 // =============================================================================
 // Constants
 // =============================================================================
 
-export const TRIALS = Object.freeze(['jetty', 'whisper', 'names', 'hint', 'wraith', 'dust', 'dock', 'hostel', 'hum', 'choice', 'onebutton', 'jettysigns', 'cyclolite', 'creatures', 'allison', 'inside', 'megascreen', 'cassandra']);
+export const TRIALS = Object.freeze(['jetty', 'whisper', 'names', 'hint', 'wraith', 'dust', 'dock', 'hostel', 'hum', 'choice', 'onebutton', 'jettysigns', 'cyclolite', 'creatures', 'allison', 'inside', 'megascreen', 'cassandra', 'ball']);
 
 // =============================================================================
 // Main Code

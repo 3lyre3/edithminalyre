@@ -118,6 +118,15 @@
       "trial": "cassandra"
     },
     {
+      "id": "charity-ball",
+      "tier": 1,
+      "district": "rim",
+      "label": "The charity ball",
+      "position": [4.0, 1.8, -37.6],
+      "focus": { "distance": 21, "height": 6.5, "azimuth": 140 },
+      "trial": "ball"
+    },
+    {
       "id": "blue-beach",
       "tier": 2,
       "district": "mainland",

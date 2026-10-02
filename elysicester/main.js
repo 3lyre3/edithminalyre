@@ -49,8 +49,8 @@ const PROMPT_FRAGMENT = 'nbp-e1-mega-screen-1';
 /** E's lines in the Intermaze (Elm, 1 Oct, cut "They?" and the rail, so they end on "You never remember the dreams."). */
 const VOICE_FRAGMENTS = ['nbp-e3-intermaze-1'];
 /**
- * Where "Stay - Read" and the one option's "back" go: the texts, whole, with the lost pages marked (Elm: "back can take
- * you to the text interface"; "you go directly there when you click zoom out and zoom out and back").
+ * Where "Stay - Read" goes: the texts, whole, with the lost pages marked (and the one option's "leave", without the
+ * choice, a trial; with it, "leave" goes back to the choice: Elm, 2 Oct).
  */
 const TEXT_PAGE = 'read.html';
 
@@ -180,10 +180,11 @@ function offerChoice(threshold, onCard) {
 
 /**
  * One option at the top of the screen (a trial, trials.js; Elm: "there can just be one option at the top of the
- * screen: zoom out, zoom out, back. And back can take you to the text interface anyway"). Flying close, it draws the
- * camera back as far as it follows; flying drawn back, it lets the hum hover where it is and goes out to the whole
- * city (looking about, it goes there too); at the whole city, "back" goes to the city's text. Taking the hum again
- * (a tap on it) brings the camera back in close, and the round begins again.
+ * screen: zoom out, zoom out, back", and then: "the 'back' button should take you to the choice menu, and also i think
+ * it should say 'leave' instead"). Flying close, it draws the camera back as far as it follows; flying drawn back, it
+ * lets the hum hover where it is and goes out to the whole city (looking about, it goes there too); at the whole city,
+ * "leave" goes back to the choice (without the choice, a trial, to the city's text). Taking the hum again (a tap on it,
+ * or the hum's own button) brings the camera back in close, and the round begins again.
  */
 function wireOneButton(stage) {
     const one = byId('one-button');
@@ -194,7 +195,7 @@ function wireOneButton(stage) {
         return stage.rig.atHome ? 'home' : 'away';
     };
     stage.onFrame(() => {
-        const words = step() === 'home' ? 'back' : 'zoom out';
+        const words = step() === 'home' ? 'leave' : 'zoom out';
         if (one.textContent !== words) one.textContent = words;
     });
     one.addEventListener('click', () => {
@@ -206,11 +207,68 @@ function wireOneButton(stage) {
             stage.rig.toHome();
         } else if (now === 'away') {
             stage.rig.toHome();
+        } else if (trialOn('choice')) {
+            leaveForChoice(stage);
         } else {
             window.location.href = TEXT_PAGE;
         }
     });
     return one;
+}
+
+/**
+ * The hum's own button beside the one option (Elm: "a button that's the symbol of the hum so you can recentre on the
+ * hum"): whenever the camera isn't close on the hum (drawn back, out at the whole city, looking about), it brings it
+ * back in close, taking the hum again if it was let go.
+ */
+function wireHumButton(stage) {
+    const button = byId('hum-button');
+    const walk = stage.walk;
+    if (!button || !walk) return;
+    // (Close is as close as a visit arrives, or closer.)
+    const close = Math.max(walk.followStart, walk.followArrive) + 0.05;
+    const show = () => {
+        const away = !walk.state.walking || walk.followDistance > close;
+        if (button.hidden === away) button.hidden = !away;
+    };
+    stage.onFrame(show);
+    button.addEventListener('click', () => {
+        if (!walk.state.walking) walk.take();
+        else walk.zoomTo(walk.followStart);
+        // (It steps away now the camera's close: focus goes on to the option beside it.)
+        if (document.activeElement === button) byId('one-button')?.focus({ preventScroll: true });
+        show();
+    });
+}
+
+/**
+ * Leave (the one option's last step): the choice again, over the city, which rests behind it. "Explore - Win" comes
+ * back into the city just where it was left (the card and the Intermaze were the way in); "Stay - Read" goes to the
+ * texts, as it always did.
+ */
+function leaveForChoice(stage) {
+    const choice = byId('choice');
+    const explore = byId('choice-explore');
+    root.dataset.left = '';
+    choice.hidden = false;
+    choice.inert = false;
+    choice.classList.remove('is-leaving');
+    requestAnimationFrame(() => choice.classList.add('is-shown'));
+    explore.focus({ preventScroll: true });
+    // (Once the choice has covered it, the city stops drawing until it's come back to.)
+    const resting = window.setTimeout(() => stage.stop(), reducedMotion ? 0 : 900);
+    explore.addEventListener('click', () => {
+        window.clearTimeout(resting);
+        stage.start();
+        delete root.dataset.left;
+        choice.classList.remove('is-shown');
+        choice.classList.add('is-leaving');
+        choice.inert = true;
+        window.setTimeout(() => {
+            choice.hidden = true;
+        }, reducedMotion ? 0 : 900);
+        byId('one-button')?.focus({ preventScroll: true });
+    }, { once: true });
 }
 
 /** Let the city lift out of the dark after the flight, whichever city it is. */
@@ -569,6 +627,12 @@ async function boot() {
                             stage.cassandra?.knock();
                             return;
                         }
+                        // (Cassandra on the charity ball's balcony, touched, talks to herself, and says it.)
+                        if (found?.kind === 'ball-cassandra') {
+                            if (!reducedMotion) hotspots.ripple(found.point);
+                            stage.ball?.touch();
+                            return;
+                        }
                         const fragment = found ? readable.find((candidate) => candidate.id === found.fragment) : null;
                         if (!fragment) {
                             stage.walk?.walkToward(x, y);
@@ -581,33 +645,41 @@ async function boot() {
                     },
                 });
                 touch = createTouch({ stage, occluders: hotspots.occluders });
-                // Cassandra's door (a trial: places.js): its knock and its slam, and her shadow's words where she
-                // stands, while she says them.
-                const doorWords = byId('door-words');
+                // The scenes that speak (trials: places.js): Cassandra's door (its knock, its slam, her shadow's
+                // answer) and the charity ball (the speech, the applause, the band, the hidden door's bar, her on the
+                // balcony). Their sounds; and their words where they're said, while they're said, one voice at a time.
+                const sceneWords = byId('scene-words');
                 const oneOption = byId('one-button');
-                if (stage.cassandra && doorWords) {
+                const speakers = [stage.cassandra, stage.ball].filter(Boolean);
+                if (speakers.length && sceneWords) {
                     let saidAt = null;
                     let seenAt = null;
-                    stage.cassandra.onSound = (kind) => audio.answer(kind);
-                    stage.cassandra.onSay = (words, point) => {
-                        saidAt = words ? point : null;
-                        seenAt = saidAt?.clone() ?? null;
-                        doorWords.textContent = words ?? '';
-                        doorWords.hidden = !words;
-                    };
+                    let saidBy = null;
+                    for (const speaker of speakers) {
+                        speaker.onSound = (kind) => audio.answer(kind);
+                        speaker.onSay = (words, point) => {
+                            // (The last to speak has the words; falling silent clears only one's own.)
+                            if (!words && saidBy !== speaker) return;
+                            saidBy = words ? speaker : null;
+                            saidAt = words ? point : null;
+                            seenAt = saidAt?.clone() ?? null;
+                            sceneWords.textContent = words ?? '';
+                            sceneWords.hidden = !words;
+                        };
+                    }
                     stage.onFrame(() => {
                         if (!saidAt) return;
                         seenAt.copy(saidAt).project(stage.camera);
                         const rect = stage.canvas.getBoundingClientRect();
-                        // (Over her, and kept on the screen, however near the camera has come, and below the one
-                        // option at the top: it's drawn above its point, so its point stays at least its own height
-                        // and a margin below them.)
-                        const half = doorWords.offsetWidth / 2 + 8;
+                        // (Over the one speaking, and kept on the screen, however near the camera has come, and below
+                        // the one option at the top: it's drawn above its point, so its point stays at least its own
+                        // height and a margin below them.)
+                        const half = sceneWords.offsetWidth / 2 + 8;
                         const above = oneOption && !oneOption.hidden ? oneOption.getBoundingClientRect().bottom + 6 : 0;
                         const x = Math.min(Math.max(half, window.innerWidth - half), Math.max(half, rect.left + ((seenAt.x + 1) / 2) * rect.width));
-                        const y = Math.min(window.innerHeight - 8, Math.max(above + doorWords.offsetHeight + 26, rect.top + ((1 - seenAt.y) / 2) * rect.height));
-                        doorWords.style.translate = `${Math.round(x)}px ${Math.round(y)}px`;
-                        doorWords.hidden = seenAt.z >= 1;
+                        const y = Math.min(window.innerHeight - 8, Math.max(above + sceneWords.offsetHeight + 26, rect.top + ((1 - seenAt.y) / 2) * rect.height));
+                        sceneWords.style.translate = `${Math.round(x)}px ${Math.round(y)}px`;
+                        sceneWords.hidden = seenAt.z >= 1;
                     });
                 }
                 // The shadow hears a tap first; a reading point nearer the tap than the shadow keeps it, and so
@@ -691,7 +763,10 @@ async function boot() {
     }
 
     if (stage) {
-        if (oneButton) wireOneButton(stage);
+        if (oneButton) {
+            wireOneButton(stage);
+            if (trialOn('hum')) wireHumButton(stage);
+        }
         const home = byId('home-view');
         home.addEventListener('click', () => {
             stage.walk?.letGo();

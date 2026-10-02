@@ -28,8 +28,11 @@ import { FIELD_SCALE } from './solids-field.js';
 
 /** The meshes the camera keeps out of: all but the sky, the sea's shader, the flags and the lights. */
 const SOLID_MESHES = new Set(['gold', 'bricking', 'dimGold', 'brick', 'stone', 'rock', 'steel', 'glass', 'arch', 'copper', 'signs', 'cloth', 'green', 'sand']);
-/** Pieces standing on their own: the foyer-rock (it bobs a little, well within the camera's clearance). */
-const SOLID_GROUPS = new Set(['foyer-rock']);
+/**
+ * Pieces standing on their own: the foyer-rock (it bobs a little, well within the camera's clearance); the charity
+ * ball's hall (places.js: its shell, out beyond the north rim; a trial).
+ */
+const SOLID_GROUPS = new Set(['foyer-rock', 'ball-solid']);
 /** Beyond the grid, everything is air this far from anything. */
 const FAR = 1000;
 const IDENTITY = new Matrix4();

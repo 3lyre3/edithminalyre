@@ -48,7 +48,7 @@
  * hum perched there and the camera close behind it, the jetty's signs standing,
  * and come back there on a reload; and the one option at the top of the screen
  * must go "zoom out" (drawn back, still flying), "zoom out" (let go, out to the
- * whole city), then "back", to the texts.
+ * whole city), then "leave", to the choice and back; the hum's button recentres.
  * Before the passes, every outside "read on" address is asked whether it
  * answers. Headless frame rates mean nothing; Elm's phone judges smoothness.
  *
@@ -872,7 +872,9 @@ async function checkReadOn() {
  * on the Cyclolite (past the jetty's end, on its deck), the hum perched there, the camera close behind it, and the
  * jetty's signs standing; a reload (within the visit) must come back there; and the one option at the top of the
  * screen must go "zoom out" (the camera drawn back as far as it follows, still flying), "zoom out" (letting go, out to
- * the whole city, where it says "back"), and "back", to the texts (read.html). Its own browser, as a first visit.
+ * the whole city, where it says "leave"), and "leave", to the choice, from which "Explore - Win" comes back to the city
+ * where it was. Beside the option, the hum's own button must be there only while the camera isn't close on the hum,
+ * and bring it back in close (taking the hum again, once let go). Its own browser, as a first visit.
  */
 async function dockRound(chromium, pass, shots) {
     const { browser, context, page, messages, failures } = await openPass(chromium, pass);
@@ -889,7 +891,10 @@ async function dockRound(chromium, pass, shots) {
             follow: walk ? Number(walk.followDistance.toFixed(2)) : null,
             followFar: walk?.followFar ?? null,
             atHome: stage?.rig.atHome ?? null,
-            one: one && !one.hidden ? one.textContent : null,
+            // (Fixed to the screen, so seen if it has a box at all: hidden, or stepped away, it has none.)
+            one: one && one.getClientRects().length > 0 ? one.textContent : null,
+            hum: (document.getElementById('hum-button')?.getClientRects().length ?? 0) > 0,
+            choice: Boolean(document.getElementById('choice')?.classList.contains('is-shown') && !document.getElementById('choice').hidden),
             boat: Boolean(stage?.scene.getObjectByName('cyclolite-light')),
             signs: Boolean(stage?.scene.getObjectByName('guides')),
         };
@@ -904,7 +909,9 @@ async function dockRound(chromium, pass, shots) {
         if (!(seen.cameraToWalker < 8)) problems.push(`${when}: the camera is ${seen.cameraToWalker} from it, not close behind`);
         if (!seen.signs) problems.push(`${when}: the jetty's signs are not standing`);
         if (seen.one !== 'zoom out') problems.push(`${when}: the one option says ${JSON.stringify(seen.one)}, not "zoom out"`);
+        if (seen.hum) problems.push(`${when}: the hum's button is showing while the camera is close on the hum`);
     };
+    const followFor = (wanted) => page.waitForFunction((distance) => Math.abs(window.elysicesterDebug.walk.followDistance - distance) < 0.06, wanted, { timeout: 10_000 }).catch(() => {});
     const result = {};
     try {
         await page.goto(`${origin}/elysicester/?debug=1`, { waitUntil: 'load' });
@@ -932,23 +939,52 @@ async function dockRound(chromium, pass, shots) {
         if (!result.zoomed.walking) problems.push('the first "zoom out" let go of the hum');
         if (!(result.zoomed.follow >= result.zoomed.followFar - 0.05)) problems.push(`the first "zoom out" drew back to ${result.zoomed.follow}, not ${result.zoomed.followFar}`);
         if (result.zoomed.one !== 'zoom out') problems.push(`after the first "zoom out" the option says ${JSON.stringify(result.zoomed.one)}`);
+        if (!result.zoomed.hum) problems.push('drawn back, the hum\'s button is not there');
         await page.screenshot({ path: `${shots}-dock-zoomed.png` });
-        // ... "zoom out" again: it lets go, out to the whole city, where the option says "back" ...
+        // (The hum's button brings the camera back in close; the option draws it back again.)
+        const followStart = await page.evaluate(() => window.elysicesterDebug.walk.followStart);
+        await page.click('#hum-button');
+        await followFor(followStart);
+        result.recentred = await where();
+        if (!result.recentred.walking || Math.abs(result.recentred.follow - followStart) > 0.06) problems.push(`the hum's button did not bring the camera back in close (${result.recentred.follow}, not ${followStart})`);
+        if (result.recentred.hum) problems.push('back in close, the hum\'s button is still showing');
         await page.click('#one-button');
-        await oneSays('back');
+        await followFor(result.zoomed.followFar);
+        // ... "zoom out" again: it lets go, out to the whole city, where the option says "leave" ...
+        await page.click('#one-button');
+        await oneSays('leave');
         await page.waitForTimeout(pass.reducedMotion ? 800 : 4000);
         result.whole = await where();
         if (result.whole.walking) problems.push('the second "zoom out" left it flying');
         if (!result.whole.atHome) problems.push('the second "zoom out" did not draw back to the whole city');
-        if (result.whole.one !== 'back') problems.push(`at the whole city the option says ${JSON.stringify(result.whole.one)}, not "back"`);
+        if (result.whole.one !== 'leave') problems.push(`at the whole city the option says ${JSON.stringify(result.whole.one)}, not "leave"`);
+        if (!result.whole.hum) problems.push('out at the whole city, the hum\'s button is not there');
         await page.screenshot({ path: `${shots}-dock-whole.png` });
-        // ... and "back" goes to the texts.
-        await Promise.all([
-            page.waitForURL(/\/elysicester\/read\.html$/, { timeout: 15_000 }).catch(() => {}),
-            page.click('#one-button'),
-        ]);
-        result.back = new URL(page.url()).pathname;
-        if (result.back !== '/elysicester/read.html') problems.push(`"back" went to ${result.back}`);
+        // ... "leave" brings the choice back (the city's options stepping away), and "Explore - Win" comes back to the
+        // city where it was ...
+        await page.click('#one-button');
+        // (The choice comes in from the next frame: under SwiftShader a frame can take a second.)
+        await page.waitForFunction(() => document.getElementById('choice')?.classList.contains('is-shown'), null, { timeout: 15_000 }).catch(() => {});
+        await page.waitForTimeout(pass.reducedMotion ? 300 : 1300);
+        result.left = await where();
+        if (!result.left.choice) problems.push('"leave" did not bring the choice back');
+        if (result.left.one !== null || result.left.hum) problems.push('with the choice back, the city\'s options are still showing');
+        const focused = await page.evaluate(() => document.activeElement?.id ?? null);
+        if (focused !== 'choice-explore') problems.push(`with the choice back, focus is on ${focused}, not "Explore - Win"`);
+        await page.screenshot({ path: `${shots}-dock-left.png` });
+        await page.click('#choice-explore');
+        await oneSays('leave');
+        await page.waitForTimeout(pass.reducedMotion ? 300 : 1300);
+        result.returned = await where();
+        if (result.returned.choice) problems.push('"Explore - Win" left the choice up');
+        if (!result.returned.atHome || result.returned.one !== 'leave') problems.push(`"Explore - Win" did not come back to the whole city (at home ${result.returned.atHome}, option ${JSON.stringify(result.returned.one)})`);
+        // ... and the hum's button takes the hum again, close.
+        await page.click('#hum-button');
+        await page.waitForFunction(() => window.elysicesterDebug.walk.state.walking, null, { timeout: 10_000 }).catch(() => {});
+        await page.waitForTimeout(pass.reducedMotion ? 800 : 3000);
+        result.taken = await where();
+        if (!result.taken.walking) problems.push('the hum\'s button did not take the hum again');
+        if (result.taken.one !== 'zoom out') problems.push(`taken again, the option says ${JSON.stringify(result.taken.one)}, not "zoom out"`);
     } catch (error) {
         problems.push(`the round broke off: ${error.message.split('\n')[0]}`);
     } finally {
@@ -1245,7 +1281,7 @@ try {
                 : '';
             const extras = result.extras ? `extras ${result.extras.ok ? 'sky, shadow, door, voice and hums all there' : 'NOT OK'}` : '';
             const camera = result.camera ? `camera ${result.camera.ok ? `kept clear (closest ${Math.min(...result.camera.rows.map((row) => row.closest))})` : 'WENT INTO SOMETHING'}` : '';
-            const dock = result.dock ? `dock ${result.dock.ok ? 'arrives perched on the Cyclolite by the signs, again on reload; zoom out, zoom out, back to the texts' : 'NOT OK'}` : '';
+            const dock = result.dock ? `dock ${result.dock.ok ? 'arrives perched on the Cyclolite by the signs, again on reload; zoom out, zoom out, leave to the choice and back; the hum recentres' : 'NOT OK'}` : '';
             const givers = result.creatures
                 ? `givers ${result.creatures.ok ? `${result.creatures.city.pugs} pugs, ${result.creatures.city.hums} hums, Allison; squur, chirp, his line, the bio; ${result.creatures.inventory.items} lost pages; won, written by hand (${result.creatures.written?.strokes ?? 0} strokes)` : 'NOT OK'}`
                 : '';

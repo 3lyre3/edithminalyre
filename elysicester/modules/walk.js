@@ -101,6 +101,8 @@ const EDGE = 0.35;
 /** "walk from here": how far about a place to look for somewhere to stand (in rings this far apart). */
 const STAND_SEARCH = 8;
 const STAND_STEP = 0.3;
+/** And set down there, how much open floor it wants ahead of it, facing the place, before it faces another way. */
+const OPEN_AHEAD = 1;
 /**
  * The camera, walking, stands above and behind the one casting the shadow (Elm's ask), and looks at the shadow itself,
  * its middle as it lies (Elm: "can we centre the shadow more somehow? so it aligns more closely with the central
@@ -219,6 +221,16 @@ const HUM_FRAME = 0.45;
 const HUM_PHI = 0.92;
 const HUM_PHI_FAR = 0.85;
 /**
+ * While a scene is played, the walking camera may be asked to take in a point with the walker (watch: the charity
+ * ball's podium, while the speech is given; places.js): the view turns this share of the way toward it, looks down
+ * less steeply (to this angle from straight overhead), stands this many times as far back, and eases in and out at
+ * this rate, so the one speaking and the walker are both in sight.
+ */
+const WATCH_SHARE = 0.3;
+const WATCH_PHI = 1.2;
+const WATCH_BACK = 1.5;
+const WATCH_EASE = 1.6;
+/**
  * Flying, the wraith's shadow falls from a sun this high (radians; from the same quarter as the key light, which is
  * lower): so it lies close beneath the hum, as a bird's own shadow does, the whole of it in the view with the hum.
  */
@@ -226,7 +238,7 @@ const HUM_SUN = (45 * Math.PI) / 180;
 /** What taking it is called: the hum's (Elm: "i think just "fly" would work"), or the shadow's. */
 const TAKE_WORDS = HUM ? 'fly' : 'walk as the shadow';
 /**
- * With one option at the top of the screen (a trial, trials.js: "zoom out, zoom out, back"; main.js), taking the hum
+ * With one option at the top of the screen (a trial, trials.js: "zoom out, zoom out, leave"; main.js), taking the hum
  * again brings the camera back in close over it, so the option's round begins again from its first "zoom out".
  */
 const ONE_BUTTON = trialOn('onebutton');
@@ -581,6 +593,10 @@ export function createWalk({ light, reducedMotion, gradientMap = null }) {
     let justArrived = false;
     /** A reading point it's beside (main.js says, attend): its hood turns to it. */
     let attending = null;
+    /** A point a scene asks the camera to take in with the walker (watch), and how far it has turned to it (0 to 1). */
+    let watching = false;
+    const watched = new Vector3();
+    let watchWeight = 0;
 
     /** Pose the banshee for this moment (banshee.js): its going, and what it's doing (waiting, walked, let go). */
     function poseBanshee(elapsed) {
@@ -718,6 +734,33 @@ export function createWalk({ light, reducedMotion, gradientMap = null }) {
             }
         }
         return null;
+    }
+
+    /** How far (up to `reach`) a body standing at `from` could go, heading `heading`, from floor to floor. */
+    function openAhead(from, heading, reach = 3) {
+        let y = from.y;
+        for (let along = 0.25; along <= reach + 1e-6; along += 0.25) {
+            const floor = standOn(from.x + Math.sin(heading) * along, from.z + Math.cos(heading) * along, y);
+            if (floor === null || (HUM ? floor - y > HUM_CLIMB : Math.abs(floor - y) > STEP)) return along - 0.25;
+            y = floor;
+        }
+        return reach;
+    }
+
+    /** The way from `from` that opens furthest (toward the city's middle, first among equals), else `fallback`. */
+    function openestWay(from, fallback) {
+        let best = fallback;
+        let bestScore = -Infinity;
+        const toCity = Math.atan2(-from.x, -from.z);
+        for (let k = 0; k < 16; k += 1) {
+            const heading = (k / 16) * Math.PI * 2;
+            const score = openAhead(from, heading) + 0.3 * Math.cos(shortest(heading - toCity));
+            if (score > bestScore) {
+                bestScore = score;
+                best = heading;
+            }
+        }
+        return best;
     }
 
     /** Whether a body standing at (x, z) on `floor` can go on from there: a stride open at least three of eight ways. */
@@ -1059,6 +1102,10 @@ export function createWalk({ light, reducedMotion, gradientMap = null }) {
         const target = (hum
             ? rig.goal.target.copy(hum.position).lerp(shadowCentre(framing, lie), HUM_FRAME)
             : shadowCentre(rig.goal.target, lie)).add(lead);
+        // (While a scene is played, a speaker at a podium, it turns up toward what's asked to be taken in too.)
+        watchWeight = reducedMotion ? Number(watching) : watchWeight + (Number(watching) - watchWeight) * (1 - Math.exp(-WATCH_EASE * dt));
+        if (watchWeight < 1e-3) watchWeight = 0;
+        if (watchWeight > 0) target.lerp(watched, WATCH_SHARE * watchWeight);
         // (No golden bridge stands between the camera and the walker: there, its gold comes apart into dust.)
         bridgeSight?.set(state.position.x, state.position.y + TALL * 0.5, state.position.z, 1);
         // (Nor anything else between the camera and any of the shadow, where the city comes apart into dust: then
@@ -1075,8 +1122,8 @@ export function createWalk({ light, reducedMotion, gradientMap = null }) {
         sightFrom.copy(target);
         if (solids?.available) solids.push(sightFrom, 0.3);
         const theta = rig.now.theta + shortest(followTheta - rig.now.theta);
-        const reach = followDistance * Math.max(1, (0.9 / aspect) ** 0.3);
-        const low = hum ? MathUtils.lerp(HUM_PHI_FAR, HUM_PHI, close) : MathUtils.lerp(FOLLOW_PHI, CLOSE_PHI, close);
+        const reach = followDistance * Math.max(1, (0.9 / aspect) ** 0.3) * (1 + (WATCH_BACK - 1) * watchWeight);
+        const low = MathUtils.lerp(hum ? MathUtils.lerp(HUM_PHI_FAR, HUM_PHI, close) : MathUtils.lerp(FOLLOW_PHI, CLOSE_PHI, close), WATCH_PHI, watchWeight);
         if (DUST && dustSight) {
             // Where the city comes apart into dust, the camera never climbs: what's in the way opens (dust.js).
             rise = 0;
@@ -1304,6 +1351,16 @@ export function createWalk({ light, reducedMotion, gradientMap = null }) {
         },
 
         /**
+         * A point to take in with the walker, while a scene is played (places.js: the charity ball's podium, while the
+         * speech is given), or null to stop: walking, the camera turns up toward it a little and stands a little further
+         * back, easing in and out (WATCH_SHARE).
+         */
+        watch(point) {
+            watching = Boolean(point);
+            if (point) watched.copy(point);
+        },
+
+        /**
          * Walking, bring the camera in (a factor below 1) or draw it back (above 1): from close over the shadow to a
          * little further than it stands at first. (The rig hands on the wheel, a pinch, and + and −.)
          */
@@ -1320,6 +1377,12 @@ export function createWalk({ light, reducedMotion, gradientMap = null }) {
 
         /** How far back the walking camera may draw (the one button's first "zoom out" goes there: main.js). */
         followFar: FOLLOW_FAR,
+
+        /** How far back it stands at first, close over the shadow (the hum's button brings it back there: main.js). */
+        followStart: FOLLOW_START,
+
+        /** How far back it stands as a visit arrives (on the Cyclolite, a little further, so the boat shows whole). */
+        followArrive: ARRIVE_FOLLOW,
 
         /** How far back the walking camera stands (for the local checks). */
         get followDistance() {
@@ -1711,7 +1774,10 @@ export function createWalk({ light, reducedMotion, gradientMap = null }) {
             const stand = standingNear(x, z);
             if (!stand) return false;
             const away = Math.hypot(x - stand.x, z - stand.z);
-            const heading = away > 0.6 ? Math.atan2(x - stand.x, z - stand.z) : Math.atan2(-stand.x, -stand.z);
+            let heading = away > 0.6 ? Math.atan2(x - stand.x, z - stand.z) : Math.atan2(-stand.x, -stand.z);
+            // (Set down where the way to the place has no floor a stride ahead, the Cyclolite's deck for the edge, say,
+            // it faces the way that opens furthest instead, so a first step forward goes somewhere.)
+            if (openAhead(stand, heading) < OPEN_AHEAD) heading = openestWay(stand, heading);
             walk.place(stand.x, stand.z, heading, stand.y);
             turnsToCity = false;
             turning = null;

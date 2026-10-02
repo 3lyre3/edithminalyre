@@ -339,6 +339,28 @@
       "status": "draft"
     },
     {
+      "id": "nbp-e5-charity-ball-1",
+      "place": "charity-ball",
+      "work": "nbp",
+      "source": "Agamemnon, Episode 5 (thesis p. 77)",
+      "text": "From a distant podium, an old, bearded Greek muttered incomprehensible sentences, each shaped like an aphorism, a handful of trochaic syllables rising with his eyebrows, then a clutch of iambs closing as his lips pursed, and he would gaze upon the seated crowd, nodding for a few beats, then launch onto the next utterance.",
+      "read_on": "https://digital.library.adelaide.edu.au/server/api/core/bitstreams/9cbedc1a-5eac-4ee5-b909-320c83028bba/content#page=77",
+      "offset": [-1.0, 0.1, 4.8],
+      "trial": "ball",
+      "status": "draft"
+    },
+    {
+      "id": "nbp-e5-charity-ball-2",
+      "place": "charity-ball",
+      "work": "nbp",
+      "source": "Agamemnon, Episode 5 (thesis p. 78)",
+      "text": "She kept her silence, and let the clotheshorses guide her way, through empty changerooms and abandoned costume lockers, to a thin balcony, enclosed by filigreed railing, overlooking the expanse of ocean between the city and the Elysian beach. Here Cassandra lay, chairs tumbled about, back against the rails and a bottle of cognac at the feet, talking to herself.",
+      "read_on": "https://digital.library.adelaide.edu.au/server/api/core/bitstreams/9cbedc1a-5eac-4ee5-b909-320c83028bba/content#page=78",
+      "offset": [-1.5, -0.3, -5.0],
+      "trial": "ball",
+      "status": "draft"
+    },
+    {
       "id": "nbp-e1-mega-screen-1",
       "place": "mega-screen",
       "work": "nbp",

@@ -509,7 +509,7 @@ a:focus-visible {
     color: var(--honey);
 }
 
-/* One option at the top of the screen (a trial: main.js), in Elm's words: "zoom out", "zoom out", "back". */
+/* One option at the top of the screen (a trial: main.js), in Elm's words: "zoom out", "zoom out", "leave". */
 .one-button {
     position: fixed;
     top: max(12px, env(safe-area-inset-top));
@@ -546,6 +546,58 @@ a:focus-visible {
 }
 
 .one-button[hidden] {
+    display: none;
+}
+
+/*
+ * Beside it, the hum's own symbol (the jetty sign's hummingbird, Elm's ask: "a button that's the symbol of the hum so
+ * you can recentre on the hum"): there whenever the camera isn't close on the hum, as quiet as the option beside it.
+ */
+.hum-button {
+    position: fixed;
+    top: max(7px, env(safe-area-inset-top));
+    left: calc(50% - 6.6em);
+    z-index: 50;
+    width: 44px;
+    height: 44px;
+    padding: 5px;
+    font-size: 19px;
+    color: var(--amber);
+    background: none;
+    border: 0;
+    cursor: pointer;
+}
+
+.hum-button::before {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    z-index: -1;
+    background: radial-gradient(closest-side, rgba(4, 3, 8, 0.62), rgba(4, 3, 8, 0.4) 62%, transparent);
+    pointer-events: none;
+}
+
+.hum-button svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+    filter: drop-shadow(0 0 2px rgba(4, 3, 8, 1));
+}
+
+.hum-button:hover,
+.hum-button:focus-visible {
+    color: var(--honey);
+}
+
+.hum-button[hidden] {
+    display: none;
+}
+
+/* Left for the choice again (main.js), the city's own options step away until it's come back to. */
+html[data-left] .one-button,
+html[data-left] .hum-button,
+html[data-left] .inventory-toggle {
     display: none;
 }
 

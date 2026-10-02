@@ -40,9 +40,12 @@ import {
     Matrix4,
     Mesh,
     MeshBasicMaterial,
+    MeshToonMaterial,
+    OctahedronGeometry,
     PlaneGeometry,
     Quaternion,
     Raycaster,
+    RepeatWrapping,
     RingGeometry,
     ShaderMaterial,
     Shape,
@@ -54,6 +57,7 @@ import {
     Vector4,
 } from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { BAND_CELLS, CROWD_CELLS, bandAtlas, cassandraGeometry, crowdAtlas, filigreePanel, greekGeometry } from './ball.js';
 import { paleFace, shadowFigure, starCeiling } from './cassandra.js';
 import { doorCanOpen, doorOpen, shadowTexture } from './extras.js';
 import { createHums } from './hums.js';
@@ -61,6 +65,7 @@ import { silhouetteAtlas } from './silhouette.js';
 import { trialOn } from './trials.js';
 import { WALKER_GLSL } from './walk.js';
 import {
+    Buckets,
     SEA_LEVEL,
     alsoBeforeCompile,
     createRandom,
@@ -4831,8 +4836,725 @@ function buildCassandra({ buckets, extras, still, materials, halls = [] }) {
     return {
         floor: { floorAt },
         door: scene,
-        // A touch on the door knocks (main.js).
-        touch: [{ kind: 'cassandra-door', center: new Vector3(CASSANDRA_FRONT, sill + 1.1, CASSANDRA_DOOR_Z), radius: 0.8, fragment: null }],
+        // A touch on the door knocks (main.js): anywhere on it, from the sill to the top of its arch.
+        touch: [{ kind: 'cassandra-door', center: new Vector3(CASSANDRA_FRONT, sill + 1.1, CASSANDRA_DOOR_Z), radius: 1.15, fragment: null }],
+    };
+}
+
+// =============================================================================
+// The charity ball
+// =============================================================================
+
+/**
+ * The charity ball's hall stands wholly out beyond the north rim, over the drop (x across it; z along it, its far end
+ * north, over the ocean), reached across a terrace laid out from the rim's edge. Its walls (their outer faces), their
+ * thickness, how tall they stand over its floor, and how high its vault rises over the eaves.
+ */
+const BALL_WEST = 0.8;
+const BALL_EAST = 7.2;
+const BALL_SOUTH = -31.8;
+const BALL_NORTH = -42.0;
+const BALL_WALL = 0.22;
+const BALL_TALL = 5.6;
+const BALL_RISE = 1.4;
+/** The terrace, from over the land out to the hall's face: its south edge and its top; the hall's floor, a step up. */
+const BALL_TERRACE_SOUTH = -29.2;
+const BALL_TERRACE_TOP = 0.11;
+const BALL_FLOOR = 0.29;
+/** The doorway in its face: its middle (x), its width, where its arch springs; how far its doors stand open. */
+const BALL_DOOR_X = 4.0;
+const BALL_DOOR_WIDE = 1.8;
+const BALL_DOOR_SPRING = 2.1;
+const BALL_DOORS_OPEN = 1.25;
+/** The stage: its front and back (z), its east end (beside it, the dark aisle to the hidden door), its height. */
+const BALL_STAGE_FRONT = -37.75;
+const BALL_STAGE_BACK = -39.85;
+const BALL_STAGE_EAST = 6.0;
+const BALL_STAGE_TALL = 0.5;
+/** The wall behind the stage, from the stage's back: its thickness (a dark face to the hall, a gold one behind). */
+const BALL_PARTITION_THICK = 0.2;
+/** The hidden door in it: x from, x to; its height; how near someone comes before it swings back, and how far round. */
+const BALL_HIDDEN = [6.12, 6.86];
+const BALL_HIDDEN_TALL = 2.0;
+const BALL_HIDDEN_NEAR = 1.7;
+const BALL_HIDDEN_SWING = 1.45;
+/** The balcony beyond the far wall: x from, x to, how deep; the arch onto it from the corridor: x from, x to, its spring. */
+const BALL_BALCONY = [1.6, 6.4];
+const BALL_BALCONY_DEEP = 1.2;
+const BALL_BALCONY_DOOR = [3.0, 4.0];
+const BALL_BALCONY_DOOR_SPRING = 1.7;
+/** The tables (their middles), their cloths' radius and height; how far from each middle its guests sit. */
+const BALL_TABLES = [[2.35, -33.2], [5.65, -33.2], [2.35, -34.75], [5.65, -34.75], [2.35, -36.3], [5.65, -36.3]];
+const BALL_TABLE_RADIUS = 0.42;
+const BALL_TABLE_TALL = 0.58;
+const BALL_SEATED = 0.64;
+/** The chandeliers hang over the aisle between the tables, this high over the floor. */
+const BALL_CHANDELIER_HANG = 4.5;
+/** Where Cassandra sits on the balcony (her hips), her back to the rails; she hears whoever comes this near. */
+const BALL_SHE_SITS = [4.9, -42.85];
+const BALL_SHE_HEARS = 2.2;
+/** The chairs tumbled about the balcony: x, z, and how each lies (turned, tipped back, on its side). */
+const BALL_TUMBLED = [[2.05, -42.5, 0.6, 0, Math.PI / 2], [2.7, -42.8, -0.3, -Math.PI / 2, 0], [6.05, -42.6, 2.2, 0, -Math.PI / 2], [5.62, -42.98, 1.4, 0, 0]];
+/** The bottle of cognac at her feet. */
+const BALL_COGNAC = [5.3, -42.3];
+/** The hall's insides are drawn only while the eye is this near its middle (it's seen into only from close by). */
+const BALL_INSIDE_SEEN = 18;
+/** The speech's beats, in seconds after someone comes in; and out of the building this long, it all begins again. */
+const BALL_SPEECH = { mutters: 0, applause: 2.2, vanishes: 3.0, appears: 3.4, elysicester: 4.6, elysium: 7.0, leaves: 9.8, band: 10.2 };
+const BALL_AGAIN = 4;
+/**
+ * The words, exactly as the book has them (pp. 77-78): the old Greek's, as it gives his name; Cassandra's at the
+ * podium, each as she says it; and hers on the balcony.
+ */
+const BALL_MUTTERED = '[Unintelligible]';
+const BALL_THANKS = ['Thank you, Elysicester,', 'Thank you, Elysium.'];
+const BALL_NOT_DRUNK = 'I’m not that drunk.';
+
+/** Whether (x, z), give or take r, is on the ball's lot: the terrace at the rim, and the hall and balcony beyond it. */
+function onBallsLot(x, z, r = 0) {
+    return x > BALL_WEST - 0.6 - r && x < BALL_EAST + 0.6 + r && z > BALL_NORTH - BALL_BALCONY_DEEP - 0.6 - r && z < BALL_TERRACE_SOUTH + 0.8 + r;
+}
+
+/** Where the island ends at x, going north (its rim, shape.js). */
+function northRimZ(x) {
+    let z = -26;
+    while (Math.hypot(x, z) < rimRadius(Math.atan2(z, x)) && z > -40) z -= 0.02;
+    return z;
+}
+
+/**
+ * A crowd in silhouette: each figure a quad standing on its feet and turned about its own upright to the eye, its
+ * picture a cell of an atlas (ball.js). Feet: [x, y, z, width, height, cell, phase]. One draw for them all. Its
+ * uniforms: shown (0 to 1: they rise out of nothing), bob (each lifts in its turn: clapping, playing), and a clock.
+ */
+function silhouettes(feet, atlas, cells, { color, name }) {
+    const positions = [];
+    const normals = [];
+    const corners = [];
+    const uvs = [];
+    const phases = [];
+    const index = [];
+    feet.forEach(([x, y, z, wide, tall, cell, phase], quad) => {
+        for (const [u, v] of [[0, 0], [1, 0], [1, 1], [0, 1]]) {
+            positions.push(x, y, z);
+            normals.push(0, 1, 0);
+            corners.push((u - 0.5) * wide, v * tall);
+            uvs.push((cell + u) / cells, v);
+            phases.push(phase);
+        }
+        const a = quad * 4;
+        index.push(a, a + 1, a + 2, a, a + 2, a + 3);
+    });
+    const geometry = new BufferGeometry();
+    geometry.setAttribute('position', new Float32BufferAttribute(positions, 3));
+    geometry.setAttribute('normal', new Float32BufferAttribute(normals, 3));
+    geometry.setAttribute('corner', new Float32BufferAttribute(corners, 2));
+    geometry.setAttribute('uv', new Float32BufferAttribute(uvs, 2));
+    geometry.setAttribute('phase', new Float32BufferAttribute(phases, 1));
+    geometry.setIndex(index);
+    geometry.computeBoundingSphere();
+    // (Its positions are its figures' feet: the sphere grows by their height.)
+    geometry.boundingSphere.radius += 1.5;
+    const uniforms = { silhouetteShown: { value: 1 }, silhouetteBob: { value: 0 }, silhouetteTime: { value: 0 } };
+    const material = new MeshBasicMaterial({ map: atlas, color, alphaTest: 0.5 });
+    alsoBeforeCompile(material, name, (shader) => {
+        Object.assign(shader.uniforms, uniforms);
+        shader.vertexShader = shader.vertexShader
+            .replace('#include <common>', '#include <common>\nattribute vec2 corner;\nattribute float phase;\nuniform float silhouetteShown;\nuniform float silhouetteBob;\nuniform float silhouetteTime;')
+            .replace('#include <project_vertex>', [
+                'vec4 mvPosition = modelViewMatrix * vec4(transformed, 1.0);',
+                // (Across, the view's own way; up, the world's, as the eye sees it: upright, however steeply it's looked down at.)
+                'vec3 upright = normalize((viewMatrix * vec4(0.0, 1.0, 0.0, 0.0)).xyz);',
+                'float lift = silhouetteBob * max(0.0, sin(silhouetteTime * 9.0 + phase * 6.2831)) * 0.045;',
+                'mvPosition.xyz += vec3(corner.x * silhouetteShown, 0.0, 0.0) + upright * (corner.y * silhouetteShown + lift);',
+                'gl_Position = projectionMatrix * mvPosition;',
+            ].join('\n'));
+    });
+    const mesh = new Mesh(geometry, material);
+    mesh.name = name;
+    return { mesh, uniforms };
+}
+
+/**
+ * The charity ball (Numbers by Paint, Episode 5, pp. 77-78; Elm's next place; a trial: ?ball=off): "a charity thing"
+ * in a hall of chandeliers, its "distant podium", the "hidden door" with "A bar of polished gold" across it, and "a thin
+ * balcony, enclosed by filigreed railing, overlooking the expanse of ocean". It stands out beyond the north rim on golden
+ * struts, its face to the city across a terrace; its shell is a solid to the camera, its insides drawn only while the
+ * eye is near. Come in and the speech is given (the old Greek, "[Unintelligible]" as the book names him; applause;
+ * Cassandra's thanks; the band); on the balcony, she says it. A stream of its own, so nothing else moves. Returns its
+ * floors, the scene (stage.js steps it; main.js voices it) and what a touch finds (her, on the balcony).
+ */
+function buildBall({ extras, still, materials }) {
+    const random = createRandom(7707);
+    const floor = BALL_FLOOR;
+    const width = BALL_EAST - BALL_WEST;
+    const cx = (BALL_WEST + BALL_EAST) / 2;
+    const innerWest = BALL_WEST + BALL_WALL;
+    const innerEast = BALL_EAST - BALL_WALL;
+    const innerSouth = BALL_SOUTH - BALL_WALL;
+    const innerNorth = BALL_NORTH + BALL_WALL;
+    const eaves = floor + BALL_TALL;
+    const stageTop = floor + BALL_STAGE_TALL;
+    const [hiddenWest, hiddenEast] = BALL_HIDDEN;
+    const [balconyWest, balconyEast] = BALL_BALCONY;
+    const balconyFar = BALL_NORTH - BALL_BALCONY_DEEP;
+    const partitionNorth = BALL_STAGE_BACK - BALL_PARTITION_THICK;
+    const shell = new Buckets();
+    const inside = new Buckets();
+    const WALL = 0xe8bf6a;
+    const TRIM = 0xd2aa5c;
+    const PALE = 0xd8c8a4;
+    const VERDIGRIS = 0x6a9c86;
+    const PARQUET = 0x6a3424;
+    const VELVET = 0x8a1f2c;
+    const VELVET_DEEP = 0x4e1018;
+    const CLOTH_WHITE = 0xf2eee6;
+    const DARK = 0x2a1e18;
+    const DUSTY = 0xb8975a;
+    const STAGE_WOOD = 0x5a3220;
+    const DUSK = 0x2c2650;
+    const DUSK_LOW = new Color(0xb0607a);
+    const RAIL_GOLD = 0xe8c060;
+    const CHAIR_GOLD = 0xd8a848;
+    const CANDLE = light(0xffd890, 3.0);
+
+    // The terrace, laid out from over the land to the hall's face; on its east side, where it's out over the drop, a
+    // low gold rail; by the doorway, two lamps.
+    shell.add('stone', box(width, 0.35, BALL_TERRACE_SOUTH - BALL_SOUTH, { x: cx, y: BALL_TERRACE_TOP - 0.175, z: (BALL_TERRACE_SOUTH + BALL_SOUTH) / 2 }, PALE));
+    const railFrom = northRimZ(BALL_EAST) + 0.3;
+    for (let post = 0; post < 4; post += 1) {
+        const z = railFrom + (BALL_SOUTH + 0.1 - railFrom) * (post / 3);
+        shell.add('gold', box(0.06, 0.52, 0.06, { x: BALL_EAST - 0.05, y: BALL_TERRACE_TOP + 0.26, z }, RAIL_GOLD), { passable: true });
+    }
+    shell.add('gold', box(0.07, 0.05, railFrom - BALL_SOUTH, { x: BALL_EAST - 0.05, y: BALL_TERRACE_TOP + 0.52, z: (railFrom + BALL_SOUTH) / 2 }, RAIL_GOLD), { passable: true });
+    for (const side of [-1, 1]) {
+        const x = BALL_DOOR_X + side * 1.55;
+        shell.add('gold', cylinder(0.035, 0.05, 1.5, 6, { x, y: BALL_TERRACE_TOP + 0.75, z: BALL_SOUTH + 0.55 }, TRIM), { passable: true });
+        shell.add('glow', ball(0.1, { x, y: BALL_TERRACE_TOP + 1.58, z: BALL_SOUTH + 0.55 }, LAMP, 6, 4), { passable: true });
+    }
+
+    // The hall's floor, out over the drop; its walls the length of it, east and west.
+    shell.add('stone', box(width + 0.2, 0.45, BALL_SOUTH - BALL_NORTH, { x: cx, y: floor - 0.225, z: (BALL_SOUTH + BALL_NORTH) / 2 }, TRIM));
+    for (const x of [BALL_WEST + BALL_WALL / 2, BALL_EAST - BALL_WALL / 2]) {
+        shell.add('gold', box(BALL_WALL, BALL_TALL, BALL_SOUTH - BALL_NORTH, { x, y: floor + BALL_TALL / 2, z: (BALL_SOUTH + BALL_NORTH) / 2 }, WALL));
+    }
+    // Its face to the city, its far wall, and the wall behind the stage: each under the vault's curve, with a doorway
+    // through it (the stage's, a plain one: the hidden door).
+    const arcRadius = ((width / 2) ** 2 + BALL_RISE ** 2) / (2 * BALL_RISE);
+    const arcCentre = BALL_TALL - (arcRadius - BALL_RISE);
+    const arcAngle = Math.asin(width / 2 / arcRadius);
+    // (Each a little narrower than the hall, its edges sunk in the side walls, so no two faces lie in one plane.)
+    const endWall = (hole, depth = BALL_WALL, half = width / 2 - 0.02) => {
+        const reach = Math.asin(half / arcRadius);
+        const shape = new Shape();
+        shape.moveTo(-half, 0);
+        shape.lineTo(half, 0);
+        shape.lineTo(half, arcCentre + Math.sqrt(arcRadius ** 2 - half ** 2));
+        shape.absarc(0, arcCentre, arcRadius, Math.PI / 2 - reach, Math.PI / 2 + reach, false);
+        shape.lineTo(-half, 0);
+        shape.holes.push(hole);
+        return new ExtrudeGeometry(shape, { depth, bevelEnabled: false, curveSegments: 12 });
+    };
+    const arch = (middle, wide, spring) => new Shape(archShape(wide, spring).getPoints(6).map((point) => new Vector2(point.x + middle - cx, point.y)));
+    const front = endWall(arch(BALL_DOOR_X, BALL_DOOR_WIDE, BALL_DOOR_SPRING));
+    front.translate(cx, floor, innerSouth);
+    shell.add('gold', paint(front, WALL));
+    const balconyDoorMiddle = (BALL_BALCONY_DOOR[0] + BALL_BALCONY_DOOR[1]) / 2;
+    const back = endWall(arch(balconyDoorMiddle, BALL_BALCONY_DOOR[1] - BALL_BALCONY_DOOR[0], BALL_BALCONY_DOOR_SPRING));
+    back.translate(cx, floor, BALL_NORTH);
+    shell.add('gold', paint(back, WALL));
+    const hiddenHole = () => {
+        const hole = new Shape();
+        hole.moveTo(hiddenWest - cx, 0);
+        hole.lineTo(hiddenEast - cx, 0);
+        hole.lineTo(hiddenEast - cx, BALL_HIDDEN_TALL);
+        hole.lineTo(hiddenWest - cx, BALL_HIDDEN_TALL);
+        hole.lineTo(hiddenWest - cx, 0);
+        return hole;
+    };
+    // (Dark to the hall, "In the darkness at the edge of the hall, behind the lights", without gold's glow; dusty gold
+    // to the corridor.)
+    const layer = BALL_PARTITION_THICK / 2;
+    const darkSide = endWall(hiddenHole(), layer, width / 2 - 0.1);
+    darkSide.translate(cx, floor, BALL_STAGE_BACK - layer);
+    shell.add('brick', paint(darkSide, DARK));
+    const goldSide = endWall(hiddenHole(), layer, width / 2 - 0.1);
+    goldSide.translate(cx, floor, partitionNorth);
+    shell.add('gold', paint(goldSide, DUSTY));
+
+    // The vault over it, of verdigris, out past the walls and the ends; a gilded finial at each end of its crown.
+    const roofOut = arcRadius + 0.14;
+    const spread = Math.asin((width / 2 + 0.3) / roofOut);
+    const roof = new Shape();
+    roof.absarc(0, arcCentre, roofOut, Math.PI / 2 - spread, Math.PI / 2 + spread, false);
+    roof.absarc(0, arcCentre, arcRadius, Math.PI / 2 + spread, Math.PI / 2 - spread, true);
+    roof.closePath();
+    const vault = new ExtrudeGeometry(roof, { depth: BALL_SOUTH - BALL_NORTH + 0.5, bevelEnabled: false, curveSegments: 14 });
+    vault.translate(cx, floor, BALL_NORTH - 0.25);
+    shell.add('copper', paint(vault, VERDIGRIS));
+    for (const z of [BALL_SOUTH + 0.1, BALL_NORTH - 0.1]) {
+        shell.add('gold', ball(0.13, { x: cx, y: eaves + BALL_RISE + 0.24, z }, RAIL_GOLD, 6, 4));
+        shell.add('gold', cone(0.07, 0.5, 6, { x: cx, y: eaves + BALL_RISE + 0.55, z }, RAIL_GOLD));
+    }
+
+    // Pilasters down each side between the windows, and on its face; the course at the windows' sills; round the
+    // doorway an arch of stone, round the balcony's arch another.
+    for (const [x, out] of [[BALL_WEST, -1], [BALL_EAST, 1]]) {
+        for (const z of [BALL_SOUTH - 0.2, -33.97, -35.52, -37.55, -40.1, -41.5]) {
+            shell.add('stone', box(0.12, BALL_TALL - 0.1, 0.3, { x: x + out * 0.06, y: floor + (BALL_TALL - 0.1) / 2, z }, TRIM));
+        }
+        shell.add('stone', box(0.08, 0.1, BALL_SOUTH - BALL_NORTH - 0.02, { x: x + out * 0.04, y: floor + 1.24, z: (BALL_SOUTH + BALL_NORTH) / 2 }, TRIM));
+    }
+    for (const x of [BALL_WEST + 0.2, BALL_DOOR_X - BALL_DOOR_WIDE / 2 - 0.42, BALL_DOOR_X + BALL_DOOR_WIDE / 2 + 0.42, BALL_EAST - 0.2]) {
+        shell.add('stone', box(0.34, BALL_TALL - 0.1, 0.12, { x, y: floor + (BALL_TALL - 0.1) / 2, z: BALL_SOUTH + 0.06 }, TRIM));
+    }
+    shell.add('stone', archRing(BALL_DOOR_WIDE + 0.02, BALL_DOOR_SPRING, 0.2, 0.14, { x: BALL_DOOR_X, y: floor, z: BALL_SOUTH + 0.06 }, TRIM, 8));
+    shell.add('stone', archRing(BALL_BALCONY_DOOR[1] - BALL_BALCONY_DOOR[0] + 0.02, BALL_BALCONY_DOOR_SPRING, 0.14, 0.12, { x: balconyDoorMiddle, y: floor, z: BALL_NORTH - 0.05, ry: Math.PI }, TRIM, 6));
+    // High in each gable, a round window, lit; on the far face, two high arched windows either side of the balcony's arch.
+    for (const [z, ry] of [[BALL_SOUTH + 0.012, 0], [BALL_NORTH - 0.012, Math.PI]]) {
+        shell.add('glow', paint(pose(new CircleGeometry(0.55, 14), { x: cx, y: floor + 4.45, z, ry }), WINDOW_LOW));
+        shell.add('stone', paint(pose(new RingGeometry(0.55, 0.72, 14), { x: cx, y: floor + 4.45, z: z + (ry ? -0.01 : 0.01), ry }), TRIM));
+    }
+    for (const x of [1.95, 5.85]) {
+        const at = { x, y: floor + 2.3, z: BALL_NORTH - 0.012, ry: Math.PI };
+        shell.add('glow', arched(0.66, 1.25, 0.03, at, WINDOW_LOW, 4));
+        shell.add('stone', archRing(0.66, 1.25, 0.09, 0.08, at, TRIM, 4));
+    }
+    // The doors themselves, two leaves of gold standing open into the hall.
+    for (const side of [-1, 1]) {
+        const leaf = arched(BALL_DOOR_WIDE / 2 - 0.03, BALL_DOOR_SPRING, 0.06, { x: -side * (BALL_DOOR_WIDE / 4 - 0.015) }, 0xd8a848, 6);
+        pose(leaf, { x: BALL_DOOR_X + side * BALL_DOOR_WIDE / 2, y: floor, z: innerSouth - 0.04, ry: -side * BALL_DOORS_OPEN });
+        shell.add('gold', leaf, { passable: true });
+    }
+    // The windows: tall arches down each side, lit; inside, the dusk through them.
+    for (const [x, ry, out] of [[BALL_WEST - 0.012, -Math.PI / 2, -1], [BALL_EAST + 0.012, Math.PI / 2, 1]]) {
+        for (const z of [-33.2, -34.75, -36.3, -38.8]) {
+            const at = { x, y: floor + 1.3, z, ry };
+            shell.add('glow', arched(0.8, 2.0, 0.03, at, WINDOW, 4));
+            shell.add('stone', archRing(0.8, 2.0, 0.1, 0.08, at, TRIM, 4));
+            for (const piece of frame([box(1.06, 0.07, 0.14, { y: -0.035, z: 0.04 }, TRIM)], at)) shell.add('stone', piece);
+            // (Night high in the glass, the last of the sunset low in it.)
+            const night = paintBy(arched(0.8, 2.0, 0.02, { x: x - out * (BALL_WALL + 0.025), y: floor + 1.3, z, ry: ry + Math.PI }, DUSK, 4), (px, py, pz, color) => {
+                color.set(DUSK).lerp(DUSK_LOW, MathUtils.clamp(1 - (py - floor - 1.3) / 1.6, 0, 1) ** 1.6);
+            });
+            inside.add('glow', night);
+        }
+    }
+    // Golden struts from the cliff's face, under the rim, out to the floor's underside; a beam along under each.
+    for (const x of [BALL_WEST + 0.5, cx - 1.2, cx + 1.2, BALL_EAST - 0.5]) {
+        const from = new Vector3(x, -2.6, northRimZ(x) + 0.35);
+        for (const z of [-35.2, -40.4]) shell.add('gold', tube([from, new Vector3(x, floor - 0.5, z)], 0.075, TRIM, 1, 6), { passable: true });
+        shell.add('gold', box(0.14, 0.14, BALL_SOUTH - BALL_NORTH - 0.4, { x, y: floor - 0.52, z: (BALL_SOUTH + BALL_NORTH) / 2 }, TRIM), { passable: true });
+    }
+
+    // The balcony, out over the ocean: its floor, its posts and rails (the filigree between them: below); the chairs
+    // tumbled about; the bottle of cognac at her feet.
+    shell.add('stone', box(balconyEast - balconyWest, 0.3, BALL_BALCONY_DEEP, { x: (balconyWest + balconyEast) / 2, y: floor - 0.15, z: BALL_NORTH - BALL_BALCONY_DEEP / 2 }, TRIM));
+    for (const [x, z] of [[balconyWest, balconyFar + 0.035], [(balconyWest + balconyEast) / 2, balconyFar + 0.035], [balconyEast, balconyFar + 0.035], [balconyWest, BALL_NORTH - 0.06], [balconyEast, BALL_NORTH - 0.06]]) {
+        shell.add('gold', box(0.07, 0.98, 0.07, { x, y: floor + 0.49, z }, RAIL_GOLD), { passable: true });
+    }
+    shell.add('gold', box(balconyEast - balconyWest + 0.07, 0.05, 0.08, { x: (balconyWest + balconyEast) / 2, y: floor + 0.98, z: balconyFar + 0.035 }, RAIL_GOLD), { passable: true });
+    for (const x of [balconyWest, balconyEast]) {
+        shell.add('gold', box(0.08, 0.05, BALL_BALCONY_DEEP, { x, y: floor + 0.98, z: BALL_NORTH - BALL_BALCONY_DEEP / 2 }, RAIL_GOLD), { passable: true });
+    }
+    const chair = () => {
+        const parts = [box(0.3, 0.035, 0.3, { y: 0.36 }, CHAIR_GOLD), box(0.3, 0.34, 0.035, { y: 0.55, z: -0.135 }, CHAIR_GOLD)];
+        for (const [px, pz] of [[-0.13, -0.13], [0.13, -0.13], [-0.13, 0.13], [0.13, 0.13]]) parts.push(box(0.028, 0.36, 0.028, { x: px, y: 0.18, z: pz }, 0xb8902e));
+        return mergeGeometries(parts.map((part) => unindexed(part)), false);
+    };
+    for (const [x, z, ry, rx, rz] of BALL_TUMBLED) {
+        // (Tipped as it fell, then set on the floor where it lies.)
+        const piece = pose(chair(), { rx, rz });
+        piece.computeBoundingBox();
+        piece.translate(0, -piece.boundingBox.min.y, 0);
+        shell.add('gold', pose(piece, { x, y: floor, z, ry }), { passable: true });
+    }
+    const bottle = new LatheGeometry([[0, 0], [0.034, 0], [0.036, 0.018], [0.036, 0.11], [0.026, 0.145], [0.011, 0.162], [0.011, 0.215], [0.014, 0.22], [0, 0.224]].map(([r, y]) => new Vector2(r, y)), 7);
+    shell.add('brick', paint(pose(bottle, { x: BALL_COGNAC[0], y: floor, z: BALL_COGNAC[1] }), 0x8a4a14), { passable: true });
+
+    // Inside. The parquet; the corridor's floor of dusty gold; velvet round the walls; the vault's underside, deep red.
+    inside.add('brick', box(innerEast - innerWest, 0.012, innerSouth - BALL_STAGE_BACK, { x: cx, y: floor + 0.006, z: (innerSouth + BALL_STAGE_BACK) / 2 }, PARQUET));
+    inside.add('brick', box(innerEast - innerWest, 0.012, partitionNorth - innerNorth, { x: cx, y: floor + 0.006, z: (partitionNorth + innerNorth) / 2 }, DUSTY));
+    for (const x of [innerWest + 0.015, innerEast - 0.015]) {
+        inside.add('cloth', box(0.03, 1.0, innerSouth - BALL_STAGE_FRONT, { x, y: floor + 0.5, z: (innerSouth + BALL_STAGE_FRONT) / 2 }, VELVET));
+    }
+    const lining = new Shape();
+    lining.absarc(0, arcCentre, arcRadius - 0.01, Math.PI / 2 - arcAngle, Math.PI / 2 + arcAngle, false);
+    lining.absarc(0, arcCentre, arcRadius - 0.05, Math.PI / 2 + arcAngle, Math.PI / 2 - arcAngle, true);
+    lining.closePath();
+    const ceiling = new ExtrudeGeometry(lining, { depth: innerSouth - innerNorth, bevelEnabled: false, curveSegments: 12 });
+    ceiling.translate(cx, floor, innerNorth);
+    inside.add('brick', paint(ceiling, 0x5a2a2a));
+
+    // The stage, its gold edge and footlights; the podium (a lectern and its microphone); the curtains, deep red.
+    inside.add('brick', box(BALL_STAGE_EAST - innerWest, BALL_STAGE_TALL, BALL_STAGE_FRONT - BALL_STAGE_BACK, { x: (innerWest + BALL_STAGE_EAST) / 2, y: floor + BALL_STAGE_TALL / 2, z: (BALL_STAGE_FRONT + BALL_STAGE_BACK) / 2 }, STAGE_WOOD));
+    inside.add('gold', box(BALL_STAGE_EAST - innerWest, 0.07, 0.03, { x: (innerWest + BALL_STAGE_EAST) / 2, y: stageTop - 0.035, z: BALL_STAGE_FRONT + 0.015 }, RAIL_GOLD));
+    for (let lamp = 0; lamp < 7; lamp += 1) {
+        const x = innerWest + 0.35 + lamp * ((BALL_STAGE_EAST - innerWest - 0.7) / 6);
+        inside.add('glow', box(0.12, 0.05, 0.06, { x, y: stageTop + 0.025, z: BALL_STAGE_FRONT - 0.05 }, FOOTLIGHT), { passable: true });
+    }
+    const podium = { x: BALL_DOOR_X, z: BALL_STAGE_FRONT - 0.45 };
+    inside.add('brick', box(0.42, 0.78, 0.3, { x: podium.x, y: stageTop + 0.39, z: podium.z }, 0x4a2a1e));
+    inside.add('gold', box(0.5, 0.04, 0.36, { x: podium.x, y: stageTop + 0.8, z: podium.z - 0.02, rx: -0.3 }, RAIL_GOLD));
+    inside.add('steel', cylinder(0.008, 0.008, 0.32, 4, { x: podium.x + 0.12, y: stageTop + 0.94, z: podium.z - 0.1, rx: -0.5 }, 0x2a2a2a), { passable: true });
+    const curtain = (x0, x1, z, bottom, tall, color = VELVET, deep = VELVET_DEEP) => {
+        // (Hung in folds: a strip waved across its width, its colour deepening into each fold.)
+        const across = x1 - x0;
+        const folds = Math.max(2, Math.round(across / 0.3));
+        const strip = new PlaneGeometry(across, tall, folds * 2, 1);
+        const position = strip.attributes.position;
+        for (let vertex = 0; vertex < position.count; vertex += 1) {
+            position.setZ(vertex, Math.sin(((position.getX(vertex) + across / 2) / across) * folds * Math.PI * 2) * 0.05);
+        }
+        strip.computeVertexNormals();
+        pose(strip, { x: (x0 + x1) / 2, y: bottom + tall / 2, z });
+        const shade = new Color(deep);
+        return paintBy(strip, (px, py, pz, out) => out.set(color).lerp(shade, 0.5 + 0.5 * Math.sin(((px - x0) / across) * folds * Math.PI * 2 + Math.PI / 2)));
+    };
+    const drape = BALL_TALL - BALL_STAGE_TALL - 0.5;
+    inside.add('cloth', curtain(innerWest + 0.02, BALL_STAGE_EAST, BALL_STAGE_BACK + 0.1, stageTop, drape), { passable: true });
+    for (const [x0, x1] of [[innerWest + 0.02, innerWest + 0.6], [BALL_STAGE_EAST - 0.58, BALL_STAGE_EAST]]) {
+        inside.add('cloth', curtain(x0, x1, BALL_STAGE_FRONT - 0.08, stageTop, drape), { passable: true });
+    }
+    inside.add('cloth', curtain(innerWest + 0.02, BALL_STAGE_EAST, BALL_STAGE_FRONT - 0.04, stageTop + drape - 0.7, 0.7), { passable: true });
+
+    // The tables, their cloths and candles.
+    for (const [x, z] of BALL_TABLES) {
+        inside.add('brick', paint(pose(new CylinderGeometry(BALL_TABLE_RADIUS, BALL_TABLE_RADIUS + 0.05, BALL_TABLE_TALL, 12, 1, true), { x, y: floor + BALL_TABLE_TALL / 2, z }), CLOTH_WHITE));
+        inside.add('brick', paint(pose(new CircleGeometry(BALL_TABLE_RADIUS, 12), { x, y: floor + BALL_TABLE_TALL, z, rx: -Math.PI / 2 }), CLOTH_WHITE));
+        inside.add('glow', cone(0.03, 0.1, 5, { x, y: floor + BALL_TABLE_TALL + 0.07, z }, CANDLE), { passable: true });
+    }
+    // The chandeliers over the aisle: a chain from the vault, two rings of candles, and crystal drops that twinkle.
+    const crystals = [];
+    for (const z of [-33.2, -34.75, -36.3]) {
+        const hang = floor + BALL_CHANDELIER_HANG;
+        const top = eaves + BALL_RISE - 0.05;
+        inside.add('gold', cylinder(0.012, 0.012, top - hang, 4, { x: cx, y: (top + hang) / 2, z }, 0xb8963c), { passable: true });
+        inside.add('gold', paint(pose(new TorusGeometry(0.42, 0.025, 4, 16), { x: cx, y: hang, z, rx: Math.PI / 2 }), 0xe0b450), { passable: true });
+        inside.add('gold', paint(pose(new TorusGeometry(0.26, 0.022, 4, 12), { x: cx, y: hang + 0.3, z, rx: Math.PI / 2 }), 0xe0b450), { passable: true });
+        inside.add('glow', ball(0.08, { x: cx, y: hang - 0.14, z, sy: 1.5 }, light(0xfff2d0, 2.2), 6, 4), { passable: true });
+        for (let arm = 0; arm < 8; arm += 1) {
+            const angle = (arm / 8) * Math.PI * 2;
+            const ring = arm % 2 ? 0.26 : 0.42;
+            const y = arm % 2 ? hang + 0.36 : hang + 0.06;
+            inside.add('glow', cone(0.028, 0.09, 4, { x: cx + Math.cos(angle) * ring, y, z: z + Math.sin(angle) * ring }, light(0xffe0a0, 2.6)), { passable: true });
+            const drop = paint(pose(new OctahedronGeometry(0.03, 0), { x: cx + Math.cos(angle + 0.39) * 0.4, y: hang - 0.13, z: z + Math.sin(angle + 0.39) * 0.4, sy: 2 }), light(0xe8f4ff, 1.3));
+            drop.setAttribute('sparkle', new Float32BufferAttribute(new Array(drop.attributes.position.count).fill(random()), 1));
+            crystals.push(drop);
+        }
+    }
+    // Behind the wall: the corridor's "abandoned costume lockers" (one hangs open, a fae robe still in it, pinks and
+    // greens) and its "empty changerooms", their curtains half drawn.
+    const lockerColors = [0x8a7448, 0x7a6640, 0x948052, 0x857048];
+    for (let locker = 0; locker < 4; locker += 1) {
+        const x = innerWest + 0.26 + locker * 0.45;
+        if (locker !== 2) {
+            inside.add('steel', box(0.42, 1.7, 0.36, { x, y: floor + 0.85, z: innerNorth + 0.19 }, lockerColors[locker]));
+            continue;
+        }
+        // (Its inside dark, its door swung out, the robe hanging in it.)
+        inside.add('steel', box(0.42, 1.7, 0.34, { x, y: floor + 0.85, z: innerNorth + 0.17 }, 0x1e1812));
+        const swung = 1.1;
+        const hingeX = x - 0.21;
+        const hingeZ = innerNorth + 0.37;
+        inside.add('steel', box(0.4, 1.66, 0.025, { x: hingeX + Math.cos(swung) * 0.2, y: floor + 0.85, z: hingeZ + Math.sin(swung) * 0.2, ry: -swung }, lockerColors[locker]), { passable: true });
+        inside.add('cloth', cone(0.15, 1.0, 7, { x, y: floor + 1.05, z: innerNorth + 0.24, sz: 0.45 }, 0xe88aa8), { passable: true });
+        inside.add('cloth', box(0.28, 0.06, 0.08, { x, y: floor + 0.95, z: innerNorth + 0.3 }, 0x5aa86a), { passable: true });
+    }
+    for (const [x0, x1] of [[4.45, 5.48], [5.52, 6.55]]) {
+        for (const x of [x0, x1]) inside.add('brick', box(0.04, 1.9, 0.8, { x, y: floor + 0.95, z: innerNorth + 0.4 }, 0x6a5038));
+        inside.add('gold', box(x1 - x0, 0.03, 0.03, { x: (x0 + x1) / 2, y: floor + 1.95, z: innerNorth + 0.8 }, RAIL_GOLD), { passable: true });
+        inside.add('cloth', curtain(x0 + 0.03, x0 + (x1 - x0) * 0.45, innerNorth + 0.8, floor + 0.1, 1.82, 0x4e6e46, 0x2a4228), { passable: true });
+    }
+
+    // Built: the shell, a solid to the camera (solids.js); the rest, together.
+    const solid = new Group();
+    solid.name = 'ball-solid';
+    for (const [key, mesh] of shell.build(materials)) {
+        mesh.name = `ball-${key}`;
+        solid.add(mesh);
+    }
+    extras.push(solid);
+    const group = new Group();
+    group.name = 'ball';
+    const insides = new Group();
+    insides.name = 'ball-insides';
+    insides.visible = false;
+    for (const [key, mesh] of inside.build(materials)) {
+        mesh.name = `ball-inside-${key}`;
+        insides.add(mesh);
+    }
+    group.add(insides);
+
+    // The people: the old Greek at the podium, and Cassandra, one at a time there; Cassandra on the balcony.
+    const figureMaterial = new MeshToonMaterial({ gradientMap: materials.gold.gradientMap, vertexColors: true });
+    const stands = new Vector3(podium.x, stageTop, podium.z - 0.32);
+    const greek = new Mesh(greekGeometry(), figureMaterial);
+    greek.name = 'ball-greek';
+    greek.position.copy(stands);
+    const host = new Mesh(cassandraGeometry('podium'), figureMaterial);
+    host.name = 'ball-cassandra';
+    host.position.copy(stands);
+    host.scale.set(0.7, 1e-3, 0.7);
+    host.visible = false;
+    const sitting = new Mesh(cassandraGeometry('balcony'), figureMaterial);
+    sitting.name = 'ball-cassandra-balcony';
+    sitting.position.set(BALL_SHE_SITS[0], floor, BALL_SHE_SITS[1]);
+    sitting.rotation.y = 0.08;
+    insides.add(greek, host);
+    group.add(sitting);
+    // The guests at the tables, in silhouette, turned to the stage; the band, at the stage's back, not there yet.
+    const guests = [];
+    BALL_TABLES.forEach(([x, z], table) => {
+        for (let seat = 0; seat < 4; seat += 1) {
+            const angle = (seat / 4) * Math.PI * 2 + 0.6 + table * 0.5;
+            guests.push([x + Math.cos(angle) * BALL_SEATED, floor, z + Math.sin(angle) * BALL_SEATED, 0.46, 0.69, (seat + table) % CROWD_CELLS, random()]);
+        }
+    });
+    const crowd = silhouettes(guests, crowdAtlas(), CROWD_CELLS, { color: 0x150c16, name: 'ball-crowd' });
+    const players = [
+        [innerWest + 0.55, stageTop, BALL_STAGE_BACK + 0.55, 0.62, 1.24, 0, 0.1],
+        [innerWest + 1.35, stageTop, BALL_STAGE_BACK + 0.4, 0.62, 1.24, 1, 0.45],
+        [podium.x - 0.75, stageTop, BALL_STAGE_BACK + 0.75, 0.62, 1.24, 2, 0.7],
+        [podium.x + 1.0, stageTop, BALL_STAGE_BACK + 0.6, 0.62, 1.24, 3, 0.25],
+    ];
+    const band = silhouettes(players, bandAtlas(), BAND_CELLS, { color: 0x1c1020, name: 'ball-band' });
+    band.uniforms.silhouetteShown.value = 0;
+    band.mesh.visible = false;
+    insides.add(crowd.mesh, band.mesh);
+    const twinkle = { value: 0 };
+    const crystalMaterial = new MeshBasicMaterial({ vertexColors: true });
+    alsoBeforeCompile(crystalMaterial, 'ball-twinkle', (shader) => {
+        shader.uniforms.twinkleTime = twinkle;
+        shader.vertexShader = shader.vertexShader
+            .replace('#include <common>', '#include <common>\nattribute float sparkle;\nuniform float twinkleTime;\nvarying float vTwinkle;')
+            .replace('#include <begin_vertex>', '#include <begin_vertex>\nvTwinkle = 0.75 + 1.1 * pow(max(0.0, sin(twinkleTime * 2.3 + sparkle * 6.2831)), 14.0);');
+        shader.fragmentShader = shader.fragmentShader
+            .replace('#include <common>', '#include <common>\nvarying float vTwinkle;')
+            .replace('#include <color_fragment>', '#include <color_fragment>\ndiffuseColor.rgb *= vTwinkle;');
+    });
+    const chandeliers = new Mesh(mergeGeometries(crystals, false), crystalMaterial);
+    chandeliers.name = 'ball-crystals';
+    insides.add(chandeliers);
+    // The filigreed railing, between the balcony's posts: panels of scrollwork, gold in the dusk light.
+    const filigree = filigreePanel();
+    filigree.wrapS = RepeatWrapping;
+    const panels = [];
+    const panel = (x0, z0, x1, z1) => {
+        const length = Math.hypot(x1 - x0, z1 - z0);
+        const quad = new PlaneGeometry(length, 0.9);
+        const uv = quad.attributes.uv;
+        for (let vertex = 0; vertex < uv.count; vertex += 1) uv.setX(vertex, uv.getX(vertex) * Math.max(1, Math.round(length / 1.6)));
+        quad.rotateY(-Math.atan2(z1 - z0, x1 - x0));
+        quad.translate((x0 + x1) / 2, floor + 0.52, (z0 + z1) / 2);
+        panels.push(quad);
+    };
+    const balconyMiddle = (balconyWest + balconyEast) / 2;
+    panel(balconyWest, balconyFar + 0.035, balconyMiddle, balconyFar + 0.035);
+    panel(balconyMiddle, balconyFar + 0.035, balconyEast, balconyFar + 0.035);
+    panel(balconyWest, BALL_NORTH, balconyWest, balconyFar);
+    panel(balconyEast, BALL_NORTH, balconyEast, balconyFar);
+    const railing = new Mesh(mergeGeometries(panels, false), new MeshToonMaterial({ gradientMap: materials.gold.gradientMap, map: filigree, color: RAIL_GOLD, alphaTest: 0.45, side: DoubleSide }));
+    railing.name = 'ball-railing';
+    group.add(railing);
+    // The hidden door, dark, its bar of polished gold at waist height on the hall's side: on its west hinge, it swings
+    // back into the corridor as someone comes to it.
+    const hiddenWide = hiddenEast - hiddenWest;
+    const hinge = new Group();
+    hinge.name = 'ball-hidden-door';
+    hinge.position.set(hiddenWest + 0.01, floor, BALL_STAGE_BACK - layer);
+    const hiddenLeaf = new Mesh(mergeGeometries([
+        unindexed(box(hiddenWide - 0.03, BALL_HIDDEN_TALL - 0.02, 0.05, { x: hiddenWide / 2, y: (BALL_HIDDEN_TALL - 0.02) / 2 }, 0x2a201a)),
+        unindexed(cylinder(0.02, 0.02, hiddenWide - 0.16, 8, { x: hiddenWide / 2, y: 0.8, z: 0.075, rz: Math.PI / 2 }, light(0xffe090, 1.15))),
+        unindexed(box(0.035, 0.06, 0.06, { x: 0.12, y: 0.8, z: 0.045 }, 0xe0b450)),
+        unindexed(box(0.035, 0.06, 0.06, { x: hiddenWide - 0.15, y: 0.8, z: 0.045 }, 0xe0b450)),
+    ], false), materials.brick);
+    hiddenLeaf.name = 'ball-hidden-door-leaf';
+    hinge.add(hiddenLeaf);
+    insides.add(hinge);
+    extras.push(group);
+
+    // The speech, the band, the hidden door, the balcony: a scene on a clock of its own (stage.js steps it with the walk's
+    // state and the camera; main.js gives it its sounds and the words, through onSound and onSay).
+    const greekSays = new Vector3(stands.x, stageTop + 1.75, stands.z);
+    const atThePodium = new Vector3(stands.x, stageTop + 1.3, stands.z);
+    const sheSays = new Vector3(BALL_SHE_SITS[0], floor + 1.15, BALL_SHE_SITS[1] + 0.2);
+    const middle = new Vector3(cx, floor + 2, (BALL_SOUTH + BALL_NORTH) / 2);
+    const hiddenMiddle = new Vector2((hiddenWest + hiddenEast) / 2, BALL_STAGE_BACK - layer);
+    const inHall = (x, z) => x > innerWest && x < innerEast && z < innerSouth && z > BALL_STAGE_FRONT;
+    const inBuilding = (x, z) => x > BALL_WEST && x < BALL_EAST && z < BALL_SOUTH && z > balconyFar;
+    const onBalcony = (x, z) => x > balconyWest && x < balconyEast && z < BALL_NORTH && z > balconyFar;
+    /** Who's shown (1) or not (0): each rises out of nothing, or sinks back into it. */
+    const shown = new Map([[greek, 1], [host, 0], [sitting, 1]]);
+    const beats = new Set();
+    let speech = null;
+    let away = 0;
+    let clock = 0;
+    let swing = 0;
+    let opening = false;
+    let balconyFor = 0;
+    let heard = false;
+    let saying = null;
+    let watching = false;
+    const say = (words, point, seconds) => {
+        saying = { until: clock + seconds };
+        scene.onSay?.(words, point);
+    };
+    const scene = {
+        /** Called with 'mutter', 'applause', 'band', 'bar' or 'murmur'. */
+        onSound: null,
+        /** Called with words and where they're said (a world point), and with null when they're done. */
+        onSay: null,
+        /** Called with the podium (a world point) for the walking camera to take in while the speech is seen, then null. */
+        onWatch: null,
+        /** Whether the speech is being given. */
+        get speaking() {
+            return speech !== null && speech < BALL_SPEECH.band;
+        },
+        /** Whether the hidden door stands open (its doorway is a floor, walk.js, only then). */
+        get doorOpen() {
+            return swing > 0.9;
+        },
+        /** For the local checks: hold the hidden door open, as if someone were at it. */
+        heldOpen: false,
+        /** Her, on the balcony, touched: she talks to herself, then says it. */
+        touch() {
+            if (!sitting.visible || scene.speaking) return false;
+            scene.onSound?.('murmur');
+            say(BALL_NOT_DRUNK, sheSays, 3.4);
+            return true;
+        },
+        /** Every frame: the scene's clock; whoever's walking (or flying), and where; and where the eye is. */
+        update(dt, walker, camera) {
+            clock += dt;
+            if (camera) insides.visible = camera.position.distanceTo(middle) < BALL_INSIDE_SEEN;
+            const walking = Boolean(walker?.walking);
+            const x = walker?.position.x ?? 0;
+            const z = walker?.position.z ?? 0;
+            // Someone comes in: the speech is given (once, until they've been out of the building a while).
+            if (walking && speech === null && inHall(x, z)) {
+                speech = 0;
+                beats.clear();
+            }
+            if (speech !== null) {
+                speech += dt;
+                const beat = (name) => {
+                    if (speech < BALL_SPEECH[name] || beats.has(name)) return false;
+                    beats.add(name);
+                    return true;
+                };
+                if (beat('mutters')) {
+                    scene.onSound?.('mutter');
+                    say(BALL_MUTTERED, greekSays, 2.1);
+                }
+                if (beat('applause')) scene.onSound?.('applause');
+                if (beat('vanishes')) shown.set(greek, 0);
+                if (beat('appears')) {
+                    shown.set(host, 1);
+                    shown.set(sitting, 0);
+                }
+                if (beat('elysicester')) say(BALL_THANKS[0], greekSays, 2.2);
+                if (beat('elysium')) say(BALL_THANKS[1], greekSays, 2.4);
+                if (beat('leaves')) {
+                    shown.set(host, 0);
+                    shown.set(sitting, 1);
+                }
+                if (beat('band')) scene.onSound?.('band');
+                // (Once it's over, and no one's in the building for a while, all is as it was, for whoever comes next.)
+                away = speech > BALL_SPEECH.band && (!walking || !inBuilding(x, z)) ? away + dt : 0;
+                if (away > BALL_AGAIN) {
+                    speech = null;
+                    away = 0;
+                    shown.set(greek, 1);
+                    shown.set(host, 0);
+                    shown.set(sitting, 1);
+                }
+            }
+            const since = speech ?? -1;
+            // While the speech is given (and the band comes on) and someone in the hall sees it, the walking camera takes
+            // in the podium too (walk.js watch), so the one speaking is in sight with them.
+            const watch = walking && since >= 0 && since < BALL_SPEECH.band + 4 && inHall(x, z);
+            if (watch !== watching) {
+                watching = watch;
+                scene.onWatch?.(watch ? atThePodium : null);
+            }
+            // The guests clap (each lifting in its turn) from the applause until she has her hush; the band plays.
+            crowd.uniforms.silhouetteBob.value = !still && since >= BALL_SPEECH.applause && since < BALL_SPEECH.appears + 0.6 ? 1 : 0;
+            const bandShown = since >= BALL_SPEECH.band ? (still ? 1 : Math.min(1, (since - BALL_SPEECH.band) / 0.8)) : 0;
+            band.uniforms.silhouetteShown.value = bandShown;
+            band.uniforms.silhouetteBob.value = still ? 0 : 0.5;
+            band.mesh.visible = bandShown > 0;
+            crowd.uniforms.silhouetteTime.value = clock;
+            band.uniforms.silhouetteTime.value = clock * 0.55;
+            twinkle.value = still ? 0 : clock;
+            // (The old Greek, between his aphorisms, rocks with them.)
+            greek.rotation.x = still || since >= BALL_SPEECH.applause ? 0 : Math.sin(clock * 4.2) * 0.035;
+            for (const [figure, want] of shown) {
+                let next = still ? want : figure.scale.y + (want - figure.scale.y) * (1 - Math.exp(-7 * dt));
+                if (Math.abs(next - want) < 0.01) next = want;
+                figure.scale.set(0.7 + 0.3 * next, Math.max(1e-3, next), 0.7 + 0.3 * next);
+                figure.visible = next > 0.01;
+            }
+            // Out on the balcony, she's talking to herself; come near, and she says it (once each time out there).
+            const out = walking && onBalcony(x, z);
+            if (out && balconyFor === 0 && sitting.visible) scene.onSound?.('murmur');
+            balconyFor = out ? balconyFor + dt : 0;
+            if (out && !heard && sitting.visible && balconyFor > 1.1 && Math.hypot(x - BALL_SHE_SITS[0], z - BALL_SHE_SITS[1]) < BALL_SHE_HEARS) {
+                heard = true;
+                say(BALL_NOT_DRUNK, sheSays, 3.4);
+            }
+            if (!out) heard = false;
+            if (saying && clock > saying.until) {
+                saying = null;
+                scene.onSay?.(null);
+            }
+            // The hidden door: someone at it (on either side), and its bar is shoved, and it swings back; then to again.
+            const near = (walking && Math.hypot(x - hiddenMiddle.x, z - hiddenMiddle.y) < BALL_HIDDEN_NEAR) || scene.heldOpen;
+            if (near && !opening) scene.onSound?.('bar');
+            opening = near;
+            swing += ((near ? BALL_HIDDEN_SWING : 0) - swing) * (still ? 1 : 1 - Math.exp(-(near ? 4 : 2.5) * dt));
+            if (swing < 1e-3) swing = 0;
+            hinge.rotation.y = swing;
+        },
+    };
+
+    // Where a body may stand: the terrace; through the doorway, between its doors; the hall, round its tables (a hum
+    // flies over them); the dark aisle beside the stage (never the stage); the hidden doorway while it stands open; the
+    // corridor, round its lockers and changerooms; the balcony's arch, and the balcony, round her, the chairs and the
+    // bottle. (A floor given exactly is its own bound, walk.js: off the land, nothing else holds a body.)
+    const girth = 0.12;
+    const between = (v, a, b) => v > a && v < b;
+    const clearOf = (x, z, spots) => spots.every(([sx, sz, r]) => Math.hypot(x - sx, z - sz) >= r);
+    const atTables = BALL_TABLES.map(([x, z]) => [x, z, BALL_SEATED + 0.2]);
+    const onBalconyFloor = [[BALL_SHE_SITS[0], BALL_SHE_SITS[1] + 0.3, 0.6], [BALL_COGNAC[0], BALL_COGNAC[1], 0.15], ...BALL_TUMBLED.map(([x, z]) => [x, z, 0.32])];
+    const leafReach = (BALL_DOOR_WIDE / 2) * Math.sin(BALL_DOORS_OPEN) + girth;
+    const leafAcross = (BALL_DOOR_WIDE / 2) * Math.cos(BALL_DOORS_OPEN) + girth;
+    const byTheDoors = (x, z) => z > innerSouth - leafReach && (Math.abs(x - (BALL_DOOR_X - BALL_DOOR_WIDE / 2)) < leafAcross || Math.abs(x - (BALL_DOOR_X + BALL_DOOR_WIDE / 2)) < leafAcross);
+    const floorAt = (x, z, flying = false) => {
+        if (between(x, BALL_WEST + girth, BALL_EAST - girth) && between(z, BALL_SOUTH, BALL_TERRACE_SOUTH)) return BALL_TERRACE_TOP;
+        if (between(z, innerSouth - girth, BALL_SOUTH + 1e-3)) return between(x, BALL_DOOR_X - BALL_DOOR_WIDE / 2 + girth, BALL_DOOR_X + BALL_DOOR_WIDE / 2 - girth) ? floor : null;
+        if (between(x, innerWest + girth, innerEast - girth) && between(z, BALL_STAGE_FRONT, innerSouth - girth + 1e-3)) {
+            if (byTheDoors(x, z)) return null;
+            return flying || clearOf(x, z, atTables) ? floor : null;
+        }
+        if (between(x, BALL_STAGE_EAST + girth, innerEast - girth) && between(z, BALL_STAGE_BACK + girth, BALL_STAGE_FRONT + 1e-3)) return floor;
+        if (between(x, hiddenWest + girth, hiddenEast - girth) && between(z, partitionNorth - girth, BALL_STAGE_BACK + girth + 1e-3)) return scene.doorOpen ? floor : null;
+        if (between(x, innerWest + girth, innerEast - girth) && between(z, innerNorth + girth, partitionNorth - girth + 1e-3)) {
+            const lockers = x < innerWest + 1.83 + girth && z < innerNorth + 0.37 + girth;
+            const lockerDoor = between(x, 1.9, 2.32) && z < innerNorth + 0.62;
+            const changerooms = between(x, 4.45 - girth, 6.55 + girth) && z < innerNorth + 0.8 + girth;
+            return lockers || lockerDoor || changerooms ? null : floor;
+        }
+        if (between(x, BALL_BALCONY_DOOR[0] + girth, BALL_BALCONY_DOOR[1] - girth) && between(z, BALL_NORTH - 1e-3, innerNorth + girth + 1e-3)) return floor;
+        if (between(x, balconyWest + girth, balconyEast - girth) && between(z, balconyFar + 0.035 + girth, BALL_NORTH)) return clearOf(x, z, onBalconyFloor) ? floor : null;
+        return null;
+    };
+
+    return {
+        floor: { floorAt },
+        door: scene,
+        // A touch on her, on the balcony: she says it (main.js).
+        touch: [{ kind: 'ball-cassandra', center: new Vector3(BALL_SHE_SITS[0], floor + 0.45, BALL_SHE_SITS[1] + 0.15), radius: 0.7, fragment: null }],
     };
 }
 
@@ -4852,6 +5574,7 @@ const BUILDERS = {
     edge: buildEdge,
     'door-in-the-floor': buildHostel,
     'cassandras-house': buildCassandra,
+    'charity-ball': buildBall,
 };
 
 /**
@@ -4904,8 +5627,11 @@ export async function buildPlaces(buckets, placeData, materials, pause = async (
     // The city dressed: its market, lamps, benches, plants, and its park and fountain (Elm's ask; a stream of its
     // own; the grand city's; ?dressing=off leaves it out).
     const dressed = new URLSearchParams(globalThis.location?.search ?? '').get('dressing') !== 'off';
+    // (Nothing of the dressing is built on the lots of the places on trial: Cassandra's, the ball's.)
+    const lots = [built.has('cassandras-house') ? onCassandrasLot : null, built.has('charity-ball') ? onBallsLot : null].filter(Boolean);
+    const keepOff = lots.length ? (x, z, r) => lots.some((onLot) => onLot(x, z, r)) : null;
     const dressing = dressed && houses.hallSpecs
-        ? buildDressing(buckets, { halls: houses.hallSpecs, spires: spires ?? [], byId, extras, animated, still, keepOff: built.has('cassandras-house') ? onCassandrasLot : null })
+        ? buildDressing(buckets, { halls: houses.hallSpecs, spires: spires ?? [], byId, extras, animated, still, keepOff })
         : null;
 
     return {
@@ -4926,6 +5652,8 @@ export async function buildPlaces(buckets, placeData, materials, pause = async (
         hostelDoor: built.get('door-in-the-floor')?.door ?? null,
         /** Cassandra's house (a trial): its door's scene (the knock, her shadow's answer, the slam, the faces), or null. */
         cassandra: built.get('cassandras-house')?.door ?? null,
+        /** The charity ball (a trial): its scene (the speech, the band, the hidden door, her on the balcony), or null. */
+        ball: built.get('charity-ball')?.door ?? null,
         /** The golden bridges: how many, of which kinds, and the sight line their dust keeps clear (walk.js keeps it). */
         bridges: bridges ? { count: bridges.count, kinds: bridges.kinds, ends: bridges.ends } : null,
         bridgeSight: bridges?.uniforms.bridgeSight.value ?? null,
