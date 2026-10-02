@@ -58,13 +58,21 @@
  *   Fictoanalysis, each a draft passage awaiting her yes (data/fragments.json, "trial": "sections")
  * - whole: a lost page of Numbers by Paint read from the inventory is read whole, its stretch of the thesis (Elm: the
  *   lost pages "contain the full text of the thesis"), from the texts (read.html; main.js)
+ * - settle: the way in is waited through (Elm: "let's try making it compulsory to wait for the mega screen to settle
+ *   and then for the swirling to resolve"): the card's "Tap blutix here." comes only once the Mega-Screen has rolled in
+ *   and stood, and the swirl can't be cut short, playing through E's lines until the city is ready (threshold.js,
+ *   megascreen.js); off, the card can be tapped at once and a tap or Esc skips the swirl, as before
+ * - nimble: on a touch screen (a phone, a tablet), drawn lighter (Elm: "Whatever we intend the visitor to experience must
+ *   pass through the small machine in their hands"): no more than one and a half pixels to each of the page's, as
+ *   messenger.abeto.co draws, no multisampled render (the ink's lines draw the edges), and, where frames still run slow,
+ *   stepping down sooner (ink.js, stage.js); off, drawn as on a computer
  */
 
 // =============================================================================
 // Constants
 // =============================================================================
 
-export const TRIALS = Object.freeze(['jetty', 'whisper', 'names', 'hint', 'wraith', 'dust', 'dock', 'hostel', 'hum', 'choice', 'onebutton', 'jettysigns', 'cyclolite', 'creatures', 'allison', 'inside', 'megascreen', 'cassandra', 'ball', 'plants', 'sections', 'whole']);
+export const TRIALS = Object.freeze(['jetty', 'whisper', 'names', 'hint', 'wraith', 'dust', 'dock', 'hostel', 'hum', 'choice', 'onebutton', 'jettysigns', 'cyclolite', 'creatures', 'allison', 'inside', 'megascreen', 'cassandra', 'ball', 'plants', 'sections', 'whole', 'settle', 'nimble']);
 
 // =============================================================================
 // Main Code

@@ -21,7 +21,11 @@
  * in front of it once, and the rail E leans against ran low across it: ?bars=on
  * brings both back, to compare; Elm let the swirl stand without them.) The flight
  * doubles as the loading screen: it ends once the city is ready and a minimum
- * passage has played. A tap or Esc skips it (the city still has to be ready).
+ * passage has played. A tap or Esc skips it (the city still has to be ready),
+ * unless the way in is waited through (the settle trial, Elm's "compulsory to
+ * wait for the mega screen to settle and then for the swirling to resolve"):
+ * then the card can't be begun until the Mega-Screen has stood, and the swirl
+ * plays through E's lines until it resolves.
  * On the way, E's inner voice surfaces a line at a time. Under reduced motion
  * there is no flight; the card crossfades to the city.
  */
@@ -54,6 +58,11 @@ const LINE_MAX = 4.6;
 const FADE_IN = 0.8;
 const FADE_OUT = 0.45;
 const CROSSFADE_MS = 900;
+/**
+ * Waiting for the Mega-Screen to settle (the settle trial), the longest the card holds before its prompt comes anyway
+ * (milliseconds from the card's showing): it rolls in and stands in under ten seconds once it's drawn.
+ */
+const SETTLE_MOST_MS = 25000;
 
 /**
  * The Intermaze's characters: at least this many rows down the screen and columns across it (so a phone held
@@ -266,17 +275,37 @@ function glyphAtlas() {
  * @param {boolean} [options.choosing] - the way in begins at a choice (a trial,
  *   main.js: "Explore" or "Read"): no card yet; the threshold waits
  *   at 'choice' until main.js calls showCard (the visitor chose to explore)
+ * @param {boolean} [options.waiting] - the way in is waited through (a trial, settle: Elm, "compulsory to wait for the
+ *   mega screen to settle and then for the swirling to resolve"): the card can't be begun until main.js calls
+ *   settled (the Mega-Screen has stood), and the swirl can't be cut short
  */
-export function createThreshold({ root, card, begin, voice, onBegin, returning = false, choosing = false }) {
+export function createThreshold({ root, card, begin, voice, onBegin, returning = false, choosing = false, waiting = false }) {
     root.dataset.threshold = returning ? 'returning' : choosing ? 'choice' : 'card';
     let resolveBegun;
     const begun = new Promise((resolve) => {
         resolveBegun = resolve;
     });
 
+    // Waiting for the Mega-Screen to settle: its prompt hidden (style.css), the card not yet begun by a tap or a key.
+    // (Should it never say so, it settles anyway after a while, so no one is held at the card.)
+    let settling = waiting && !returning;
+    let settleTimer = 0;
+    const settle = () => {
+        if (!settling) return;
+        settling = false;
+        window.clearTimeout(settleTimer);
+        delete root.dataset.settling;
+        begin.removeAttribute('aria-disabled');
+        if (!started && root.dataset.threshold === 'card') begin.focus({ preventScroll: true });
+    };
+    if (settling) {
+        root.dataset.settling = '';
+        begin.setAttribute('aria-disabled', 'true');
+    }
+
     let started = false;
     const start = () => {
-        if (started) return;
+        if (started || settling) return;
         started = true;
         document.removeEventListener('keydown', onKey, true);
         try {
@@ -291,6 +320,8 @@ export function createThreshold({ root, card, begin, voice, onBegin, returning =
             document.removeEventListener('keydown', onKey, true);
             return;
         }
+        // (While the Mega-Screen settles, a key does nothing, and goes on to the browser as if the card weren't there.)
+        if (settling) return;
         // (Nor a key still held from the choice before it.)
         if (['Tab', 'Shift', 'Control', 'Alt', 'Meta'].includes(event.key) || event.altKey || event.ctrlKey || event.metaKey || event.repeat) return;
         const target = event.target;
@@ -309,6 +340,7 @@ export function createThreshold({ root, card, begin, voice, onBegin, returning =
         card.hidden = true;
     } else {
         document.addEventListener('keydown', onKey, true);
+        if (settling) settleTimer = window.setTimeout(settle, SETTLE_MOST_MS);
     }
 
     const say = (line, seconds) => {
@@ -342,7 +374,11 @@ export function createThreshold({ root, card, begin, voice, onBegin, returning =
             card.hidden = false;
             document.addEventListener('keydown', onKey, true);
             begin.focus({ preventScroll: true });
+            if (settling) settleTimer = window.setTimeout(settle, SETTLE_MOST_MS);
         },
+
+        /** The Mega-Screen has stood (or there's none to wait for): its prompt comes, and the card can be begun. */
+        settled: settle,
 
         /** Coming back within the same visit: wait for the city, then step aside (it lifts from the dark). */
         async comeBack({ ready }) {
@@ -395,7 +431,8 @@ export function createThreshold({ root, card, begin, voice, onBegin, returning =
                 if (event.type === 'keydown' && event.key !== 'Escape') return;
                 // While flying, a tap belongs to the flight, not to the city waiting underneath.
                 if (event.type === 'pointerdown') event.stopPropagation();
-                skipped = true;
+                // (Waited through, the settle trial: the swirl plays until it resolves, whatever's pressed.)
+                if (!waiting) skipped = true;
             };
             window.addEventListener('keydown', skip);
             window.addEventListener('pointerdown', skip, true);

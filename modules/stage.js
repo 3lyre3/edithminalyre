@@ -29,7 +29,7 @@ import { createDust } from './dust.js';
 import { Buckets, createMaterials, duskLight, flutter, wallX } from './kit.js';
 import { inscriptionTexture } from './extras.js';
 import { HOLLOWED, createHollows, hollows } from './hollows.js';
-import { createInk } from './ink.js';
+import { NIMBLE, createInk } from './ink.js';
 import { buildIsland } from './island.js';
 import { stagePaper } from './paper.js';
 import { buildPlaces } from './places.js';
@@ -51,7 +51,8 @@ import { createWisp } from './wisp.js';
 const SUN_DIRECTION = new Vector3(-0.82, 0.1, -0.4).normalize();
 /** Dusk light is soft and comes from everywhere; the key falls low from the south-west. */
 const KEY_DIRECTION = new Vector3(-0.35, 0.5, 0.8).normalize();
-const MAX_PIXEL_RATIO = 2;
+/** The drawing buffer's pixels to each of the page's, at the most: two; on a touch screen, drawn lighter, one and a half. */
+const MAX_PIXEL_RATIO = NIMBLE ? 1.5 : 2;
 /** The dusk's shadows: one map, square round the island, drawn once. */
 const SHADOW_MAP = 1024;
 const SHADOW_REACH = 40;
@@ -73,12 +74,13 @@ const DUST_ON_WALLS = ['cafe-shadow', 'footlight-wash', 'hums', 'paper', 'hostel
 /**
  * A safety net for slower phones: if frames run slower than this (seconds) for a sustained stretch,
  * the drawing buffer steps down a quarter at a time, never below 1. It only ever steps down, so it can't
- * see-saw; a phone that keeps up never notices it.
+ * see-saw; a phone that keeps up never notices it. (On a touch screen, drawn lighter, it looks sooner and
+ * steps sooner.)
  */
 const SLOW_FRAME = 1 / 38;
-const SLOW_STRETCH = 2.5;
+const SLOW_STRETCH = NIMBLE ? 1.5 : 2.5;
 const RATIO_STEP = 0.25;
-const SETTLING = 4;
+const SETTLING = NIMBLE ? 2 : 4;
 
 // =============================================================================
 // Main Code
@@ -107,6 +109,42 @@ function pause() {
 }
 
 /**
+ * Compile every program the scene could need, and send every texture it draws with to the screen, now, while the
+ * way in plays: what's hidden at this moment (the ball's insides, the dust's lingering squares, the givers far off) is
+ * shown for the compiling and hidden again, so nothing is compiled or sent the first time it comes into sight (a
+ * frame held a quarter of a second or more: 3 Oct, the sand, as the hum took off). And in each state the scene is
+ * drawn in (`states`: walking, what the dust opens is drawn from both sides, a program of its own for each material).
+ */
+async function prepareAll(renderer, scene, camera, target, states = [() => {}]) {
+    const hidden = [];
+    scene.traverse((object) => {
+        if (!object.visible) {
+            hidden.push(object);
+            object.visible = true;
+        }
+    });
+    const textures = new Set();
+    scene.traverse((object) => {
+        for (const material of [].concat(object.material ?? [])) {
+            for (const value of Object.values(material)) if (value?.isTexture) textures.add(value);
+            for (const uniform of Object.values(material.uniforms ?? {})) if (uniform?.value?.isTexture) textures.add(uniform.value);
+        }
+    });
+    for (const texture of textures) renderer.initTexture(texture);
+    renderer.setRenderTarget(target);
+    try {
+        for (const state of states) {
+            state();
+            if (renderer.extensions.has('KHR_parallel_shader_compile')) await renderer.compileAsync(scene, camera);
+            else renderer.compile(scene, camera);
+        }
+    } finally {
+        renderer.setRenderTarget(null);
+        for (const object of hidden) object.visible = false;
+    }
+}
+
+/**
  * Make the renderer early, before the city is built: the Intermaze flies on it
  * while the stage is still being assembled.
  */
@@ -119,11 +157,28 @@ export function createRenderer(canvas) {
     return renderer;
 }
 
+/**
+ * The canvas's size on the page, kept by a watcher rather than asked of the page every frame (asking makes the page
+ * lay itself out again whenever anything on it has changed: a quarter of a second of a slow phone's loading, 3 Oct).
+ */
+const canvasSizes = new WeakMap();
+function canvasSize(canvas) {
+    let size = canvasSizes.get(canvas);
+    if (!size) {
+        size = { width: canvas.clientWidth, height: canvas.clientHeight };
+        canvasSizes.set(canvas, size);
+        new ResizeObserver(([entry]) => {
+            size.width = entry.contentRect.width;
+            size.height = entry.contentRect.height;
+        }).observe(canvas);
+    }
+    return { width: Math.round(size.width) || window.innerWidth, height: Math.round(size.height) || window.innerHeight };
+}
+
 /** Keep the drawing buffer matched to the canvas (pixel ratio capped at 2, or lower); true if it changed. */
 export function fitRenderer(renderer, canvas, cap = MAX_PIXEL_RATIO) {
     const ratio = Math.min(window.devicePixelRatio || 1, cap, MAX_PIXEL_RATIO);
-    const width = canvas.clientWidth || window.innerWidth;
-    const height = canvas.clientHeight || window.innerHeight;
+    const { width, height } = canvasSize(canvas);
     const size = renderer.getSize(new Vector2());
     if (renderer.getPixelRatio() === ratio && size.x === width && size.y === height) return false;
     renderer.setPixelRatio(ratio);
@@ -304,10 +359,9 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
     rig.update(0);
 
     await pause();
-    renderer.setRenderTarget(ink.target);
-    if (renderer.extensions.has('KHR_parallel_shader_compile')) await renderer.compileAsync(scene, camera);
-    else renderer.compile(scene, camera);
-    renderer.setRenderTarget(null);
+    // (Walking and not: what the dust opens shows its inside, drawn from both sides, only while walking.)
+    const drawnStates = dust ? [() => dust.showInsides(true), () => dust.showInsides(false)] : undefined;
+    await prepareAll(renderer, scene, camera, ink.target, drawnStates);
 
     // What the camera may not pass through is worked out in a worker while the flight plays;
     // until it's ready, the camera orbits free.
@@ -432,6 +486,17 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         ball: places.ball,
         /** The city's toon steps, for what's drawn later in its light (creatures.js). */
         gradientMap: materials.gold.gradientMap,
+        /**
+         * The top of a surface drawn above the walk's floor at (x, z), that a shade lies on (places.js: the Steel
+         * Garden's disc), or null where there's none.
+         */
+        surfaceAt(x, z) {
+            for (const surface of places.surfaces ?? []) {
+                const height = surface.surfaceAt(x, z);
+                if (height !== null) return height;
+            }
+            return null;
+        },
         /** The way to the light the shadows fall from: the walk's (flying as a hum, its higher sun), else the key light. */
         shadowLight: walk?.light ?? KEY_DIRECTION.clone(),
         /**
@@ -446,10 +511,7 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
             // (Not buildings: their insides aren't shown.)
             if (dust) for (const material of own) dust.dissolve(material, { solid: false });
             for (const texture of textures) renderer.initTexture(texture);
-            renderer.setRenderTarget(ink.target);
-            if (renderer.extensions.has('KHR_parallel_shader_compile')) await renderer.compileAsync(scene, camera);
-            else renderer.compile(scene, camera);
-            renderer.setRenderTarget(null);
+            await prepareAll(renderer, scene, camera, ink.target, drawnStates);
         },
         start() {
             if (running) return;

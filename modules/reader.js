@@ -210,5 +210,12 @@ export function createReader({ dialog, places, onClose, onward, onOnward, canWal
         get isOpen() {
             return dialog.open;
         },
+        /** The passage open (or last opened), and the one its "on to" leads to: for the local checks. */
+        get current() {
+            return current?.id ?? null;
+        },
+        get next() {
+            return next?.id ?? null;
+        },
     };
 }

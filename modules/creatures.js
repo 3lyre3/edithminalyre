@@ -892,7 +892,7 @@ const shadeFragment = /* glsl */ `
  * A shade's strip of floor: from (x, z) along `way` for `length`, `breadth` across, laid on the floor as it lies
  * (`floorAt`), fading out where the floor ends or drops away. uv runs over its cell, feet to head.
  */
-function shadeStrip({ x, y, z, way, length, breadth, cell, floorAt }) {
+function shadeStrip({ x, y, z, way, length, breadth, cell, floorAt, surfaceAt }) {
     const ALONG = 12;
     const ACROSS = 2;
     const across = new Vector3(-way.z, 0, way.x);
@@ -901,6 +901,12 @@ function shadeStrip({ x, y, z, way, length, breadth, cell, floorAt }) {
     const keeps = [];
     const waters = [];
     const grid = [];
+    // (A shade that begins on a surface drawn above the walk's floor, the Steel Garden's disc or the hostel's room, lies
+    // on that surface and ends where it ends, never dropping through it to the floor, the sand or the sea beneath, as
+    // the hostel's pug's once did. Any other ends where its floor has a gap, a wall's foot or a platform's edge, but
+    // may fall from a floor's edge onto the bay's water, as a shadow would.)
+    const surfaced = surfaceAt?.(x, z) ?? null;
+    const ended = new Array(ACROSS + 1).fill(false);
     for (let i = 0; i <= ALONG; i += 1) {
         const row = [];
         let last = y;
@@ -911,11 +917,18 @@ function shadeStrip({ x, y, z, way, length, breadth, cell, floorAt }) {
             const along = -0.08 + t * length;
             const px = x + way.x * along + across.x * s * breadth;
             const pz = z + way.z * along + across.z * s * breadth;
-            let floor = floorAt ? floorAt(px, pz, last) : y;
-            // (No floor, but the bay: it lies on the water, riding the swell in the shader.)
-            const water = floor === null && onBay(px, pz);
-            if (water) floor = SEA_LEVEL;
-            const lost = floor === null || Math.abs(floor - y) > 1.2;
+            let floor;
+            let water = false;
+            if (surfaced !== null) {
+                floor = surfaceAt(px, pz);
+            } else {
+                floor = floorAt ? floorAt(px, pz, last) : y;
+                // (No floor, but the bay: it lies on the water, riding the swell in the shader.)
+                water = floor === null && onBay(px, pz);
+                if (water) floor = SEA_LEVEL;
+            }
+            if (floor === null) ended[j] = true;
+            const lost = ended[j] || floor === null || Math.abs(floor - y) > 1.2;
             const py = (lost ? y : floor) + 0.018;
             last = lost ? last : floor;
             row.push({ p: [px, py, pz], uv: [cell[0] + (s + 0.5) * cell[2], cell[1] + t * cell[3]], keep: lost ? 0 : 1, water: water ? 1 : 0 });
@@ -1188,10 +1201,12 @@ function shortest(angle) {
  * @param {import('three').Texture} options.gradientMap - the city's toon steps
  * @param {Vector3} options.light - the way to the light the shades fall from (the hum's sun)
  * @param {((x: number, z: number, near: number) => number | null) | null} options.floorAt - the floor, to lay shades on
+ * @param {((x: number, z: number) => number | null) | null} [options.surfaceAt] - a surface drawn above the floor (the
+ *   Steel Garden's disc, the hostel's room): a shade begun on one lies on it and ends where it ends
  * @param {boolean} options.reducedMotion
  * @param {import('three').Camera} [options.camera] - givers far from it aren't drawn (DRAW_FAR)
  */
-export function createCreatures({ creatures, given, gradientMap, light, floorAt, reducedMotion, camera = null }) {
+export function createCreatures({ creatures, given, gradientMap, light, floorAt, surfaceAt = null, reducedMotion, camera = null }) {
     const pugs = creatures.filter((creature) => creature.kind === 'pug');
     const hums = creatures.filter((creature) => creature.kind === 'hum');
     const group = { objects: [], materials: [] };
@@ -1287,11 +1302,11 @@ export function createCreatures({ creatures, given, gradientMap, light, floorAt,
         // the bay's water), if there's one within reach below: a hum under the island hangs over nothing.
         let ground = y;
         if (kind === 'hum') {
-            ground = creature.floor ?? floorAt?.(x, z, y - 1) ?? (onBay(x, z) ? SEA_LEVEL : null);
+            ground = creature.floor ?? surfaceAt?.(x, z) ?? floorAt?.(x, z, y - 1) ?? (onBay(x, z) ? SEA_LEVEL : null);
             if (ground === null || ground > y || y - ground > SHADE_REACH) return null;
         }
         const [length, breadth] = SHADE_SIZE[kind];
-        const strip = shadeStrip({ x, y: ground, z, way, length, breadth, cell: shades.cell(index), floorAt });
+        const strip = shadeStrip({ x, y: ground, z, way, length, breadth, cell: shades.cell(index), floorAt, surfaceAt });
         kindOf.set(strip, kind);
         return strip;
     }).filter(Boolean);

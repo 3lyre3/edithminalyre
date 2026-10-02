@@ -77,6 +77,12 @@ const require = createRequire(import.meta.url);
 const CHROMIUM_ARGS = ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'];
 const NO_WEBGL_ARGS = ['--disable-webgl', '--disable-3d-apis'];
 const LOAD_TIMEOUT = 90_000;
+/**
+ * The address the rounds load the city at: the local checks' readings (debug), and the way in not waited through (the
+ * settle trial off), so a round can begin the card at once and skip the swirl, as it always did; the settle round
+ * checks the way in waited through, as visitors meet it.
+ */
+const SKIPPABLE = 'debug=1&settle=off';
 /** The rig's own tap limit (rigs/orbit.js TAP_TIME): a longer press is no tap. */
 const TAP_LIMIT = 800;
 /** How many times a round presses again after a press too slow to be a tap (the phone pass draws ~1 frame a second). */
@@ -104,7 +110,7 @@ const MIME = {
  * toggle round; soundOn: arrive with "sound on" remembered from a past visit.
  */
 const PASSES = {
-    desktop: { viewport: { width: 1280, height: 800 }, keyboard: true, begin: 'click', then: 'watch', expect: 'flight', sound: true, camera: true, dock: true, creatures: true, plants: true, failures: true, texts: true },
+    desktop: { viewport: { width: 1280, height: 800 }, keyboard: true, begin: 'click', then: 'watch', expect: 'flight', sound: true, camera: true, dock: true, creatures: true, plants: true, failures: true, texts: true, settle: true },
     mobile: { viewport: { width: 390, height: 844 }, deviceScaleFactor: 3, isMobile: true, hasTouch: true, begin: 'tap', then: 'skip', expect: 'flight', dock: true, plants: true },
     reduced: { viewport: { width: 1280, height: 800 }, reducedMotion: 'reduce', checkStillness: true, keyboard: true, begin: 'key', expect: 'crossfade', sound: true, soundOn: true, dock: true },
     nogl: { viewport: { width: 1280, height: 800 }, noWebGL: true, keyboard: true, begin: 'click', expect: 'crossfade' },
@@ -934,7 +940,7 @@ async function dockRound(chromium, pass, shots) {
         && (also === 'home' ? window.elysicesterDebug.stage.rig.atHome : true), extra, { timeout: 15_000 }).catch(() => {});
     const result = {};
     try {
-        await page.goto(`${origin}/?debug=1`, { waitUntil: 'load' });
+        await page.goto(`${origin}/?${SKIPPABLE}`, { waitUntil: 'load' });
         const entered = await enter(page, context, pass, { begin: pass.begin, then: 'skip' });
         if (entered.mode !== 'live') problems.push(`the city did not go live (${entered.mode})`);
         for (const line of entered.problems) problems.push(`threshold: ${line}`);
@@ -1038,7 +1044,7 @@ async function creaturesRound(chromium, pass, outDir, name) {
         // Every piece but the last gathered on an earlier visit (remembered on this origin before the city loads).
         await page.goto(`${origin}/data/places.json`);
         await page.evaluate((seen) => window.localStorage.setItem('elysicester:read', JSON.stringify(seen)), pieces.slice(0, -1));
-        await page.goto(`${origin}/?debug=1&dock=off`, { waitUntil: 'load' });
+        await page.goto(`${origin}/?${SKIPPABLE}&dock=off`, { waitUntil: 'load' });
         const entered = await enter(page, context, pass, { begin: pass.begin, then: 'skip' });
         for (const line of entered.problems) problems.push(`threshold: ${line}`);
         result.city = await page.evaluate(() => {
@@ -1238,7 +1244,7 @@ async function plantsRound(chromium, pass, outDir, name) {
         const parts = essayParts(await readFile(path.join(ROOT, flowerData.page), 'utf8'));
         if (parts.size !== 5) problems.push(`${flowerData.page} doesn't mark its five parts`);
         const pieces = JSON.parse(await readFile(path.join(ROOT, 'data', 'lost-pages.json'), 'utf8')).lost;
-        await page.goto(`${origin}/?debug=1&dock=off`, { waitUntil: 'load' });
+        await page.goto(`${origin}/?${SKIPPABLE}&dock=off`, { waitUntil: 'load' });
         const entered = await enter(page, context, pass, { begin: pass.begin, then: 'skip' });
         for (const line of entered.problems) problems.push(`threshold: ${line}`);
         const states = () => page.evaluate(() => window.elysicesterDebug.flowers?.snapshot().map((flower) => flower.state) ?? null);
@@ -1353,7 +1359,7 @@ async function failureRound(chromium, pass, outDir, name) {
     {
         const session = await openPass(chromium, pass);
         await session.context.route('**/modules/whisper.js', (route) => route.abort());
-        await session.page.goto(`${origin}/?debug=1`, { waitUntil: 'load' });
+        await session.page.goto(`${origin}/?${SKIPPABLE}`, { waitUntil: 'load' });
         await session.page.waitForSelector('#choice-explore', { state: 'visible', timeout: 20_000 });
         await session.page.waitForTimeout(3000);
         const readTo = await session.page.getAttribute('#choice-read', 'href');
@@ -1371,7 +1377,7 @@ async function failureRound(chromium, pass, outDir, name) {
     {
         const session = await openPass(chromium, pass);
         await session.context.route('**/data/places.json', (route) => route.fulfill({ status: 404, body: '' }));
-        await session.page.goto(`${origin}/?debug=1`, { waitUntil: 'load' });
+        await session.page.goto(`${origin}/?${SKIPPABLE}`, { waitUntil: 'load' });
         await session.page.waitForSelector('#choice-explore', { state: 'visible', timeout: 20_000 });
         await session.page.waitForTimeout(3000);
         if (await session.page.isVisible('#choice-explore')) await session.page.click('#choice-explore').catch(() => {});
@@ -1392,7 +1398,7 @@ async function failureRound(chromium, pass, outDir, name) {
             await route.continue();
         });
         // (Not waiting for DOMContentLoaded: a module script runs before it fires, so the code would be here by then.)
-        await session.page.goto(`${origin}/?debug=1`, { waitUntil: 'commit' });
+        await session.page.goto(`${origin}/?${SKIPPABLE}`, { waitUntil: 'commit' });
         await session.page.waitForSelector('#choice-explore', { state: 'visible', timeout: 20_000 });
         // (Once the page is read, so its own little script is listening: before the code comes, as a visitor would.)
         await session.page.waitForFunction(() => document.readyState !== 'loading', null, { timeout: 20_000 });
@@ -1402,6 +1408,68 @@ async function failureRound(chromium, pass, outDir, name) {
         result.slow = { pressedEarly: early, threshold: await session.page.evaluate(() => document.documentElement.dataset.threshold ?? null) };
         if (!early) problems.push('the slow code arrived before "Explore" could be pressed early (the check proved nothing)');
         else if (!['card', 'flight', 'crossfade', 'done'].includes(result.slow.threshold)) problems.push(`"Explore" pressed while the code was coming was not taken up (the threshold: ${result.slow.threshold})`);
+        await session.browser.close();
+    }
+    return { ...result, problems, ok: problems.length === 0 };
+}
+
+/**
+ * The way in waited through (the settle trial; Elm, 3 Oct: "let's try making it compulsory to wait for the mega screen
+ * to settle and then for the swirling to resolve"): from "Explore", the card takes no press while the Mega-Screen rolls
+ * in (its prompt unseen, its button marked unavailable), the prompt comes once it stands, and focus with it; then
+ * begun, the swirl takes no Esc and no click, plays all E's lines, and lands once the city is ready.
+ */
+async function settleRound(chromium, pass, outDir, name) {
+    const problems = [];
+    const result = {};
+    const session = await openPass(chromium, pass);
+    const { page } = session;
+    const state = () => page.evaluate(() => ({
+        threshold: document.documentElement.dataset.threshold ?? null,
+        settling: document.documentElement.dataset.settling !== undefined,
+        unavailable: document.getElementById('threshold-begin')?.getAttribute('aria-disabled') === 'true',
+        prompt: Number(getComputedStyle(document.getElementById('threshold-prompt')).opacity),
+    }));
+    try {
+        await page.goto(`${origin}/?debug=1`, { waitUntil: 'load' });
+        await page.waitForSelector('#choice-explore', { state: 'visible', timeout: LOAD_TIMEOUT });
+        await page.click('#choice-explore');
+        await page.waitForFunction(() => document.documentElement.dataset.threshold === 'card', null, { timeout: LOAD_TIMEOUT });
+        const cardAt = Date.now();
+        await page.waitForTimeout(1500);
+        result.early = await state();
+        if (!result.early.settling) problems.push('at the card, the way in was not being waited through');
+        if (!result.early.unavailable) problems.push('while the Mega-Screen settles, the card\'s button is not marked unavailable');
+        if (result.early.prompt > 0.05) problems.push(`while the Mega-Screen settles, its prompt shows (${result.early.prompt})`);
+        await page.click('#threshold-begin', { force: true }).catch(() => {});
+        await page.keyboard.press('Enter');
+        await page.waitForTimeout(800);
+        if ((await state()).threshold !== 'card') problems.push('pressed while the Mega-Screen settles, the card began');
+        await page.waitForFunction(() => document.documentElement.dataset.settling === undefined, null, { timeout: 45_000 }).catch(() => {});
+        result.settledAfter = Date.now() - cardAt;
+        // (The prompt fades in: waited for, as anything drawn frame by frame.)
+        await page.waitForFunction(() => Number(getComputedStyle(document.getElementById('threshold-prompt')).opacity) > 0.95, null, { timeout: 5000 }).catch(() => {});
+        result.settled = { ...(await state()), focus: await page.evaluate(() => document.activeElement?.id ?? null) };
+        if (result.settled.settling) problems.push('the Mega-Screen never settled (45 s)');
+        if (result.settled.prompt < 0.95) problems.push(`settled, the prompt is at ${result.settled.prompt}`);
+        if (result.settled.unavailable) problems.push('settled, the card\'s button is still marked unavailable');
+        if (result.settled.focus !== 'threshold-begin') problems.push(`settled, focus is on ${result.settled.focus}, not the card's button`);
+        await page.screenshot({ path: path.join(outDir, `${name}-settled.png`) });
+        await page.click('#threshold-begin');
+        await page.waitForFunction(() => document.documentElement.dataset.threshold === 'flight', null, { timeout: 30_000 }).catch(() => {});
+        await page.waitForTimeout(1500);
+        await page.keyboard.press('Escape');
+        await page.mouse.click(300, 300);
+        await page.waitForTimeout(1500);
+        result.afterSkip = (await state()).threshold;
+        if (result.afterSkip !== 'flight') problems.push(`Esc or a click cut the swirl short (${result.afterSkip})`);
+        await page.waitForFunction(() => document.documentElement.dataset.threshold === 'done', null, { timeout: 120_000 }).catch(() => {});
+        result.passage = await page.evaluate(() => window.elysicesterDebug?.threshold ?? null);
+        if (!result.passage || result.passage.skipped) problems.push('the swirl was skipped');
+        else if (result.passage.linesShown < 5) problems.push(`the swirl landed after ${result.passage.linesShown} of E's lines`);
+    } catch (error) {
+        problems.push(`the round broke off: ${error.message.split('\n')[0]}`);
+    } finally {
         await session.browser.close();
     }
     return { ...result, problems, ok: problems.length === 0 };
@@ -1473,8 +1541,9 @@ try {
     if (process.argv.includes('--stills')) {
         for (const still of STILLS) {
             const session = await openPass(chromium, PASSES[still.pass]);
-            // (The still is the whole island, as a visit that doesn't begin at the jetty's end sees it first.)
-            await session.page.goto(`${origin}/?debug=1&dock=off`, { waitUntil: 'load' });
+            // (The still is the whole island, as a visit that doesn't begin at the jetty's end sees it first; drawn in
+            // full on any screen, the phone's still too: nimble=off.)
+            await session.page.goto(`${origin}/?${SKIPPABLE}&dock=off&nimble=off`, { waitUntil: 'load' });
             const { mode } = await enter(session.page, session.context, PASSES[still.pass], { begin: 'click', then: 'skip' });
             if (mode !== 'live') throw new Error(`${still.pass}: the scene did not go live (${mode})`);
             await hideChrome(session.page);
@@ -1509,7 +1578,7 @@ try {
             const spoken = [];
             if (pass.extras) page.on('console', (message) => { if (message.type() === 'log') spoken.push(message.text()); });
             // (From the whole city, as these checks were written: the dock start has its own round, dockRound.)
-            await page.goto(`${origin}/?debug=1&dock=off${pass.query ? `&${pass.query}` : ''}`, { waitUntil: 'load' });
+            await page.goto(`${origin}/?${SKIPPABLE}&dock=off${pass.query ? `&${pass.query}` : ''}`, { waitUntil: 'load' });
             const threshold = await enter(page, context, pass, { begin: pass.begin, then: pass.then, shots: path.join(outDir, name), voiceLines });
             const { mode } = threshold;
             const result = { mode, threshold, messages, failures };
@@ -1566,6 +1635,7 @@ try {
             if (pass.plants) result.plants = await plantsRound(chromium, pass, outDir, name);
             if (pass.failures) result.fallbacks = await failureRound(chromium, pass, outDir, name);
             if (pass.texts) result.texts = await textsRound(chromium, pass, outDir, name);
+            if (pass.settle) result.settle = await settleRound(chromium, pass, outDir, name);
             report.passes[name] = result;
         }
 
@@ -1603,7 +1673,9 @@ try {
                 : '';
             const failing = result.fallbacks ? `when things fail ${result.fallbacks.ok ? 'a module blocked, the still and its line, Read reads; a data file failing, no empty list; slow code, Explore taken up' : 'NOT OK'}` : '';
             const texts = result.texts ? `texts ${result.texts.ok ? `sidebar whole; links and faint text ${['night', 'day'].map((theme) => `${theme} ${Math.min(...['railLink', 'railTitle', 'lostMeta', 'pageMark'].map((what) => result.texts.themes[theme][what]))}:1`).join(', ')} at least` : 'NOT OK'}` : '';
-            process.stdout.write(`${name.padEnd(8)} ${result.mode.padEnd(6)} ${problems === 0 ? 'clean' : `${problems} problem(s)`}  ${[crossing, sound, info, orbit, still, camera, signs, extras, pointer, keys, axe, back, kept, dock, givers, plants, failing, texts].filter(Boolean).join(' · ')}\n`);
+            const waited = result.settle ? `waited through ${result.settle.ok ? `the card took no early press, its prompt came as the Mega-Screen stood (${Math.round(result.settle.settledAfter / 100) / 10} s), the swirl took no Esc or click and played all ${result.settle.passage?.linesShown} lines` : 'NOT OK'}` : '';
+            process.stdout.write(`${name.padEnd(8)} ${result.mode.padEnd(6)} ${problems === 0 ? 'clean' : `${problems} problem(s)`}  ${[crossing, sound, info, orbit, still, camera, signs, extras, pointer, keys, axe, back, kept, dock, givers, plants, failing, texts, waited].filter(Boolean).join(' · ')}\n`);
+            for (const line of result.settle?.problems ?? []) process.stdout.write(`    waited through not ok: ${line}\n`);
             for (const line of [...result.messages, ...result.failures]) process.stdout.write(`    ${line}\n`);
             for (const line of result.dock?.problems ?? []) process.stdout.write(`    dock not ok: ${line}\n`);
             for (const line of result.creatures?.problems ?? []) process.stdout.write(`    givers not ok: ${line}\n`);

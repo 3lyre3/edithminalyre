@@ -402,13 +402,22 @@ async function boot() {
         },
         returning,
         choosing,
+        // (Waited through, a trial: Elm, "compulsory to wait for the mega screen to settle and then for the swirling to
+        // resolve".)
+        waiting: trialOn('settle'),
     });
     // The Mega-Screen as a still shot in the Desert Eternal (a trial: megascreen.js), drawn on the city's canvas while
     // the card is up, once there's a renderer to draw it with (the card itself, flat, until its first frame is in).
+    // Waited through, its prompt comes once it has stood; with no Mega-Screen to wait for, at once.
     let sceneRenderer = null;
     let sceneStarted = false;
     const startMegaScreen = () => {
-        if (sceneStarted || !sceneRenderer || !trialOn('megascreen') || root.dataset.threshold !== 'card') return;
+        if (sceneStarted || root.dataset.threshold !== 'card') return;
+        if (!trialOn('megascreen')) {
+            threshold.settled();
+            return;
+        }
+        if (!sceneRenderer) return;
         sceneStarted = true;
         const card = byId('threshold');
         showMegaScreen({
@@ -417,8 +426,10 @@ async function boot() {
             reducedMotion,
             showing: () => root.dataset.threshold === 'card',
             onShown: () => card.classList.add('is-scene'),
+            onSettled: () => threshold.settled(),
         }).catch((error) => {
             card.classList.remove('is-scene');
+            threshold.settled();
             console.error('The Mega-Screen could not be drawn:', error);
         });
     };
@@ -722,6 +733,9 @@ async function boot() {
                         gradientMap: stage.gradientMap,
                         light: stage.shadowLight,
                         floorAt: stage.walk ? (x, z, near) => stage.walk.floorNear(x, z, near) : null,
+                        // (And a shade begun on a surface drawn above the walk's floor lies on it: the Steel Garden's
+                        // disc, the hostel's room.)
+                        surfaceAt: (x, z) => stage.surfaceAt(x, z),
                         reducedMotion,
                         // (Far from it, they aren't drawn: out at the whole city they're specks.)
                         camera: stage.camera,
@@ -868,6 +882,8 @@ async function boot() {
             });
     } else {
         showStill();
+        // (No Mega-Screen can be drawn: nothing to wait for.)
+        threshold.settled();
         building = Promise.resolve(null);
     }
 
@@ -1000,6 +1016,8 @@ async function boot() {
             reader,
             fragments: readable,
             focusFragment: (id) => focusFragment(readable.find((fragment) => fragment.id === id)),
+            // (For the local checks: a passage opened as its point's own touch opens it.)
+            openFragment: (id) => open(readable.find((fragment) => fragment.id === id), list.linkFor(id)),
         });
     }
 

@@ -1716,6 +1716,8 @@ function buildSteelGarden({ buckets, place, random, mounts }) {
     };
 
     buckets.add('steel', paintBy(pose(new CylinderGeometry(4.3, 4.4, 0.24, 36), { x: cx, y: floorY, z: cz }), mossy(2.6)));
+    // (Its top, for a shade to lie on: inside the rim, 12 cm above its middle.)
+    const disc = { surfaceAt: (x, z) => (Math.hypot(x - cx, z - cz) <= 4.2 ? floorY + 0.12 : null) };
     buckets.add('steel', paint(pose(new TorusGeometry(4.3, 0.1, 4, 44), { x: cx, y: floorY + 0.14, z: cz, rx: Math.PI / 2 }), STEEL_DARK));
 
     const trunkPoints = [
@@ -1808,7 +1810,7 @@ function buildSteelGarden({ buckets, place, random, mounts }) {
         for (const piece of frame(pieces, { x, y: groundY(x, z), z, ry: turn })) buckets.add('brick', piece);
         touch.push({ kind: 'dog', center: new Vector3(x, groundY(x, z) + 0.4, z), radius: 0.6, fragment: 'nbp-e3-steel-garden-1' });
     });
-    return { touch };
+    return { touch, surface: disc };
 }
 
 /** The golden bridgework: spires, bridges curling spire to spire, floating stairs. */
@@ -4252,6 +4254,8 @@ function buildHostel({ buckets, extras, still, materials }) {
 
     return {
         floor: { floorAt },
+        // (Its room's floor, wall to wall, for a shade begun on it to lie on, under the furniture too, and end at the walls.)
+        surface: { surfaceAt: (x, z) => (x > inner.x0 && x < inner.x1 && z > inner.z0 && z < inner.z1 ? ground : null) },
         door: doorway,
         // A touch on the door: it's knocked on (and the mouse, perhaps, has its joke ready).
         touch: [{ kind: 'door', center: new Vector3(DOOR_X, ground + 1.3, HOSTEL_NORTH - 0.05), radius: 0.85, fragment: 'nbp-e4-door-in-the-floor-1' }],
@@ -4899,9 +4903,19 @@ const BALL_TUMBLED = [[2.05, -42.5, 0.6, 0, Math.PI / 2], [2.7, -42.8, -0.3, -Ma
 const BALL_COGNAC = [5.3, -42.3];
 /** The hall's insides are drawn only while the eye is this near its middle (it's seen into only from close by). */
 const BALL_INSIDE_SEEN = 18;
-/** The speech's beats, in seconds after someone comes in; and out of the building this long, it all begins again. */
-const BALL_SPEECH = { mutters: 0, applause: 2.2, vanishes: 3.0, appears: 3.4, elysicester: 4.6, elysium: 7.0, leaves: 9.8, band: 10.2 };
-const BALL_AGAIN = 4;
+/**
+ * The speech's pace (Elm, 2 Oct: "much slower"): its beats, and how long each line stays, this many times what they
+ * first were, so a visitor who has only just come in has settled before the old Greek's aphorisms are over.
+ */
+const BALL_PACE = 2.2;
+/** The speech's beats, in seconds after someone comes in. */
+const BALL_SPEECH = Object.fromEntries(Object.entries({ mutters: 0, applause: 2.2, vanishes: 3.0, appears: 3.4, elysicester: 4.6, elysium: 7.0, leaves: 9.8, band: 10.2 })
+    .map(([beat, at]) => [beat, at * BALL_PACE]));
+/**
+ * Out of the building this long (seconds: a step out of the doors, not a stumble on the threshold), and it all begins
+ * again on the way back in, whether the speech was over or not (Elm: it "starts over on every re-entry").
+ */
+const BALL_AGAIN = 0.8;
 /**
  * The words, exactly as the book has them (pp. 77-78): the old Greek's, as it gives his name; Cassandra's at the
  * podium, each as she says it; and hers on the balcony.
@@ -5445,7 +5459,7 @@ function buildBall({ extras, still, materials }) {
                 };
                 if (beat('mutters')) {
                     scene.onSound?.('mutter');
-                    say(BALL_MUTTERED, greekSays, 2.1);
+                    say(BALL_MUTTERED, greekSays, 2.1 * BALL_PACE);
                 }
                 if (beat('applause')) scene.onSound?.('applause');
                 if (beat('vanishes')) shown.set(greek, 0);
@@ -5453,21 +5467,26 @@ function buildBall({ extras, still, materials }) {
                     shown.set(host, 1);
                     shown.set(sitting, 0);
                 }
-                if (beat('elysicester')) say(BALL_THANKS[0], greekSays, 2.2);
-                if (beat('elysium')) say(BALL_THANKS[1], greekSays, 2.4);
+                if (beat('elysicester')) say(BALL_THANKS[0], greekSays, 2.2 * BALL_PACE);
+                if (beat('elysium')) say(BALL_THANKS[1], greekSays, 2.4 * BALL_PACE);
                 if (beat('leaves')) {
                     shown.set(host, 0);
                     shown.set(sitting, 1);
                 }
                 if (beat('band')) scene.onSound?.('band');
-                // (Once it's over, and no one's in the building for a while, all is as it was, for whoever comes next.)
-                away = speech > BALL_SPEECH.band && (!walking || !inBuilding(x, z)) ? away + dt : 0;
+                // (Once whoever came in has stepped out of the building, over or not, all is as it was, and it begins
+                // again when they come back in. Letting go of the hum in the hall, to watch, isn't stepping out.)
+                away = walker && !inBuilding(x, z) ? away + dt : 0;
                 if (away > BALL_AGAIN) {
                     speech = null;
                     away = 0;
                     shown.set(greek, 1);
                     shown.set(host, 0);
                     shown.set(sitting, 1);
+                    if (saying) {
+                        saying = null;
+                        scene.onSay?.(null);
+                    }
                 }
             }
             const since = speech ?? -1;
@@ -5646,6 +5665,12 @@ export async function buildPlaces(buckets, placeData, materials, pause = async (
          * sea-wall's balcony and the balcony, and the sun-dock's light. Each floorAt(x, z): a height, or null.
          */
         floors: [...built.values()].flatMap((result) => (result?.floor ? [result.floor] : [])),
+        /**
+         * Surfaces drawn above the walk's floor that a shade lies on, though no one walks on them (creatures.js): the
+         * Steel Garden's disc (its trunks stand on it, so the walk keeps to the ground beneath). Each surfaceAt(x, z):
+         * the height of its top there, or null.
+         */
+        surfaces: [...built.values()].flatMap((result) => (result?.surface ? [result.surface] : [])),
         /** The sun-dock's light, for the stage to give the walk's shadow to. */
         sunLight: built.get('sun-dock')?.light ?? null,
         /** The Door in the Floor's white door (a trial), which swings in as the walk's shadow comes to it, or null. */
