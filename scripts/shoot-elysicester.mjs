@@ -319,13 +319,15 @@ async function enter(page, context, pass, { begin, then = 'watch', shots = null,
     const begun = { sound: await soundReading(page) };
 
     let skipAt = null;
-    if (path1 === 'flight') {
+    // (The dive into the Mega-Screen (a trial) comes first when it was drawn by the time of the tap: a skip there skips
+    // it and the swirl alike, where skips are allowed.)
+    if (path1 === 'flight' || path1 === 'dive') {
         if (then === 'skip') {
             if (shots && voiceLines?.length > 1) await shotWhenSpoken(page, voiceLines[1], `${shots}-flight.png`);
             else await page.waitForTimeout(1500);
             // (Only while it's still flying: on a slow machine it may have landed already, and a tap then lands in
             // the city instead, taking the focus with it.)
-            skipAt = await page.evaluate(() => (document.documentElement.dataset.threshold === 'flight' ? performance.now() : null));
+            skipAt = await page.evaluate(() => (['dive', 'flight'].includes(document.documentElement.dataset.threshold) ? performance.now() : null));
             if (skipAt !== null) {
                 if (pass.hasTouch) await touch(context, page, [{ x: width / 2, y: height / 2 }]);
                 else await page.keyboard.press('Escape');
@@ -371,7 +373,10 @@ async function enter(page, context, pass, { begin, then = 'watch', shots = null,
         veilDark: after.veilDark,
     };
     const problems = [];
-    if (result.sequence !== `${expectChoice ? 'choice > ' : ''}card > ${pass.expect} > done`) problems.push(`sequence was ${result.sequence}`);
+    // (Into a flight, the dive may come first: when the Mega-Screen was drawn by the time of the tap.)
+    const dove = pass.expect === 'flight' && sequence.includes('dive');
+    if (result.sequence !== `${expectChoice ? 'choice > ' : ''}card > ${dove ? 'dive > ' : ''}${pass.expect} > done`) problems.push(`sequence was ${result.sequence}`);
+    result.dove = dove;
     if (expectChoice && !choice) problems.push('the choice did not show');
     if (choice) {
         if (choice.explore !== 'Explore') problems.push(`the choice's explore side read ${JSON.stringify(choice.explore)}`);
@@ -1404,10 +1409,10 @@ async function failureRound(chromium, pass, outDir, name) {
         await session.page.waitForFunction(() => document.readyState !== 'loading', null, { timeout: 20_000 });
         const early = await session.page.evaluate(() => document.documentElement.dataset.booted === undefined);
         await session.page.click('#choice-explore');
-        await session.page.waitForFunction(() => ['card', 'flight', 'crossfade', 'done'].includes(document.documentElement.dataset.threshold), null, { timeout: LOAD_TIMEOUT }).catch(() => {});
+        await session.page.waitForFunction(() => ['card', 'dive', 'flight', 'crossfade', 'done'].includes(document.documentElement.dataset.threshold), null, { timeout: LOAD_TIMEOUT }).catch(() => {});
         result.slow = { pressedEarly: early, threshold: await session.page.evaluate(() => document.documentElement.dataset.threshold ?? null) };
         if (!early) problems.push('the slow code arrived before "Explore" could be pressed early (the check proved nothing)');
-        else if (!['card', 'flight', 'crossfade', 'done'].includes(result.slow.threshold)) problems.push(`"Explore" pressed while the code was coming was not taken up (the threshold: ${result.slow.threshold})`);
+        else if (!['card', 'dive', 'flight', 'crossfade', 'done'].includes(result.slow.threshold)) problems.push(`"Explore" pressed while the code was coming was not taken up (the threshold: ${result.slow.threshold})`);
         await session.browser.close();
     }
     return { ...result, problems, ok: problems.length === 0 };
@@ -1417,7 +1422,8 @@ async function failureRound(chromium, pass, outDir, name) {
  * The way in waited through (the settle trial; Elm, 3 Oct: "let's try making it compulsory to wait for the mega screen
  * to settle and then for the swirling to resolve"): from "Explore", the card takes no press while the Mega-Screen rolls
  * in (its prompt unseen, its button marked unavailable), the prompt comes once it stands, and focus with it; then
- * begun, the swirl takes no Esc and no click, plays all E's lines, and lands once the city is ready.
+ * begun, the eye dives into the Mega-Screen (a trial: Elm's clip of 3 Oct), taking no Esc and no click, and the swirl
+ * takes over from it, takes no Esc and no click either, plays all E's lines, and lands once the city is ready.
  */
 async function settleRound(chromium, pass, outDir, name) {
     const problems = [];
@@ -1456,6 +1462,16 @@ async function settleRound(chromium, pass, outDir, name) {
         if (result.settled.focus !== 'threshold-begin') problems.push(`settled, focus is on ${result.settled.focus}, not the card's button`);
         await page.screenshot({ path: path.join(outDir, `${name}-settled.png`) });
         await page.click('#threshold-begin');
+        // The dive (a trial): the eye goes in to the Mega-Screen's face; an Esc or a click in it changes nothing.
+        await page.waitForFunction(() => document.documentElement.dataset.threshold !== 'card', null, { timeout: 10_000 }).catch(() => {});
+        result.afterBegin = (await state()).threshold;
+        if (result.afterBegin !== 'dive') problems.push(`the tap led to ${result.afterBegin}, not the dive into the Mega-Screen`);
+        await page.waitForTimeout(1200);
+        await page.keyboard.press('Escape');
+        await page.mouse.click(300, 300);
+        await page.waitForTimeout(400);
+        result.inDive = (await state()).threshold;
+        if (result.inDive !== 'dive') problems.push(`Esc or a click cut the dive short (${result.inDive})`);
         await page.waitForFunction(() => document.documentElement.dataset.threshold === 'flight', null, { timeout: 30_000 }).catch(() => {});
         await page.waitForTimeout(1500);
         await page.keyboard.press('Escape');
@@ -1467,6 +1483,7 @@ async function settleRound(chromium, pass, outDir, name) {
         result.passage = await page.evaluate(() => window.elysicesterDebug?.threshold ?? null);
         if (!result.passage || result.passage.skipped) problems.push('the swirl was skipped');
         else if (result.passage.linesShown < 5) problems.push(`the swirl landed after ${result.passage.linesShown} of E's lines`);
+        if (result.passage && !result.passage.dived) problems.push('the swirl did not take over from the dive');
     } catch (error) {
         problems.push(`the round broke off: ${error.message.split('\n')[0]}`);
     } finally {
@@ -1673,7 +1690,7 @@ try {
                 : '';
             const failing = result.fallbacks ? `when things fail ${result.fallbacks.ok ? 'a module blocked, the still and its line, Read reads; a data file failing, no empty list; slow code, Explore taken up' : 'NOT OK'}` : '';
             const texts = result.texts ? `texts ${result.texts.ok ? `sidebar whole; links and faint text ${['night', 'day'].map((theme) => `${theme} ${Math.min(...['railLink', 'railTitle', 'lostMeta', 'pageMark'].map((what) => result.texts.themes[theme][what]))}:1`).join(', ')} at least` : 'NOT OK'}` : '';
-            const waited = result.settle ? `waited through ${result.settle.ok ? `the card took no early press, its prompt came as the Mega-Screen stood (${Math.round(result.settle.settledAfter / 100) / 10} s), the swirl took no Esc or click and played all ${result.settle.passage?.linesShown} lines` : 'NOT OK'}` : '';
+            const waited = result.settle ? `waited through ${result.settle.ok ? `the card took no early press, its prompt came as the Mega-Screen stood (${Math.round(result.settle.settledAfter / 100) / 10} s), the dive and the swirl took no Esc or click, the swirl took over from the dive and played all ${result.settle.passage?.linesShown} lines` : 'NOT OK'}` : '';
             process.stdout.write(`${name.padEnd(8)} ${result.mode.padEnd(6)} ${problems === 0 ? 'clean' : `${problems} problem(s)`}  ${[crossing, sound, info, orbit, still, camera, signs, extras, pointer, keys, axe, back, kept, dock, givers, plants, failing, texts, waited].filter(Boolean).join(' · ')}\n`);
             for (const line of result.settle?.problems ?? []) process.stdout.write(`    waited through not ok: ${line}\n`);
             for (const line of [...result.messages, ...result.failures]) process.stdout.write(`    ${line}\n`);

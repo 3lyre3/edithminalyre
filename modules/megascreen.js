@@ -39,6 +39,7 @@ import {
     DirectionalLight,
     DstColorFactor,
     Fog,
+    FramebufferTexture,
     Group,
     HemisphereLight,
     LinearFilter,
@@ -48,6 +49,7 @@ import {
     MeshBasicMaterial,
     MeshToonMaterial,
     NearestFilter,
+    OrthographicCamera,
     PerspectiveCamera,
     PlaneGeometry,
     Points,
@@ -57,9 +59,12 @@ import {
     SphereGeometry,
     Vector2,
     Vector3,
+    Vector4,
+    WebGLRenderTarget,
     ZeroFactor,
 } from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { ASCII_GLSL, asciiCell, glyphAtlas } from './ascii.js';
 import { createInk } from './ink.js';
 
 // =============================================================================
@@ -83,6 +88,17 @@ const EYE = 1.6;
 const ROLL_SECONDS = 8.5;
 /** And once it stands, how long its one rock back on its wheels takes to die away (seconds): then it has settled. */
 const SETTLE_SECONDS = 1.2;
+/**
+ * The dive (a trial, dive: Elm's clip of 3 Oct, "with the zoom in to the mega screen btw i meant something sort of like
+ * this except sort of tidier"): how long the eye takes to go in to the face (seconds), and holds there before the swirl
+ * takes it; how near it comes, as a share of the distance at which the face would just fill the view (so its edges are
+ * past the view's on every side, on a tall phone too); and over what share of the dive its face turns into characters.
+ */
+const DIVE_SECONDS = 3.4;
+const DIVE_HOLD = 0.35;
+const DIVE_FILL = 0.84;
+const SPREAD_FROM = 0.22;
+const SPREAD_OVER = 0.62;
 /**
  * The letters: each flicker (this long), a short step left (this share of the face's height), as the book has it;
  * the letters stand this much of the face's height.
@@ -130,6 +146,62 @@ const skyFragment = /* glsl */ `
         sky = mix(sky, vec3(0.92, 0.1, 0.045), disc);
         sky += vec3(0.9, 0.22, 0.05) * rim;
         gl_FragColor = vec4(sky, 1.0);
+    }
+`;
+
+/**
+ * The dive's characters: over the ink's drawing of the shot (tFrame), each cell of the swirl's own grid (ascii.js) whose
+ * middle lies on the screen's face turns, at its own moment as the dive goes on (the dark ground first, the bright
+ * letters last, each a little at random), into its character, coloured as the swirl colours its own; the rest of the
+ * shot stays as drawn.
+ */
+const diveVertex = /* glsl */ `
+    void main() {
+        gl_Position = vec4(position.xy, 0.0, 1.0);
+    }
+`;
+
+const diveFragment = /* glsl */ `
+    uniform sampler2D tFrame;
+    uniform sampler2D glyphs;
+    uniform float glyphCount;
+    uniform vec2 cell;
+    uniform vec2 resolution;
+    uniform float spread;
+    uniform mat4 projectionInverse;
+    uniform mat4 cameraWorld;
+    uniform vec3 eye;
+    uniform vec4 face;
+    uniform float faceZ;
+
+    ${ASCII_GLSL}
+
+    float hash12(vec2 p) {
+        vec3 p3 = fract(vec3(p.xyx) * 0.1031);
+        p3 += dot(p3, p3.yzx + 33.33);
+        return fract((p3.x + p3.y) * p3.z);
+    }
+
+    void main() {
+        vec2 uv = gl_FragCoord.xy / resolution;
+        vec3 under = texture2D(tFrame, uv).rgb;
+        vec2 cellIndex = floor(gl_FragCoord.xy / cell);
+        vec2 middle = (cellIndex + 0.5) * cell / resolution;
+        // (The cell's middle, followed out from the eye to the face's plane: on the face, or not.)
+        vec4 far = projectionInverse * vec4(middle * 2.0 - 1.0, 1.0, 1.0);
+        vec3 toward = normalize((cameraWorld * vec4(far.xyz / far.w, 0.0)).xyz);
+        float along = (faceZ - eye.z) / toward.z;
+        vec3 hit = eye + toward * along;
+        float onFace = step(0.0, along) * step(abs(hit.x - face.x), face.z) * step(abs(hit.y - face.y), face.w);
+        vec3 tone = texture2D(tFrame, middle).rgb;
+        float bright = clamp(dot(tone, vec3(0.3, 0.55, 0.15)), 0.0, 1.0);
+        float moment = 0.55 * hash12(cellIndex + 3.71) + 0.45 * bright;
+        if (onFace < 0.5 || moment > spread) {
+            gl_FragColor = vec4(under, 1.0);
+            return;
+        }
+        float ink = asciiInk(bright, fract(gl_FragCoord.xy / cell));
+        gl_FragColor = vec4(tone * 0.06 + (tone * 1.25 + 0.03) * ink, 1.0);
     }
 `;
 
@@ -447,8 +519,11 @@ function createWheelDust(pixelRatio) {
  * @param {() => void} [options.onShown] - its first frame is on the canvas
  * @param {() => void} [options.onSettled] - it has rolled in and stood, its rock died away (under reduced motion, it
  *   stands from its first frame)
+ * @param {object} [options.control] - given dive() once it's drawn: the eye goes in to the face as it turns into
+ *   characters, until the face fills the view; resolves with that last frame ({ texture, dispose }) for the swirl to
+ *   take over (threshold.js fly), the screen going on being drawn as it was until the swirl begins
  */
-export async function showMegaScreen({ renderer, fit, reducedMotion, showing, onShown, onSettled }) {
+export async function showMegaScreen({ renderer, fit, reducedMotion, showing, onShown, onSettled, control = null }) {
     if (!showing()) return;
     const strip = await letterStrip();
     if (!showing()) {
@@ -555,6 +630,54 @@ export async function showMegaScreen({ renderer, fit, reducedMotion, showing, on
     const ink = createInk(renderer, { reducedMotion });
     const size = new Vector2();
     let startX = 200;
+    // The shot as framed (frame(), below), for the dive to go in from.
+    const framedAt = new Vector3();
+    const framedLook = new Vector3();
+
+    // The dive: the ink's drawing read back from the canvas (frame), turned into characters cell by cell onto it, and
+    // its last frame kept (lastTarget) for the swirl to take over. (Read back, not drawn into a target of its own: the
+    // ink's colour is finished only on its way to the screen, so what the characters are made of is just what was
+    // shown.)
+    let dive = null;
+    const diveUniforms = {
+        tFrame: { value: null },
+        glyphs: { value: null },
+        glyphCount: { value: 1 },
+        cell: { value: new Vector2(8, 13) },
+        resolution: { value: new Vector2(1, 1) },
+        spread: { value: 0 },
+        projectionInverse: { value: camera.projectionMatrixInverse },
+        cameraWorld: { value: camera.matrixWorld },
+        eye: { value: camera.position },
+        face: { value: new Vector4(0, FACE_FOOT + FACE_TALL / 2, FACE_WIDE / 2, FACE_TALL / 2) },
+        faceZ: { value: STAND_Z + 0.25 },
+    };
+    const diveScene = new Scene();
+    const diveCamera = new OrthographicCamera(-1, 1, 1, -1, 0, 1);
+    const diveTriangle = new BufferGeometry();
+    diveTriangle.setAttribute('position', new BufferAttribute(new Float32Array([-1, -1, 0, 3, -1, 0, -1, 3, 0]), 3));
+    const diveQuad = new Mesh(diveTriangle, new ShaderMaterial({ uniforms: diveUniforms, vertexShader: diveVertex, fragmentShader: diveFragment, depthTest: false, depthWrite: false }));
+    diveQuad.frustumCulled = false;
+    diveScene.add(diveQuad);
+    if (control && !reducedMotion) {
+        control.dive = () => new Promise((resolve) => {
+            const atlas = glyphAtlas();
+            diveUniforms.glyphs.value = atlas.texture;
+            diveUniforms.glyphCount.value = atlas.count;
+            renderer.getDrawingBufferSize(size);
+            dive = { began: null, resolve, atlas, frame: new FramebufferTexture(size.x, size.y), lastTarget: null };
+        });
+    }
+    /** Where the eye ends the dive: square to the face, so near that the face runs out past the view on every side. */
+    const diveEnd = new Vector3();
+    const diveLook = new Vector3();
+    function diveTo(faceX) {
+        const half = Math.tan(MathUtils.degToRad(camera.fov / 2));
+        const fillTall = FACE_TALL / 2 / half;
+        const fillWide = FACE_WIDE / 2 / (half * camera.aspect);
+        diveLook.set(faceX, FACE_FOOT + FACE_TALL / 2, STAND_Z + 0.25);
+        diveEnd.copy(diveLook).setZ(diveLook.z + DIVE_FILL * Math.min(fillTall, fillWide));
+    }
     /**
      * Frame the shot for the screen's shape: close, wide and chin high on a wide screen, the desert below and the
      * crown near the top; on a tall one, further back and level, its sides running out past the edges.
@@ -572,6 +695,8 @@ export async function showMegaScreen({ renderer, fit, reducedMotion, showing, on
         camera.position.set(0, EYE, STAND_Z + distance);
         camera.lookAt(0, EYE + Math.tan(pitch) * distance, STAND_Z);
         camera.updateProjectionMatrix();
+        framedAt.copy(camera.position);
+        framedLook.set(0, EYE + Math.tan(pitch) * distance, STAND_Z);
         startX = Math.tan(halfAcross) * distance + FACE_WIDE / 2 + FRAME + 24;
         ink.resize();
     }
@@ -614,8 +739,12 @@ export async function showMegaScreen({ renderer, fit, reducedMotion, showing, on
             if (resized) {
                 frame();
                 drawnStill = 0;
+                if (dive) {
+                    dive.frame.dispose();
+                    dive.frame = new FramebufferTexture(size.x, size.y);
+                }
             }
-            if (reducedMotion ? drawnStill >= 3 : t > ROLL_SECONDS + 2 && frames % 2 === 1) {
+            if (!dive && (reducedMotion ? drawnStill >= 3 : t > ROLL_SECONDS + 2 && frames % 2 === 1)) {
                 requestAnimationFrame(step);
                 return;
             }
@@ -643,8 +772,43 @@ export async function showMegaScreen({ renderer, fit, reducedMotion, showing, on
                 faceUniforms.flicker.value = (t / STEP_SECONDS) % 1 < 0.2 ? 0.62 : 1;
             }
             if (wind) wind.material.uniforms.time.value = t;
-            sky.position.copy(camera.position);
-            ink.render(scene, camera, t, 1);
+            if (dive) {
+                // Diving: the eye eases in from the shot as framed to square before the face, and the face turns into
+                // characters as it comes; once it's in, it holds a moment, and the frame it holds is the swirl's.
+                dive.began ??= t;
+                const along = Math.min(1, (t - dive.began) / DIVE_SECONDS);
+                const eased = along < 0.5 ? 4 * along ** 3 : 1 - (-2 * along + 2) ** 3 / 2;
+                diveTo(rig.position.x);
+                camera.position.lerpVectors(framedAt, diveEnd, eased);
+                camera.lookAt(framedLook.clone().lerp(diveLook, eased));
+                camera.updateMatrixWorld();
+                sky.position.copy(camera.position);
+                ink.render(scene, camera, t, 1);
+                renderer.copyFramebufferToTexture(dive.frame);
+                diveUniforms.tFrame.value = dive.frame;
+                diveUniforms.resolution.value.set(size.x, size.y);
+                asciiCell(size, diveUniforms.cell.value);
+                diveUniforms.spread.value = MathUtils.clamp((along - SPREAD_FROM) / SPREAD_OVER, 0, 1);
+                diveUniforms.face.value.x = rig.position.x;
+                const held = t - dive.began >= DIVE_SECONDS + DIVE_HOLD;
+                if (held && !dive.lastTarget) {
+                    // The last frame, kept for the swirl to take over (threshold.js), then drawn as every other.
+                    dive.lastTarget = new WebGLRenderTarget(size.x, size.y, { depthBuffer: false });
+                    renderer.setRenderTarget(dive.lastTarget);
+                    renderer.render(diveScene, diveCamera);
+                    renderer.setRenderTarget(null);
+                }
+                renderer.setRenderTarget(null);
+                renderer.render(diveScene, diveCamera);
+                if (held && dive.resolve) {
+                    const kept = dive.lastTarget;
+                    dive.resolve({ texture: kept.texture, dispose: () => kept.dispose() });
+                    dive.resolve = null;
+                }
+            } else {
+                sky.position.copy(camera.position);
+                ink.render(scene, camera, t, 1);
+            }
             if (!shown) {
                 shown = true;
                 onShown?.();
@@ -654,8 +818,16 @@ export async function showMegaScreen({ renderer, fit, reducedMotion, showing, on
         requestAnimationFrame(step);
     });
 
-    // Let the canvas go: free everything it drew with.
+    // Let the canvas go: free everything it drew with (the dive's last frame is the swirl's now, to free).
+    if (control) control.dive = undefined;
     ink.dispose();
+    if (dive) {
+        dive.frame.dispose();
+        dive.atlas.texture.dispose();
+        dive.resolve?.(null);
+    }
+    diveTriangle.dispose();
+    diveQuad.material.dispose();
     scene.traverse((object) => {
         object.geometry?.dispose();
         if (object.material) for (const material of [].concat(object.material)) material.dispose();

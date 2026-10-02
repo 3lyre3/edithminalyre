@@ -25,8 +25,8 @@ import {
     Vector3,
     WebGLRenderer,
 } from 'three';
-import { createDust } from './dust.js';
-import { Buckets, createMaterials, duskLight, flutter, wallX } from './kit.js';
+import { createDust, INSIDE_LAYER } from './dust.js';
+import { Buckets, breathe, createMaterials, duskLight, flutter, wallX } from './kit.js';
 import { inscriptionTexture } from './extras.js';
 import { HOLLOWED, createHollows, hollows } from './hollows.js';
 import { NIMBLE, createInk } from './ink.js';
@@ -110,12 +110,14 @@ function pause() {
 
 /**
  * Compile every program the scene could need, and send every texture it draws with to the screen, now, while the
- * way in plays: what's hidden at this moment (the ball's insides, the dust's lingering squares, the givers far off) is
- * shown for the compiling and hidden again, so nothing is compiled or sent the first time it comes into sight (a
- * frame held a quarter of a second or more: 3 Oct, the sand, as the hum took off). And in each state the scene is
- * drawn in (`states`: walking, what the dust opens is drawn from both sides, a program of its own for each material).
+ * way in plays: what's hidden at this moment (the ball's insides, the dust's lingering squares and insides, the givers
+ * far off) is shown for the compiling and hidden again, so nothing is compiled or sent the first time it comes into
+ * sight (a frame held a quarter of a second or more: 3 Oct, the sand, as the hum took off). Piece by piece, letting the
+ * way in move between (a slow phone spent a second on it at a stretch, its Mega-Screen stuck): but a piece holding a
+ * light goes with the whole scene at the end, as three counts the lights of what it's given besides the scene's, and a
+ * light counted twice would compile a program for a light that isn't there.
  */
-async function prepareAll(renderer, scene, camera, target, states = [() => {}]) {
+async function prepareAll(renderer, scene, camera, target) {
     const hidden = [];
     scene.traverse((object) => {
         if (!object.visible) {
@@ -131,13 +133,23 @@ async function prepareAll(renderer, scene, camera, target, states = [() => {}]) 
         }
     });
     for (const texture of textures) renderer.initTexture(texture);
-    renderer.setRenderTarget(target);
+    const holdsLight = (piece) => {
+        let found = false;
+        piece.traverse((object) => { found ||= Boolean(object.isLight); });
+        return found;
+    };
     try {
-        for (const state of states) {
-            state();
-            if (renderer.extensions.has('KHR_parallel_shader_compile')) await renderer.compileAsync(scene, camera);
-            else renderer.compile(scene, camera);
+        for (const piece of [...scene.children]) {
+            if (holdsLight(piece)) continue;
+            // (Into the target the city is drawn into, every time: between breaths the way in draws on the screen, and
+            // a program is made for where it's drawn.)
+            renderer.setRenderTarget(target);
+            renderer.compile(piece, camera, scene);
+            await breathe();
         }
+        renderer.setRenderTarget(target);
+        if (renderer.extensions.has('KHR_parallel_shader_compile')) await renderer.compileAsync(scene, camera);
+        else renderer.compile(scene, camera);
     } finally {
         renderer.setRenderTarget(null);
         for (const object of hidden) object.visible = false;
@@ -201,6 +213,8 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
     // Thin enough that the gold still shines through at the whole city's distance.
     scene.fog = new FogExp2(0x4a2c4c, 0.0024);
     const camera = new PerspectiveCamera(35, 1, 0.5, 900);
+    // (It draws the insides too, where the dust opens the city: on a layer of their own, dust.js.)
+    camera.layers.enable(INSIDE_LAYER);
 
     const sky = createSky({ sunDirection: SUN_DIRECTION, inscription: extras.has('sky') ? await inscriptionTexture() : null });
     const sea = createSea({ sunDirection: SUN_DIRECTION, horizonDip: sky.horizonDip });
@@ -256,7 +270,7 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
     const dock = data.places.places.find((place) => place.id === 'sun-dock');
     if (dock) sea.warmAt(wallX(dock.position[2]) + 1.8, dock.position[2], 7.2);
     await pause();
-    const meshes = buckets.build(materials, { turquoise: ['sway'], weed: ['sway'] });
+    const meshes = await buckets.buildBreathing(materials, { turquoise: ['sway'], weed: ['sway'] });
     for (const mesh of meshes.values()) {
         mesh.castShadow = CASTS_SHADOW.has(mesh.name);
         mesh.receiveShadow = TAKES_SHADOW.has(mesh.name);
@@ -325,7 +339,10 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         const lingers = DUST_DISSOLVES.map((key) => meshes.get(key)).filter(Boolean);
         if (signs.mesh) lingers.push(signs.mesh);
         if (guides?.mesh) lingers.push(guides.mesh);
-        scene.add(dust.linger(lingers, wind));
+        scene.add(await dust.linger(lingers, wind));
+        // And their insides, black where the dust opens them while walking (a trial: ?inside=off), drawn only about
+        // the openings: the city's still pieces in squares, the places' own pieces each whole.
+        scene.add(await dust.insides(lingers, scene));
     }
 
     const rigPlaces = new Map(data.places.places
@@ -359,9 +376,8 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
     rig.update(0);
 
     await pause();
-    // (Walking and not: what the dust opens shows its inside, drawn from both sides, only while walking.)
-    const drawnStates = dust ? [() => dust.showInsides(true), () => dust.showInsides(false)] : undefined;
-    await prepareAll(renderer, scene, camera, ink.target, drawnStates);
+    // (Walking or not, the same programs: what the dust opens shows its inside by copies of its own, dust.js.)
+    await prepareAll(renderer, scene, camera, ink.target);
 
     // What the camera may not pass through is worked out in a worker while the flight plays;
     // until it's ready, the camera orbits free.
@@ -511,7 +527,7 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
             // (Not buildings: their insides aren't shown.)
             if (dust) for (const material of own) dust.dissolve(material, { solid: false });
             for (const texture of textures) renderer.initTexture(texture);
-            await prepareAll(renderer, scene, camera, ink.target, drawnStates);
+            await prepareAll(renderer, scene, camera, ink.target);
         },
         start() {
             if (running) return;

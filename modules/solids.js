@@ -50,7 +50,8 @@ function solidTriangles(scene) {
     const sources = [];
     for (const child of scene.children) {
         if (child.isMesh && SOLID_MESHES.has(child.name)) sources.push(child);
-        else if (SOLID_GROUPS.has(child.name)) child.traverse((node) => node.isMesh && sources.push(node));
+        // (Not a piece's inside, drawn again from behind where the dust opens it: dust.js. It's the piece itself.)
+        else if (SOLID_GROUPS.has(child.name)) child.traverse((node) => node.isMesh && !node.userData.dustBack && sources.push(node));
     }
     for (const mesh of sources) {
         mesh.updateWorldMatrix(true, false);

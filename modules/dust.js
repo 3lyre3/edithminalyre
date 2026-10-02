@@ -37,6 +37,7 @@ import {
     BufferGeometry,
     CustomBlending,
     DoubleSide,
+    DynamicDrawUsage,
     FrontSide,
     Group,
     Mesh,
@@ -49,7 +50,7 @@ import {
     Vector4,
     ZeroFactor,
 } from 'three';
-import { alsoBeforeCompile } from './kit.js';
+import { alsoBeforeCompile, breathe } from './kit.js';
 
 // =============================================================================
 // Constants
@@ -115,6 +116,21 @@ const INSIDE_BEHIND = 1e-4;
 const LINGER_LENS = [0.3, 1.0];
 /** The lingering dust is drawn only where it can be: the city in squares this wide, those near an opening. */
 const LINGER_CELL = 12;
+/**
+ * The insides too are drawn only where they can show (Elm's ledger: whatever the visitor is to see "must pass through
+ * the small machine in their hands"): each solid drawn again from behind, with its own shaders, in squares of the city
+ * this wide (world units), and only in the squares an opening's insides reach (INSIDE_REACH times its own). Drawing
+ * every solid from both sides while walking, as before, doubled the city's drawing on a weak graphics chip, and nearly
+ * all of it was thrown away: the insides show only about the openings. What's seen is the same (but, now and then, a
+ * grain or two at the very edge of where an inside thins out, whose own chance sits right on the line: a copy drawn
+ * from behind is a program of its own, and its last digits fall a hair differently).
+ */
+const INSIDE_CELL = 6;
+/**
+ * What's drawn only for the insides is on a layer of its own: the city's camera draws it (stage.js), and nothing that
+ * looks for the city along a ray (a touch, what hides a reading point) finds it.
+ */
+export const INSIDE_LAYER = 5;
 
 /**
  * dustAt(world): how far into an opening a world point lies (0 whole, 1 wholly gone). dustNear: the lens's opening
@@ -272,12 +288,14 @@ const LINGER_FRAGMENT = /* glsl */ `
 // =============================================================================
 
 /**
- * Split a mesh's triangles into squares of the city (LINGER_CELL), each a geometry of its own that shares the
- * mesh's attributes (nothing is copied but an index), with its bounds in the world.
+ * Split a mesh's triangles into squares of the city (LINGER_CELL, or as wide as asked), each a geometry of its own
+ * that shares the mesh's attributes (nothing is copied but an index), with its bounds in the world.
  * @param {Mesh} mesh
+ * @param {number} [size] - how wide the squares are (world units)
+ * @param {string[] | null} [names] - the attributes shared (null: all the mesh has)
  * @returns {{ geometry: BufferGeometry, box: Box3 }[]}
  */
-function cellsOf(mesh) {
+function cellsOf(mesh, size = LINGER_CELL, names = ['position', 'normal', 'color', 'sway']) {
     const source = mesh.geometry;
     const position = source.attributes.position;
     const index = source.index;
@@ -291,7 +309,7 @@ function cellsOf(mesh) {
         const c = index ? index.getX(first + 2) : first + 2;
         const x = (position.getX(a) + position.getX(b) + position.getX(c)) / 3;
         const z = (position.getZ(a) + position.getZ(b) + position.getZ(c)) / 3;
-        const key = (Math.floor(x / LINGER_CELL) + 512) * 1024 + (Math.floor(z / LINGER_CELL) + 512);
+        const key = (Math.floor(x / size) + 512) * 1024 + (Math.floor(z / size) + 512);
         let cell = cells.get(key);
         if (!cell) {
             cell = { list: [], box: new Box3() };
@@ -303,7 +321,7 @@ function cellsOf(mesh) {
     const wide = position.count > 65535;
     return [...cells.values()].map(({ list, box }) => {
         const geometry = new BufferGeometry();
-        for (const name of ['position', 'normal', 'color', 'sway']) {
+        for (const name of names ?? Object.keys(source.attributes)) {
             if (source.attributes[name]) geometry.setAttribute(name, source.attributes[name]);
         }
         geometry.setIndex(new BufferAttribute(wide ? new Uint32Array(list) : new Uint16Array(list), 1));
@@ -313,12 +331,14 @@ function cellsOf(mesh) {
     });
 }
 
+const AXES = ['x', 'y', 'z'];
+
 /** Whether the segment from a to b passes within reach of a box (the box grown by reach; the slab test). */
 function segmentNear(a, b, box, reach, grown) {
     grown.copy(box).expandByScalar(reach);
     let enter = 0;
     let leave = 1;
-    for (const axis of ['x', 'y', 'z']) {
+    for (const axis of AXES) {
         const from = a[axis];
         const way = b[axis] - from;
         const low = grown.min[axis];
@@ -353,10 +373,84 @@ export function createDust({ reducedMotion, inside = false }) {
     };
     /** The squares of lingering dust (linger), and what cull reckons with. */
     const lingering = [];
-    /** The materials whose insides show black while walking (dissolve, showInsides). */
-    const insides = [];
+    /**
+     * The insides, drawn from behind (insides): each of the city's still pieces as one copy, standing where it stands,
+     * drawing only its squares within reach (its index rebuilt from theirs whenever which are within reach changes:
+     * one draw for each piece, however many squares); and each of the places' own pieces (a door that swings, the
+     * ball's hall) as a whole, going where its piece goes.
+     */
+    const backSquares = [];
+    const backPieces = [];
+    /** Rebuild a still piece's copy's index from its squares within reach; what it draws, and whether anything. */
+    function gather(entry) {
+        const { array } = entry.index;
+        let at = 0;
+        for (let square = 0; square < entry.squares.length; square += 1) {
+            if (!entry.near[square]) continue;
+            array.set(entry.squares[square].index, at);
+            at += entry.squares[square].index.length;
+        }
+        // (Only what it draws is sent again; with nothing to draw, nothing is: it isn't drawn.)
+        if (at) {
+            entry.index.clearUpdateRanges();
+            entry.index.addUpdateRange(0, at);
+            entry.index.needsUpdate = true;
+        }
+        entry.back.geometry.setDrawRange(0, at);
+        entry.count = at;
+    }
+    /** Each material's copy drawn from behind: the same shaders, its back faces only. */
+    const backs = new Map();
     const reachOf = new Vector3();
     const grown = new Box3();
+    const pieceBox = new Box3();
+    /**
+     * The box round everything an opening can reach this frame, with its lens reaching this far about the camera and
+     * its lines this far about themselves: what lies wholly outside it is out of reach, found at a glance.
+     */
+    const lingerReach = new Box3();
+    const insidesBox = new Box3();
+    const lineBox = new Box3();
+    function within(into, from, lens, line, walking) {
+        into.min.copy(from).subScalar(lens);
+        into.max.copy(from).addScalar(lens);
+        if (!walking) return into;
+        for (const target of uniforms.dustTargets.value) {
+            if (target.w < 0) continue;
+            lineBox.min.set(Math.min(from.x, target.x), Math.min(from.y, target.y), Math.min(from.z, target.z)).subScalar(line);
+            lineBox.max.set(Math.max(from.x, target.x), Math.max(from.y, target.y), Math.max(from.z, target.z)).addScalar(line);
+            into.union(lineBox);
+        }
+        return into;
+    }
+    /** Whether a box lies within reach of the insides about the openings (the lens's, the lines' to the shadow). */
+    function insidesReach(box, from) {
+        if (!box.intersectsBox(insidesBox)) return false;
+        const away = box.distanceToPoint(from);
+        if (away < uniforms.dustNear.value.y * INSIDE_REACH + 0.25) return true;
+        // (No line to the shadow reaches further from the lens than this: dustWithin.)
+        if (away > Math.sqrt(uniforms.dustSight.value.x) * INSIDE_REACH + 0.25) return false;
+        for (const target of uniforms.dustTargets.value) {
+            if (target.w < 0) continue;
+            if (segmentNear(from, reachOf.set(target.x, target.y, target.z), box, SIGHT_FADE * INSIDE_REACH + 0.25, grown)) return true;
+        }
+        return false;
+    }
+    function backOf(material) {
+        let back = backs.get(material);
+        if (!back) {
+            back = material.clone();
+            back.side = BackSide;
+            back.name = `${material.name || material.type}-back`;
+            // (Its shaders are the material's own, whatever is added to them later: asked of it each time.)
+            back.onBeforeCompile = (shader, renderer) => material.onBeforeCompile(shader, renderer);
+            back.customProgramCacheKey = () => material.customProgramCacheKey();
+            if (material.isShaderMaterial) back.uniforms = material.uniforms;
+            back.userData.dustBack = true;
+            backs.set(material, back);
+        }
+        return back;
+    }
 
     return {
         uniforms,
@@ -385,15 +479,14 @@ export function createDust({ reducedMotion, inside = false }) {
             // Where something comes apart while walking, its inside shows pure black (a trial, ?inside=off: a friend's
             // idea, through Elm, "make all backfaces render as pure black ... in the edge case where the dissolve shows
             // bits of the inside of a building the building looks empty currently - if the backfaces are pure black
-            // then it'll look neater visually"). A solid's inner faces are drawn then (showInsides), black, near the
-            // openings; whole, they lie hidden behind its outside, so they show only through an opening. (What was
-            // already drawn from both sides, a flag, a ribbon, a bridge, keeps its own two faces; what's see-through
-            // stays as it was; and the city's long shadows fall as they did.)
+            // then it'll look neater visually"). A solid's inner faces are drawn then (insides, showInsides: its own
+            // copy, from behind), black, near the openings; whole, they lie hidden behind its outside, so they show only
+            // through an opening. (What was already drawn from both sides, a flag, a ribbon, a bridge, keeps its own
+            // two faces; what's see-through stays as it was; and the city's long shadows fall as they did.)
             const blackInside = inside && solid && material.side === FrontSide && !material.transparent;
             if (blackInside) {
                 material.shadowSide = BackSide;
                 material.userData.dustInside = true;
-                insides.push(material);
             }
             // (Named apart, so a material with insides never shares a compiled program with one without.)
             alsoBeforeCompile(material, blackInside ? 'dust-inside' : 'dust', (shader) => {
@@ -430,8 +523,15 @@ export function createDust({ reducedMotion, inside = false }) {
                         // (Its inside, seen through an opening: black, and its edge gilded as the outside's is, thinning
                         // out in grains away from the openings; nothing more is worked out for it, so the inner faces cost
                         // almost nothing where they're hidden.)
+                        // (The copy drawn from behind (insides) draws nothing but the inner faces; and three.js draws
+                        // a material from behind by turning which way round counts as the front, so there they'd
+                        // read as front faces: there, every face is an inside.)
                         ...(blackInside ? [
+                            '    #ifdef FLIP_SIDED',
+                            '    if (true) {',
+                            '    #else',
                             '    if (!gl_FrontFacing) {',
+                            '    #endif',
                             `        if (dustSight.w < 0.5 || dustWithin(vDustWorld, ${INSIDE_REACH.toFixed(2)}) <= 0.5 * dustGrain(dustCell + 3.7)) discard;`,
                             '        gl_FragColor = vec4(dustGilt > 0.0 ? dustGild(vec3(0.0), dustCell, dustGilt) : vec3(0.0), 1.0);',
                             '        #include <tonemapping_fragment>',
@@ -457,8 +557,9 @@ export function createDust({ reducedMotion, inside = false }) {
          * while an opening is near it (cull), so the whole city seen from far costs nothing more.
          * @param {Mesh[]} meshes - already dissolving (dissolve), and standing where they'll stay
          * @param {{ value: number }} clock - the flags' and the weed's wind (kit.js's flutter), for those that sway
+         * @returns {Promise<Group>} (made a mesh at a time, letting the way in move between: kit.js breathe)
          */
-        linger(meshes, clock) {
+        async linger(meshes, clock) {
             const group = new Group();
             group.name = 'dust-linger';
             const kinds = new Map();
@@ -500,21 +601,93 @@ export function createDust({ reducedMotion, inside = false }) {
                     lingering.push(cell);
                     group.add(cell);
                 }
+                await breathe();
+            }
+            return group;
+        },
+
+        /**
+         * The insides (inside, a trial), drawn only where they can show: every solid that shows its inside black, drawn
+         * again from behind, in squares of the city (the still pieces given) or whole (each of the places' own, found in
+         * the scene), on a layer of their own (INSIDE_LAYER). Call once everything that comes apart is in the scene.
+         * @param {Mesh[]} still - the city's pieces that stand where they'll stay (as lingering: linger)
+         * @param {import('three').Object3D} scene
+         * @returns {Promise<Group>} the squares, to add to the scene (the places' own are added to their pieces); made a
+         *   piece at a time, letting the way in move between (kit.js breathe)
+         */
+        async insides(still, scene) {
+            const group = new Group();
+            group.name = 'dust-insides';
+            if (!inside) return group;
+            // (A piece drawn many times over, or bending on bones, would need its copy to know how: none shows an inside.)
+            const showsInside = (object) => object.isMesh && !object.isInstancedMesh && !object.isSkinnedMesh
+                && !Array.isArray(object.material) && object.material?.userData.dustInside;
+            const own = [];
+            scene.traverse((object) => {
+                if (showsInside(object) && !still.includes(object)) own.push(object);
+            });
+            // (Each made ready as it's made, unseen until an opening is near it, on its own layer.)
+            const ready = (back) => {
+                back.layers.set(INSIDE_LAYER);
+                back.visible = false;
+                back.userData.dustBack = true;
+                back.userData.near = false;
+                return back;
+            };
+            for (const mesh of still) {
+                if (!showsInside(mesh)) continue;
+                const squares = cellsOf(mesh, INSIDE_CELL, []).map(({ geometry, box }) => ({ box, index: geometry.index.array }));
+                const total = squares.reduce((sum, square) => sum + square.index.length, 0);
+                const geometry = new BufferGeometry();
+                for (const [name, attribute] of Object.entries(mesh.geometry.attributes)) geometry.setAttribute(name, attribute);
+                const wide = mesh.geometry.attributes.position.count > 65535;
+                const index = new BufferAttribute(wide ? new Uint32Array(total) : new Uint16Array(total), 1);
+                index.setUsage(DynamicDrawUsage);
+                geometry.setIndex(index);
+                geometry.setDrawRange(0, 0);
+                // (Its bounds are the whole piece's, so it's never left out for being off the screen when it isn't.)
+                geometry.boundingBox = new Box3().setFromBufferAttribute(mesh.geometry.attributes.position);
+                geometry.boundingSphere = geometry.boundingBox.getBoundingSphere(new Sphere());
+                const back = ready(new Mesh(geometry, backOf(mesh.material)));
+                back.name = `${mesh.name}-back`;
+                back.matrixAutoUpdate = false;
+                back.matrix.copy(mesh.matrixWorld);
+                back.renderOrder = mesh.renderOrder;
+                back.receiveShadow = mesh.receiveShadow;
+                group.add(back);
+                backSquares.push({ back, squares, index, near: new Uint8Array(squares.length), count: 0 });
+                await breathe();
+            }
+            for (const mesh of own) {
+                const back = ready(new Mesh(mesh.geometry, backOf(mesh.material)));
+                back.name = `${mesh.name || mesh.parent?.name || 'piece'}-back`;
+                back.renderOrder = mesh.renderOrder;
+                back.receiveShadow = mesh.receiveShadow;
+                // (Its own bounds, from its points as they are now: a geometry's kept bounds may be older than them.)
+                back.userData.bounds = new Box3().setFromBufferAttribute(mesh.geometry.attributes.position);
+                mesh.add(back);
+                backPieces.push(back);
+                await breathe();
             }
             return group;
         },
 
         /**
          * Every frame, once the camera has moved: draw the lingering dust only in the squares an opening reaches (the
-         * lens's, and while walking, the lines to the shadow's).
+         * lens's, and while walking, the lines to the shadow's); and, walking, find which of the insides can show.
          * @param {import('three').Camera} camera
          */
         cull(camera) {
             const lens = uniforms.dustNear.value.y + 0.25;
             const walking = uniforms.dustSight.value.w > 0.5;
             const from = camera.position;
+            within(lingerReach, from, lens, SIGHT_FADE + 0.25, walking);
             for (const cell of lingering) {
                 const box = cell.userData.box;
+                if (!box.intersectsBox(lingerReach)) {
+                    cell.visible = false;
+                    continue;
+                }
                 let near = box.distanceToPoint(from) < lens;
                 if (!near && walking) {
                     for (const target of uniforms.dustTargets.value) {
@@ -527,6 +700,25 @@ export function createDust({ reducedMotion, inside = false }) {
                 }
                 cell.visible = near;
             }
+            // (Not walking, no inside shows: showInsides.)
+            if (!walking) return;
+            within(insidesBox, from, uniforms.dustNear.value.y * INSIDE_REACH + 0.25, SIGHT_FADE * INSIDE_REACH + 0.25, true);
+            for (const entry of backSquares) {
+                let changed = false;
+                for (let square = 0; square < entry.squares.length; square += 1) {
+                    const near = insidesReach(entry.squares[square].box, from) ? 1 : 0;
+                    if (entry.near[square] !== near) {
+                        entry.near[square] = near;
+                        changed = true;
+                    }
+                }
+                if (changed) gather(entry);
+                entry.back.userData.near = entry.count > 0;
+            }
+            for (const back of backPieces) {
+                pieceBox.copy(back.userData.bounds).applyMatrix4(back.parent.matrixWorld);
+                back.userData.near = insidesReach(pieceBox, from);
+            }
         },
 
         /** How many squares of lingering dust are drawn this frame, of how many (for the local checks). */
@@ -535,14 +727,15 @@ export function createDust({ reducedMotion, inside = false }) {
         },
 
         /**
-         * Around drawing the city, every frame: its insides drawn (on, while walking), then not (off), so nothing
-         * else that looks at the city (a touch, what hides a reading point) ever finds an inside. (The shader stays
-         * the same either way: only which faces are drawn changes.)
+         * Around drawing the city, every frame: its insides drawn (on, while walking: those within reach of an
+         * opening, cull), then not (off), so nothing else that looks at the city (a touch, what hides a reading point)
+         * ever finds an inside. (Nothing is compiled anew either way: the insides are drawn by their own copies of the
+         * city's materials, from behind, and the city's own are drawn from the front as always.)
          * @param {boolean} on
          */
         showInsides(on) {
-            const side = on ? DoubleSide : FrontSide;
-            for (const material of insides) material.side = side;
+            for (const entry of backSquares) entry.back.visible = on && entry.back.userData.near;
+            for (const back of backPieces) back.visible = on && back.userData.near;
             uniforms.dustInsides.value = on ? 1 : 0;
         },
 

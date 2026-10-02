@@ -68,6 +68,7 @@ import {
     Buckets,
     SEA_LEVEL,
     alsoBeforeCompile,
+    breathe,
     createRandom,
     groundY,
     light,
@@ -623,7 +624,7 @@ function addHall(buckets, random, x, z, { width, depth, height, style, turn, tow
  * The grand city's halls, from a stream of their own, where there's room between the streets and the places.
  * (Where one stands between a reading point and its camera, the camera comes round to a clear side: orbit.js.)
  */
-function buildHalls(buckets, byId, zones, standing) {
+async function buildHalls(buckets, byId, zones, standing) {
     const random = createRandom(5171);
     const [gx, , gz] = byId.get('steel-garden').position;
     const halls = [];
@@ -650,11 +651,12 @@ function buildHalls(buckets, byId, zones, standing) {
         const tower = style !== 'dome' && random() < 0.3;
         addHall(buckets, random, x, z, { width, depth, height, style, turn, tower });
         halls.push({ x, z, reach, width, depth, height, turn, base: groundY(x, z) - 0.05 });
+        await breathe();
     }
     return halls;
 }
 
-function buildHouses(buckets, random, byId, { grand = false } = {}) {
+async function buildHouses(buckets, random, byId, { grand = false } = {}) {
     const zones = clearZones(byId);
     const placed = [];
     // The houses' finer variety draws on a stream of its own, so the shared one runs as before.
@@ -698,9 +700,10 @@ function buildHouses(buckets, random, byId, { grand = false } = {}) {
         if (!crowds && !built && !grand) streets += 1;
         if (built) standing.push([x, z]);
         placed.push([x, z]);
+        await breathe();
     }
     if (grand) {
-        const halls = buildHalls(buckets, byId, zones, standing);
+        const halls = await buildHalls(buckets, byId, zones, standing);
         return { built: standing.length, cleared, streets: 0, infill: 0, halls: halls.length, hallSpecs: halls };
     }
 
@@ -720,6 +723,7 @@ function buildHouses(buckets, random, byId, { grand = false } = {}) {
         if (!built) continue;
         standing.push([x, z]);
         added += 1;
+        await breathe();
     }
     return { built: standing.length, cleared, streets, infill: added };
 }
@@ -2855,7 +2859,7 @@ function goldenBridge(buckets, a, b, random) {
  * passes through one, it comes apart into glittering gold dust. (?bridges=off leaves them out, to compare.)
  * A stream of its own. Returns the uniforms the dust needs, for the walk to keep the sight line in.
  */
-function buildGoldenBridges(buckets, materials, halls, trees, byId) {
+async function buildGoldenBridges(buckets, materials, halls, trees, byId) {
     if (!halls?.length || new URLSearchParams(globalThis.location?.search ?? '').get('bridges') === 'off') return null;
     const random = createRandom(6007);
     // The ends a bridge may leave from, building by building.
@@ -3014,7 +3018,10 @@ function buildGoldenBridges(buckets, materials, halls, trees, byId) {
         candidate.A.used += 1;
         candidate.B.used += 1;
     }
-    for (const { a, b } of taken) goldenBridge(buckets, a, b, random);
+    for (const { a, b } of taken) {
+        goldenBridge(buckets, a, b, random);
+        await breathe();
+    }
 
     // Their gold comes apart into dust where the camera, or its sight of the walking shadow, passes through. (Where
     // the whole city comes apart, a trial, they come apart as everything does, and their dust lingers: dust.js.)
@@ -3188,7 +3195,7 @@ function unindexed(geometry) {
     return geometry.index ? geometry.toNonIndexed() : geometry;
 }
 
-function buildDressing(buckets, { halls, spires, byId, extras, animated, still, keepOff = null }) {
+async function buildDressing(buckets, { halls, spires, byId, extras, animated, still, keepOff = null }) {
     const random = createRandom(7331);
     // (Where another place stands that came after the dressing, Cassandra's house, a trial: what would stand there is
     // laid out as ever, from the same stream, taking its room, but isn't built.)
@@ -3439,6 +3446,7 @@ function buildDressing(buckets, { halls, spires, byId, extras, animated, still, 
         counts.strings += 1;
     }
 
+    await breathe();
     // ----- The park -----
 
     // The lawn: a grid laid on the ground's rise and fall, its corners drawn in to the rounded outline, greener
@@ -3551,6 +3559,7 @@ function buildDressing(buckets, { halls, spires, byId, extras, animated, still, 
         });
     }
 
+    await breathe();
     // ----- Along the streets -----
 
     // Lamps by turns on either side (none in the market, which has its lanterns), and a bench now and then
@@ -3584,6 +3593,7 @@ function buildDressing(buckets, { halls, spires, byId, extras, animated, still, 
         }
     }
 
+    await breathe();
     // ----- By the halls -----
 
     // The faces of each hall that look onto a street (the two nearest at most): potted plants at their ends,
@@ -3950,7 +3960,7 @@ function silhouetteQuad(size, at, color, cell) {
  * Returns its floor for walking (the sand, the lane, the doorstep and the breakfast room: the walls, the furniture
  * and the stair left out, for a floor given exactly is its own bound), the door, and what a touch finds.
  */
-function buildHostel({ buckets, extras, still, materials }) {
+async function buildHostel({ buckets, extras, still, materials }) {
     const random = createRandom(6061);
     buildPromontory(buckets, random);
     buildLane(buckets, random);
@@ -4075,12 +4085,14 @@ function buildHostel({ buckets, extras, still, materials }) {
     buckets.add('glow', cylinder(0.26, 0.26, 0.04, 16, { x: cx, y: HOSTEL_EAVES + 0.75, z: HOSTEL_NORTH - 0.01, rx: Math.PI / 2 }, WINDOW_LOW));
     buckets.add('stone', paint(pose(new TorusGeometry(0.29, 0.05, 5, 16), { x: cx, y: HOSTEL_EAVES + 0.75, z: HOSTEL_NORTH - 0.03 }), TRIM));
 
+    await breathe();
     // The doorway's arch in stone, and a lamp on its bracket beside the door.
     buckets.add('stone', archRing(DOOR_WIDE + 0.04, DOOR_SPRING, 0.12, 0.1, { x: DOOR_X, y: ground, z: HOSTEL_NORTH - 0.02, ry: Math.PI }, TRIM));
     buckets.add('steel', box(0.05, 0.05, 0.36, { x: right + 0.42, y: ground + 2.25, z: HOSTEL_NORTH - 0.18 }, STEEL_DARK), { passable: true });
     buckets.add('steel', cylinder(0.02, 0.02, 0.22, 4, { x: right + 0.42, y: ground + 2.12, z: HOSTEL_NORTH - 0.36 }, STEEL_DARK), { passable: true });
     buckets.add('glow', ball(0.12, { x: right + 0.42, y: ground + 1.94, z: HOSTEL_NORTH - 0.36 }, LAMP, 8, 6));
 
+    await breathe();
     // Inside: the floors above (open over the stair, along the back), the breakfast table with its benches and its
     // breakfast, the bar along the sea-wall with its bottles, the cabinet with its tray of keys, lamps over the table.
     const stairZ = inner.z1 - STAIR_DEEP / 2;
@@ -5616,7 +5628,7 @@ export async function buildPlaces(buckets, placeData, materials, pause = async (
     // The grand city: far fewer buildings, much larger (Elm's idea, and her choice); ?city=small keeps the city of
     // small houses and its forest of spires.
     const grand = new URLSearchParams(globalThis.location?.search ?? '').get('city') !== 'small';
-    const houses = buildHouses(buckets, random, byId, { grand });
+    const houses = await buildHouses(buckets, random, byId, { grand });
     await pause();
     buildSignalTowers(buckets);
 
@@ -5626,7 +5638,7 @@ export async function buildPlaces(buckets, placeData, materials, pause = async (
     for (const place of placeData.places.filter((entry) => entry.tier === 1 && (!entry.trial || trialOn(entry.trial)))) {
         const builder = BUILDERS[place.id];
         if (builder) {
-            built.set(place.id, builder({ buckets, place, random, byId, extras, animated, materials, mounts, wanted, still, grand, halls: houses.hallSpecs ?? [] }));
+            built.set(place.id, await builder({ buckets, place, random, byId, extras, animated, materials, mounts, wanted, still, grand, halls: houses.hallSpecs ?? [] }));
             await pause();
         }
         anchors.set(place.id, new Vector3().fromArray(place.position));
@@ -5641,7 +5653,7 @@ export async function buildPlaces(buckets, placeData, materials, pause = async (
         buildChute(buckets, spires);
     }
     // The golden bridges between the buildings (a stream of their own), and the clock their dust keeps.
-    const bridges = buildGoldenBridges(buckets, materials, houses.hallSpecs, spires ?? [], byId);
+    const bridges = await buildGoldenBridges(buckets, materials, houses.hallSpecs, spires ?? [], byId);
     if (bridges) animated.push((time) => { bridges.uniforms.bridgeTime.value = time; });
     // The city dressed: its market, lamps, benches, plants, and its park and fountain (Elm's ask; a stream of its
     // own; the grand city's; ?dressing=off leaves it out).
@@ -5650,7 +5662,7 @@ export async function buildPlaces(buckets, placeData, materials, pause = async (
     const lots = [built.has('cassandras-house') ? onCassandrasLot : null, built.has('charity-ball') ? onBallsLot : null].filter(Boolean);
     const keepOff = lots.length ? (x, z, r) => lots.some((onLot) => onLot(x, z, r)) : null;
     const dressing = dressed && houses.hallSpecs
-        ? buildDressing(buckets, { halls: houses.hallSpecs, spires: spires ?? [], byId, extras, animated, still, keepOff })
+        ? await buildDressing(buckets, { halls: houses.hallSpecs, spires: spires ?? [], byId, extras, animated, still, keepOff })
         : null;
 
     return {
