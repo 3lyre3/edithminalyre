@@ -1,14 +1,18 @@
-# Elysicester's address, as a phone keyboard likes to capitalise it, still finds the city.
+# Elysicester is the front door now. Its old address, however a phone keyboard capitalises it, still finds it.
 # (Cloudflare matches paths case by case, so each spelling is listed, with and without its slash.)
-/Elysicester /elysicester/ 301
-/Elysicester/ /elysicester/ 301
-/ELYSICESTER /elysicester/ 301
-/ELYSICESTER/ /elysicester/ 301
+/elysicester / 301
+/Elysicester / 301
+/Elysicester/ / 301
+/ELYSICESTER / 301
+/ELYSICESTER/ / 301
 
 # The city's plain page gave way to its texts, both works whole on one page: an old link to it still finds them.
-/elysicester/plainly.html /elysicester/read.html 301
-/elysicester/plainly /elysicester/read.html 301
+/elysicester/plainly.html /read.html 301
+/elysicester/plainly /read.html 301
+
+# Everything that was under /elysicester/ is now at the top, at the same name.
+/elysicester/* /:splat 301
 
 # The city's code, at an address that changes whenever the code does (scripts/stamp-elysicester.mjs),
 # so a browser that kept yesterday's scripts still meets today's city.
-/elysicester/v/:stamp/* /elysicester/:splat 200
+/v/:stamp/* /:splat 200

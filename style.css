@@ -1,275 +1,96 @@
-/* Fonts loaded via HTML preload + link tags for better performance */
+/*
+ * Elysicester — diorama UI only: reader panel, controls, title card.
+ * The scene itself is drawn on the canvas; this file dresses the HTML around it
+ * in the site's cloth (void and amber, EB Garamond and Cormorant).
+ */
 
-/* ═══════════════════════════════════════════════════════════
-   THEME VARIABLES - NIGHT MODE (default)
-   ═══════════════════════════════════════════════════════════ */
 :root {
-    /* Night mode colors */
     --void: #050506;
-    --abyss: #0a0a0c;
     --deep: #0e0e11;
-    --ink: #131316;
     --smoke: #1a1a1e;
-    --ash: #2a2a2e;
     --stone: #505058;
     --bone: #808088;
     --pale: #a8a8b2;
     --silver: #c8c8d0;
     --ivory: #e8e8ec;
-    --white: #f8f8fa;
-    
-    --ember: #8b4513;
     --rust: #a05020;
     --amber: #c07830;
     --gold: #d89840;
     --honey: #e8b860;
-    
-    /* Semantic mappings */
-    --bg-primary: var(--void);
-    --bg-secondary: var(--deep);
-    --bg-card: var(--abyss);
-    --text-primary: var(--pale);
-    --text-secondary: var(--bone);
-    --text-muted: var(--stone);
-    --text-heading: var(--ivory);
-    --accent: var(--amber);
-    --accent-dim: var(--rust);
-    --border: var(--smoke);
-    --border-light: var(--ink);
-    
-    /* Atmosphere */
-    --glow-color: rgba(200, 120, 48, 0.06);
-    --glow-secondary: rgba(100, 80, 120, 0.04);
-    --grain-opacity: 0.035;
-    --fog-opacity: 0.4;
-    
+
     --font-body: 'EB Garamond', Georgia, serif;
     --font-display: 'Cormorant', Georgia, serif;
-    
-    /* Transition for theme switching */
-    --theme-transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+
+    color-scheme: dark;
 }
 
-/* ═══════════════════════════════════════════════════════════
-   DAY MODE
-   ═══════════════════════════════════════════════════════════ */
-[data-theme="day"] {
-    --void: #faf9f7;
-    --abyss: #f5f4f2;
-    --deep: #efeeec;
-    --ink: #e8e7e5;
-    --smoke: #dddcd9;
-    --ash: #c8c7c4;
-    --stone: #8a8987;
-    --bone: #6a6968;
-    --pale: #4a4948;
-    --silver: #3a3938;
-    --ivory: #2a2928;
-    --white: #1a1918;
-    
-    --ember: #a05830;
-    --rust: #8b4820;
-    --amber: #9a5828;
-    --gold: #805020;
-    --honey: #704818;
-    
-    --bg-primary: var(--void);
-    --bg-secondary: var(--deep);
-    --bg-card: var(--abyss);
-    --text-primary: var(--pale);
-    --text-secondary: var(--bone);
-    --text-muted: var(--stone);
-    --text-heading: var(--ivory);
-    --accent: var(--amber);
-    --accent-dim: var(--rust);
-    --border: var(--smoke);
-    --border-light: var(--ink);
-    
-    --glow-color: rgba(160, 88, 48, 0.08);
-    --glow-secondary: rgba(80, 60, 100, 0.04);
-    --grain-opacity: 0.02;
-    --fog-opacity: 0.15;
-}
-
-*, *::before, *::after {
-    margin: 0;
-    padding: 0;
+*,
+*::before,
+*::after {
     box-sizing: border-box;
 }
 
-html {
-    scroll-behavior: smooth;
-    background: var(--bg-primary);
+html,
+body {
+    margin: 0;
+    height: 100%;
+    background: var(--void);
+    color: var(--pale);
+    font-family: var(--font-body);
+    font-size: 18px;
+    line-height: 1.6;
+    overflow: hidden;
 }
 
-/* ── SITE CURSOR ─────────────────────────────────────
-   Iron-gold arrow with crossbar. Hotspot at the
-   arrow's tail (the top-left corner of the shape),
-   so the arrow points away from the click rather
-   than at it. Hover over any clickable element —
-   including the day/night toggle — swaps to the same
-   arrow with a soft warm-honey halo. Never the system
-   gloved-hand pointer; text inputs keep the I-beam.
+a {
+    color: var(--amber);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+}
 
-   Cursor set on html/body only (not on every element),
-   so SVG icons inside buttons properly inherit from
-   their parent's cursor instead of being forced to
-   the default by a universal selector. */
-html, body {
-    cursor: url('cursor-32.png') 7 6, auto;
-}
-a, button, [role="button"], summary, label[for] {
-    cursor: url('cursor-glow-32.png') 7 6, pointer;
-}
-input, textarea, [contenteditable] {
-    cursor: text;
+a:hover,
+a:focus-visible {
+    color: var(--honey);
 }
 
 :focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 0.25rem;
+    outline: 1px solid var(--honey);
+    outline-offset: 3px;
 }
 
 .visually-hidden {
     position: absolute;
     width: 1px;
     height: 1px;
-    padding: 0;
     margin: -1px;
+    padding: 0;
     overflow: hidden;
-    clip-path: inset(50%);
+    clip: rect(0 0 0 0);
     white-space: nowrap;
     border: 0;
 }
 
-body {
-    font-family: var(--font-body);
-    font-size: 19px;
-    line-height: 1.78;
-    color: var(--text-primary);
-    background: var(--bg-primary);
-    min-height: 100vh;
-    overflow-x: hidden;
-    position: relative;
-    transition: var(--theme-transition);
-}
-
-/* ═══════════════════════════════════════════════════════════
-   THEME TOGGLE BUTTON
-   ═══════════════════════════════════════════════════════════ */
-.theme-toggle {
-    position: fixed;
-    top: 24px;
-    right: 24px;
-    width: 44px;
-    height: 44px;
-    border: 1px solid var(--border);
-    border-radius: 50%;
-    background: var(--bg-secondary);
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-    opacity: 0.7;
-}
-
-.theme-toggle:hover {
-    opacity: 1;
-    border-color: var(--accent);
-    transform: scale(1.05);
-}
-
-.theme-toggle svg {
-    width: 20px;
-    height: 20px;
-    fill: var(--text-secondary);
-    transition: fill 0.3s ease;
-}
-
-.theme-toggle:hover svg {
-    fill: var(--accent);
-}
-
-/* Sun icon for night mode, moon for day */
-.theme-toggle .sun { display: block; }
-.theme-toggle .moon { display: none; }
-
-[data-theme="day"] .theme-toggle .sun { display: none; }
-[data-theme="day"] .theme-toggle .moon { display: block; }
-
-/* ═══════════════════════════════════════════════════════════
-   ATMOSPHERE: Layered depth with fog, glow, and grain
-   ═══════════════════════════════════════════════════════════ */
-
-body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    pointer-events: none;
-    z-index: 0;
-    background: 
-        radial-gradient(ellipse 120% 60% at 50% -20%, var(--glow-color) 0%, transparent 60%),
-        radial-gradient(ellipse 100% 50% at 50% 120%, var(--glow-secondary) 0%, transparent 50%),
-        radial-gradient(ellipse 50% 70% at 50% 40%, var(--glow-color) 0%, transparent 70%);
-    transition: var(--theme-transition);
-}
-
-body::after {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    pointer-events: none;
-    z-index: 1;
-    opacity: var(--fog-opacity);
-    background: 
-        radial-gradient(ellipse 80% 40% at 20% 80%, rgba(20, 20, 25, 0.8) 0%, transparent 50%),
-        radial-gradient(ellipse 60% 50% at 80% 20%, rgba(15, 15, 20, 0.6) 0%, transparent 40%),
-        radial-gradient(ellipse 100% 30% at 50% 100%, rgba(10, 10, 15, 0.9) 0%, transparent 30%);
-    animation: fogDrift 30s ease-in-out infinite alternate;
-    transition: opacity 0.4s ease;
-}
-
-[data-theme="day"] body::after {
-    background: 
-        radial-gradient(ellipse 80% 40% at 20% 80%, rgba(200, 190, 170, 0.3) 0%, transparent 50%),
-        radial-gradient(ellipse 60% 50% at 80% 20%, rgba(180, 170, 150, 0.2) 0%, transparent 40%);
-}
-
-@keyframes fogDrift {
-    0% { 
-        transform: translateX(-2%) translateY(0); 
-        opacity: var(--fog-opacity);
-    }
-    50% { 
-        opacity: calc(var(--fog-opacity) * 1.2); 
-    }
-    100% { 
-        transform: translateX(2%) translateY(-1%); 
-        opacity: calc(var(--fog-opacity) * 0.9);
-    }
-}
-
+/*
+ * The site's own paper grain, as every other page lays it (the same fractal
+ * noise, the same faintness, the same restless shift), over the scene and its
+ * words alike. One difference, for a page that is already drawing WebGL: the
+ * site's grain layer is twice the screen each way, this one only a tenth over,
+ * with the noise pinned at the site's scale (200vmin, what the site's layer
+ * works out to), so it looks the same at a fraction of the memory. Under
+ * reduced motion it holds still.
+ */
 .grain {
     position: fixed;
-    top: -50%;
-    left: -50%;
-    right: -50%;
-    bottom: -50%;
-    width: 200%;
-    height: 200%;
+    top: -5%;
+    left: -5%;
+    width: 110%;
+    height: 110%;
+    z-index: 55;
     pointer-events: none;
-    z-index: 1000;
-    opacity: var(--grain-opacity);
+    opacity: 0.035;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-size: 200vmin 200vmin;
     animation: grainShift 0.5s steps(10) infinite;
-    transition: opacity 0.4s ease;
 }
 
 @keyframes grainShift {
@@ -285,1247 +106,1257 @@ body::after {
     90% { transform: translate(-2%, 2%); }
 }
 
-/* ═══════════════════════════════════════════════════════════
-   MAIN CONTENT AREA
-   ═══════════════════════════════════════════════════════════ */
-
-main {
-    position: relative;
-    z-index: 10;
-    max-width: 700px;
-    margin: 0 auto;
-    padding: 100px 32px 140px;
-    animation: contentEmerge 1.8s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@keyframes contentEmerge {
-    0% {
-        opacity: 0;
-        transform: translateY(30px);
-        filter: blur(4px);
-    }
-    60% {
-        filter: blur(0);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* ═══════════════════════════════════════════════════════════
-   TYPOGRAPHY
-   ═══════════════════════════════════════════════════════════ */
-
-h1 {
-    font-family: var(--font-display);
-    font-size: 2.6rem;
-    font-weight: 300;
-    font-style: italic;
-    letter-spacing: 0.04em;
-    color: var(--text-heading);
-    margin-bottom: 0.5rem;
-    position: relative;
-    text-shadow: 0 0 60px var(--glow-color), 0 0 120px var(--glow-color);
-    transition: var(--theme-transition);
-}
-
-h1::after {
-    content: '';
-    position: absolute;
-    bottom: -8px;
-    left: 0;
-    width: 40px;
-    height: 1px;
-    background: linear-gradient(90deg, var(--accent), transparent);
-    opacity: 0.6;
-}
-
-h2 {
-    font-family: var(--font-display);
-    font-size: 0.85rem;
-    font-weight: 400;
-    letter-spacing: 0.2em;
-    text-transform: lowercase;
-    color: var(--accent);
-    margin-top: 3.5rem;
-    margin-bottom: 1.5rem;
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 1.2rem;
-    transition: var(--theme-transition);
-}
-
-h2::before {
-    content: '';
-    width: 6px;
-    height: 6px;
-    background: var(--accent-dim);
-    border-radius: 50%;
-    opacity: 0.7;
-    box-shadow: 0 0 10px var(--accent-dim);
-}
-
-h2::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(90deg, var(--ash), transparent 80%);
-}
-
-h3 {
-    font-family: var(--font-display);
-    font-size: 0.95rem;
-    font-weight: 400;
-    font-style: italic;
-    color: var(--text-secondary);
-    margin-top: 2.2rem;
-    margin-bottom: 0.8rem;
-    letter-spacing: 0.02em;
-    transition: var(--theme-transition);
-}
-
-/* ═══════════════════════════════════════════════════════════
-   NAVIGATION
-   ═══════════════════════════════════════════════════════════ */
-
-nav {
-    margin-top: 2rem;
-    margin-bottom: 1rem;
-    font-family: var(--font-display);
-    font-size: 1rem;
-    letter-spacing: 0.06em;
-}
-
-.published {
-    margin-top: 3rem;
-}
-
-.featured {
-    margin-top: 2.5rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--border-light);
-}
-
-.featured .venue {
-    font-style: italic;
-}
-
-nav a {
-    color: var(--text-secondary);
-    text-decoration: none;
-    position: relative;
-    transition: color 0.4s ease;
-    background: none;
-}
-
-nav a::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    width: 0;
-    height: 1px;
-    background: var(--accent);
-    transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 0 0 8px var(--accent);
-}
-
-nav a:hover {
-    color: var(--text-heading);
-}
-
-nav a:hover::after {
-    width: 100%;
-}
-
-nav .sep {
-    color: var(--ash);
-    margin: 0 0.6rem;
-    user-select: none;
-    opacity: 0.5;
-}
-
-/* ═══════════════════════════════════════════════════════════
-   LINKS (general)
-   ═══════════════════════════════════════════════════════════ */
-
-a {
-    color: var(--silver);
-    text-decoration: none;
-    position: relative;
-    background-image: linear-gradient(var(--accent), var(--accent));
-    background-size: 0% 1px;
-    background-position: 0 100%;
-    background-repeat: no-repeat;
-    transition: background-size 0.5s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease;
-}
-
-a:hover {
-    color: var(--white);
-    background-size: 100% 1px;
-}
-
-/* ═══════════════════════════════════════════════════════════
-   WORK ITEMS (lists of poems, stories, essays)
-   ═══════════════════════════════════════════════════════════ */
-
-.item {
-    margin-bottom: 1.6rem;
-    padding-left: 0;
-    position: relative;
-    opacity: 0;
-    animation: itemReveal 0.8s ease-out forwards;
-    transition: transform 0.3s ease, padding-left 0.3s ease;
-}
-
-.item:hover {
-    transform: translateX(6px);
-}
-
-.item:nth-child(1) { animation-delay: 0.1s; }
-.item:nth-child(2) { animation-delay: 0.15s; }
-.item:nth-child(3) { animation-delay: 0.2s; }
-.item:nth-child(4) { animation-delay: 0.25s; }
-.item:nth-child(5) { animation-delay: 0.3s; }
-.item:nth-child(6) { animation-delay: 0.35s; }
-.item:nth-child(7) { animation-delay: 0.4s; }
-.item:nth-child(8) { animation-delay: 0.45s; }
-.item:nth-child(9) { animation-delay: 0.5s; }
-.item:nth-child(10) { animation-delay: 0.55s; }
-.item:nth-child(11) { animation-delay: 0.6s; }
-.item:nth-child(12) { animation-delay: 0.65s; }
-
-@keyframes itemReveal {
-    from {
-        opacity: 0;
-        transform: translateY(12px) translateX(-8px);
-        filter: blur(2px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) translateX(0);
-        filter: blur(0);
-    }
-}
-
-.item a {
-    font-size: 1.08rem;
-    letter-spacing: 0.01em;
-}
-
-.venue {
-    font-style: italic;
-    color: var(--text-muted);
-    font-size: 0.88rem;
-    transition: var(--theme-transition);
-}
-
-.year {
-    color: var(--ash);
-    font-size: 0.82rem;
-    font-family: var(--font-display);
-    letter-spacing: 0.08em;
-    transition: var(--theme-transition);
-}
-
-.year::before {
-    content: '·';
-    margin: 0 0.6em;
-    color: var(--border);
-}
-
-/* ═══════════════════════════════════════════════════════════
-   BIO & TEXT SECTIONS
-   ═══════════════════════════════════════════════════════════ */
-
-.bio-text {
-    margin-top: 2rem;
-}
-
-.bio-text p {
-    margin-bottom: 1.4rem;
-    color: var(--text-primary);
-    transition: var(--theme-transition);
-}
-
-.subtitle {
-    font-family: var(--font-display);
-    font-style: italic;
-    color: var(--text-secondary);
-    font-size: 1.15rem;
-    margin-bottom: 2.2rem;
-    letter-spacing: 0.02em;
-    transition: var(--theme-transition);
-}
-
-/* ═══════════════════════════════════════════════════════════
-   BACK LINK
-   ═══════════════════════════════════════════════════════════ */
-
-.back {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    font-family: var(--font-display);
-    font-size: 0.88rem;
-    letter-spacing: 0.1em;
-    color: var(--text-muted);
-    margin-bottom: 3rem;
-    background: none;
-    transition: color 0.3s ease, gap 0.4s ease;
-}
-
-.back::before {
-    content: '←';
-    color: var(--accent-dim);
-    transition: transform 0.3s ease;
-    text-shadow: 0 0 12px var(--accent-dim);
-}
-
-.back:hover {
-    color: var(--text-primary);
-    gap: 1rem;
-}
-
-.back:hover::before {
-    transform: translateX(-4px);
-}
-
-/* ═══════════════════════════════════════════════════════════
-   WORK PAGES (individual poems, stories, essays)
-   ═══════════════════════════════════════════════════════════ */
-
-.work-header {
-    margin-bottom: 3rem;
-    padding-bottom: 2.5rem;
-    border-bottom: 1px solid var(--border-light);
-    position: relative;
-    transition: var(--theme-transition);
-}
-
-.work-header::after {
-    content: '';
-    position: absolute;
-    bottom: -1px;
-    left: 0;
-    width: 60px;
-    height: 1px;
-    background: var(--accent);
-    opacity: 0.5;
-}
-
-.work-header h1 {
-    font-size: 1.9rem;
-    line-height: 1.4;
-    margin-bottom: 0.6rem;
-}
-
-.work-header h1::after {
-    display: none;
-}
-
-.work-header .year {
-    font-family: var(--font-display);
-    font-size: 0.9rem;
-    letter-spacing: 0.12em;
-    color: var(--text-muted);
-    margin: 0;
-    transition: var(--theme-transition);
-}
-
-.work-meta {
-    font-family: var(--font-display);
-    font-size: 0.88rem;
-    letter-spacing: 0.1em;
-    color: var(--text-muted);
-    transition: var(--theme-transition);
-}
-
-/* ═══════════════════════════════════════════════════════════
-   PROSE BODY (stories, essays)
-   ═══════════════════════════════════════════════════════════ */
-
-.work-body,
-.essay-body {
-    margin-top: 2.5rem;
-}
-
-.work-body p,
-.essay-body p {
-    margin-bottom: 1.7em;
-    text-align: justify;
-    hyphens: auto;
-    color: var(--text-primary);
-    transition: var(--theme-transition);
-}
-
-.work-body p:first-of-type::first-letter {
-    font-size: 3.5rem;
-    float: left;
-    line-height: 0.82;
-    margin-right: 0.12em;
-    margin-top: 0.06em;
-    color: var(--gold);
-    font-family: var(--font-display);
-    font-weight: 400;
-    text-shadow: 0 0 30px var(--glow-color);
-}
-
-.dropcap-centered {
-    text-align: center;
-}
-
-.dropcap-centered::first-letter {
-    font-size: 3.5rem;
-    color: var(--gold);
-    font-family: var(--font-display);
-    font-weight: 400;
-    text-shadow: 0 0 30px var(--glow-color);
-}
-
-.dropcap::first-letter {
-    font-size: 3.5rem;
-    float: left;
-    line-height: 0.82;
-    margin-right: 0.12em;
-    margin-top: 0.06em;
-    color: var(--gold);
-    font-family: var(--font-display);
-    font-weight: 400;
-    text-shadow: 0 0 30px var(--glow-color);
-}
-
-.centered {
-    clear: both;
-    text-align: center;
-}
-
-/* ═══════════════════════════════════════════════════════════
-   POETRY
-   ═══════════════════════════════════════════════════════════ */
-
-.poem-body {
-    margin-top: 3rem;
-}
-
-.stanza {
-    margin-bottom: 2.2em;
-}
-
-.line {
-    display: block;
-}
-
-.indent { padding-left: 2.5em; }
-.indent-2 { padding-left: 5em; }
-
-.section-break {
-    text-align: center;
-    margin: 3em 0;
-    color: var(--ash);
-    font-size: 0.75rem;
-    letter-spacing: 0.4em;
-}
-
-.epigraph {
-    margin: 0 0 2.5rem 2rem;
-    padding-left: 1.5rem;
-    border-left: 2px solid var(--accent-dim);
-    font-style: italic;
-    color: var(--text-secondary);
-    font-size: 0.95rem;
-    line-height: 1.7;
-    position: relative;
-    transition: var(--theme-transition);
-}
-
-.epigraph::before {
-    content: '';
-    position: absolute;
-    left: -2px;
-    top: 0;
-    width: 2px;
-    height: 100%;
-    background: var(--accent-dim);
-    box-shadow: 0 0 15px var(--accent-dim);
-    opacity: 0.5;
-}
-
-.epigraph p {
-    margin: 0 0 0.5rem 0;
-}
-
-.epigraph cite {
-    display: block;
-    margin-top: 1em;
-    font-style: normal;
-    font-size: 0.82em;
-    color: var(--text-muted);
-    letter-spacing: 0.03em;
-}
-
-.poem-note {
-    font-size: 0.92rem;
-    color: var(--text-secondary);
-    margin-bottom: 2.8rem;
-    text-align: justify;
-    line-height: 1.7;
-    transition: var(--theme-transition);
-}
-
-/* ═══════════════════════════════════════════════════════════
-   BLOCKQUOTES
-   ═══════════════════════════════════════════════════════════ */
-
-.essay-body blockquote {
-    margin: 2.5em 0;
-    padding: 1.5em 2em;
-    background: linear-gradient(135deg, var(--bg-card), var(--bg-secondary));
-    border-left: 2px solid var(--accent-dim);
-    color: var(--text-secondary);
-    font-style: italic;
-    position: relative;
-    transition: var(--theme-transition);
-}
-
-.essay-body blockquote::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 2px;
-    height: 100%;
-    box-shadow: 0 0 20px var(--accent-dim);
-    opacity: 0.4;
-}
-
-.essay-body blockquote cite {
-    display: block;
-    margin-top: 1.2em;
-    font-style: normal;
-    font-size: 0.82em;
-    color: var(--text-muted);
-}
-
-/* ═══════════════════════════════════════════════════════════
-   SELECTION & SCROLLBAR
-   ═══════════════════════════════════════════════════════════ */
-
-::selection {
-    background: var(--accent-dim);
-    color: var(--void);
-}
-
-::-webkit-scrollbar {
-    width: 6px;
-}
-
-::-webkit-scrollbar-track {
-    background: var(--bg-primary);
-}
-
-::-webkit-scrollbar-thumb {
-    background: var(--border);
-    border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: var(--ash);
-}
-
-/* ═══════════════════════════════════════════════════════════
-   FOOTER MARK
-   ═══════════════════════════════════════════════════════════ */
-
-.mark {
-    margin-top: 5rem;
-    padding-top: 2rem;
-    text-align: center;
-    font-family: var(--font-display);
-    font-size: 0.75rem;
-    letter-spacing: 0.25em;
-    color: var(--ash);
-    position: relative;
-    transition: var(--theme-transition);
-}
-
-.mark::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 30px;
-    height: 1px;
-    background: var(--border);
-}
-
-/* ═══════════════════════════════════════════════════════════
-   DIVIDER
-   ═══════════════════════════════════════════════════════════ */
-
-.divider {
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--ash), transparent);
-    margin: 4rem 0;
-    position: relative;
-}
-
-.divider::after {
-    content: '';
-    position: absolute;
-    left: 50%;
-    top: -3px;
-    width: 6px;
-    height: 6px;
-    background: var(--accent-dim);
-    border-radius: 50%;
-    transform: translateX(-50%);
-    opacity: 0.6;
-    box-shadow: 0 0 12px var(--accent-dim);
-}
-
-/* ═══════════════════════════════════════════════════════════
-   RESPONSIVE
-   ═══════════════════════════════════════════════════════════ */
-
-@media (max-width: 600px) {
-    body {
-        font-size: 17px;
-    }
-    
-    main {
-        padding: 60px 22px 100px;
-    }
-    
-    h1 {
-        font-size: 2rem;
-    }
-    
-    .work-header h1 {
-        font-size: 1.5rem;
-    }
-    
-    nav {
-        font-size: 0.92rem;
-    }
-    
-    .work-body p:first-of-type::first-letter {
-        font-size: 2.8rem;
-    }
-    
-    .theme-toggle {
-        top: 16px;
-        right: 16px;
-        width: 38px;
-        height: 38px;
-    }
-}
-
-/* ═══════════════════════════════════════════════════════════
-   CURSOR GLOW
-   ═══════════════════════════════════════════════════════════ */
-
-.cursor-glow {
-    position: fixed;
-    width: 400px;
-    height: 400px;
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 5;
-    background: radial-gradient(circle, var(--glow-color) 0%, transparent 70%);
-    transform: translate(-50%, -50%);
-    transition: opacity 0.3s ease;
-    opacity: 0;
-}
-
-body:hover .cursor-glow {
-    opacity: 1;
-}
-
-/* ═══════════════════════════════════════════════════════════
-   EPIGRAPHS AND BLOCK QUOTES
-   ═══════════════════════════════════════════════════════════ */
-
-.verse-quote, .prose-quote {
-    margin: 1.5rem 0 1.5rem 2rem;
-    padding-left: 1.5rem;
-    border-left: 2px solid var(--text-muted);
-}
-
-.verse-quote p, .prose-quote p {
-    margin: 0;
-}
-
-/* ═══════════════════════════════════════════════════════════
-   SECTION SYMBOLS
-   ═══════════════════════════════════════════════════════════ */
-
-.section-symbol {
-    text-align: center;
-    font-size: 2rem;
-    margin: 2rem 0;
-    color: var(--text-muted);
-    font-family: var(--font-display);
-}
-
-/* ═══════════════════════════════════════════════════════════
-   BIO PAGE
-   ═══════════════════════════════════════════════════════════ */
-
-.bio-name {
-    font-size: 1.4rem;
-    font-weight: 600;
-    margin-bottom: 0.25rem;
-}
-
-.bio-title {
-    font-family: var(--font-display);
-    font-size: 0.95rem;
-    letter-spacing: 0.08em;
-    color: var(--text-muted);
-    margin-bottom: 1.5rem;
-}
-
-/* ═══════════════════════════════════════════════════════════
-   RELATED WORKS
-   ═══════════════════════════════════════════════════════════ */
-
-.related {
-    margin-top: 4rem;
-    padding-top: 2rem;
-    border-top: 1px solid var(--border-light);
-}
-
-.related h3 {
-    font-family: var(--font-display);
-    font-size: 0.8rem;
-    font-weight: 400;
-    font-style: normal;
-    letter-spacing: 0.15em;
-    text-transform: lowercase;
-    color: var(--text-muted);
-    margin-bottom: 1rem;
-}
-
-.related-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-}
-
-.related-list a {
-    font-size: 0.95rem;
-    color: var(--text-secondary);
-}
-
-.related-list .type {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    font-style: italic;
-    margin-left: 0.5em;
-}
-
-/* ═══════════════════════════════════════════════════════════
-   HOMEPAGE EXTENSIONS — applies to body.foyer (index.html)
-   v3: full-width with narrow fixed margins; pads emerge from
-   bone-ashen dust; doors stay as alcoves; a wisp drifts.
-   ═══════════════════════════════════════════════════════════ */
-
-/* ── PAD TOKENS (night) — emerging stone in dark-gleaming sand ── */
-:root {
-    --pad-face: #0e0c0a;
-    --pad-top-gleam: rgba(232, 184, 96, 0.07);
-    --pad-base-shadow: rgba(0, 0, 0, 0.55);
-    --pad-cast: rgba(200, 120, 48, 0.045);
-    --pad-cast-strong: rgba(200, 120, 48, 0.10);
-}
-
-/* ── PAD TOKENS (day) — emerging slabs in bone-ashen dust ── */
-[data-theme="day"] {
-    --pad-face: #f2ede0;
-    --pad-top-gleam: rgba(255, 252, 240, 0.75);
-    --pad-base-shadow: rgba(120, 70, 20, 0.18);
-    --pad-cast: rgba(160, 90, 40, 0.07);
-    --pad-cast-strong: rgba(160, 90, 40, 0.13);
-}
-
-/* ── BONE-ASHEN DUST FLOOR IN DAY MODE (all pages) ──── */
-[data-theme="day"] body {
-    background: #ece6d6;
-}
-
-/* ── FOYER LAYOUT — full-width to narrow margins ─── */
-body.foyer main {
-    max-width: none;
-    margin: 0;
-    padding: 96px 56px 110px;
-    animation: contentEmerge 1.8s cubic-bezier(0.16, 1, 0.3, 1);
-}
-@media (max-width: 700px) {
-    body.foyer main { padding: 64px 22px 80px; }
-}
-
-/* ── FOYER MASTHEAD ─────────────────────────────────── */
-body.foyer .masthead {
-    text-align: center;
-    margin-bottom: 5.5rem;
-}
-body.foyer .eyebrow {
-    font-family: var(--font-display);
-    font-size: 0.78rem;
-    letter-spacing: 0.32em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin: 0 0 1rem;
-}
-body.foyer h1.title {
-    font-family: var(--font-display);
-    font-size: clamp(1.7rem, 4.2vw, 3.5rem);
-    font-weight: 300;
-    font-style: italic;
-    letter-spacing: 0.005em;
-    line-height: 1.06;
-    color: var(--text-heading);
-    /* margin: top right-and-left bottom — `auto` on the horizontal
-       margins re-centres the shrink-wrapped h1 within its parent
-       now that width: fit-content has pulled it off full-width. */
-    margin: 0 auto 1.85rem;
-    text-shadow: 0 0 60px var(--glow-color), 0 0 140px var(--glow-color);
-    display: grid;
-    /* Shrink-wrap so the hover hit-area matches the visible text,
-       not the full width of <main>. Otherwise moving the cursor up
-       toward the theme toggle or nav crosses an invisible band of
-       hover region and triggers the shudder. max-width keeps it
-       safe on narrow viewports. */
-    width: fit-content;
-    max-width: 100%;
-}
-body.foyer h1.title::after { display: none; }
-/* The two halves of the title stack in the same grid cell, sized
-   to fit the longer of the two — no layout shift on hover. */
-body.foyer h1.title > span {
-    grid-area: 1 / 1;
-    transition: opacity 0.5s ease;
-}
-body.foyer h1.title .title-hover { opacity: 0; }
-body.foyer h1.title:hover .title-default { opacity: 0; }
-body.foyer h1.title:hover .title-hover { opacity: 1; }
-
-/* Title-spark effect — replaces the earlier whole-page strobe to be
-   gentler on photosensitivity. On hovering the title, a single star
-   emerges at the cursor, orbits it briefly, returns, and bursts into
-   a small splash of fainter stars that fade outward. All elements
-   are position: fixed and short-lived; site.js creates them on
-   demand and removes them at animation-end. */
-.title-spark,
-.title-spark-splash {
-    position: fixed;
-    pointer-events: none;
-    z-index: 9999;
-    font-family: var(--font-display);
-    color: var(--accent);
-    text-shadow: 0 0 8px var(--accent), 0 0 16px var(--glow-color);
-    transform: translate(-50%, -50%);
-    will-change: transform, opacity;
-    line-height: 1;
-    user-select: none;
-}
-.title-spark        { font-size: 1.4rem; }
-.title-spark-splash { font-size: 0.85rem; }
 @media (prefers-reduced-motion: reduce) {
-    .title-spark, .title-spark-splash { display: none !important; }
-}
-body.foyer .colophon {
-    font-family: var(--font-body);
-    font-style: italic;
-    font-size: 1.05rem;
-    color: var(--text-secondary);
-    margin: 0 0 1.85rem;
-}
-body.foyer nav.primary {
-    font-family: var(--font-display);
-    font-size: 1rem;
-    letter-spacing: 0.05em;
-    color: var(--text-secondary);
-    margin: 0;
-}
-body.foyer nav.primary a {
-    color: var(--text-secondary);
-    text-decoration: none;
-    background: none;
-}
-body.foyer nav.primary a:hover { color: var(--accent); }
-body.foyer nav.primary a::after { display: none; }
-body.foyer nav.primary .sep { color: var(--stone); margin: 0 0.5em; }
-
-/* ── FOYER SECTION HEADS ─────────────────────────── */
-body.foyer section.bay { margin-bottom: 5rem; }
-body.foyer .section-head {
-    display: flex;
-    align-items: baseline;
-    gap: 14px;
-    margin-bottom: 2rem;
-    margin-top: 0;
-    padding-top: 0;
-    border-top: none;
-    text-align: left;
-}
-body.foyer .section-head .mark {
-    font-family: var(--font-display);
-    font-size: 1.45rem;
-    color: var(--accent);
-    line-height: 1;
-    text-shadow: 0 0 12px var(--glow-color);
-    margin: 0;
-    padding: 0;
-    background: none;
-    border: none;
-    letter-spacing: normal;
-    text-transform: none;
-}
-body.foyer .section-head .mark::before { display: none; }
-body.foyer .section-head .label {
-    font-family: var(--font-display);
-    font-size: 0.78rem;
-    letter-spacing: 0.32em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    flex-shrink: 0;
-}
-body.foyer .section-head .rule {
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(90deg, var(--ash), transparent 92%);
-    transform: translateY(-5px);
-}
-
-/* ═══════════════════════════════════════════════════════
-   THE PAD EFFECT — works, tags, quotes, facts
-   (NOT doors — doors remain alcoves)
-   ═══════════════════════════════════════════════════════ */
-body.foyer .work,
-body.foyer .appears .tag,
-body.foyer .haunted blockquote,
-body.foyer .fact {
-    position: relative;
-    background: var(--pad-face);
-    box-shadow:
-        inset 0 1px 0 var(--pad-top-gleam),
-        0 1px 0 var(--pad-base-shadow),
-        0 3px 14px var(--pad-cast);
-    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-                box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-body.foyer .work:hover,
-body.foyer .appears .tag:hover,
-body.foyer .haunted blockquote:hover,
-body.foyer .fact:hover {
-    transform: translateY(-2px);
-    box-shadow:
-        inset 0 1px 0 var(--pad-top-gleam),
-        0 2px 0 var(--pad-base-shadow),
-        0 7px 24px var(--pad-cast-strong);
-}
-
-/* ── WORKS GRID ─────────────────────────────────── */
-body.foyer .works {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 1.6rem 1.8rem;
-}
-body.foyer .work {
-    padding: 1.5rem 1.5rem 1.4rem;
-    border-radius: 2px;
-    border: none;
-    margin: 0;
-    opacity: 1;
-    animation: none;
-}
-body.foyer .work:hover {
-    transform: translateY(-2px);
-    padding-left: 1.5rem;
-}
-body.foyer .work h3 {
-    font-family: var(--font-display);
-    font-size: 1.22rem;
-    font-weight: 400;
-    font-style: italic;
-    color: var(--text-heading);
-    margin: 0 0 0.4rem;
-    line-height: 1.3;
-    letter-spacing: 0.01em;
-    text-wrap: balance;
-}
-body.foyer .work.longtitle h3 .status {
-    display: block;
-    margin: 0.35rem 0 0;
-}
-/* Cards that are themselves anchors get the whole area clickable.
-   Override the global anchor decoration so the card doesn't show a
-   sliding underline; suppress the system pointer cursor (cursor:
-   url(...glow...) already applies from the universal a rule). */
-body.foyer a.work {
-    color: inherit;
-    text-decoration: none;
-    display: block;
-    background-image: none;
-    background-size: auto;
-    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-                box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-body.foyer a.work:hover {
-    color: inherit;
-    background-image: none;
-    background-size: auto;
-}
-body.foyer a.work:focus-visible {
-    outline: 2px solid var(--accent-dim);
-    outline-offset: 2px;
-}
-/* Card hover (article or a) makes the title-text take the accent. */
-body.foyer .work:hover h3 {
-    color: var(--accent);
-    transition: color 0.3s ease;
-}
-body.foyer .work .status {
-    font-family: var(--font-display);
-    font-size: 0.7rem;
-    font-style: normal;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--accent-dim);
-    margin-left: 0.6em;
-    white-space: nowrap;
-}
-body.foyer .work .blurb {
-    font-family: var(--font-body);
-    font-size: 0.98rem;
-    line-height: 1.55;
-    color: var(--text-secondary);
-    margin: 0;
-    max-width: 56ch;
-}
-
-/* ── LOWER PASSAGES — doors as alcoves ─────────── */
-body.foyer .doors {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.4rem 1.6rem;
-}
-body.foyer .door {
-    text-align: center;
-    padding: 1.5rem 0.9rem 1.2rem;
-    border: 1px solid var(--border);
-    background: var(--bg-card);
-    text-decoration: none;
-    transition: border-color 0.4s ease, background 0.4s ease;
-    position: relative;
-}
-body.foyer .door:hover {
-    border-color: var(--accent-dim);
-    background: var(--bg-secondary);
-}
-body.foyer .door .glyph {
-    display: block;
-    font-family: var(--font-display);
-    font-size: 1.7rem;
-    color: var(--accent);
-    margin-bottom: 0.65rem;
-    line-height: 1;
-    text-shadow: 0 0 14px var(--glow-color);
-    transition: transform 0.6s ease;
-}
-body.foyer .door:hover .glyph { transform: rotate(180deg); }
-/* Elysicester's door carries Elm's own mark, set in her one-glyph font (U+E000). */
-@font-face {
-    font-family: 'Elm Glyph';
-    src: url('/elysicester/assets/ElmGlyph-Regular.woff') format('woff');
-    font-display: block;
-}
-body.foyer .door .glyph.elm-glyph { font-family: 'Elm Glyph', var(--font-display); }
-body.foyer .door .door-title {
-    display: block;
-    font-family: var(--font-display);
-    font-size: 1.02rem;
-    font-style: italic;
-    color: var(--text-heading);
-    letter-spacing: 0.02em;
-    margin-bottom: 0.25rem;
-}
-body.foyer .door .door-gloss {
-    display: block;
-    font-family: var(--font-display);
-    font-size: 0.72rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-}
-
-/* ── BOUND INTO — venue pills ───────────────────── */
-body.foyer .appears { display: flex; flex-wrap: wrap; gap: 10px; }
-body.foyer .appears .tag {
-    font-family: var(--font-display);
-    font-size: 0.72rem;
-    letter-spacing: 0.18em;
-    padding: 7px 16px;
-    border-radius: 999px;
-    border: none;
-    color: var(--text-secondary);
-    text-transform: uppercase;
-}
-body.foyer .appears .tag:hover { color: var(--accent); }
-
-/* ── LATELY HEARD — epigraph-pads ──────────────── */
-body.foyer .haunted {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
-    gap: 2rem;
-}
-body.foyer .haunted blockquote {
-    margin: 0;
-    padding: 1.5rem 1.6rem 1.4rem 1.7rem;
-    border-left: 2px solid var(--accent-dim);
-    border-radius: 0 2px 2px 0;
-    background: var(--pad-face);
-    color: var(--text-secondary);
-    font-style: normal;
-}
-body.foyer .haunted blockquote::before { display: none; }
-body.foyer .haunted blockquote p {
-    font-family: var(--font-display);
-    font-style: italic;
-    font-size: 1.18rem;
-    line-height: 1.45;
-    color: var(--text-heading);
-    margin: 0 0 0.6rem;
-    max-width: 48ch;
-}
-body.foyer .haunted blockquote cite {
-    font-family: var(--font-display);
-    font-size: 0.7rem;
-    font-style: normal;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-}
-
-/* ── FROM FAERIELAND — a ticker of procedurals ───────── */
-/* Default (mobile / no-JS): static grid layout */
-body.foyer .facts {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.6rem;
-}
-/* Carousel mode (JS adds .carousel on wide viewports) */
-body.foyer .facts.carousel {
-    display: block;
-    overflow: hidden;
-    position: relative;
-    mask-image: linear-gradient(90deg, transparent 0%, black 4%, black 96%, transparent 100%);
-    -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 4%, black 96%, transparent 100%);
-}
-body.foyer .facts.carousel .facts-track {
-    display: flex;
-    /* gap is intentionally 0 here — the spacing lives on each .fact's
-       margin-right so the trailing item also contributes to the track
-       width. That makes translateX(-50%) land exactly on the start of
-       the second (cloned) set, producing a seamless wrap. */
-    gap: 0;
-    width: max-content;
-    animation: faerieland-scroll 180s linear infinite;
-}
-body.foyer .facts.carousel:hover .facts-track {
-    animation-play-state: paused;
-}
-body.foyer .facts.carousel .fact {
-    flex: 0 0 340px;
-    margin-right: 1.6rem;
-}
-@media (max-width: 600px) {
-    body.foyer .facts.carousel .fact {
-        flex: 0 0 280px;
-        margin-right: 1.6rem;
-    }
-}
-@keyframes faerieland-scroll {
-    from { transform: translateX(0); }
-    to   { transform: translateX(-50%); }
-}
-@media (prefers-reduced-motion: reduce) {
-    body.foyer .facts.carousel .facts-track {
+    .grain {
         animation: none;
     }
 }
 
-body.foyer .fact {
-    padding: 1.5rem 1.5rem 1.4rem;
-    border-radius: 2px;
-    font-family: var(--font-body);
-    font-size: 0.98rem;
-    line-height: 1.6;
-    color: var(--text-secondary);
-}
-body.foyer .fact .glyph {
-    display: block;
-    font-family: var(--font-display);
-    font-size: 1.55rem;
-    color: var(--accent);
-    margin-bottom: 0.6rem;
-    line-height: 1;
-    text-shadow: 0 0 12px var(--glow-color);
-}
-body.foyer .fact em { color: var(--text-heading); font-style: italic; }
-
-/* ── FOYER FOOTER ───────────────────────────────── */
-body.foyer footer.meta {
-    text-align: center;
-    padding-top: 2.6rem;
-    margin-top: 1rem;
-    border-top: 1px solid var(--border);
-    font-family: var(--font-display);
-    font-size: 0.7rem;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-}
-body.foyer footer.meta p { margin: 0.5rem 0; }
-body.foyer footer.meta a {
-    color: var(--accent);
-    text-decoration: none;
-    background: none;
-}
-body.foyer footer.meta a:hover { color: var(--text-heading); }
-a.silent-dot {
-    color: var(--accent);
-    opacity: 0.35;
-    text-decoration: none;
-    background: none;
-}
-a.silent-dot:hover { opacity: 1; }
-
-/* ── THE WISP — drifts across every page ───────── */
-.wisp {
+/* The way out, visible at every moment. */
+.plainly {
     position: fixed;
-    top: 0; left: 0;
+    top: max(14px, env(safe-area-inset-top));
+    left: max(18px, env(safe-area-inset-left));
+    z-index: 50;
     font-family: var(--font-display);
-    font-size: 22px;
-    color: var(--accent);
-    opacity: 0.55;
-    text-shadow: 0 0 16px var(--accent), 0 0 32px var(--glow-color);
-    pointer-events: none;
-    z-index: 5;
-    will-change: transform;
-    transition: opacity 1.6s ease;
+    font-size: 17px;
+    letter-spacing: 0.08em;
+    color: var(--bone);
+    text-shadow: 0 0 3px rgba(4, 3, 8, 1), 0 0 8px rgba(4, 3, 8, 0.9), 0 0 2px rgba(4, 3, 8, 1);
 }
-.wisp.dim { opacity: 0.18; }
 
-@keyframes breathe { 0%,100% { opacity: 1; } 50% { opacity: 0.78; } }
-body.foyer h1.title { animation: breathe 8s ease-in-out infinite; }
+/* A pool of dusk behind the corner words, so they read over whatever the city (or the maze) puts behind them. */
+.plainly::before,
+.controls::before {
+    content: '';
+    position: absolute;
+    inset: -12px -20px;
+    z-index: -1;
+    background: radial-gradient(closest-side, rgba(4, 3, 8, 0.62), rgba(4, 3, 8, 0.4) 62%, transparent);
+    pointer-events: none;
+}
+
+.plainly .sep {
+    margin: 0 0.4em;
+    color: var(--stone);
+}
+
+/* On a narrow screen the corner's words (read plainly, the book's name, dúrrync) stand one above another, clear of the controls opposite. */
+@media (max-width: 560px) {
+    .plainly {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+    }
+
+    .plainly .sep {
+        display: none;
+    }
+}
+
+.diorama {
+    position: fixed;
+    inset: 0;
+}
+
+.stage {
+    display: block;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+}
+
+[data-mode="still"] .stage {
+    display: none;
+}
+
+/* The still: the diorama as a plate, when the live scene can't be drawn. */
+.fallback {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    background: var(--void);
+}
+
+.fallback[hidden] {
+    display: none;
+}
+
+.fallback-still,
+.fallback-still img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.fallback-note {
+    position: relative;
+    max-width: 34em;
+    margin: 0 auto max(28px, env(safe-area-inset-bottom));
+    padding: 18px 24px 20px;
+    background: rgba(5, 5, 6, 0.72);
+    border: 1px solid var(--smoke);
+    color: var(--silver);
+}
+
+.fallback-note h2 {
+    margin: 0 0 6px;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 24px;
+    letter-spacing: 0.04em;
+    color: var(--ivory);
+}
+
+.fallback-note p {
+    margin: 0;
+}
+
+/*
+ * The reading points as a list of real links: out of sight until a keyboard
+ * arrives (then it shows, so focus is always visible), always there for screen
+ * readers, and shown openly in the still.
+ */
+.points {
+    position: fixed;
+    left: max(18px, env(safe-area-inset-left));
+    bottom: max(18px, env(safe-area-inset-bottom));
+    z-index: 40;
+    max-width: min(26em, calc(100vw - 36px));
+    max-height: 52vh;
+    overflow: auto;
+    padding: 12px 18px 14px;
+    background: rgba(8, 7, 11, 0.9);
+    border: 1px solid var(--smoke);
+}
+
+.points:not(:focus-within) {
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    border: 0;
+}
+
+.points-title {
+    margin: 0 0 6px;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 18px;
+    letter-spacing: 0.08em;
+    color: var(--bone);
+}
+
+.points-list {
+    margin: 0;
+    padding-left: 1.4em;
+    font-size: 17px;
+    line-height: 1.5;
+}
+
+.points-list cite {
+    font-style: italic;
+}
+
+.points-list a[data-read="yes"] {
+    color: var(--bone);
+}
+
+[data-mode="still"] .points,
+[data-mode="still"] .points:not(:focus-within) {
+    position: static;
+    width: auto;
+    height: auto;
+    max-width: none;
+    max-height: none;
+    margin-top: 12px;
+    padding: 0;
+    overflow: visible;
+    clip-path: none;
+    background: none;
+    border: 0;
+}
+
+[data-mode="still"] .fallback-note {
+    max-height: 70vh;
+    overflow: auto;
+}
+
+/* The name of the lit point, floated beside it in the scene. */
+.point-label {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 30;
+    transform: translate(-50%, calc(-100% - 18px));
+    padding: 2px 10px;
+    font-family: var(--font-display);
+    font-size: 17px;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+    color: var(--ivory);
+    background: rgba(8, 7, 11, 0.78);
+    border: 1px solid var(--smoke);
+    pointer-events: none;
+}
+
+/* Beside the walking shadow, the name is a way in: a click reads it. */
+.point-label.is-near {
+    pointer-events: auto;
+    cursor: pointer;
+    /* A thumb set down on it may be steering (walk.js steersFrom): the page mustn't take the drag for a scroll. */
+    touch-action: none;
+}
+
+.point-label.is-near:hover {
+    color: var(--honey);
+    border-color: var(--amber);
+}
+
+/*
+ * The places' faint names, from far out (a trial, names.js): each a little above its place, drawn light on the
+ * dusk, taking no touch. Places read through are fainter still (names.js sets each one's strength).
+ */
+.place-names {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.place-name {
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform: translate(-50%, -100%);
+    font-family: var(--font-display);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: #f1e6cc;
+    text-shadow: 0 0 6px rgba(3, 2, 6, 0.95), 0 0 2px rgba(3, 2, 6, 1);
+    transition: opacity 0.5s linear;
+}
+
+/*
+ * A whisper over the water, after a long stillness (a trial, whisper.js): one of E's lines, low in the view,
+ * rising a little as it comes and sinking as it goes.
+ */
+.whisper {
+    position: fixed;
+    left: 50%;
+    bottom: 14vh;
+    z-index: 25;
+    width: min(26em, calc(100vw - 48px));
+    margin: 0;
+    transform: translate(-50%, 10px);
+    font-family: var(--font-display);
+    font-size: clamp(19px, 2.5vw, 25px);
+    font-style: italic;
+    line-height: 1.35;
+    letter-spacing: 0.02em;
+    text-align: center;
+    text-wrap: balance;
+    color: #ebe8f8;
+    text-shadow: 0 0 14px rgba(160, 150, 230, 0.6), 0 0 3px rgba(3, 2, 6, 0.95);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 2.8s ease, transform 7s ease-out;
+}
+
+.whisper.is-whispering {
+    opacity: 0.84;
+    transform: translate(-50%, 0);
+    transition: opacity 2.4s ease, transform 7s ease-out;
+}
+
+.whisper.is-quick {
+    transition: opacity 0.6s ease;
+}
 
 @media (prefers-reduced-motion: reduce) {
-    .wisp { display: none; }
-    body.foyer h1.title { animation: none; }
+    .whisper,
+    .whisper.is-whispering {
+        transform: translate(-50%, 0);
+        transition: opacity 0.3s linear;
+    }
+}
+
+/*
+ * A sign's words, floated over its plate: the Danæam above, and beneath it the
+ * site's gloss where the site gives one.
+ */
+.sign-label {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 31;
+    transform: translate(-50%, calc(-100% - 10px));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 3px 12px 5px;
+    line-height: 1.25;
+    white-space: nowrap;
+    background: rgba(8, 7, 11, 0.82);
+    border: 1px solid var(--smoke);
+    pointer-events: none;
+}
+
+.sign-label[hidden] {
+    display: none;
+}
+
+.sign-words {
+    font-family: var(--font-display);
+    font-size: 21px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    color: var(--honey);
+}
+
+.sign-gloss {
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-style: italic;
+    color: var(--pale);
+}
+
+/* The signs in the list: words, then gloss, on one line. */
+.signs-title {
+    margin: 12px 0 4px;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 17px;
+    letter-spacing: 0.08em;
+    color: var(--bone);
+}
+
+.signs-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.sign-link {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0 0.6em;
+    padding: 1px 0;
+    color: inherit;
+    text-align: left;
+    background: none;
+    border: 0;
+    cursor: pointer;
+}
+
+.sign-link .sign-words {
+    font-size: 18px;
+}
+
+.sign-link:hover .sign-words,
+.sign-link:focus-visible .sign-words {
+    color: var(--ivory);
+}
+
+/* Top right: the sound switch, and the way back to the whole city. */
+.controls {
+    position: fixed;
+    top: max(12px, env(safe-area-inset-top));
+    right: max(18px, env(safe-area-inset-right));
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+}
+
+.control {
+    padding: 2px 6px;
+    font-family: var(--font-display);
+    font-size: 17px;
+    letter-spacing: 0.08em;
+    color: var(--amber);
+    background: none;
+    border: 0;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    text-shadow: 0 0 3px rgba(4, 3, 8, 1), 0 0 8px rgba(4, 3, 8, 0.9), 0 0 2px rgba(4, 3, 8, 1);
+    cursor: pointer;
+}
+
+.control:hover,
+.control:focus-visible {
+    color: var(--honey);
+}
+
+.control[hidden] {
+    display: none;
+}
+
+.control[aria-pressed="true"] {
+    color: var(--honey);
+}
+
+/* One option at the top of the screen (a trial: main.js), in Elm's words: "zoom out", "zoom out", "leave". */
+.one-button {
+    position: fixed;
+    top: max(12px, env(safe-area-inset-top));
+    left: 50%;
+    z-index: 50;
+    transform: translateX(-50%);
+    padding: 4px 14px;
+    font-family: var(--font-display);
+    font-size: 19px;
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+    color: var(--amber);
+    background: none;
+    border: 0;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.22em;
+    text-shadow: 0 0 3px rgba(4, 3, 8, 1), 0 0 8px rgba(4, 3, 8, 0.9), 0 0 2px rgba(4, 3, 8, 1);
+    cursor: pointer;
+}
+
+.one-button::before {
+    content: '';
+    position: absolute;
+    inset: -10px -24px;
+    z-index: -1;
+    background: radial-gradient(closest-side, rgba(4, 3, 8, 0.62), rgba(4, 3, 8, 0.4) 62%, transparent);
+    pointer-events: none;
+}
+
+.one-button:hover,
+.one-button:focus-visible {
+    color: var(--honey);
+}
+
+.one-button[hidden] {
+    display: none;
+}
+
+/*
+ * Beside it, the hum's own symbol (the jetty sign's hummingbird, Elm's ask: "a button that's the symbol of the hum so
+ * you can recentre on the hum"): there whenever the camera isn't close on the hum, as quiet as the option beside it.
+ */
+.hum-button {
+    position: fixed;
+    top: max(7px, env(safe-area-inset-top));
+    left: calc(50% - 6.6em);
+    z-index: 50;
+    width: 44px;
+    height: 44px;
+    padding: 5px;
+    font-size: 19px;
+    color: var(--amber);
+    background: none;
+    border: 0;
+    cursor: pointer;
+}
+
+.hum-button::before {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    z-index: -1;
+    background: radial-gradient(closest-side, rgba(4, 3, 8, 0.62), rgba(4, 3, 8, 0.4) 62%, transparent);
+    pointer-events: none;
+}
+
+.hum-button svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+    filter: drop-shadow(0 0 2px rgba(4, 3, 8, 1));
+}
+
+.hum-button:hover,
+.hum-button:focus-visible {
+    color: var(--honey);
+}
+
+.hum-button[hidden] {
+    display: none;
+}
+
+/* Left for the choice again (main.js), the city's own options step away until it's come back to. */
+html[data-left] .one-button,
+html[data-left] .hum-button,
+html[data-left] .inventory-toggle {
+    display: none;
+}
+
+/*
+ * What a giver says (a trial: creatures.js), where a place's name would be: its word, in italics, as Elm wrote them
+ * (*squur*, *chirp*); Allison's line is longer, and wraps (allison.js).
+ */
+.point-label.is-speech {
+    font-style: italic;
+    letter-spacing: 0.04em;
+    white-space: normal;
+    width: max-content;
+    max-width: min(17em, calc(100vw - 40px));
+    text-align: center;
+}
+
+/*
+ * What's been gathered (with the givers, a trial: inventory.js): a small count high on the right, once there's
+ * something in it, as quiet as the one option; it opens the inventory. Won, it glows.
+ */
+.inventory-toggle {
+    position: fixed;
+    top: max(12px, env(safe-area-inset-top));
+    right: max(14px, env(safe-area-inset-right));
+    z-index: 50;
+    padding: 4px 6px;
+    font-family: var(--font-display);
+    font-size: 17px;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+    color: var(--bone);
+    background: none;
+    border: 0;
+    cursor: pointer;
+}
+
+.inventory-toggle::before {
+    content: '';
+    position: absolute;
+    inset: -8px -16px;
+    z-index: -1;
+    background: radial-gradient(closest-side, rgba(4, 3, 8, 0.6), rgba(4, 3, 8, 0.36) 62%, transparent);
+    pointer-events: none;
+}
+
+.inventory-toggle:hover,
+.inventory-toggle:focus-visible {
+    color: var(--honey);
+}
+
+.inventory-toggle.is-won {
+    color: var(--honey);
+    text-shadow: 0 0 12px rgba(240, 190, 90, 0.75);
+}
+
+.inventory-toggle[hidden] {
+    display: none;
+}
+
+.inventory-note {
+    margin: 10px 0 12px;
+    font-size: 16px;
+    color: var(--bone);
+}
+
+.inventory-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.inventory-list li {
+    margin: 0;
+    padding: 6px 0;
+    border-top: 1px solid rgba(160, 150, 170, 0.14);
+}
+
+.inventory-list li {
+    display: grid;
+    grid-template-columns: 1.9rem 1fr auto;
+    align-items: start;
+    gap: 0 0.7rem;
+}
+
+.inventory-list li.is-waiting {
+    font-family: var(--font-display);
+    font-size: 16px;
+    letter-spacing: 0.04em;
+    color: rgba(200, 190, 175, 0.55);
+}
+
+/* Each lost page's number, as the texts number it (read.html): a ring, filled with gold once it's found. */
+.inventory-number {
+    display: grid;
+    place-items: center;
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 50%;
+    border: 1px solid rgba(160, 80, 32, 0.8);
+    font-family: var(--font-display);
+    font-size: 14px;
+    color: var(--amber);
+}
+
+.inventory-list li.is-found .inventory-number {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: #0a0a0c;
+}
+
+.inventory-piece {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+    padding: 2px 0;
+    font: inherit;
+    text-align: left;
+    color: var(--silver);
+    background: none;
+    border: 0;
+    cursor: pointer;
+}
+
+.inventory-piece:hover,
+.inventory-piece:focus-visible {
+    color: var(--ivory);
+}
+
+.inventory-texts {
+    font-family: var(--font-display);
+    font-size: 14px;
+    letter-spacing: 0.05em;
+    color: var(--amber);
+    white-space: nowrap;
+}
+
+.inventory-waiting {
+    grid-column: 2 / -1;
+    padding-top: 0.15rem;
+}
+
+.inventory-words {
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 1.4;
+}
+
+.inventory-where {
+    font-family: var(--font-display);
+    font-size: 14px;
+    letter-spacing: 0.06em;
+    color: var(--bone);
+}
+
+/* (Won, it stands first, over the list, where the inventory opens.) */
+.inventory-win {
+    margin: 4px 0 16px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(217, 174, 95, 0.4);
+}
+
+.inventory-win[hidden] {
+    display: none;
+}
+
+.inventory-win-title {
+    margin: 0 0 6px;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 24px;
+    letter-spacing: 0.08em;
+    color: var(--honey);
+}
+
+.inventory-win p {
+    margin: 0 0 8px;
+}
+
+.inventory-status {
+    min-height: 1.4em;
+    font-size: 15px;
+    color: var(--bone);
+}
+
+/*
+ * With the one option (a trial), the rest stands aside: the corner's words go with the first screen (the card),
+ * the controls stay for keyboards (Tab brings them into view, as a skip link comes), and sound has a quiet corner
+ * of its own, low on the left.
+ */
+html[data-onebutton]:not([data-threshold="card"]) .plainly {
+    display: none;
+}
+
+html[data-onebutton] .controls:not(:focus-within) {
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+html[data-onebutton] .controls:not(:focus-within)::before {
+    display: none;
+}
+
+.control.sound-corner {
+    position: fixed;
+    left: max(14px, env(safe-area-inset-left));
+    bottom: max(10px, env(safe-area-inset-bottom));
+    z-index: 50;
+    font-size: 15px;
+    color: var(--bone);
+}
+
+.control.sound-corner:hover,
+.control.sound-corner:focus-visible,
+.control.sound-corner[aria-pressed="true"] {
+    color: var(--honey);
+}
+
+/*
+ * Out of the Intermaze, a choice of two sides (a trial: main.js), in Elm's words: "Explore - Win" on one side, "Stay -
+ * Read" on the other. Each side is the whole of its half of the screen: the city's warmth behind the first, the page's
+ * paler light behind the second, a gold hairline between them. (On a screen held upright they stand one above the
+ * other.)
+ */
+.choice {
+    position: fixed;
+    inset: 0;
+    z-index: 47;
+    display: flex;
+    background: #040305;
+    opacity: 0;
+    transition: opacity 0.9s ease;
+}
+
+.choice.is-shown {
+    opacity: 1;
+}
+
+.choice.is-leaving {
+    pointer-events: none;
+}
+
+.choice[hidden] {
+    display: none;
+}
+
+/* The choice first (a trial): it's the page's first paint, before any script, and the card waits (main.js takes the
+ * choice over from here; "Explore - Win" fades it, the Mega-Screen's card beneath it). */
+html[data-choosing] .threshold {
+    display: none;
+}
+
+html[data-choosing] .choice {
+    display: flex;
+    opacity: 1;
+    transition: none;
+}
+
+.choice-side {
+    position: relative;
+    flex: 1 1 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 24px;
+    font: inherit;
+    color: var(--ivory);
+    text-decoration: none;
+    border: 0;
+    cursor: pointer;
+    transition: background 0.6s ease;
+}
+
+.choice-explore {
+    background: radial-gradient(ellipse 80% 70% at 50% 58%, rgba(216, 152, 64, 0.16), transparent 70%);
+}
+
+.choice-explore:hover,
+.choice-explore:focus-visible {
+    background: radial-gradient(ellipse 80% 70% at 50% 58%, rgba(216, 152, 64, 0.3), transparent 72%);
+}
+
+.choice-read {
+    background: radial-gradient(ellipse 80% 70% at 50% 58%, rgba(200, 200, 208, 0.08), transparent 70%);
+}
+
+.choice-read:hover,
+.choice-read:focus-visible {
+    background: radial-gradient(ellipse 80% 70% at 50% 58%, rgba(200, 200, 208, 0.16), transparent 72%);
+}
+
+.choice-read::before {
+    content: '';
+    position: absolute;
+    top: 18%;
+    bottom: 18%;
+    left: 0;
+    width: 1px;
+    background: linear-gradient(transparent, rgba(216, 152, 64, 0.55), transparent);
+}
+
+.choice-words {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(30px, 5.4vw, 68px);
+    line-height: 1.15;
+    letter-spacing: 0.06em;
+    text-align: center;
+    color: #f1e6cf;
+    text-shadow: 0 0 18px rgba(216, 152, 64, 0.35);
+}
+
+.choice-read .choice-words {
+    color: #e6e6ee;
+    text-shadow: 0 0 18px rgba(200, 200, 230, 0.25);
+}
+
+.choice-side:focus-visible {
+    outline: none;
+}
+
+.choice-side:focus-visible .choice-words {
+    outline: 1px solid var(--honey);
+    outline-offset: 10px;
+}
+
+@media (max-aspect-ratio: 4/5) {
+    .choice {
+        flex-direction: column;
+    }
+
+    .choice-read::before {
+        top: 0;
+        bottom: auto;
+        left: 18%;
+        right: 18%;
+        width: auto;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(216, 152, 64, 0.55), transparent);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .choice,
+    .choice-side {
+        transition: none;
+    }
+}
+
+/*
+ * Walking as the shadow (walk.js): where a thumb comes down and drags, a soft
+ * ring appears under it, and a knob that follows it, as in Messenger. The ring
+ * is placed by its centre (translate); it never takes a pointer itself.
+ */
+.walk-stick {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 40;
+    width: 116px;
+    height: 116px;
+    margin: -58px 0 0 -58px;
+    border: 1px solid rgba(255, 236, 206, 0.34);
+    border-radius: 50%;
+    background: rgba(255, 236, 206, 0.08);
+    pointer-events: none;
+}
+
+.walk-stick[hidden] {
+    display: none;
+}
+
+.walk-stick-knob {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 46px;
+    height: 46px;
+    margin: -23px 0 0 -23px;
+    border-radius: 50%;
+    background: rgba(255, 236, 206, 0.42);
+    box-shadow: 0 0 10px rgba(5, 5, 6, 0.35);
+}
+
+/*
+ * The threshold. First the Mega-Screen: a dark screen in the red desert air,
+ * enormous upright letters rolling in from the right, a short step left with
+ * each flicker (the flicker stays gentle, under three a second). Then, above
+ * the flight, E's lines surface one at a time.
+ */
+.threshold {
+    position: fixed;
+    inset: 0;
+    z-index: 45;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background:
+        radial-gradient(ellipse 120% 60% at 50% 115%, rgba(150, 40, 24, 0.42), transparent 62%),
+        #040305;
+    transition: opacity 0.9s ease;
+}
+
+.threshold.is-leaving {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* The Mega-Screen as a still shot in the desert (a trial: megascreen.js): once its first frame is on the canvas
+ * beneath, the card lets it show through, keeping only its words. */
+.threshold.is-scene {
+    background: none;
+}
+
+.threshold.is-scene .mega-screen {
+    visibility: hidden;
+}
+
+.threshold.is-scene .threshold-prompt {
+    text-shadow: 0 0 14px rgba(24, 4, 4, 0.85), 0 0 3px rgba(24, 4, 4, 0.9);
+}
+
+.threshold[hidden] {
+    display: none;
+}
+
+/* Back within the same visit: no card, only the dark the city lifts out of (main.js takes it from there). */
+html[data-returning] .threshold {
+    display: none;
+}
+
+html[data-returning] .veil {
+    opacity: 1;
+    transition: none;
+}
+
+.mega-screen {
+    position: relative;
+    height: min(64vh, 76vw);
+    overflow: hidden;
+    background: rgba(10, 10, 14, 0.94);
+    border-block: 1px solid rgba(200, 200, 208, 0.1);
+}
+
+.mega-screen::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0 2px, transparent 2px 5px);
+    pointer-events: none;
+}
+
+.mega-track {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    display: flex;
+    gap: 0.1em;
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: min(54vh, 64vw);
+    line-height: 1;
+    white-space: nowrap;
+    color: #eaedf7;
+    text-shadow: 0 0 0.05em rgba(200, 220, 255, 0.55);
+    transform: translate(100vw, -50%);
+    animation: mega-roll 24s steps(96) infinite, mega-flicker 0.42s steps(2) infinite;
+}
+
+.mega-gap {
+    width: 0.45em;
+}
+
+@keyframes mega-roll {
+    from { transform: translate(100vw, -50%); }
+    to { transform: translate(-100%, -50%); }
+}
+
+@keyframes mega-flicker {
+    0% { opacity: 1; }
+    50% { opacity: 0.84; }
+}
+
+.threshold-begin {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 0 24px max(11vh, 60px);
+    color: inherit;
+    background: none;
+    border: 0;
+    cursor: pointer;
+}
+
+.threshold-begin:focus-visible {
+    outline: none;
+}
+
+.threshold-prompt {
+    font-family: var(--font-display);
+    font-size: 24px;
+    letter-spacing: 0.08em;
+    color: #d4dbec;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+}
+
+/* The prompt shows once its own words have arrived, so no stand-in flashes first. */
+.threshold-prompt.is-ready {
+    opacity: 1;
+}
+
+.threshold-begin:focus-visible .threshold-prompt {
+    outline: 1px solid var(--honey);
+    outline-offset: 8px;
+}
+
+.threshold-voice {
+    position: fixed;
+    left: 50%;
+    bottom: 20vh;
+    z-index: 46;
+    width: min(30em, calc(100vw - 48px));
+    margin: 0;
+    padding: 0.7em 1.4em;
+    transform: translateX(-50%);
+    font-family: var(--font-display);
+    font-size: clamp(21px, 3.2vw, 30px);
+    font-weight: 500;
+    line-height: 1.35;
+    text-align: center;
+    text-wrap: balance;
+    color: #f4f5fb;
+    text-shadow: 0 0 10px rgba(3, 2, 6, 0.95), 0 0 2px rgba(3, 2, 6, 1);
+    /* A pool of shade under each line, so it reads over the brightest gate. */
+    background: radial-gradient(closest-side, rgba(4, 3, 8, 0.72), rgba(4, 3, 8, 0.5) 55%, transparent);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.threshold-voice.is-speaking {
+    animation: voice 1.3s ease both;
+}
+
+/* Quick to arrive and to go, so each line holds at full strength for most of its time. */
+@keyframes voice {
+    0% { opacity: 0; }
+    12% { opacity: 1; }
+    88% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+/* A dark veil the city lifts out of, after the flight. */
+.veil {
+    position: fixed;
+    inset: 0;
+    z-index: 44;
+    background: #000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1.2s ease;
+}
+
+.veil.is-dark {
+    opacity: 1;
+    transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mega-track {
+        left: 50%;
+        font-size: min(22vh, 11vw);
+        transform: translate(-50%, -50%);
+        animation: none;
+    }
+
+    .threshold-voice.is-speaking {
+        animation: none;
+        opacity: 1;
+    }
+}
+
+/* The reader: the only place long text appears. */
+.reader {
+    width: min(34em, calc(100vw - 32px));
+    max-height: min(82vh, 46em);
+    padding: 0;
+    color: var(--silver);
+    background: rgba(10, 9, 14, 0.95);
+    border: 1px solid var(--stone);
+    box-shadow: 0 0 60px rgba(0, 0, 0, 0.6);
+}
+
+.reader::backdrop {
+    background: rgba(5, 5, 6, 0.35);
+}
+
+.reader-body {
+    padding: 20px 26px 24px;
+}
+
+.reader-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1em;
+}
+
+.reader-place {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 26px;
+    letter-spacing: 0.04em;
+    color: var(--honey);
+}
+
+.reader-close {
+    padding: 2px 8px;
+    font-size: 30px;
+    line-height: 1;
+    color: var(--bone);
+    background: none;
+    border: 0;
+    cursor: pointer;
+}
+
+.reader-close:hover,
+.reader-close:focus-visible {
+    color: var(--ivory);
+}
+
+.reader-text {
+    margin: 14px 0 16px;
+    font-size: 21px;
+    line-height: 1.6;
+    color: var(--ivory);
+    white-space: pre-line;
+}
+
+.reader-text:focus {
+    outline: none;
+}
+
+.reader-text p {
+    margin: 0 0 0.8em;
+}
+
+.reader-source {
+    margin: 0 0 6px;
+    font-size: 16px;
+    color: var(--bone);
+}
+
+.reader-read-on {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 19px;
+    letter-spacing: 0.06em;
+}
+
+.reader-also-title {
+    margin: 18px 0 4px;
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 16px;
+    letter-spacing: 0.1em;
+    color: var(--bone);
+}
+
+.reader-also ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* The thread on: the nearest place not yet read, and a quiet count of how many are. */
+.reader-onward {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 6px 1.2em;
+    margin: 20px 0 0;
+    padding-top: 12px;
+    border-top: 1px solid rgba(160, 150, 170, 0.18);
+}
+
+.reader-onward[hidden] {
+    display: none;
+}
+
+.reader-on {
+    padding: 2px 0;
+    font-family: var(--font-display);
+    font-size: 19px;
+    letter-spacing: 0.06em;
+    color: var(--amber);
+    background: none;
+    border: 0;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    cursor: pointer;
+}
+
+.reader-on:hover,
+.reader-on:focus-visible {
+    color: var(--honey);
+}
+
+.reader-on[hidden] {
+    display: none;
+}
+
+.reader-count {
+    font-family: var(--font-display);
+    font-size: 15px;
+    letter-spacing: 0.08em;
+    color: var(--bone);
+}
+
+@media (max-width: 600px) {
+    .reader {
+        width: 100vw;
+        max-width: 100vw;
+        max-height: 74vh;
+        margin: auto 0 0;
+        border-width: 1px 0 0;
+    }
+
+    .reader-text {
+        font-size: 19px;
+    }
+}
+
+.debug-readout {
+    position: fixed;
+    right: 10px;
+    bottom: 10px;
+    z-index: 60;
+    padding: 3px 8px;
+    font: 12px/1.4 ui-monospace, Menlo, Consolas, monospace;
+    color: var(--honey);
+    background: rgba(5, 5, 6, 0.7);
+    pointer-events: none;
+}
+
+.noscript {
+    position: fixed;
+    inset: auto 0 40% 0;
+    max-width: 32em;
+    margin: 0 auto;
+    padding: 0 24px;
+    text-align: center;
+    color: var(--silver);
 }

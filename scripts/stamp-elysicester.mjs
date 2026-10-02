@@ -4,8 +4,8 @@
  * Browsers may keep the city's scripts and styles for hours (the site's zone
  * lets them keep JS and CSS for four), so a returning visitor could meet an
  * older city, or a mix of two versions of it. So the page loads its code
- * through elysicester/v/<stamp>/…, which _redirects serves from elysicester/
- * itself. Everything else it loads is found relative to main.js, so it
+ * through v/<stamp>/…, which _redirects serves from the site's root (the
+ * city is the front door). Everything else it loads is found relative to main.js, so it
  * follows. The stamp is a hash of that code (line endings evened out, so
  * Windows and CI agree), so it changes exactly when the code does. The
  * vendored three.js keeps its plain address: it is pinned, and stays put.
@@ -30,8 +30,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 // =============================================================================
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
-const DIORAMA_DIR = 'elysicester';
-const PAGE = `${DIORAMA_DIR}/index.html`;
+const PAGE = 'index.html';
 /** What the page loads through its stamped address: the code, its styles, and all they fetch. */
 const STAMPED = ['main.js', 'style.css', 'modules', 'data', 'assets'];
 const TEXT_FILE = /\.(?:html|css|js|mjs|json|txt|svg)$/i;
@@ -63,7 +62,7 @@ async function filesUnder(relativePath) {
 /** The stamp the diorama's code has now: ten hex digits of a SHA-256 over every stamped file. */
 export async function currentStamp() {
     const files = [];
-    for (const entry of STAMPED) files.push(...await filesUnder(`${DIORAMA_DIR}/${entry}`));
+    for (const entry of STAMPED) files.push(...await filesUnder(entry));
     files.sort();
     const hash = createHash('sha256');
     for (const file of files) {

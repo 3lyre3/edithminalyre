@@ -4,7 +4,6 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "index:rebuild": "node scripts/rebuild-index-views.mjs",
     "check:site": "node scripts/check-site.mjs",
     "check:html": "html-validate \"**/*.html\"",
     "check:elysicester": "node scripts/check-elysicester.mjs",

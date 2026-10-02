@@ -62,7 +62,7 @@ const TOUCH_PAUSE = 450;
 
 /** Allison's bio (a trial: allison.js), as a passage the city holds: read from the site's own bio page. */
 const BIO_ID = 'allison-bio';
-const BIO_PAGE = '../bio.html';
+const BIO_PAGE = 'bio.html';
 
 /** The hint (a trial, trials.js): once no more than this many passages are left unread, the count says where. */
 const HINT_FEW = 3;
@@ -210,7 +210,7 @@ function wireOneButton(stage) {
         } else if (trialOn('choice')) {
             leaveForChoice(stage);
         } else {
-            window.location.href = TEXT_PAGE;
+            window.open(TEXT_PAGE, '_blank', 'noopener');
         }
     });
     return one;
@@ -243,12 +243,15 @@ function wireHumButton(stage) {
 
 /**
  * Leave (the one option's last step): the choice again, over the city, which rests behind it. "Explore - Win" comes
- * back into the city just where it was left (the card and the Intermaze were the way in); "Stay - Read" goes to the
- * texts, as it always did.
+ * back into the city just where it was left (the card and the Intermaze were the way in); "Stay - Read" opens the
+ * texts in a new tab, so the city stays where it was left (Elm: "links that make new tabs for ... stuff that takes us
+ * out of the game").
  */
 function leaveForChoice(stage) {
     const choice = byId('choice');
     const explore = byId('choice-explore');
+    const read = byId('choice-read');
+    if (read) Object.assign(read, { target: '_blank', rel: 'noopener' });
     root.dataset.left = '';
     choice.hidden = false;
     choice.inert = false;

@@ -27,12 +27,10 @@ async function walk(directory) {
 const files = await walk(root);
 const relativeFiles = files.map((file) => path.relative(root, file).split(path.sep).join('/'));
 const fileSet = new Set(relativeFiles);
-const intentionalMissingLinks = new Set([
-    'index.html:xma-explained.html',
-]);
-// Elysicester opens a passage named in its address (#read-<passage id>: elysicester/main.js), so those name its
-// passages, not ids on its page (its texts, elysicester/read.html, link each lost page back to the city so).
-const cityPassages = new Set(JSON.parse(await readFile(path.join(root, 'elysicester', 'data', 'fragments.json'), 'utf8'))
+const intentionalMissingLinks = new Set();
+// Elysicester, at the front door, opens a passage named in its address (#read-<passage id>: main.js), so those name
+// its passages, not ids on its page (its texts, read.html, link each lost page back to the city so).
+const cityPassages = new Set(JSON.parse(await readFile(path.join(root, 'data', 'fragments.json'), 'utf8'))
     .fragments.map((fragment) => `read-${fragment.id}`));
 const htmlFiles = relativeFiles.filter((file) => file.endsWith('.html'));
 const cssFiles = relativeFiles.filter((file) => file.endsWith('.css'));
@@ -122,7 +120,7 @@ function checkReference(fromFile, rawReference) {
         }
         return;
     }
-    if (resolved.target === 'elysicester/index.html' && cityPassages.has(resolved.fragment)) return;
+    if (resolved.target === 'index.html' && cityPassages.has(resolved.fragment)) return;
     if (resolved.fragment && resolved.target.endsWith('.html')) {
         const targetIds = idsByFile.get(resolved.target);
         if (targetIds && !targetIds.has(resolved.fragment)) {
@@ -133,7 +131,8 @@ function checkReference(fromFile, rawReference) {
 
 for (const htmlFile of htmlFiles) {
     const html = await textFor(htmlFile);
-    if (!['404.html', 'secret_s3cret_secr3t/index.html', 'elysicester/index.html'].includes(htmlFile)) {
+    // (The 404 and the city carry their own chrome; every page of text wears the site's.)
+    if (!['404.html', 'index.html'].includes(htmlFile)) {
         if (!/<script\s+src=(['"])(?:\.\.\/)?site\.js\1><\/script>/.test(html)) {
             errors.push(`${htmlFile}: shared site.js is missing`);
         }
@@ -160,47 +159,14 @@ for (const jsonFile of relativeFiles.filter((file) => file.endsWith('.json') || 
     }
 }
 
-for (const xmlFile of ['feed.xml', 'sitemap.xml']) {
-    const xml = await textFor(xmlFile);
-    if (!xml.startsWith('<?xml') || !xml.trimEnd().endsWith(xmlFile === 'feed.xml' ? '</rss>' : '</urlset>')) {
-        errors.push(`${xmlFile}: incomplete XML document`);
-    }
-    for (const match of xml.matchAll(/https:\/\/edithminalyre\.com(?:\/[^<\s"']*)?/g)) {
-        checkReference(xmlFile, match[0]);
-    }
+const sitemap = await textFor('sitemap.xml');
+if (!sitemap.startsWith('<?xml') || !sitemap.trimEnd().endsWith('</urlset>')) errors.push('sitemap.xml: incomplete XML document');
+for (const match of sitemap.matchAll(/https:\/\/edithminalyre\.com(?:\/[^<\s"']*)?/g)) checkReference('sitemap.xml', match[0]);
+// (Every page of the site is listed, but the 404, which asks not to be indexed.)
+for (const htmlFile of htmlFiles.filter((file) => file !== '404.html')) {
+    const address = `https://edithminalyre.com/${htmlFile.replace(/(^|\/)index\.html$/, '$1')}`;
+    if (!sitemap.includes(`<loc>${address}</loc>`)) errors.push(`sitemap.xml: doesn't list ${address}`);
 }
-
-function groupBy(works, property, fallback) {
-    const groups = {};
-    for (const work of works) {
-        const values = Array.isArray(work[property])
-            ? work[property]
-            : [work[property] ?? fallback];
-        for (const value of values) {
-            if (value === undefined) continue;
-            (groups[value] ??= []).push(work.id);
-        }
-    }
-    return groups;
-}
-
-const index = JSON.parse(await textFor('index.json'));
-const workIds = index.works.map((work) => work.id);
-if (new Set(workIds).size !== workIds.length) errors.push('index.json: work IDs must be unique');
-for (const work of index.works) checkReference('index.json', work.url);
-
-const expectedViews = {
-    works_by_type: groupBy(index.works, 'type'),
-    works_by_subtype: groupBy(index.works, 'subtype'),
-    works_by_publication_context: groupBy(index.works, 'published_in'),
-    works_by_year: groupBy(index.works, 'year', 'undated'),
-    tag_index: groupBy(index.works, 'tags'),
-};
-if (JSON.stringify(index.machine_views) !== JSON.stringify(expectedViews)) {
-    errors.push('index.json: machine_views are stale; run npm run index:rebuild');
-}
-
-if (!fileSet.has('agents.txt')) errors.push('agents.txt: expected site artifact is missing');
 
 for (const stalePath of [
     'well-known/ara/digest.md',
@@ -216,5 +182,5 @@ if (errors.length > 0) {
     for (const error of errors) console.error(`- ${error}`);
     process.exitCode = 1;
 } else {
-    console.log(`Site check passed: ${htmlFiles.length} HTML pages, ${checkedReferences} local references, ${index.works.length} indexed works.`);
+    console.log(`Site check passed: ${htmlFiles.length} HTML pages, ${checkedReferences} local references.`);
 }
