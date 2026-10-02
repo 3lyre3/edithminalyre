@@ -247,9 +247,14 @@ async function checkFragments(fragments, placeIds) {
         return;
     }
     uniqueIds(fragments.fragments, label);
+    // (A passage on trial names its trial, one trials.js knows: a name it doesn't know is never off, so ?<name>=off
+    // couldn't take the passage away.)
+    const trialsSource = await readFile(path.join(ROOT, 'modules/trials.js'), 'utf8').catch(() => '');
+    const trials = new Set([...(trialsSource.match(/export const TRIALS = Object\.freeze\(\[([^\]]*)\]\)/)?.[1] ?? '').matchAll(/'([a-z]+)'/g)].map((match) => match[1]));
     for (const fragment of fragments.fragments) {
         const where = `${label} ${fragment.id}`;
         if (!placeIds.has(fragment.place)) fail(`${where}: unknown place ${JSON.stringify(fragment.place)}`);
+        if (fragment.trial !== undefined && !trials.has(fragment.trial)) fail(`${where}: trial ${JSON.stringify(fragment.trial)} isn't one trials.js knows`);
         if (!FRAGMENT_WORKS.has(fragment.work)) fail(`${where}: work must be "nbp" or "po"`);
         if (typeof fragment.source !== 'string' || !fragment.source.trim()) fail(`${where}: needs a source`);
         if (typeof fragment.text !== 'string' || !fragment.text.trim()) {
@@ -465,6 +470,21 @@ async function checkTexts(fragmentsData, placeIds, placesData) {
     if (creatures.allison && (!placeIds.has(creatures.allison.place) || !isVector(creatures.allison.at))) {
         fail(`${creaturesPath}: Allison needs a real place and an "at" of three numbers`);
     }
+    // The pugs' boards: each picture one the painter knows, and no more of them than its atlas holds (one picture to a
+    // motif: creatures.js; past that, a board was drawn from the atlas's edge, its lower half missing).
+    const painter = await readFile(path.join(ROOT, 'modules/creatures.js'), 'utf8').catch(() => '');
+    const atlas = Number(painter.match(/const BOARD_ATLAS = (\d+);/)?.[1]);
+    const cell = painter.match(/const BOARD_CELL = \[(\d+), (\d+)\];/)?.slice(1).map(Number);
+    const motifsAt = painter.indexOf('const MOTIFS = {');
+    const known = new Set(motifsAt < 0 ? [] : [...painter.slice(motifsAt, painter.indexOf('\n};', motifsAt)).matchAll(/^ {4}([a-z]+): \[/gm)].map((match) => match[1]));
+    const motifs = new Set((creatures.creatures ?? []).filter((creature) => creature.kind === 'pug').map((pug) => pug.board ?? 'star'));
+    if (!atlas || !cell || !known.size) {
+        fail('modules/creatures.js: the boards\' atlas (BOARD_ATLAS, BOARD_CELL) or their motifs (MOTIFS) weren\'t found');
+    } else {
+        const room = Math.floor(atlas / (2 * cell[0])) * Math.floor(atlas / cell[1]);
+        for (const motif of motifs) if (!known.has(motif)) fail(`${creaturesPath}: a pug's board shows ${JSON.stringify(motif)}, which isn't a motif creatures.js paints`);
+        if (motifs.size > room) fail(`${creaturesPath}: the pugs' boards show ${motifs.size} pictures, more than the atlas's ${room}`);
+    }
     // President Oedipus's flowers (a trial, plants): one for each of the five parts the essay divides itself into,
     // each part a lost page whole (the city reads them from the essay's page, so they're checked against it here).
     const parts = await checkFlowers(placeIds);
@@ -496,6 +516,45 @@ async function checkTexts(fragmentsData, placeIds, placesData) {
             .map((match) => match[1])
             .join('');
         if (bare(held) !== bare(part ?? fragment.text)) fail(`${textsPath}: lost page ${id} doesn't hold its ${part === undefined ? 'passage' : 'part of the essay'} word for word (rebuild the texts from the essays)`);
+    }
+
+    // Numbers by Paint's lost pages are its stretches (the mission's build_reading_room.py): their chips in the lost
+    // pages' order, the first where the thesis's text begins, none among the deleted scenes after it, each passage
+    // within its own stretch, and a stretch beginning in each of its sections: every word of the thesis in exactly
+    // one lost page, and a giver for every section (Elm: "things that bridge to every section of those texts").
+    const article = texts.indexOf('<article class="room-work" id="numbers-by-paint"');
+    const nbpLost = lost.filter((id) => byId.get(id)?.work === 'nbp');
+    if (article < 0) {
+        fail(`${textsPath}: Numbers by Paint's article wasn't found`);
+    } else if (nbpLost.length) {
+        const work = texts.slice(article);
+        const bodyAt = work.indexOf('<div class="work-body">') + '<div class="work-body">'.length;
+        const chipAt = nbpLost.map((id) => work.indexOf(`id="lost-${id}"`));
+        if (chipAt.some((at, index) => at < 0 || (index > 0 && at <= chipAt[index - 1]))) {
+            fail(`${textsPath}: Numbers by Paint's lost pages' chips aren't each there once, in their order (rebuild the texts)`);
+        } else {
+            const ahead = bare(work.slice(bodyAt, work.lastIndexOf('<a', chipAt[0])));
+            if (ahead) fail(`${textsPath}: Numbers by Paint's first lost page doesn't begin where its text does ("${ahead.slice(0, 40)}" comes first)`);
+            const deleted = work.indexOf('id="deleted-scenes"');
+            const end = deleted >= 0 ? deleted : work.length;
+            if (chipAt.at(-1) > end) fail(`${textsPath}: a lost page begins among the deleted scenes`);
+            nbpLost.forEach((id, index) => {
+                const held = work.search(new RegExp(`<mark class="lost" data-lost="${id}">`));
+                const next = index + 1 < chipAt.length ? chipAt[index + 1] : end;
+                if (!(held > chipAt[index] && held < next)) fail(`${textsPath}: lost page ${id}'s passage isn't within its own stretch`);
+            });
+            const SECTIONS = ['introduction', 'the-surface-of-myth', 'agamemnon', 'episode-2', 'episode-3', 'episode-4', 'episode-5', 'episode-6', 'fictoanalysis'];
+            const sectionAt = SECTIONS.map((name) => work.search(new RegExp(`<h[23][^>]*\\bid="${name}"`)));
+            SECTIONS.forEach((name, index) => {
+                if (sectionAt[index] < 0) {
+                    fail(`${textsPath}: Numbers by Paint's section #${name} wasn't found`);
+                    return;
+                }
+                const from = index === 0 ? bodyAt : sectionAt[index];
+                const to = index + 1 < SECTIONS.length ? sectionAt[index + 1] : end;
+                if (!chipAt.some((at) => at >= from && at < to)) fail(`${textsPath}: no lost page begins in Numbers by Paint's ${name} (a giver for every section)`);
+            });
+        }
     }
 }
 

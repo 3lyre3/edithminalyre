@@ -103,6 +103,14 @@ const RIM = 0.07;
  * times their own reach), thinning out in grains toward it: what's seen through an opening, and nothing far from one.
  */
 const INSIDE_REACH = 2.0;
+/**
+ * And they're drawn a hair behind wherever they lie: an inside shares its planes with what it stands on and what it
+ * stands against (a wall's floor is the paving's top; its far side, a neighbour's face), and the two flickered black
+ * and back as the eye moved, a phone's depth too coarse to part them (Elm's clips, 2 Oct: "z-fighting, flickering
+ * surfaces"). Pushed back this far in depth (a share of the depth range: a few millimetres at a few metres, a few
+ * centimetres at twenty), the surface that's really there is always the one seen; nothing else moves on the screen.
+ */
+const INSIDE_BEHIND = 1e-4;
 /** Nothing lingers on the lens itself: the dust is whole only this far out from it (world units). */
 const LINGER_LENS = [0.3, 1.0];
 /** The lingering dust is drawn only where it can be: the city in squares this wide, those near an opening. */
@@ -340,6 +348,8 @@ export function createDust({ reducedMotion, inside = false }) {
         dustSight: { value: new Vector4(0, 0, 0, 0) },
         dustTargets: { value: Array.from({ length: DUST_TARGETS }, () => new Vector4(0, 0, 0, -1)) },
         dustTime: { value: 0 },
+        // (1 while the insides are drawn: showInsides.)
+        dustInsides: { value: 0 },
     };
     /** The squares of lingering dust (linger), and what cull reckons with. */
     const lingering = [];
@@ -385,11 +395,21 @@ export function createDust({ reducedMotion, inside = false }) {
                 material.userData.dustInside = true;
                 insides.push(material);
             }
-            alsoBeforeCompile(material, 'dust', (shader) => {
+            // (Named apart, so a material with insides never shares a compiled program with one without.)
+            alsoBeforeCompile(material, blackInside ? 'dust-inside' : 'dust', (shader) => {
                 Object.assign(shader.uniforms, uniforms);
                 shader.vertexShader = shader.vertexShader
-                    .replace('#include <common>', '#include <common>\nvarying vec3 vDustWorld;\nvarying float vDustUp;')
+                    .replace('#include <common>', `#include <common>\nvarying vec3 vDustWorld;\nvarying float vDustUp;${blackInside ? '\nuniform float dustInsides;' : ''}`)
                     .replace('#include <begin_vertex>', '#include <begin_vertex>\nvDustWorld = (modelMatrix * vec4(transformed, 1.0)).xyz;\nvDustUp = normalize(mat3(modelMatrix) * normal).y;');
+                // (An inside, a hair behind wherever it lies (INSIDE_BEHIND): a face turned away from the eye is
+                // pushed back in depth only, so it stays just where it was on the screen. Flat faces turn away whole;
+                // where a rounded one turns, a corner or two may go back by the hair, which nothing shows.)
+                if (blackInside) {
+                    shader.vertexShader = shader.vertexShader.replace('#include <fog_vertex>', [
+                        `if (dustInsides > 0.5 && dot(mat3(modelMatrix) * normal, cameraPosition - vDustWorld) < 0.0) gl_Position.z += ${INSIDE_BEHIND.toExponential(1)} * gl_Position.w;`,
+                        '#include <fog_vertex>',
+                    ].join('\n'));
+                }
                 shader.fragmentShader = shader.fragmentShader
                     .replace('#include <common>', `#include <common>\n${DUST_GLSL}\n${DUST_EDGE_GLSL}\n${GILD_GLSL}`)
                     // (Nothing is worked out for the grain where there's no dust at all, which is almost everywhere.)
@@ -523,6 +543,7 @@ export function createDust({ reducedMotion, inside = false }) {
         showInsides(on) {
             const side = on ? DoubleSide : FrontSide;
             for (const material of insides) material.side = side;
+            uniforms.dustInsides.value = on ? 1 : 0;
         },
 
         /** Every frame: the glitter's clock. */

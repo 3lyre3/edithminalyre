@@ -315,9 +315,13 @@ async function enter(page, context, pass, { begin, then = 'watch', shots = null,
         if (then === 'skip') {
             if (shots && voiceLines?.length > 1) await shotWhenSpoken(page, voiceLines[1], `${shots}-flight.png`);
             else await page.waitForTimeout(1500);
-            skipAt = await page.evaluate(() => performance.now());
-            if (pass.hasTouch) await touch(context, page, [{ x: width / 2, y: height / 2 }]);
-            else await page.keyboard.press('Escape');
+            // (Only while it's still flying: on a slow machine it may have landed already, and a tap then lands in
+            // the city instead, taking the focus with it.)
+            skipAt = await page.evaluate(() => (document.documentElement.dataset.threshold === 'flight' ? performance.now() : null));
+            if (skipAt !== null) {
+                if (pass.hasTouch) await touch(context, page, [{ x: width / 2, y: height / 2 }]);
+                else await page.keyboard.press('Escape');
+            }
         } else if (shots && voiceLines) {
             const chosen = [1, 2, voiceLines.length - 1].filter((index, at, all) => index < voiceLines.length && all.indexOf(index) === at);
             for (const [number, index] of chosen.entries()) {
@@ -379,7 +383,9 @@ async function enter(page, context, pass, { begin, then = 'watch', shots = null,
         if (after.passage?.skipped) problems.push('the flight was skipped by itself');
         if (lines !== null && after.passage?.linesShown !== lines) problems.push(`${after.passage?.linesShown} of ${lines} lines surfaced`);
     }
-    if (then === 'skip' && pass.expect === 'flight') {
+    // (If it landed before the skip could be sent, there was nothing to skip: noted, not a problem.)
+    result.landedBeforeSkip = then === 'skip' && pass.expect === 'flight' && skipAt === null;
+    if (then === 'skip' && pass.expect === 'flight' && skipAt !== null) {
         if (!after.passage?.skipped) problems.push('the skip was not heard');
         if (result.skipToLanded === null || result.skipToLanded > 2500) problems.push(`skip took ${result.skipToLanded} ms to land`);
     }
@@ -1078,7 +1084,36 @@ async function creaturesRound(chromium, pass, outDir, name) {
             const id = /^read\.html#(lost-[a-z0-9-]+)$/.exec(href)?.[1];
             if (!id || !texts.includes(`id="${id}"`)) problems.push(`the inventory's ${JSON.stringify(href)} leads nowhere in the texts`);
         }
-        await page.keyboard.press('Escape');
+        // A found page of Numbers by Paint, read again from the inventory, is read whole (a trial, whole): its stretch
+        // of the thesis, from the texts, its own passage within it.
+        const wholeAt = await page.evaluate(() => [...document.querySelectorAll('[data-inventory-list] > li.is-found .inventory-piece')]
+            .findIndex((button) => button.querySelector('.inventory-where')?.textContent.includes('Numbers by Paint')));
+        if (wholeAt < 0) {
+            problems.push('no found page of Numbers by Paint in the inventory to read whole');
+            await page.keyboard.press('Escape');
+        } else {
+            await page.locator('[data-inventory-list] > li.is-found .inventory-piece').nth(wholeAt).click();
+            await page.waitForFunction(() => document.getElementById('reader').open && document.querySelector('[data-reader-text]').classList.contains('is-whole'), null, { timeout: 15_000 }).catch(() => {});
+            result.whole = await page.evaluate(() => ({
+                open: document.getElementById('reader').open,
+                whole: document.querySelector('[data-reader-text]').classList.contains('is-whole'),
+                letters: document.querySelector('[data-reader-text]').textContent.replace(/\s+/g, '').length,
+                text: document.querySelector('[data-reader-text]').textContent.replace(/\s+/g, ' '),
+                source: document.querySelector('[data-reader-source]')?.textContent ?? '',
+            }));
+            await page.screenshot({ path: path.join(outDir, `${name}-whole.png`) });
+            // (The found pages, in the inventory's order: every lost page but the last, which waits.)
+            const wholeId = pieces.filter((id) => id !== last)[wholeAt];
+            const opening = (cityTexts.get(wholeId) ?? '').replace(/^…\s*/, '').split(/\s+/).slice(0, 5).join(' ');
+            if (!result.whole.whole) problems.push('a found page of Numbers by Paint did not read whole from the inventory');
+            else {
+                if (result.whole.letters < 1000) problems.push(`the whole lost page held only ${result.whole.letters} letters`);
+                if (!/its lost page whole \(thesis pp?\. \d+(–\d+)?\)/.test(result.whole.source)) problems.push(`the whole lost page's source read ${JSON.stringify(result.whole.source)}`);
+                if (opening && !result.whole.text.includes(opening.replace(/\s+/g, ' '))) problems.push(`the whole lost page didn't hold its passage ("${opening}")`);
+            }
+            delete result.whole.text;
+            await page.keyboard.press('Escape');
+        }
         await page.waitForTimeout(400);
         // Allison's bio, from the site's own page, in English. (From the reading points' list, as keys reach it: it
         // shows only while it holds the focus.)
@@ -1394,7 +1429,7 @@ try {
             const kept = result.persisted ? `dim after reload ${result.persisted.list}/${result.persisted.total}${result.persisted.points === null ? '' : ` (points ${result.persisted.points})`}` : '';
             const back = result.reentered ? (result.reentered.ok ? 'reload lands in the city' : 'RELOAD NOT OK') : '';
             const passage = result.threshold.passage;
-            const crossing = `threshold ${result.threshold.sequence}${passage?.frames ? ` (${passage.frames} frames, ${passage.linesShown} lines${passage.skipped ? `, skipped, landed ${result.threshold.skipToLanded} ms after skip` : ''})` : ''} ${result.threshold.ok ? 'ok' : 'NOT OK'}`;
+            const crossing = `threshold ${result.threshold.sequence}${passage?.frames ? ` (${passage.frames} frames, ${passage.linesShown} lines${passage.skipped ? `, skipped, landed ${result.threshold.skipToLanded} ms after skip` : ''}${result.threshold.landedBeforeSkip ? ', landed before the skip' : ''})` : ''} ${result.threshold.ok ? 'ok' : 'NOT OK'}`;
             const sound = result.sound ? `sound ${result.sound.ok ? 'ok' : 'NOT OK'}` : '';
             const navSerious = (result.signs?.navViolations ?? []).filter((violation) => SERIOUS.has(violation.impact)).length;
             const slowSigns = result.signs?.results.reduce((sum, entry) => sum + (entry.slowPresses ?? 0), 0) ?? 0;
@@ -1405,7 +1440,7 @@ try {
             const camera = result.camera ? `camera ${result.camera.ok ? `kept clear (closest ${Math.min(...result.camera.rows.map((row) => row.closest))})` : 'WENT INTO SOMETHING'}` : '';
             const dock = result.dock ? `dock ${result.dock.ok ? 'arrives perched on the Cyclolite by the signs, again on reload; zoom out, zoom out, leave to the choice and back; the hum recentres' : 'NOT OK'}` : '';
             const givers = result.creatures
-                ? `givers ${result.creatures.ok ? `${result.creatures.city.pugs} pugs, ${result.creatures.city.hums} hums, Allison; squur, chirp, his line, the bio; ${result.creatures.inventory.items} lost pages; won, written by hand (${result.creatures.written?.strokes ?? 0} strokes)` : 'NOT OK'}`
+                ? `givers ${result.creatures.ok ? `${result.creatures.city.pugs} pugs, ${result.creatures.city.hums} hums, Allison; squur, chirp, his line, the bio; ${result.creatures.inventory.items} lost pages${result.creatures.whole?.whole ? `, one read whole (${result.creatures.whole.letters} letters)` : ''}; won, written by hand (${result.creatures.written?.strokes ?? 0} strokes)` : 'NOT OK'}`
                 : '';
             const plants = result.plants
                 ? `flowers ${result.plants.ok ? 'a bud refused (the bloom named), five parts whole in their turn, each wilting as the next blooms' : 'NOT OK'}`

@@ -62,7 +62,8 @@ import {
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { blurGeometry, humGeometry } from './hum.js';
 import { birdMaterial, createSteam } from './hums.js';
-import { alsoBeforeCompile, paint, pose, taperedTube } from './kit.js';
+import { SEA_LEVEL, alsoBeforeCompile, paint, pose, rimRadius, rimRadiusGLSL, taperedTube, wallX } from './kit.js';
+import { SWELL_GLSL } from './sea.js';
 
 // =============================================================================
 // Constants
@@ -104,6 +105,8 @@ const FACE_WHITE = [0.875, 0.125];
  */
 const BOARD_ATLAS = 1024;
 const BOARD_CELL = [256, 160];
+/** How many pictures the atlas holds: each takes two cells side by side (as numbered, and as painted). */
+const BOARD_PICTURES = Math.floor(BOARD_ATLAS / (2 * BOARD_CELL[0])) * Math.floor(BOARD_ATLAS / BOARD_CELL[1]);
 const BOARD_LAYOUT = [256, 192];
 const BOARD_WHITE = [0.5, 0.03];
 /** The board's paints, by number (1 to 7); the numbers paint in in order. */
@@ -117,11 +120,22 @@ const PAINT_SECONDS = 2.6;
 /** The shades' atlas: cells 128 × 336, eight across, three down; each figure stands feet down in its cell. */
 const SHADE_ATLAS = 1024;
 const SHADE_CELL = [128, 336];
-/** A shade's length and breadth on the floor, by the one who'd cast it (the hums' are a little taller). */
-const SHADE_SIZE = { hum: [1.25, 0.5], pug: [1.05, 0.46] };
-/** How dark a shade lies (the colour the floor is multiplied toward), and how much. */
-const SHADE_TINT = new Color(0.3, 0.24, 0.42);
-const SHADE_DEPTH = 0.72;
+/**
+ * A shade's length and breadth on the floor, by the one who'd cast it (the hums' are a little taller): long, as the
+ * dusk's shadows are (Elm: "all the character shadows ... clearly visible").
+ */
+const SHADE_SIZE = { hum: [2.1, 0.8], pug: [1.9, 0.72] };
+/**
+ * How dark a shade lies (the colour the floor is multiplied toward), and how much: as dark and as violet as the
+ * walker's own shadow (walk.js: three quarters of the light gone, toward a near-black violet), which Elm's
+ * recordings show clear on any paving.
+ */
+const SHADE_TINT = new Color(0.22, 0.2, 0.3);
+const SHADE_DEPTH = 0.95;
+/** How far nearer the eye a shade is drawn (metres along its line of sight), over what lies a little above its floor. */
+const SHADE_PULL = 0.5;
+/** A hum's shade falls on a floor no further than this below it (else it has none: the underside's hang over nothing). */
+const SHADE_REACH = 6;
 
 /** The hums: how big (over hum.js's bird), and their bronzes (laid over the bird's own colours). */
 const HUM_SIZE = 1.5;
@@ -830,12 +844,29 @@ function shadeAtlas() {
 
 const shadeVertex = /* glsl */ `
     attribute float keep;
+    attribute float water;
+    uniform float pull;
+    uniform float time;
     varying vec2 vUv;
     varying float vKeep;
+    ${rimRadiusGLSL()}
+    ${SWELL_GLSL}
     void main() {
         vUv = uv;
         vKeep = keep;
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        vec3 at = position;
+        // (On the bay, it rides the swell, as the sea does: sea.js.)
+        if (water > 0.5) {
+            float sea;
+            vec2 slope;
+            seaSwell(at.xz, time, sea, slope);
+            at.y += sea;
+        }
+        vec4 view = modelViewMatrix * vec4(at, 1.0);
+        // Drawn a little nearer the eye along its own line of sight: the same place on screen, but over the paving,
+        // the platform's top or the deck's boards that lie a little above the floor it's laid on (the walk's).
+        view.xyz += normalize(-view.xyz) * min(pull, 0.25 * length(view.xyz));
+        gl_Position = projectionMatrix * view;
     }
 `;
 
@@ -868,6 +899,7 @@ function shadeStrip({ x, y, z, way, length, breadth, cell, floorAt }) {
     const positions = [];
     const uvs = [];
     const keeps = [];
+    const waters = [];
     const grid = [];
     for (let i = 0; i <= ALONG; i += 1) {
         const row = [];
@@ -879,11 +911,14 @@ function shadeStrip({ x, y, z, way, length, breadth, cell, floorAt }) {
             const along = -0.08 + t * length;
             const px = x + way.x * along + across.x * s * breadth;
             const pz = z + way.z * along + across.z * s * breadth;
-            const floor = floorAt ? floorAt(px, pz, last) : y;
+            let floor = floorAt ? floorAt(px, pz, last) : y;
+            // (No floor, but the bay: it lies on the water, riding the swell in the shader.)
+            const water = floor === null && onBay(px, pz);
+            if (water) floor = SEA_LEVEL;
             const lost = floor === null || Math.abs(floor - y) > 1.2;
             const py = (lost ? y : floor) + 0.018;
             last = lost ? last : floor;
-            row.push({ p: [px, py, pz], uv: [cell[0] + (s + 0.5) * cell[2], cell[1] + t * cell[3]], keep: lost ? 0 : 1 });
+            row.push({ p: [px, py, pz], uv: [cell[0] + (s + 0.5) * cell[2], cell[1] + t * cell[3]], keep: lost ? 0 : 1, water: water ? 1 : 0 });
         }
         grid.push(row);
     }
@@ -891,6 +926,7 @@ function shadeStrip({ x, y, z, way, length, breadth, cell, floorAt }) {
         positions.push(...vertex.p);
         uvs.push(...vertex.uv);
         keeps.push(vertex.keep);
+        waters.push(vertex.water);
     };
     for (let i = 0; i < ALONG; i += 1) {
         for (let j = 0; j < ACROSS; j += 1) {
@@ -908,7 +944,13 @@ function shadeStrip({ x, y, z, way, length, breadth, cell, floorAt }) {
     geometry.setAttribute('position', new Float32BufferAttribute(positions, 3));
     geometry.setAttribute('uv', new Float32BufferAttribute(uvs, 2));
     geometry.setAttribute('keep', new Float32BufferAttribute(keeps, 1));
+    geometry.setAttribute('water', new Float32BufferAttribute(waters, 1));
     return geometry;
+}
+
+/** Whether (x, z) is out on the bay: east of the sea-wall, within the island's rim (the sea's sheet: sea.js). */
+function onBay(x, z) {
+    return x > wallX(z) && Math.hypot(x, z) < rimRadius(Math.atan2(z, x));
 }
 
 // =============================================================================
@@ -1181,7 +1223,11 @@ export function createCreatures({ creatures, given, gradientMap, light, floorAt,
     pugMesh.geometry.setAttribute('aMotion', motionAttribute);
     const pugMatrices = pugs.map(() => new Matrix4());
 
-    const boards = boardAtlas(pugs.map((pug) => pug.board ?? 'star'));
+    // (One picture for each motif, however many pugs paint it: each board paints itself in on its own, in the shader.
+    // The atlas holds twelve, two to a row; one for each pug overran it once there were more than twelve pugs.)
+    const motifs = [...new Set(pugs.map((pug) => pug.board ?? 'star'))];
+    if (motifs.length > BOARD_PICTURES) throw new Error(`creatures.js: ${motifs.length} board motifs, room for ${BOARD_PICTURES}`);
+    const boards = boardAtlas(motifs);
     const boardMesh = new InstancedMesh(boardGeometry(), boardMaterial(gradientMap, boards.texture), Math.max(1, pugs.length));
     boardMesh.name = 'pug-boards';
     boardMesh.count = pugs.length;
@@ -1189,7 +1235,7 @@ export function createCreatures({ creatures, given, gradientMap, light, floorAt,
     const boardAt = new Float32Array(Math.max(1, pugs.length) * 2);
     const paintAt = new Float32Array(Math.max(1, pugs.length));
     pugs.forEach((pug, index) => {
-        boardAt.set(boardCell(index), index * 2);
+        boardAt.set(boardCell(motifs.indexOf(pug.board ?? 'star')), index * 2);
         paintAt[index] = given.has(pug.fragment) ? 1 : 0;
     });
     const boardAttribute = new InstancedBufferAttribute(new Float32Array(boardAt.length), 2);
@@ -1235,17 +1281,24 @@ export function createCreatures({ creatures, given, gradientMap, light, floorAt,
     const strips = creatures.filter((creature) => !creature.noShade).map((creature) => {
         const [x, y, z] = creature.at;
         const kind = creature.kind === 'pug' ? 'pug' : 'hum';
-        // The hums' shades lie on the floor beneath them (their spot's floor, given as `floor`, else straight down).
-        const ground = kind === 'pug' ? y : creature.floor ?? (floorAt?.(x, z, y - 1) ?? y - 1.2);
         const index = kind === 'pug' ? WRAITHS.length + ((creature.shade ?? bullBoy++) % BULL_BOYS.length) : (creature.shade ?? wraith++) % WRAITHS.length;
+        // The hums' shades lie on the floor beneath them (their spot's floor, given as `floor`, else straight down, or
+        // the bay's water), if there's one within reach below: a hum under the island hangs over nothing.
+        let ground = y;
+        if (kind === 'hum') {
+            ground = creature.floor ?? floorAt?.(x, z, y - 1) ?? (onBay(x, z) ? SEA_LEVEL : null);
+            if (ground === null || ground > y || y - ground > SHADE_REACH) return null;
+        }
         const [length, breadth] = SHADE_SIZE[kind];
         return shadeStrip({ x, y: ground, z, way, length, breadth, cell: shades.cell(index), floorAt });
-    });
+    }).filter(Boolean);
+    // (Drawn with the city's solid things, after them and before the givers, so a shade drawn nearer the eye than its
+    // floor (SHADE_PULL) lies over the paving it would be under, and never over the one who casts it.)
     const shadeMesh = new Mesh(mergeGeometries(strips, false), new ShaderMaterial({
-        uniforms: { map: { value: shades.texture }, tint: { value: SHADE_TINT }, depth: { value: SHADE_DEPTH } },
+        uniforms: { map: { value: shades.texture }, tint: { value: SHADE_TINT }, depth: { value: SHADE_DEPTH }, pull: { value: SHADE_PULL }, time: { value: 0 } },
         vertexShader: shadeVertex,
         fragmentShader: shadeFragment,
-        transparent: true,
+        transparent: false,
         depthWrite: false,
         blending: CustomBlending,
         blendSrc: DstColorFactor,
@@ -1256,6 +1309,7 @@ export function createCreatures({ creatures, given, gradientMap, light, floorAt,
     }));
     shadeMesh.name = 'giver-shades';
     shadeMesh.renderOrder = 1;
+    for (const mesh of [pugMesh, boardMesh, humMesh]) mesh.renderOrder = 2;
 
     // (They stand in the city's own long shadows, as everything does; they cast none of their own, having their shades.)
     for (const mesh of [pugMesh, boardMesh, humMesh]) mesh.receiveShadow = true;
@@ -1390,6 +1444,8 @@ export function createCreatures({ creatures, given, gradientMap, light, floorAt,
         const dt = Math.min(0.1, Math.max(0, elapsed - lastElapsed));
         lastElapsed = elapsed;
         clock.value = reducedMotion ? 0.4 : elapsed;
+        // (The water a shade lies on moves with the sea: its time is the stage's, as the sea's is.)
+        shadeMesh.material.uniforms.time.value = elapsed;
         pugs.forEach((pug, index) => posePug(pug, index, elapsed, dt));
         hums.forEach((hum, index) => poseHum(hum, index, elapsed, dt));
         pack();
