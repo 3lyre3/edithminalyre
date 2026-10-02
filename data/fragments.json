@@ -371,6 +371,50 @@
         "Tap blutix here"
       ],
       "status": "approved"
+    },
+  {
+      "id": "nbp-in-jetty-end-1",
+      "place": "jetty-end",
+      "work": "nbp",
+      "source": "Introduction (thesis p. 5)",
+      "text": "What does it mean to say nothing? Whatever else, that the remark will be eternal. Everything in this thesis turns on the question of what matters and what does not, within art, and which words matter and which do not, within literature in particular.",
+      "read_on": "https://digital.library.adelaide.edu.au/server/api/core/bitstreams/9cbedc1a-5eac-4ee5-b909-320c83028bba/content#page=5",
+      "offset": [-3.1, -0.6, -0.55],
+      "trial": "sections",
+      "status": "draft"
+    },
+    {
+      "id": "nbp-sm-gas-station-1",
+      "place": "gas-station",
+      "work": "nbp",
+      "source": "The Surface of Myth (thesis p. 11)",
+      "text": "Once barely noticed, the surface of the Campbell’s Soup Cans becomes their aesthetic core, the outside becomes the inside. Audiences are shown a longstanding detail of their own environs, as if for the first time.",
+      "read_on": "https://digital.library.adelaide.edu.au/server/api/core/bitstreams/9cbedc1a-5eac-4ee5-b909-320c83028bba/content#page=11",
+      "offset": [-2.6, -2.1, -2.0],
+      "trial": "sections",
+      "status": "draft"
+    },
+    {
+      "id": "nbp-e2-sun-dock-1",
+      "place": "sun-dock",
+      "work": "nbp",
+      "source": "Agamemnon, Episode 2 (thesis p. 40)",
+      "text": "She ambles over, tumbling into the shallows with a graceless plash, and wades one-legged up to the beach, humid salt-light sizzling against her bare neck.",
+      "read_on": "https://digital.library.adelaide.edu.au/server/api/core/bitstreams/9cbedc1a-5eac-4ee5-b909-320c83028bba/content#page=40",
+      "offset": [-0.4, 0.6, 2.4],
+      "trial": "sections",
+      "status": "draft"
+    },
+    {
+      "id": "nbp-fa-underside-1",
+      "place": "underside",
+      "work": "nbp",
+      "source": "Fictoanalysis (thesis p. 110)",
+      "text": "It is a means, in all, to bear witness to what you’ve already seen but do not know you’ve seen. An articulation of unspoken/unspeakable memory.",
+      "read_on": "https://digital.library.adelaide.edu.au/server/api/core/bitstreams/9cbedc1a-5eac-4ee5-b909-320c83028bba/content#page=110",
+      "offset": [1.5, 0.8, -1.8],
+      "trial": "sections",
+      "status": "draft"
     }
   ]
 }

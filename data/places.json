@@ -68,11 +68,11 @@
       "position": [9.4, 3.3, -13],
       "focus": { "distance": 16, "height": 4 },
       "links": [
-        { "href": "/essays/otototoi.html", "label": "Otototoi Popoi Da" },
-        { "href": "/essays/big-nothings.html", "label": "Big Nothings" },
-        { "href": "/essays/broken-memory.html", "label": "Broken Memory, Then Nothing" },
-        { "href": "/stories/mycenae-gate.html", "label": "The Mycenae Gate" },
-        { "href": "/stories/song-of-paris.html", "label": "The Song of Paris" }
+        { "href": "/essays/numbers-by-paint.html#deleted-otototoi", "label": "Otototoi Popoi Da" },
+        { "href": "/essays/numbers-by-paint.html#deleted-big-nothings", "label": "Big Nothings" },
+        { "href": "/essays/numbers-by-paint.html#p39", "label": "Broken Memory, Then Nothing" },
+        { "href": "/essays/numbers-by-paint.html#deleted-mycenae-gate", "label": "The Mycenae Gate" },
+        { "href": "/essays/numbers-by-paint.html#p81", "label": "The Song of Paris" }
       ]
     },
     {

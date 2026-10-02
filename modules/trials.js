@@ -52,13 +52,18 @@
  * - plants: President Oedipus's flowers, a part of the essay to each, read whole from its own page: only the one in
  *   bloom opens, the rest wait as buds (one touched shivers, and the bloom glints); opened, a flower wilts and the next
  *   unfurls (Elm: "flowers ... that wilt when you open them ... you gotta click them in order"; flowers.js)
+ * - sections: givers for the sections of Numbers by Paint that had none, so the lost pages reach every one of them
+ *   (Elm: "things that bridge to every section of those texts"): the Introduction, The Surface of Myth, Episode 2 and
+ *   Fictoanalysis, each a draft passage awaiting her yes (data/fragments.json, "trial": "sections")
+ * - whole: a lost page of Numbers by Paint read from the inventory is read whole, its stretch of the thesis (Elm: the
+ *   lost pages "contain the full text of the thesis"), from the texts (read.html; main.js)
  */
 
 // =============================================================================
 // Constants
 // =============================================================================
 
-export const TRIALS = Object.freeze(['jetty', 'whisper', 'names', 'hint', 'wraith', 'dust', 'dock', 'hostel', 'hum', 'choice', 'onebutton', 'jettysigns', 'cyclolite', 'creatures', 'allison', 'inside', 'megascreen', 'cassandra', 'ball', 'plants']);
+export const TRIALS = Object.freeze(['jetty', 'whisper', 'names', 'hint', 'wraith', 'dust', 'dock', 'hostel', 'hum', 'choice', 'onebutton', 'jettysigns', 'cyclolite', 'creatures', 'allison', 'inside', 'megascreen', 'cassandra', 'ball', 'plants', 'sections', 'whole']);
 
 // =============================================================================
 // Main Code

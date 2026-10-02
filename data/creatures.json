@@ -28,7 +28,7 @@
    "fragment": "nbp-e3-jetty-cafes-2",
    "kind": "pug",
    "at": [
-    11.59,
+    12.04,
     0.3,
     0.25
    ],
@@ -62,7 +62,7 @@
    "kind": "pug",
    "at": [
     2.8,
-    0.02,
+    0.16,
     2.2
    ],
    "facing": 1.57,
@@ -72,9 +72,9 @@
    "fragment": "nbp-e3-steel-garden-1",
    "kind": "pug",
    "at": [
-    4.6,
-    -0.02,
-    4.35
+    4.387,
+    0.16,
+    4.139
    ],
    "facing": 3.93,
    "board": "flower"
@@ -88,15 +88,15 @@
     7.4
    ],
    "facing": 0,
-   "floor": -0.06
+   "floor": 0.16
   },
   {
    "fragment": "nbp-e3-bridge-1",
    "kind": "pug",
    "at": [
-    -6.61,
-    0.21,
-    -1.89
+    -6.26,
+    0.269,
+    -2.45
    ],
    "facing": 1.57,
    "board": "arch"
@@ -117,7 +117,7 @@
    "kind": "pug",
    "at": [
     -13.3,
-    0.56,
+    0.59,
     -8.6
    ],
    "facing": 1.57,
@@ -128,7 +128,7 @@
    "kind": "pug",
    "at": [
     -19.2,
-    0.93,
+    0.96,
     -5.68
    ],
    "facing": 1.57,
@@ -140,7 +140,7 @@
    "at": [
     8.99,
     2.59,
-    -12.8
+    -13.1
    ],
    "facing": 3.14,
    "board": "wave"
@@ -160,9 +160,9 @@
    "fragment": "nbp-e1-gas-station-2",
    "kind": "pug",
    "at": [
-    0.4,
-    -0.04,
-    16.2
+    0.273,
+    0,
+    16.328
    ],
    "facing": 2.36,
    "board": "pump"
@@ -193,9 +193,9 @@
    "fragment": "nbp-e4-door-in-the-floor-1",
    "kind": "pug",
    "at": [
-    11.55,
+    11.872,
     0.13,
-    16.75
+    16.424
    ],
    "facing": 2.36,
    "board": "jug"
@@ -229,7 +229,7 @@
    "board": "star",
    "at": [
     -18.3,
-    0.92,
+    0.945,
     0.55
    ],
    "facing": 1.57
@@ -250,11 +250,55 @@
    "kind": "pug",
    "board": "wave",
    "at": [
-    2.2,
+    2.25,
     0.29,
-    -40.95
+    -40.852
    ],
    "facing": 1.57
+  },
+  {
+   "fragment": "nbp-in-jetty-end-1",
+   "kind": "pug",
+   "board": "boat",
+   "at": [
+    21.3,
+    0.19,
+    -3.75
+   ],
+   "facing": 1.57
+  },
+  {
+   "fragment": "nbp-sm-gas-station-1",
+   "kind": "pug",
+   "board": "cup",
+   "at": [
+    -4.6,
+    0.026,
+    12
+   ],
+   "facing": 2.78
+  },
+  {
+   "fragment": "nbp-e2-sun-dock-1",
+   "kind": "hum",
+   "at": [
+    12,
+    1.2,
+    7.4
+   ],
+   "facing": 2.6,
+   "floor": -0.6
+  },
+  {
+   "fragment": "nbp-fa-underside-1",
+   "kind": "hum",
+   "at": [
+    5.5,
+    -24.2,
+    1.2
+   ],
+   "facing": 0.8,
+   "noShade": true
   }
  ],
  "allison": {

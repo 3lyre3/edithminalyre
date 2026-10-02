@@ -6,11 +6,14 @@
   "po-part-3",
   "po-part-4",
   "po-part-5",
+  "nbp-in-jetty-end-1",
+  "nbp-sm-gas-station-1",
   "nbp-e1-edge-2",
   "nbp-e1-gas-station-2",
   "nbp-e1-underside-1",
   "nbp-e1-sea-wall-1",
   "nbp-e1-sea-wall-2",
+  "nbp-e2-sun-dock-1",
   "nbp-e3-sun-dock-1",
   "nbp-e3-jetty-cafes-1",
   "nbp-e3-flags-1",
@@ -28,6 +31,7 @@
   "nbp-e5-jetty-end-1",
   "nbp-e5-charity-ball-1",
   "nbp-e5-charity-ball-2",
-  "nbp-e6-cassandras-house-2"
+  "nbp-e6-cassandras-house-2",
+  "nbp-fa-underside-1"
  ]
 }

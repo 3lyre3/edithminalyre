@@ -134,6 +134,47 @@ function poParts(pageHtml) {
     return parts.length === 5 && parts.every((part, index) => part.part === index + 1 && part.elements.length) ? parts : null;
 }
 
+/**
+ * A lost page of Numbers by Paint whole (whole, a trial): its stretch of the thesis as the texts mark it (read.html,
+ * fetched once, when first asked for), from its gold chip to the next (the last runs on to the deleted scenes): its
+ * paragraphs, quotations and page marks as the texts have them, links into the texts beside the city. With the pages
+ * it runs across, or null if the texts can't be had.
+ */
+let textsPage = null;
+async function lostPageWhole(id) {
+    textsPage ??= fetch(new URL(TEXT_PAGE, window.location.href))
+        .then((response) => (response.ok ? response.text() : null))
+        .then((html) => (html ? new DOMParser().parseFromString(html, 'text/html') : null))
+        .catch(() => null);
+    const texts = await textsPage;
+    const chip = texts?.getElementById(`lost-${id}`);
+    const work = chip?.closest('.work-body');
+    if (!work) return null;
+    const chips = [...work.querySelectorAll('.lost-chip')];
+    const ends = chips[chips.indexOf(chip) + 1] ?? work.querySelector('#deleted-scenes');
+    const range = texts.createRange();
+    range.setStartAfter(chip);
+    if (ends) range.setEndBefore(ends);
+    else range.setEndAfter(work.lastChild);
+    const piece = range.cloneContents();
+    // (Not the thesis's: the other chips, and the contents' entries for the deleted scenes after it.)
+    for (const other of piece.querySelectorAll('.lost-chip, li.ed')) other.remove();
+    for (const mark of piece.querySelectorAll('mark')) mark.replaceWith(...mark.childNodes);
+    for (const link of piece.querySelectorAll('a[href]')) {
+        const href = link.getAttribute('href');
+        if (href.startsWith('#')) link.href = `${TEXT_PAGE}${href}`;
+        link.target = '_blank';
+        link.rel = 'noopener';
+    }
+    // (The page it begins on is the last marked before its chip; then those marked within it.)
+    const before = [...work.querySelectorAll('.pg')].filter((mark) => mark.compareDocumentPosition(chip) & Node.DOCUMENT_POSITION_FOLLOWING).at(-1);
+    const pages = [before, ...piece.querySelectorAll('.pg')].map((mark) => Number(mark?.dataset.page)).filter(Boolean);
+    for (const named of piece.querySelectorAll('[id]')) named.removeAttribute('id');
+    // (A page mark says its page where the reader is: the texts draw it with their own style.)
+    for (const mark of piece.querySelectorAll('.pg')) mark.textContent = `p. ${mark.dataset.page}`;
+    return { nodes: () => [...piece.cloneNode(true).childNodes], pages };
+}
+
 /** Hold the city still: the drawn plate instead of the live scene, the points as a list. */
 function showStill() {
     root.dataset.mode = 'still';
@@ -622,7 +663,19 @@ async function boot() {
             places,
             kindOf: (id) => (id.startsWith('po-part-') ? 'flower' : giverOf.get(id)?.kind ?? 'light'),
             texts: TEXT_PAGE,
-            onRead: (fragment, opener) => open(fragment, opener),
+            // (On trial, whole: a lost page of Numbers by Paint read from the inventory is read whole, its stretch of
+            // the thesis, from the texts.)
+            onRead: async (fragment, opener) => {
+                const whole = trialOn('whole') && fragment.work === 'nbp' ? await lostPageWhole(fragment.id) : null;
+                if (!whole) {
+                    open(fragment, opener);
+                    return;
+                }
+                const first = whole.pages[0] ?? pageOf(fragment);
+                const last = whole.pages.at(-1) ?? first;
+                const pages = first && last && last > first ? `pp. ${first}–${last}` : `p. ${first}`;
+                open({ ...fragment, nodes: whole.nodes, source: `${fragment.source.replace(/\s*\(thesis p\. \d+\)$/, '')}: its lost page whole (thesis ${pages})` }, opener);
+            },
             loadEngine: () => loadData('handwrite'),
             // (Numbered as the texts number them, every lost page counted, trials on or off.)
             numberOf: (id) => {
