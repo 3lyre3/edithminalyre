@@ -1278,6 +1278,7 @@ export function createCreatures({ creatures, given, gradientMap, light, floorAt,
     const way = new Vector3(-toLight.x, 0, -toLight.z).normalize();
     let wraith = 0;
     let bullBoy = 0;
+    const kindOf = new Map();
     const strips = creatures.filter((creature) => !creature.noShade).map((creature) => {
         const [x, y, z] = creature.at;
         const kind = creature.kind === 'pug' ? 'pug' : 'hum';
@@ -1290,15 +1291,16 @@ export function createCreatures({ creatures, given, gradientMap, light, floorAt,
             if (ground === null || ground > y || y - ground > SHADE_REACH) return null;
         }
         const [length, breadth] = SHADE_SIZE[kind];
-        return shadeStrip({ x, y: ground, z, way, length, breadth, cell: shades.cell(index), floorAt });
+        const strip = shadeStrip({ x, y: ground, z, way, length, breadth, cell: shades.cell(index), floorAt });
+        kindOf.set(strip, kind);
+        return strip;
     }).filter(Boolean);
-    // (Drawn with the city's solid things, after them and before the givers, so a shade drawn nearer the eye than its
-    // floor (SHADE_PULL) lies over the paving it would be under, and never over the one who casts it.)
-    const shadeMesh = new Mesh(mergeGeometries(strips, false), new ShaderMaterial({
-        uniforms: { map: { value: shades.texture }, tint: { value: SHADE_TINT }, depth: { value: SHADE_DEPTH }, pull: { value: SHADE_PULL }, time: { value: 0 } },
+    const shadeUniforms = { map: { value: shades.texture }, tint: { value: SHADE_TINT }, depth: { value: SHADE_DEPTH }, pull: { value: SHADE_PULL }, time: { value: 0 } };
+    const shadeMaterial = (late) => new ShaderMaterial({
+        uniforms: shadeUniforms,
         vertexShader: shadeVertex,
         fragmentShader: shadeFragment,
-        transparent: false,
+        transparent: late,
         depthWrite: false,
         blending: CustomBlending,
         blendSrc: DstColorFactor,
@@ -1306,14 +1308,25 @@ export function createCreatures({ creatures, given, gradientMap, light, floorAt,
         polygonOffset: true,
         polygonOffsetFactor: -2,
         polygonOffsetUnits: -2,
-    }));
+    });
+    // The pugs' shades are drawn with the city's solid things, after them and before the givers, so a shade drawn nearer
+    // the eye than its floor (SHADE_PULL) lies over the paving it would be under, and never over the pug who casts it.
+    // The hums' are drawn last of all, after the city's lights (the sun-dock's glow on its shallows washed the Episode 2
+    // hum's shade out, 2 Oct): a hum flies well above its shade, so drawn late, it darkens the light it lies in, and
+    // never the hum.
+    const pugStrips = strips.filter((strip) => kindOf.get(strip) === 'pug');
+    const humStrips = strips.filter((strip) => kindOf.get(strip) === 'hum');
+    const shadeMesh = new Mesh(pugStrips.length ? mergeGeometries(pugStrips, false) : new BufferGeometry(), shadeMaterial(false));
     shadeMesh.name = 'giver-shades';
     shadeMesh.renderOrder = 1;
+    const humShadeMesh = new Mesh(humStrips.length ? mergeGeometries(humStrips, false) : new BufferGeometry(), shadeMaterial(true));
+    humShadeMesh.name = 'giver-shades-hums';
+    humShadeMesh.renderOrder = 3;
     for (const mesh of [pugMesh, boardMesh, humMesh]) mesh.renderOrder = 2;
 
     // (They stand in the city's own long shadows, as everything does; they cast none of their own, having their shades.)
     for (const mesh of [pugMesh, boardMesh, humMesh]) mesh.receiveShadow = true;
-    group.objects.push(shadeMesh, boardMesh, pugMesh, humMesh, blurMesh, steam.points);
+    group.objects.push(shadeMesh, humShadeMesh, boardMesh, pugMesh, humMesh, blurMesh, steam.points);
     group.materials.push(pugMesh.material, boardMesh.material, humMesh.material);
 
     // ---- Their lives.

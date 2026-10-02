@@ -19,16 +19,17 @@
  *   places.js buildHostel, silhouette.js)
  * - hum: you fly as one of the bronze hums, low and in the middle of the view, over the benches, kerbs and edges
  *   that caught the walker, the wraith's shadow going beneath it as if it were its own (Elm's idea; hum.js, walk.js)
- * - choice: before anything else, a screen of two sides, "Explore - Win" and "Stay - Read" (Elm's asks, so the way in
+ * - choice: before anything else, a screen of two sides, "Explore" and "Read" (Elm's asks, so the way in
  *   is less overwhelming, and nothing comes before it): the first brings the Mega-Screen's card, then the Intermaze
  *   and the way into the city; the second goes to the texts, President Oedipus and Numbers by Paint on one page
  *   (read.html; main.js, threshold.js)
  * - onebutton: one option at the top of the screen, "zoom out", "zoom out", "leave" (Elm's asks): back to the far
- *   follow, out to the whole city, then back to the choice ("Explore - Win" comes back to the city where it was);
+ *   follow, out to the whole city, then back to the choice ("Explore" comes back to the city where it was);
  *   beside it, flying as a hum, the hum's own symbol recentres the camera on it; the other controls stand aside
  *   (main.js)
- * - jettysigns: two signs along the jetty, "Click the hum to let go. Click again to keep going." (the word "hum" a
- *   tiny hummingbird) and "Pinch to control the camera", with arrows pointing in and out (Elm's words; guides.js)
+ * - jettysigns: signs along the jetty, "Click the hum to let go. Click again to keep going." ("Tap" on a touch screen;
+ *   the word "hum" a tiny hummingbird) and, on a touch screen only, "Pinch to control the camera", with arrows pointing
+ *   in and out (Elm's words; guides.js)
  * - cyclolite: the hum begins on a Cyclolite, a little golden disc-boat floating off the end of the jetty, its roof
  *   of hard yellow light open and spread wide so the bird and its shadow show in full (Elm's idea, after Numbers by
  *   Paint p. 94; places.js buildCyclolite)

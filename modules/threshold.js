@@ -3,7 +3,7 @@
  * first).
  *
  * On trial (choice: trials.js; main.js), the choice comes first, and nothing before it (Elm: "the choice of staying and
- * reading or playing and winning should come before the ascii swirl"); "Explore - Win" brings the Mega-Screen's card
+ * reading or playing and winning should come before the ascii swirl"); "Explore" brings the Mega-Screen's card
  * (showCard: Elm, "the mega-screen card was still good ... is there any chance though that the mega screen could show
  * up after the choice page and before the ascii swirl?"), and the card's own gesture begins the Intermaze.
  *
@@ -264,7 +264,7 @@ function glyphAtlas() {
  *   no flight; begun at once, with no gesture (so any sound waits for the
  *   visitor's first touch); see comeBack
  * @param {boolean} [options.choosing] - the way in begins at a choice (a trial,
- *   main.js: "Explore - Win" or "Stay - Read"): no card yet; the threshold waits
+ *   main.js: "Explore" or "Read"): no card yet; the threshold waits
  *   at 'choice' until main.js calls showCard (the visitor chose to explore)
  */
 export function createThreshold({ root, card, begin, voice, onBegin, returning = false, choosing = false }) {
@@ -305,7 +305,7 @@ export function createThreshold({ root, card, begin, voice, onBegin, returning =
         card.hidden = true;
         resolveBegun();
     } else if (choosing) {
-        // (The choice's own "Explore - Win" brings the card: main.js calls showCard.)
+        // (The choice's own "Explore" brings the card: main.js calls showCard.)
         card.hidden = true;
     } else {
         document.addEventListener('keydown', onKey, true);
@@ -333,7 +333,7 @@ export function createThreshold({ root, card, begin, voice, onBegin, returning =
         start,
 
         /**
-         * After the choice ("Explore - Win": main.js): the Mega-Screen's card, its letters rolling in from the start,
+         * After the choice ("Explore": main.js): the Mega-Screen's card, its letters rolling in from the start,
          * waiting for its own tap, click or keypress to begin.
          */
         showCard() {

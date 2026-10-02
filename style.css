@@ -812,6 +812,22 @@ html[data-onebutton] .controls:not(:focus-within)::before {
     color: var(--bone);
 }
 
+/*
+ * Room for a finger (a review of the site, 2 Oct: "sound: off" was 82 by 22 CSS pixels, the count 54 by 29, "zoom out"
+ * 113 by 31): each small control answers a touch over at least 44 pixels each way, drawn just as it was.
+ */
+.one-button::after,
+.inventory-toggle::after,
+.control.sound-corner::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: max(100%, 44px);
+    height: max(100%, 44px);
+    transform: translate(-50%, -50%);
+}
+
 .control.sound-corner:hover,
 .control.sound-corner:focus-visible,
 .control.sound-corner[aria-pressed="true"] {
@@ -819,8 +835,8 @@ html[data-onebutton] .controls:not(:focus-within)::before {
 }
 
 /*
- * Out of the Intermaze, a choice of two sides (a trial: main.js), in Elm's words: "Explore - Win" on one side, "Stay -
- * Read" on the other. Each side is the whole of its half of the screen: the city's warmth behind the first, the page's
+ * Out of the Intermaze, a choice of two sides (a trial: main.js), in Elm's words: "Explore" on one side, "Read"
+ * on the other (first "Explore - Win" and "Stay - Read"). Each side is the whole of its half of the screen: the city's warmth behind the first, the page's
  * paler light behind the second, a gold hairline between them. (On a screen held upright they stand one above the
  * other.)
  */
@@ -847,7 +863,7 @@ html[data-onebutton] .controls:not(:focus-within)::before {
 }
 
 /* The choice first (a trial): it's the page's first paint, before any script, and the card waits (main.js takes the
- * choice over from here; "Explore - Win" fades it, the Mega-Screen's card beneath it). */
+ * choice over from here; "Explore" fades it, the Mega-Screen's card beneath it). */
 html[data-choosing] .threshold {
     display: none;
 }

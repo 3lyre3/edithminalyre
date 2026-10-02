@@ -1,5 +1,5 @@
 /**
- * guides.js — the jetty's two signs (a trial, trials.js; ?jettysigns=off), in Elm's words: "along the jetty it's easy
+ * guides.js — the jetty's signs (a trial, trials.js; ?jettysigns=off), in Elm's words: "along the jetty it's easy
  * enough to have a sign that says 'Click the hum to let go. Click again to keep going.' … Another sign can say pinch
  * to control the camera with little arrows pointing in and pointing out." And for the hum itself: "instead of
  * replacing the 'u' maybe just replace the entire word 'hum' with a bird symbol" — so the word is a hummingbird.
@@ -48,8 +48,14 @@ const FONT_WAIT_MS = 6000;
 const PAD = 70;
 const MAX_SIZE = 92;
 
-/** The signs, in Elm's words. A null in a line is the hummingbird, standing for the word "hum". */
-const LET_GO = [['Click the ', null, ' to let go.'], ['Click again to keep going.']];
+/**
+ * The signs, in Elm's words. A null in a line is the hummingbird, standing for the word "hum". On a touch screen the
+ * first says "Tap" (Elm: "Yes. Tap is better."), and only there does the second stand at all (Elm: "Pinch signs on touch
+ * screens only, yep."): with a mouse, the wheel and the keys bring the camera in and out.
+ */
+const TOUCH = Boolean(globalThis.matchMedia?.('(pointer: coarse)').matches);
+const PRESS = TOUCH ? 'Tap' : 'Click';
+const LET_GO = [[`${PRESS} the `, null, ' to let go.'], [`${PRESS} again to keep going.`]];
 const PINCH = 'Pinch to control the camera';
 
 // =============================================================================
@@ -245,7 +251,7 @@ function mapPlate(geometry, top) {
  * @returns {Promise<{ mesh: Mesh, canvas: HTMLCanvasElement, fontsLoaded: boolean } | null>}
  */
 export async function createGuides({ mounts, gradientMap, renderer }) {
-    const wanted = [['jetty/let-go', drawLetGo], ['jetty/pinch', drawPinch]].filter(([name]) => mounts.has(name));
+    const wanted = [['jetty/let-go', drawLetGo], ...(TOUCH ? [['jetty/pinch', drawPinch]] : [])].filter(([name]) => mounts.has(name));
     if (!wanted.length) return null;
     const fontsLoaded = await fontsReady(MAX_SIZE);
     const canvas = document.createElement('canvas');

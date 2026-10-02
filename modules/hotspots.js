@@ -277,7 +277,7 @@ export function createHotspots({ stage, fragments, read, places, label, reducedM
     // Glass, cloth and water don't hide a point; the sky and sea never stand in front of one, nor a passing hum, nor
     // the givers (each stands at its own point) and their boards and shades, nor the flowers (their shapes are made in
     // the shader, so a ray would meet them where they aren't).
-    const occluders = scene.children.filter((child) => child instanceof Mesh && !['sky', 'sea', 'glass', 'turquoise', 'hums', 'verti-pool', 'footlight-wash', 'walk-ring', 'walk-target', 'sun-dock-light', 'bridge', 'bridge-dust', 'fountain-fall', 'pugs', 'pug-boards', 'giver-hums', 'giver-hums-blur', 'giver-shades', 'flowers', 'flower-shades'].includes(child.name));
+    const occluders = scene.children.filter((child) => child instanceof Mesh && !['sky', 'sea', 'glass', 'turquoise', 'hums', 'verti-pool', 'footlight-wash', 'walk-ring', 'walk-target', 'sun-dock-light', 'bridge', 'bridge-dust', 'fountain-fall', 'pugs', 'pug-boards', 'giver-hums', 'giver-hums-blur', 'giver-shades', 'giver-shades-hums', 'flowers', 'flower-shades'].includes(child.name));
     const raycaster = new Raycaster();
     const projected = new Vector3();
     const drawingBuffer = new Vector2();
@@ -296,12 +296,36 @@ export function createHotspots({ stage, fragments, read, places, label, reducedM
         };
     }
 
-    function visible(entry) {
-        const direction = entry.position.clone().sub(camera.position);
+    /** Whether nothing of the city stands between the eye and this point (but within the last 0.6 of the way). */
+    function clearTo(target) {
+        const direction = target.clone().sub(camera.position);
         const distance = direction.length();
         raycaster.set(camera.position, direction.normalize());
-        raycaster.far = distance - 0.6;
+        raycaster.far = Math.max(0, distance - 0.6);
         return raycaster.intersectObjects(occluders, false).length === 0;
+    }
+
+    const across = new Vector3();
+    const upward = new Vector3();
+    const edge = new Vector3();
+    /**
+     * Whether a point can be touched: nothing hides it; or, a flower, it's seen at least in part, round whatever stands
+     * before it (the playtester, 2 Oct: the lotus, in bloom at the edge, was hidden from a touch by its own sign and the
+     * crystal on its pad, though half of it showed): its head's edges, as the eye sees them, will do. (Only the flowers,
+     * which follow their bowing heads: a giver half behind a wall is left to the wall's own signs beside it.)
+     */
+    function visible(entry) {
+        if (clearTo(entry.position)) return true;
+        if (!entry.body || !entry.follows) return false;
+        const { center, radius } = entry.body;
+        const toward = center.clone().sub(camera.position).normalize();
+        across.crossVectors(toward, camera.up).normalize();
+        upward.crossVectors(across, toward).normalize();
+        for (const [side, up] of [[1, 0], [-1, 0], [0, 1], [0, -1], [0.7, 0.7], [-0.7, 0.7]]) {
+            edge.copy(center).addScaledVector(across, side * radius * 0.85).addScaledVector(upward, up * radius * 0.85);
+            if (clearTo(edge)) return true;
+        }
+        return false;
     }
 
     const bodyAt = new Vector3();

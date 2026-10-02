@@ -36,8 +36,8 @@
  * down, as close as it comes, round and round, and it must keep clear of
  * every surface.
  * The choice comes first, before anything else (a trial): every first visit
- * must find it worded as Elm worded it ("Explore - Win", "Stay - Read"), "Stay -
- * Read" leading to the texts (read.html), focus on "Explore - Win", the card
+ * must find it worded as Elm worded it ("Explore", "Read": her words since 2 Oct), "Read"
+ * leading to the texts (read.html), focus on "Explore", the card
  * not yet shown; each pass chooses to explore the way it begins (a click, a tap
  * or a key), the choice must go, and the Mega-Screen's card must follow, its way
  * in holding the focus, before the Intermaze.
@@ -104,7 +104,7 @@ const MIME = {
  * toggle round; soundOn: arrive with "sound on" remembered from a past visit.
  */
 const PASSES = {
-    desktop: { viewport: { width: 1280, height: 800 }, keyboard: true, begin: 'click', then: 'watch', expect: 'flight', sound: true, camera: true, dock: true, creatures: true, plants: true },
+    desktop: { viewport: { width: 1280, height: 800 }, keyboard: true, begin: 'click', then: 'watch', expect: 'flight', sound: true, camera: true, dock: true, creatures: true, plants: true, failures: true, texts: true },
     mobile: { viewport: { width: 390, height: 844 }, deviceScaleFactor: 3, isMobile: true, hasTouch: true, begin: 'tap', then: 'skip', expect: 'flight', dock: true, plants: true },
     reduced: { viewport: { width: 1280, height: 800 }, reducedMotion: 'reduce', checkStillness: true, keyboard: true, begin: 'key', expect: 'crossfade', sound: true, soundOn: true, dock: true },
     nogl: { viewport: { width: 1280, height: 800 }, noWebGL: true, keyboard: true, begin: 'click', expect: 'crossfade' },
@@ -133,9 +133,11 @@ function watchThreshold() {
     }).observe(document, { attributes: true, subtree: true, attributeFilter: ['data-threshold', 'data-mode'] });
 }
 
+// (Each pass shot once, and each of its files made from that frame: the stills, and the front page's card for link
+// previews, a 1200 by 630 JPEG, which every preview draws (some don't draw WebP).)
 const STILLS = [
-    { pass: 'desktop', file: 'fallback.webp', width: 1024 },
-    { pass: 'mobile', file: 'fallback-portrait.webp', height: 1024 },
+    { pass: 'desktop', files: [{ file: 'fallback.webp', width: 1024 }, { file: 'images/elysicester-card.jpg', width: 1200, height: 630, type: 'image/jpeg', quality: 0.88, anchor: 'top' }] },
+    { pass: 'mobile', files: [{ file: 'fallback-portrait.webp', height: 1024 }] },
 ];
 
 // =============================================================================
@@ -257,7 +259,7 @@ async function enter(page, context, pass, { begin, then = 'watch', shots = null,
     const lines = voiceLines?.length ?? null;
     const { width, height } = pass.viewport;
     // The choice first (a trial, trials.js), unless the address turned it off, and nothing before it: both sides as Elm
-    // worded them, "Stay - Read" leading to the texts (and answering), focus on "Explore - Win", the card not yet
+    // worded them, "Read" leading to the texts (and answering), focus on "Explore", the card not yet
     // shown; explore is chosen the way the visitor begins (a click, a tap, or a key), and the Mega-Screen's card
     // follows it, its way in holding the focus.
     const expectChoice = await page.evaluate(() => !/[?&](choice|trials)=off\b/.test(window.location.search));
@@ -366,15 +368,15 @@ async function enter(page, context, pass, { begin, then = 'watch', shots = null,
     if (result.sequence !== `${expectChoice ? 'choice > ' : ''}card > ${pass.expect} > done`) problems.push(`sequence was ${result.sequence}`);
     if (expectChoice && !choice) problems.push('the choice did not show');
     if (choice) {
-        if (choice.explore !== 'Explore - Win') problems.push(`the choice's explore side read ${JSON.stringify(choice.explore)}`);
-        if (choice.read !== 'Stay - Read') problems.push(`the choice's read side read ${JSON.stringify(choice.read)}`);
-        if (choice.readTo !== 'read.html') problems.push(`"Stay - Read" led to ${choice.readTo}`);
-        if (choice.readAnswers !== 200) problems.push(`"Stay - Read" answered ${choice.readAnswers}`);
+        if (choice.explore !== 'Explore') problems.push(`the choice's explore side read ${JSON.stringify(choice.explore)}`);
+        if (choice.read !== 'Read') problems.push(`the choice's read side read ${JSON.stringify(choice.read)}`);
+        if (choice.readTo !== 'read.html') problems.push(`"Read" led to ${choice.readTo}`);
+        if (choice.readAnswers !== 200) problems.push(`"Read" answered ${choice.readAnswers}`);
         if (choice.focus !== 'choice-explore') problems.push(`focus on the choice was on ${choice.focus}`);
         if (choice.cardShown) problems.push('the card showed before the choice was made');
         if (!choice.pointsInert) problems.push('the points were reachable behind the choice');
         if (!after.choiceHidden) problems.push('the choice is still there');
-        if (!card.shown) problems.push('the card did not follow "Explore - Win"');
+        if (!card.shown) problems.push('the card did not follow "Explore"');
         if (card.focus !== 'threshold-begin') problems.push(`focus on the card was on ${card.focus}`);
     }
     if (pass.expect === 'crossfade' && after.passage?.frames !== 0) problems.push('the tunnel drew frames under a crossfade');
@@ -521,21 +523,30 @@ async function hideChrome(page) {
 }
 
 /** Encode a PNG as a WebP of the given size, using the browser's own encoder. */
-async function toWebP(page, png, width, height) {
-    return page.evaluate(async ({ source, width: w, height: h }) => {
+/**
+ * A frame as an image file: scaled to the width or height asked (the other kept in proportion), or, given both, the
+ * frame's middle cut to that shape; WebP unless another type is asked.
+ */
+async function encodeFrame(page, png, { width, height, type = 'image/webp', quality = 0.8, anchor = 'middle' }) {
+    return page.evaluate(async ({ source, width: w, height: h, type: kind, quality: q, anchor: from }) => {
         const image = new Image();
         image.src = source;
         await image.decode();
         const targetWidth = w ?? Math.round((image.width * h) / image.height);
         const targetHeight = h ?? Math.round((image.height * w) / image.width);
+        // (Both given: the largest part of the frame of that shape, from its middle, or from its top: the card keeps the sky's
+        // words whole, Elm's THIS IS NOT THE WORLD, and lets the roots under the island go.)
+        const scale = Math.max(targetWidth / image.width, targetHeight / image.height);
+        const cropWidth = targetWidth / scale;
+        const cropHeight = targetHeight / scale;
         const canvas = document.createElement('canvas');
         canvas.width = targetWidth;
         canvas.height = targetHeight;
         const context = canvas.getContext('2d');
         context.imageSmoothingQuality = 'high';
-        context.drawImage(image, 0, 0, targetWidth, targetHeight);
-        return canvas.toDataURL('image/webp', 0.8).split(',')[1];
-    }, { source: `data:image/png;base64,${png.toString('base64')}`, width, height });
+        context.drawImage(image, (image.width - cropWidth) / 2, from === 'top' ? 0 : (image.height - cropHeight) / 2, cropWidth, cropHeight, 0, 0, targetWidth, targetHeight);
+        return canvas.toDataURL(kind, q).split(',')[1];
+    }, { source: `data:image/png;base64,${png.toString('base64')}`, width, height, type, quality, anchor });
 }
 
 // -----------------------------------------------------------------------------
@@ -878,7 +889,7 @@ async function checkReadOn() {
  * on the Cyclolite (past the jetty's end, on its deck), the hum perched there, the camera close behind it, and the
  * jetty's signs standing; a reload (within the visit) must come back there; and the one option at the top of the
  * screen must go "zoom out" (the camera drawn back as far as it follows, still flying), "zoom out" (letting go, out to
- * the whole city, where it says "leave"), and "leave", to the choice, from which "Explore - Win" comes back to the city
+ * the whole city, where it says "leave"), and "leave", to the choice, from which "Explore" comes back to the city
  * where it was. Beside the option, the hum's own button must be there only while the camera isn't close on the hum,
  * and bring it back in close (taking the hum again, once let go). Its own browser, as a first visit.
  */
@@ -918,6 +929,9 @@ async function dockRound(chromium, pass, shots) {
         if (seen.hum) problems.push(`${when}: the hum's button is showing while the camera is close on the hum`);
     };
     const followFor = (wanted) => page.waitForFunction((distance) => Math.abs(window.elysicesterDebug.walk.followDistance - distance) < 0.06, wanted, { timeout: 10_000 }).catch(() => {});
+    // (The hum's button follows the camera frame by frame too: waited for, not read at a fixed delay.)
+    const humShows = (extra = 'true') => page.waitForFunction((also) => (document.getElementById('hum-button')?.getClientRects().length ?? 0) > 0
+        && (also === 'home' ? window.elysicesterDebug.stage.rig.atHome : true), extra, { timeout: 15_000 }).catch(() => {});
     const result = {};
     try {
         await page.goto(`${origin}/?debug=1`, { waitUntil: 'load' });
@@ -941,6 +955,7 @@ async function dockRound(chromium, pass, shots) {
             return walk.followDistance >= walk.followFar - 0.05;
         }, null, { timeout: 10_000 }).catch(() => {});
         await page.waitForTimeout(pass.reducedMotion ? 800 : 3000);
+        await humShows();
         result.zoomed = await where();
         if (!result.zoomed.walking) problems.push('the first "zoom out" let go of the hum');
         if (!(result.zoomed.follow >= result.zoomed.followFar - 0.05)) problems.push(`the first "zoom out" drew back to ${result.zoomed.follow}, not ${result.zoomed.followFar}`);
@@ -960,13 +975,14 @@ async function dockRound(chromium, pass, shots) {
         await page.click('#one-button');
         await oneSays('leave');
         await page.waitForTimeout(pass.reducedMotion ? 800 : 4000);
+        await humShows('home');
         result.whole = await where();
         if (result.whole.walking) problems.push('the second "zoom out" left it flying');
         if (!result.whole.atHome) problems.push('the second "zoom out" did not draw back to the whole city');
         if (result.whole.one !== 'leave') problems.push(`at the whole city the option says ${JSON.stringify(result.whole.one)}, not "leave"`);
         if (!result.whole.hum) problems.push('out at the whole city, the hum\'s button is not there');
         await page.screenshot({ path: `${shots}-dock-whole.png` });
-        // ... "leave" brings the choice back (the city's options stepping away), and "Explore - Win" comes back to the
+        // ... "leave" brings the choice back (the city's options stepping away), and "Explore" comes back to the
         // city where it was ...
         await page.click('#one-button');
         // (The choice comes in from the next frame: under SwiftShader a frame can take a second.)
@@ -976,14 +992,14 @@ async function dockRound(chromium, pass, shots) {
         if (!result.left.choice) problems.push('"leave" did not bring the choice back');
         if (result.left.one !== null || result.left.hum) problems.push('with the choice back, the city\'s options are still showing');
         const focused = await page.evaluate(() => document.activeElement?.id ?? null);
-        if (focused !== 'choice-explore') problems.push(`with the choice back, focus is on ${focused}, not "Explore - Win"`);
+        if (focused !== 'choice-explore') problems.push(`with the choice back, focus is on ${focused}, not "Explore"`);
         await page.screenshot({ path: `${shots}-dock-left.png` });
         await page.click('#choice-explore');
         await oneSays('leave');
         await page.waitForTimeout(pass.reducedMotion ? 300 : 1300);
         result.returned = await where();
-        if (result.returned.choice) problems.push('"Explore - Win" left the choice up');
-        if (!result.returned.atHome || result.returned.one !== 'leave') problems.push(`"Explore - Win" did not come back to the whole city (at home ${result.returned.atHome}, option ${JSON.stringify(result.returned.one)})`);
+        if (result.returned.choice) problems.push('"Explore" left the choice up');
+        if (!result.returned.atHome || result.returned.one !== 'leave') problems.push(`"Explore" did not come back to the whole city (at home ${result.returned.atHome}, option ${JSON.stringify(result.returned.one)})`);
         // ... and the hum's button takes the hum again, close.
         await page.click('#hum-button');
         await page.waitForFunction(() => window.elysicesterDebug.walk.state.walking, null, { timeout: 10_000 }).catch(() => {});
@@ -1315,23 +1331,161 @@ const { chromium } = await import('playwright').catch((error) => {
     console.error('Playwright is not installed where Node can find it. See the header of this script.');
     throw error;
 });
+/**
+ * When what the city needs doesn't come (a review of the site, 2 Oct, its C1 and C2): one of its modules blocked, so
+ * its code can never begin, "Explore" must still lead somewhere (the still, its line, the way to the texts) and "Read"
+ * still read; one of its data files failing, the city begins but can't be built, and the still must say so (not promise
+ * a list that isn't there); and the code merely slow to come, "Explore" pressed early must be taken up when it comes.
+ */
+async function failureRound(chromium, pass, outDir, name) {
+    const problems = [];
+    const result = {};
+    const stillState = (page) => page.evaluate(() => ({
+        mode: document.documentElement.dataset.mode ?? null,
+        fallback: !document.getElementById('fallback').hidden,
+        failedLine: !document.querySelector('.fallback-failed').hidden,
+        webglLine: !document.querySelector('.fallback-webgl').hidden,
+        points: !document.getElementById('points').hidden,
+        textsLink: document.querySelector('.fallback-failed a')?.getAttribute('href') ?? null,
+        threshold: document.documentElement.dataset.threshold ?? null,
+    }));
+    // A module that can't be fetched: the city's code never begins.
+    {
+        const session = await openPass(chromium, pass);
+        await session.context.route('**/modules/whisper.js', (route) => route.abort());
+        await session.page.goto(`${origin}/?debug=1`, { waitUntil: 'load' });
+        await session.page.waitForSelector('#choice-explore', { state: 'visible', timeout: 20_000 });
+        await session.page.waitForTimeout(3000);
+        const readTo = await session.page.getAttribute('#choice-read', 'href');
+        await session.page.click('#choice-explore');
+        await session.page.waitForFunction(() => document.documentElement.dataset.mode === 'still', null, { timeout: 15_000 }).catch(() => {});
+        result.module = { ...(await stillState(session.page)), readTo };
+        await session.page.screenshot({ path: path.join(outDir, `${name}-failure-module.png`) });
+        if (result.module.mode !== 'still' || !result.module.fallback) problems.push('a module blocked: "Explore" did not lead to the still');
+        if (!result.module.failedLine || result.module.webglLine) problems.push('a module blocked: the still did not say the city stays in the book');
+        if (result.module.textsLink !== 'read.html#numbers-by-paint') problems.push(`a module blocked: the still's way to the texts went to ${result.module.textsLink}`);
+        if (readTo !== 'read.html') problems.push(`a module blocked: "Read" led to ${readTo}`);
+        await session.browser.close();
+    }
+    // A data file that fails: the city's code begins, but can't build the city.
+    {
+        const session = await openPass(chromium, pass);
+        await session.context.route('**/data/places.json', (route) => route.fulfill({ status: 404, body: '' }));
+        await session.page.goto(`${origin}/?debug=1`, { waitUntil: 'load' });
+        await session.page.waitForSelector('#choice-explore', { state: 'visible', timeout: 20_000 });
+        await session.page.waitForTimeout(3000);
+        if (await session.page.isVisible('#choice-explore')) await session.page.click('#choice-explore').catch(() => {});
+        await session.page.waitForFunction(() => document.documentElement.dataset.mode === 'still', null, { timeout: 20_000 }).catch(() => {});
+        await session.page.waitForTimeout(1200);
+        result.data = await stillState(session.page);
+        await session.page.screenshot({ path: path.join(outDir, `${name}-failure-data.png`) });
+        if (result.data.mode !== 'still' || !result.data.fallback) problems.push('a data file failing: the still did not show');
+        if (!result.data.failedLine || result.data.webglLine) problems.push('a data file failing: the still promised its reading points, with none to list');
+        if (result.data.points) problems.push('a data file failing: an empty list of reading points showed');
+        await session.browser.close();
+    }
+    // The code slow to come: "Explore" pressed before it's here is taken up when it is.
+    {
+        const session = await openPass(chromium, pass);
+        await session.context.route('**/main.js', async (route) => {
+            await new Promise((resolve) => setTimeout(resolve, 5000));
+            await route.continue();
+        });
+        // (Not waiting for DOMContentLoaded: a module script runs before it fires, so the code would be here by then.)
+        await session.page.goto(`${origin}/?debug=1`, { waitUntil: 'commit' });
+        await session.page.waitForSelector('#choice-explore', { state: 'visible', timeout: 20_000 });
+        // (Once the page is read, so its own little script is listening: before the code comes, as a visitor would.)
+        await session.page.waitForFunction(() => document.readyState !== 'loading', null, { timeout: 20_000 });
+        const early = await session.page.evaluate(() => document.documentElement.dataset.booted === undefined);
+        await session.page.click('#choice-explore');
+        await session.page.waitForFunction(() => ['card', 'flight', 'crossfade', 'done'].includes(document.documentElement.dataset.threshold), null, { timeout: LOAD_TIMEOUT }).catch(() => {});
+        result.slow = { pressedEarly: early, threshold: await session.page.evaluate(() => document.documentElement.dataset.threshold ?? null) };
+        if (!early) problems.push('the slow code arrived before "Explore" could be pressed early (the check proved nothing)');
+        else if (!['card', 'flight', 'crossfade', 'done'].includes(result.slow.threshold)) problems.push(`"Explore" pressed while the code was coming was not taken up (the threshold: ${result.slow.threshold})`);
+        await session.browser.close();
+    }
+    return { ...result, problems, ok: problems.length === 0 };
+}
+
+/**
+ * The texts' sidebar and their faint text, readable (a review of the site, 2 Oct, its R1, R2 and R5): by night and by
+ * day, the sidebar on a ground of its own, whole (nothing showing through), its links and the page numbers and notes
+ * at 4.5 to 1 or more against what's behind them.
+ */
+async function textsRound(chromium, pass, outDir, name) {
+    const problems = [];
+    const themes = {};
+    for (const theme of ['night', 'day']) {
+        const session = await openPass(chromium, pass);
+        await session.context.addInitScript((wanted) => { try { localStorage.setItem('theme', wanted); } catch (error) { /* none */ } }, theme);
+        await session.page.goto(`${origin}/read.html`, { waitUntil: 'load' });
+        await session.page.evaluate(() => document.body.classList.add('rail-open'));
+        await session.page.waitForTimeout(900);
+        const measured = await session.page.evaluate(() => {
+            const rgb = (text) => (text.match(/[\d.]+/g) ?? []).map(Number);
+            const lum = ([r, g, b]) => [r, g, b].map((value) => {
+                const c = value / 255;
+                return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+            }).reduce((sum, value, index) => sum + value * [0.2126, 0.7152, 0.0722][index], 0);
+            const ratio = (a, b) => {
+                const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p);
+                return (x + 0.05) / (y + 0.05);
+            };
+            // (The ground behind an element: its own, or the nearest ancestor's that isn't see-through; the page's at last.)
+            const ground = (element) => {
+                for (let at = element; at; at = at.parentElement) {
+                    const colour = rgb(getComputedStyle(at).backgroundColor);
+                    if (colour.length === 3 || (colour.length === 4 && colour[3] >= 0.99)) return colour.slice(0, 3);
+                }
+                return rgb(getComputedStyle(document.body).backgroundColor).slice(0, 3);
+            };
+            const rail = document.getElementById('rail');
+            const railGround = rgb(getComputedStyle(rail).backgroundColor);
+            const sample = (selector) => {
+                const element = document.querySelector(selector);
+                if (!element) return null;
+                return Number(ratio(rgb(getComputedStyle(element).color).slice(0, 3), ground(element)).toFixed(2));
+            };
+            return {
+                railOpaque: railGround.length === 3 || railGround[3] >= 0.99,
+                railLink: sample('.rail-sections a'),
+                railTitle: sample('.rail-lost-title'),
+                lostMeta: sample('.lost-meta'),
+                pageMark: sample('.pg'),
+            };
+        });
+        themes[theme] = measured;
+        await session.page.screenshot({ path: path.join(outDir, `${name}-texts-${theme}.png`) });
+        if (!measured.railOpaque) problems.push(`${theme}: the sidebar's ground shows what's behind it`);
+        for (const [what, value] of Object.entries(measured)) {
+            if (what === 'railOpaque') continue;
+            if (value === null) problems.push(`${theme}: ${what} wasn't found`);
+            else if (value < 4.5) problems.push(`${theme}: ${what} reads at ${value}:1 (under 4.5:1)`);
+        }
+        await session.browser.close();
+    }
+    return { themes, problems, ok: problems.length === 0 };
+}
+
 const { server, origin } = await serve();
 
 try {
     if (process.argv.includes('--stills')) {
         for (const still of STILLS) {
             const session = await openPass(chromium, PASSES[still.pass]);
-            // (The still is for those who can't walk the city: its shadow keeps to the café wall there.)
-            await session.page.goto(`${origin}/?debug=1&walk=off`, { waitUntil: 'load' });
+            // (The still is the whole island, as a visit that doesn't begin at the jetty's end sees it first.)
+            await session.page.goto(`${origin}/?debug=1&dock=off`, { waitUntil: 'load' });
             const { mode } = await enter(session.page, session.context, PASSES[still.pass], { begin: 'click', then: 'skip' });
             if (mode !== 'live') throw new Error(`${still.pass}: the scene did not go live (${mode})`);
             await hideChrome(session.page);
             // (Once the arrival's glints have run their course, and before any glints again: hotspots.welcome.)
             await session.page.waitForTimeout(9000);
             const png = await session.page.locator('#stage').screenshot();
-            const webp = Buffer.from(await toWebP(session.page, png, still.width, still.height), 'base64');
-            await writeFile(path.join(ROOT, still.file), webp);
-            process.stdout.write(`${still.file}: ${webp.length} bytes\n`);
+            for (const made of still.files) {
+                const bytes = Buffer.from(await encodeFrame(session.page, png, made), 'base64');
+                await writeFile(path.join(ROOT, made.file), bytes);
+                process.stdout.write(`${made.file}: ${bytes.length} bytes\n`);
+            }
             await session.browser.close();
         }
     } else {
@@ -1410,6 +1564,8 @@ try {
             if (pass.dock) result.dock = await dockRound(chromium, pass, path.join(outDir, name));
             if (pass.creatures) result.creatures = await creaturesRound(chromium, pass, outDir, name);
             if (pass.plants) result.plants = await plantsRound(chromium, pass, outDir, name);
+            if (pass.failures) result.fallbacks = await failureRound(chromium, pass, outDir, name);
+            if (pass.texts) result.texts = await textsRound(chromium, pass, outDir, name);
             report.passes[name] = result;
         }
 
@@ -1445,11 +1601,15 @@ try {
             const plants = result.plants
                 ? `flowers ${result.plants.ok ? 'a bud refused (the bloom named), five parts whole in their turn, each wilting as the next blooms' : 'NOT OK'}`
                 : '';
-            process.stdout.write(`${name.padEnd(8)} ${result.mode.padEnd(6)} ${problems === 0 ? 'clean' : `${problems} problem(s)`}  ${[crossing, sound, info, orbit, still, camera, signs, extras, pointer, keys, axe, back, kept, dock, givers, plants].filter(Boolean).join(' · ')}\n`);
+            const failing = result.fallbacks ? `when things fail ${result.fallbacks.ok ? 'a module blocked, the still and its line, Read reads; a data file failing, no empty list; slow code, Explore taken up' : 'NOT OK'}` : '';
+            const texts = result.texts ? `texts ${result.texts.ok ? `sidebar whole; links and faint text ${['night', 'day'].map((theme) => `${theme} ${Math.min(...['railLink', 'railTitle', 'lostMeta', 'pageMark'].map((what) => result.texts.themes[theme][what]))}:1`).join(', ')} at least` : 'NOT OK'}` : '';
+            process.stdout.write(`${name.padEnd(8)} ${result.mode.padEnd(6)} ${problems === 0 ? 'clean' : `${problems} problem(s)`}  ${[crossing, sound, info, orbit, still, camera, signs, extras, pointer, keys, axe, back, kept, dock, givers, plants, failing, texts].filter(Boolean).join(' · ')}\n`);
             for (const line of [...result.messages, ...result.failures]) process.stdout.write(`    ${line}\n`);
             for (const line of result.dock?.problems ?? []) process.stdout.write(`    dock not ok: ${line}\n`);
             for (const line of result.creatures?.problems ?? []) process.stdout.write(`    givers not ok: ${line}\n`);
             for (const line of result.plants?.problems ?? []) process.stdout.write(`    flowers not ok: ${line}\n`);
+            for (const line of result.fallbacks?.problems ?? []) process.stdout.write(`    failures not ok: ${line}\n`);
+            for (const line of result.texts?.problems ?? []) process.stdout.write(`    texts not ok: ${line}\n`);
             for (const line of result.extras?.problems ?? []) process.stdout.write(`    extras not ok: ${line}\n`);
             for (const line of result.camera?.problems ?? []) process.stdout.write(`    camera not ok: ${line}\n`);
             for (const line of [...result.threshold.problems, ...(result.reentered?.problems ?? []).map((text) => `on return: ${text}`), ...(result.sound?.problems ?? [])]) {

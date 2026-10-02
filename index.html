@@ -9,9 +9,9 @@
     <meta property="og:title" content="Elysicester – Edith Mina Lyre">
     <meta property="og:description" content="“Elysicester was their moon, the one moon Elysium needed.” The golden city of Numbers by Paint, drawn at Elysium's endless dusk.">
     <meta property="og:type" content="website">
-    <meta property="og:image" content="https://edithminalyre.com/fallback.webp">
-    <meta property="og:image:width" content="1024">
-    <meta property="og:image:height" content="640">
+    <meta property="og:image" content="https://edithminalyre.com/images/elysicester-card.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="Elysicester at dusk: a floating piece of golden city on a striated rock, spires and bridges climbing toward a mountain that hangs in the sky, above the far Elysian Sea.">
     <meta property="og:url" content="https://edithminalyre.com/">
     <meta name="twitter:card" content="summary_large_image">
@@ -37,7 +37,7 @@
             else if (choosing) document.documentElement.dataset.choosing = '';
         })();
     </script>
-    <link rel="stylesheet" href="v/c204f9748a/style.css">
+    <link rel="stylesheet" href="v/d616871d42/style.css">
     <noscript><style>.threshold, .veil, .controls { display: none; }</style></noscript>
     <script type="importmap">
     {
@@ -47,13 +47,13 @@
         }
     }
     </script>
-    <script type="module" src="v/c204f9748a/main.js"></script>
+    <script type="module" src="v/d616871d42/main.js"></script>
 </head>
 <body>
     <nav class="plainly" aria-label="Leave the diorama">
         <a href="read.html" target="_blank" rel="noopener">the texts<span class="visually-hidden"> (opens in a new tab)</span></a>
         <span class="sep" aria-hidden="true">·</span>
-        <a href="https://digital.library.adelaide.edu.au/server/api/core/bitstreams/9cbedc1a-5eac-4ee5-b909-320c83028bba/content" target="_blank" rel="noopener">Numbers by Paint<span class="visually-hidden"> (the book, opens in a new tab)</span></a>
+        <a href="read.html#numbers-by-paint" target="_blank" rel="noopener">Numbers by Paint<span class="visually-hidden"> (the book, opens in a new tab)</span></a>
     </nav>
 
     <div class="controls">
@@ -75,7 +75,8 @@
             </picture>
             <div class="fallback-note">
                 <h2 id="fallback-title">Elysicester, held still</h2>
-                <p>This browser can't draw the city as it moves (it has no WebGL to lend), so Elysicester arrives as a still: one dusk, drawn once. Its reading points are listed here, and every one of them opens.</p>
+                <p class="fallback-webgl">This browser can't draw the city as it moves (it has no WebGL to lend), so Elysicester arrives as a still: one dusk, drawn once. Its reading points are listed here, and every one of them opens.</p>
+                <p class="fallback-failed" hidden>Elysicester is drawn by script. Without it, the city stays in the book: <a href="read.html#numbers-by-paint">Numbers by Paint</a>.</p>
             </div>
         </section>
 
@@ -106,8 +107,8 @@
         <p id="threshold-voice" class="threshold-voice" aria-live="polite"></p>
         <section id="choice" class="choice" aria-labelledby="choice-title" hidden>
             <h2 id="choice-title" class="visually-hidden">Explore the city, or stay and read</h2>
-            <button type="button" id="choice-explore" class="choice-side choice-explore"><span class="choice-words">Explore - Win</span></button>
-            <a id="choice-read" class="choice-side choice-read" href="read.html"><span class="choice-words">Stay - Read</span></a>
+            <button type="button" id="choice-explore" class="choice-side choice-explore"><span class="choice-words">Explore</span></button>
+            <a id="choice-read" class="choice-side choice-read" href="read.html"><span class="choice-words">Read</span></a>
         </section>
         <div id="veil" class="veil" aria-hidden="true"></div>
     </main>
@@ -120,7 +121,7 @@
             </header>
             <div class="reader-text" data-reader-text tabindex="-1"></div>
             <p class="reader-source" data-reader-source></p>
-            <p class="reader-read-on"><a data-reader-read-on href="https://digital.library.adelaide.edu.au/server/api/core/bitstreams/9cbedc1a-5eac-4ee5-b909-320c83028bba/content" target="_blank" rel="noopener">read on<span class="visually-hidden"> (opens in a new tab)</span></a></p>
+            <p class="reader-read-on"><a data-reader-read-on href="read.html" target="_blank" rel="noopener">read on<span class="visually-hidden"> (opens in a new tab)</span></a></p>
             <section class="reader-also" data-reader-also aria-labelledby="reader-also-title" hidden>
                 <h3 id="reader-also-title" class="reader-also-title">also here</h3>
                 <ul data-reader-also-list></ul>
@@ -153,7 +154,55 @@
     <div class="grain" aria-hidden="true"></div>
 
     <noscript>
-        <p class="noscript">Elysicester is drawn by script. Without it, the city stays in the book: <a href="https://digital.library.adelaide.edu.au/server/api/core/bitstreams/9cbedc1a-5eac-4ee5-b909-320c83028bba/content">Numbers by Paint</a>.</p>
+        <p class="noscript">Elysicester is drawn by script. Without it, the city stays in the book: <a href="read.html#numbers-by-paint">Numbers by Paint</a>.</p>
     </noscript>
+    <script>
+        // Until the city's code arrives and takes over (main.js marks it: data-booted), this keeps the way in open.
+        // "Explore" is on the screen from the first paint: pressed before the code is here, the wish is kept and
+        // taken up when it arrives (main.js offerChoice). If the code never can arrive (a script that fails to load, a
+        // browser that can't read modules or the map that names three.js for them), the city is held still, with the
+        // way to the texts: at once, or, while the choice is up (its "Read" a plain link that always works), when
+        // "Explore" is pressed.
+        (() => {
+            const root = document.documentElement;
+            const tookOver = () => root.dataset.booted !== undefined;
+            const scripts = HTMLScriptElement;
+            let failed = !('noModule' in scripts.prototype) || (typeof scripts.supports === 'function' && !scripts.supports('importmap'));
+            let wanted = false;
+            const still = () => {
+                if (tookOver() || root.dataset.mode === 'still') return;
+                delete root.dataset.choosing;
+                delete root.dataset.returning;
+                delete root.dataset.exploreWanted;
+                root.dataset.mode = 'still';
+                root.dataset.threshold = 'done';
+                document.getElementById('choice').hidden = true;
+                document.getElementById('threshold').hidden = true;
+                document.getElementById('points').hidden = true;
+                const fallback = document.getElementById('fallback');
+                fallback.querySelector('.fallback-webgl').hidden = true;
+                fallback.querySelector('.fallback-failed').hidden = false;
+                fallback.hidden = false;
+            };
+            const fail = () => {
+                if (tookOver()) return;
+                failed = true;
+                if (wanted || root.dataset.choosing === undefined) still();
+            };
+            // (A module that can't be fetched fires its error here; one that can't be read, or names what isn't there,
+            // fires it on the window, from the city's own files.)
+            document.querySelector('script[type="module"]')?.addEventListener('error', fail);
+            window.addEventListener('error', (event) => {
+                if (typeof event.filename === 'string' && event.filename.startsWith(location.origin)) fail();
+            });
+            document.getElementById('choice-explore')?.addEventListener('click', () => {
+                if (tookOver()) return;
+                wanted = true;
+                root.dataset.exploreWanted = '';
+                if (failed) still();
+            });
+            if (failed) fail();
+        })();
+    </script>
 </body>
 </html>

@@ -3,12 +3,12 @@
  *
  * Elm's vision: "an inventory so you can just collect it all / and then when collected maybe it gives you like a
  * downloadable file that does the scrolling text thing i made"; and the inventory's items are "lost pages" (Elm, 1 Oct,
- * asking for "Stay - Read" to "match them to their respective inventory items (lost pages)"). The city's passages are
+ * asking for "Read" to "match them to their respective inventory items (lost pages)"). The city's passages are
  * lost pages: Numbers by Paint's, given by the pugs and hums, and President Oedipus's, at its points of light. Each is
  * found as it's read (state.js remembers it from visit to visit). Once one is found, a small count in the corner opens
  * the inventory: the lost pages numbered as the texts number them (read.html, data/lost-pages.json), each found one
  * read again with a tap or found in the texts, each still waiting with who holds it and where. Every lost page found
- * is the win ("Explore - Win"): all of them written out by hand as it's scrolled, by Elm's own engine (handwrite;
+ * is the win: all of them written out by hand as it's scrolled, by Elm's own engine (handwrite;
  * data/handwrite.json), as one page to take away.
  */
 

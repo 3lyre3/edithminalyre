@@ -159,8 +159,9 @@ export function createReader({ dialog, places, onClose, onward, onOnward, canWal
             }
             source.textContent = WORKS[fragment.work] ? `${WORKS[fragment.work]}, ${fragment.source}` : fragment.source;
             readOn.href = fragment.read_on;
-            // Phones' PDF viewers open at the first page whatever the address asks, so the link names its page.
-            const page = /#page=(\d+)/.exec(fragment.read_on)?.[1];
+            // The link names the page it goes on from (in the texts, #p64; a PDF's #page=64, whose viewers on phones open
+            // at the first page whatever the address asks).
+            const page = /#(?:page=|p)(\d+)$/.exec(fragment.read_on)?.[1];
             readOnWords.nodeValue = page ? `read on from p. ${page}` : 'read on';
 
             // They open beside the city (a new tab), so coming back finds it as it was left.
