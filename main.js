@@ -740,6 +740,10 @@ async function boot() {
                         // (And a shade begun on a surface drawn above the walk's floor lies on it: the Steel Garden's
                         // disc, the hostel's room.)
                         surfaceAt: (x, z) => stage.surfaceAt(x, z),
+                        // (And where a wall catches a shade, the rest climbs it, once the walls are known, as the
+                        // visitor's own shadow climbs one.)
+                        wallAt: stage.walk ? (x, z) => stage.walk.wallAt(x, z) : null,
+                        wallsReady: stage.wallsReady,
                         reducedMotion,
                         // (Far from it, they aren't drawn: out at the whole city they're specks.)
                         camera: stage.camera,

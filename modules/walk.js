@@ -1290,6 +1290,12 @@ export function createWalk({ light, reducedMotion, gradientMap = null }) {
         lookoutAt: (x, z) => givenFloor(x, z),
         /** Whether a wall stops a body at (x, z) (for the local checks). */
         blockedAt: (x, z) => blocked(x, z),
+        /**
+         * Whether a wall stands at (x, z), at a body's height (its map's cell there), for what lies on the ground and
+         * climbs a wall where one catches it (the givers' shades: creatures.js); null until the walls are laid. (Off
+         * the map, none.)
+         */
+        wallAt: (x, z) => (hollowMap?.walls ? wallCell(x, z) : null),
         /** Whether the walls map marks the cell at (x, z) itself (for the local checks). */
         wallCellAt: (x, z) => {
             const walls = hollowMap?.walls;
