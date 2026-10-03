@@ -110,8 +110,9 @@ export function birdMaterial(gradientMap, clock) {
                 'transformed.xy = mat2(cos(lift), sin(lift), -sin(lift), cos(lift)) * transformed.xy;',
             ].join('\n'));
     };
-    // (Bronze, metal: the city's cube in it, as in the gold: kit.js.)
-    return reflective(material, BRONZE_SHOWS);
+    // (Bronze, metal: the city's cube in it, as in the gold, but turned over, so a hum is lit on its back and dark beneath:
+    // Elm, 4 Oct, "darker underneath and brighter on top". kit.js.)
+    return reflective(material, BRONZE_SHOWS, { over: true });
 }
 
 // =============================================================================

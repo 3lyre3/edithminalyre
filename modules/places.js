@@ -22,6 +22,7 @@
 
 import {
     AdditiveBlending,
+    Box3,
     BoxGeometry,
     BufferGeometry,
     CatmullRomCurve3,
@@ -44,6 +45,7 @@ import {
     OctahedronGeometry,
     PlaneGeometry,
     Quaternion,
+    Ray,
     Raycaster,
     RepeatWrapping,
     RingGeometry,
@@ -5452,6 +5454,26 @@ function buildBall({ extras, still, materials, bright = null }) {
     const middle = new Vector3(cx, floor + 2, (BALL_SOUTH + BALL_NORTH) / 2);
     const hiddenMiddle = new Vector2((hiddenWest + hiddenEast) / 2, BALL_STAGE_BACK - layer);
     const inHall = (x, z) => x > innerWest && x < innerEast && z < innerSouth && z > BALL_STAGE_FRONT;
+    // Its insides are drawn too wherever the dust may open its walls from further off: where the line from the eye to
+    // whoever walks or flies (the dust opens what stands between them: walk.js) crosses the building, or they're in it
+    // (Elm, 4 Oct: "the charity ballroom is disappearing when seen through the walls").
+    const building = new Box3();
+    const sight = new Ray();
+    const toward = new Vector3();
+    const crossing = new Vector3();
+    const seenThrough = (walker, camera) => {
+        if (!walker?.walking) return false;
+        if (building.isEmpty()) building.setFromObject(solid).expandByScalar(0.6);
+        toward.copy(walker.position);
+        toward.y += 1.2;
+        if (building.containsPoint(toward)) return true;
+        sight.origin.copy(camera.position);
+        sight.direction.subVectors(toward, camera.position);
+        const length = sight.direction.length();
+        if (length < 1e-6) return false;
+        sight.direction.multiplyScalar(1 / length);
+        return sight.intersectBox(building, crossing) !== null && crossing.distanceTo(camera.position) <= length;
+    };
     const inBuilding = (x, z) => x > BALL_WEST && x < BALL_EAST && z < BALL_SOUTH && z > balconyFar;
     const onBalcony = (x, z) => x > balconyWest && x < balconyEast && z < BALL_NORTH && z > balconyFar;
     /** Who's shown (1) or not (0): each rises out of nothing, or sinks back into it. */
@@ -5497,7 +5519,7 @@ function buildBall({ extras, still, materials, bright = null }) {
         /** Every frame: the scene's clock; whoever's walking (or flying), and where; and where the eye is. */
         update(dt, walker, camera) {
             clock += dt;
-            if (camera) insides.visible = camera.position.distanceTo(middle) < BALL_INSIDE_SEEN;
+            if (camera) insides.visible = camera.position.distanceTo(middle) < BALL_INSIDE_SEEN || seenThrough(walker, camera);
             const walking = Boolean(walker?.walking);
             const x = walker?.position.x ?? 0;
             const z = walker?.position.z ?? 0;

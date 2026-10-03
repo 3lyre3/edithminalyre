@@ -10,6 +10,17 @@
 /elysicester/plainly.html /read.html 301
 /elysicester/plainly /read.html 301
 
+# Pages kept beside the work since 4 Oct, off the site (each is on the Read page whole, under its own title, in its
+# own order; the Read page is built from the thesis's): an old link to one still finds its place there.
+/essays/numbers-by-paint.html /read#numbers-by-paint 301
+/essays/numbers-by-paint /read#numbers-by-paint 301
+/essays/otototoi.html /read#deleted-otototoi 301
+/essays/otototoi /read#deleted-otototoi 301
+/essays/big-nothings.html /read#deleted-big-nothings 301
+/essays/big-nothings /read#deleted-big-nothings 301
+/stories/mycenae-gate.html /read#deleted-mycenae-gate 301
+/stories/mycenae-gate /read#deleted-mycenae-gate 301
+
 # Everything that was under /elysicester/ is now at the top, at the same name.
 /elysicester/* /:splat 301
 
