@@ -765,7 +765,9 @@ async function boot() {
                 const more = {
                     // (The bright things' light isn't the dust's to dissolve: its object only, not its material.)
                     objects: [...(creatures?.objects ?? []), ...(flowers?.objects ?? []), ...(allison ? [allison.object] : []), ...(bright ? [bright.object] : [])],
-                    materials: [...(creatures?.materials ?? []), ...(flowers?.materials ?? []), ...(allison ? [allison.material] : [])],
+                    // (What comes apart in the dust: the givers' boards only. The pugs, the hums, the flowers and Allison never do:
+                    // Elm, 4 Oct.)
+                    materials: [...(creatures?.materials ?? [])],
                     textures: creatures?.textures ?? [],
                 };
                 if (more.objects.length) await stage.adopt(more);

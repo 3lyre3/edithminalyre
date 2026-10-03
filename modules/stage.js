@@ -75,7 +75,14 @@ const TAKES_SHADOW = new Set(['dimGold', 'green', 'sand']);
  */
 const DUST_DISSOLVES = ['gold', 'bricking', 'dimGold', 'brick', 'stone', 'rock', 'steel', 'copper', 'turquoise', 'weed', 'amethyst', 'glass', 'arch', 'cloth', 'green', 'sign', 'glow', 'bridge', 'sand'];
 /** And what's drawn with materials of its own: what's laid on the cafés' walls, the hums, the paper. */
-const DUST_ON_WALLS = ['cafe-shadow', 'footlight-wash', 'hums', 'paper', 'hostel', 'cassandra', 'cassandra-faces', 'ball'];
+const DUST_ON_WALLS = ['cafe-shadow', 'footlight-wash', 'paper', 'hostel', 'cassandra', 'ball'];
+/**
+ * And within those, who never comes apart (Elm, 4 Oct: "the humanoids, pugs, flowers, and hums are all exceptions to the
+ * dissolve"): the charity ball's people (the old Greek, Cassandra at the podium and on the balcony, the guests, the band)
+ * and Cassandra's shadow at her door and the pale faces at the street's windows. (The hums over the spires, the givers, the
+ * flowers and Allison are never taught to: their own lists leave them out.)
+ */
+const DUST_SPARES = new Set(['ball-greek', 'ball-cassandra', 'ball-cassandra-balcony', 'ball-crowd', 'ball-band', 'cassandra-shadow', 'cassandra-faces']);
 /**
  * A safety net for slower phones: if frames run slower than this (seconds) for a sustained stretch,
  * the drawing buffer steps down a quarter at a time, never below 1. It only ever steps down, so it can't
@@ -383,7 +390,7 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
     // (What's drawn with materials of its own comes apart too, once it's all in the scene: dust.js.)
     if (dust) {
         const own = new Set();
-        for (const name of DUST_ON_WALLS) scene.getObjectByName(name)?.traverse((object) => object.isMesh && own.add(object.material));
+        for (const name of DUST_ON_WALLS) scene.getObjectByName(name)?.traverse((object) => object.isMesh && !DUST_SPARES.has(object.name) && own.add(object.material));
         for (const material of own) dust.dissolve(material);
         // And where anything comes apart, its dust lingers in its shape (Elm's "original vision for all of it").
         const lingers = DUST_DISSOLVES.map((key) => meshes.get(key)).filter(Boolean);

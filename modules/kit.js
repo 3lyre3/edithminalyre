@@ -530,12 +530,14 @@ function duskCube() {
  * inside of anything the dust has opened is drawn black before this, so it stays black: dust.js.)
  * @param {import('three').Material} material
  * @param {number} strength - how much of the cube it shows (0 none)
+ * @param {{ over?: boolean }} [options] - over: the cube read turned over, its light above and its dark below (the hums:
+ *   Elm, 4 Oct, "darker underneath and brighter on top")
  */
-export function reflective(material, strength) {
+export function reflective(material, strength, { over = false } = {}) {
     // (A trial: ?metal=off leaves the metals as they were.)
     if (!trialOn('metal')) return material;
     METAL_SKY.value ??= duskCube();
-    alsoBeforeCompile(material, `reflective-${strength}`, (shader) => {
+    alsoBeforeCompile(material, `reflective-${strength}${over ? '-over' : ''}`, (shader) => {
         shader.uniforms.metalSky = METAL_SKY;
         // (?debug=1&metalshow=N: every metal's strength times N, for the local checks to try.)
         const search = new URLSearchParams(globalThis.location?.search ?? '');
@@ -547,6 +549,7 @@ export function reflective(material, strength) {
                 '{',
                 '    vec3 metalToEye = normalize(vViewPosition);',
                 '    vec3 metalBounce = inverseTransformDirection(reflect(-metalToEye, normal), viewMatrix);',
+                ...(over ? ['    metalBounce.y = -metalBounce.y;'] : []),
                 '    float metalGlance = pow(1.0 - clamp(dot(normal, metalToEye), 0.0, 1.0), 3.0);',
                 '    // What the reflection meets, sharp (the cube\'s finer levels: a blurred dusk is only a tint); laid in as the',
                 '    // city\'s light is, in steps: the dark sky nothing, the horizon\'s glow a band, the city\'s lights the brightest,',

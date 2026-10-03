@@ -1395,7 +1395,9 @@ export function createCreatures({ creatures, given, gradientMap, light, floorAt,
     // (They stand in the city's own long shadows, as everything does; they cast none of their own, having their shades.)
     for (const mesh of [pugMesh, boardMesh, humMesh]) mesh.receiveShadow = true;
     group.objects.push(shadeMesh, humShadeMesh, boardMesh, pugMesh, humMesh, blurMesh, steam.points);
-    group.materials.push(pugMesh.material, boardMesh.material, humMesh.material);
+    // (What comes apart in the dust as the city does: the boards. The pugs and the hums never do: Elm, 4 Oct, "the
+    // humanoids, pugs, flowers, and hums are all exceptions to the dissolve".)
+    group.materials.push(boardMesh.material);
 
     // ---- Their lives.
     /** Where each stands (or hovers), and where its word is shown and a tap finds it. */
