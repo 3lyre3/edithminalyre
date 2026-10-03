@@ -142,8 +142,9 @@ function checkReference(fromFile, rawReference) {
 
 for (const htmlFile of htmlFiles) {
     const html = await textFor(htmlFile);
-    // (The 404 and the city carry their own chrome; every page of text wears the site's.)
-    if (!['404.html', 'index.html'].includes(htmlFile)) {
+    // (The 404 and the city carry their own chrome, as do the works written by hand (read-by-hand.html, the city's win:
+    // Elm's handwrite page, with its own controls, kept whole to be taken away); every page of text wears the site's.)
+    if (!['404.html', 'index.html', 'read-by-hand.html'].includes(htmlFile)) {
         if (!/<script\s+src=(['"])(?:\.\.\/)?site\.js\1><\/script>/.test(html)) {
             errors.push(`${htmlFile}: shared site.js is missing`);
         }

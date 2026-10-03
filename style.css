@@ -776,6 +776,16 @@ html[data-left] .inventory-toggle {
     margin: 0 0 8px;
 }
 
+/* (Beside the taking, the page itself, on the site: read at once, in a new tab.) */
+.inventory-by-hand {
+    margin-left: 0.9em;
+}
+
+.inventory-by-hand:hover,
+.inventory-by-hand:focus-visible {
+    color: var(--honey);
+}
+
 .inventory-status {
     min-height: 1.4em;
     font-size: 15px;
