@@ -147,6 +147,31 @@
             body.rail-out .rail-toggle { display: block; }
         }
         @media (prefers-reduced-motion: reduce) { .room-rail { transition: none; } }
+        /* The texts, set to be read (Elm, 3 Oct: "the read page is missing negative space; needs paragraph breaks, a
+           larger font, first line indents and so on"): a larger type, room between paragraphs, and every paragraph's
+           first line indented. Numbers by Paint keeps the thesis's own indents (a new paragraph indented; one going on
+           after a quotation flush; a new beat flush, with more room above it). President Oedipus, set without indents
+           (Overland's page), takes them, all but each part's first paragraph; its ". . ." between parts stand in the
+           middle, with room about them. On a phone's narrow measure the lines run ragged, not stretched. */
+        body.reading-room { font-size: 21px; line-height: 1.74; }
+        body.reading-room main { max-width: 800px; }
+        .room-work .work-body p { margin-bottom: 0.85em; }
+        .room-work .work-body p.in { text-indent: 1.8em; }
+        #president-oedipus .work-body > p:not([id^="po-part-"]):not([style]):not(.footnote) { text-indent: 1.8em; }
+        #president-oedipus .work-body > p[id^="po-part-"] + p:not([id^="po-part-"]):not([style]):not(.footnote) { text-indent: 0; }
+        #president-oedipus .work-body > p[id^="po-part-"]:not(#po-part-1) { text-indent: 0; text-align: center; letter-spacing: 0.35em; margin: 2.4em 0; }
+        /* (The deleted scenes, from pages of their own that spaced their paragraphs, are set as the rest: each new
+           paragraph indented, but the first after a heading, a year, an epigraph, a mark or a quotation.) */
+        .room-work .deleted-scene p:not([class]) { text-indent: 1.8em; }
+        .room-work .deleted-scene :is(h3, .scene-year, .epigraph, .dropcap-centered, .prose-quote, .float-right, .mark) + p { text-indent: 0; }
+        .room-work .work-body .deleted-scene p { margin-bottom: 0.85em; }
+        .room-work .work-body .prose-quote { margin-top: 1.8em; margin-bottom: 1.8em; }
+        @media (max-width: 600px) {
+            body.reading-room { font-size: 19px; line-height: 1.7; }
+            body.reading-room main { padding-left: 26px; padding-right: 26px; }
+            .room-work .work-body p { text-align: left; }
+            .room-work .work-body .prose-quote { margin-left: 1.1rem; }
+        }
     </style>
 </head>
 <body class="reading-room">
@@ -162,10 +187,6 @@
             <div class="index-columns">
                 <section aria-labelledby="index-po">
                     <h3 id="index-po"><a href="#president-oedipus">President Oedipus, or The Democratisation of Schizophrenia</a></h3>
-                    <ol class="index-list">
-                        <li><a href="#president-oedipus">The essay</a></li>
-                        <li><a href="#po-note-1">Its note</a></li>
-                    </ol>
                 </section>
                 <section aria-labelledby="index-nbp">
                     <h3 id="index-nbp"><a href="#numbers-by-paint">Numbers by Paint</a></h3>

@@ -1377,6 +1377,16 @@ export function createWalk({ light, reducedMotion, gradientMap = null }) {
             followDistance = MathUtils.clamp(followDistance * factor, FOLLOW_NEAR, FOLLOW_FAR);
         },
 
+        /**
+         * Walking, swivel the camera round the hum (Elm: "a two-finger gesture in which the fingers turn in opposite
+         * directions to swivel the camera around the hum"), by radians, clockwise on the screen: the city turns as the
+         * fingers do. It stays so while the hum is still; going on, the camera comes round behind it again, as ever.
+         */
+        turnBy(angle) {
+            if (!state.walking) return;
+            followTheta += angle;
+        },
+
         /** Walking, set how far back the camera stands (it eases there), from close over the shadow to FOLLOW_FAR. */
         zoomTo(distance) {
             if (!state.walking) return;
@@ -1435,8 +1445,10 @@ export function createWalk({ light, reducedMotion, gradientMap = null }) {
             dustTargets = parts.dustTargets ?? null;
             dustNear = parts.dustNear ?? null;
             if (dustNear) lensOpen.copy(dustNear);
-            // Walking, the wheel, a pinch, or + and − bring the camera closer or draw it back (the rig hands them on).
+            // Walking, the wheel, a pinch, or + and − bring the camera closer or draw it back, and a twist of two
+            // fingers swivels it round the hum (the rig hands them on).
             rig.handsOffZoom = (factor) => walk.zoomBy(factor);
+            rig.handsOffTurn = (angle) => walk.turnBy(angle);
 
             // The shadow waits at the end of the jetty, looking out to sea (in place of the one on the café
             // wall), a ring breathing on the boards at its feet to say it can be taken.
@@ -1524,7 +1536,8 @@ export function createWalk({ light, reducedMotion, gradientMap = null }) {
             pressDown = (event) => {
                 if (event.pointerType !== 'mouse') touches.add(event.pointerId);
                 if (!state.walking) return;
-                // A second finger down makes a pinch (the camera's: the rig hands it on), and the first stops steering.
+                // A second finger down makes a pinch or a twist (the camera's: the rig hands them on), and the first
+                // stops steering.
                 if (touches.size > 1) {
                     if (press) {
                         if (stick.active) releaseStick();
