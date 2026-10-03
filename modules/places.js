@@ -45,7 +45,6 @@ import {
     OctahedronGeometry,
     PlaneGeometry,
     Quaternion,
-    Ray,
     Raycaster,
     RepeatWrapping,
     RingGeometry,
@@ -5454,25 +5453,18 @@ function buildBall({ extras, still, materials, bright = null }) {
     const middle = new Vector3(cx, floor + 2, (BALL_SOUTH + BALL_NORTH) / 2);
     const hiddenMiddle = new Vector2((hiddenWest + hiddenEast) / 2, BALL_STAGE_BACK - layer);
     const inHall = (x, z) => x > innerWest && x < innerEast && z < innerSouth && z > BALL_STAGE_FRONT;
-    // Its insides are drawn too wherever the dust may open its walls from further off: where the line from the eye to
-    // whoever walks or flies (the dust opens what stands between them: walk.js) crosses the building, or they're in it
-    // (Elm, 4 Oct: "the charity ballroom is disappearing when seen through the walls").
+    // Its insides are drawn too wherever the dust may have opened its walls from further off: wherever one of its
+    // openings reaches the building, as the dust itself finds it (dust.js reaches: about the lens, and while walking or
+    // flying, about the lines it keeps open to the one casting the shadow and the whole of the shadow, a shadow at dusk
+    // reaching metres from them) (Elm, 4 Oct: "the charity ballroom is disappearing when seen through the walls").
     const building = new Box3();
-    const sight = new Ray();
-    const toward = new Vector3();
-    const crossing = new Vector3();
-    const seenThrough = (walker, camera) => {
-        if (!walker?.walking) return false;
-        if (building.isEmpty()) building.setFromObject(solid).expandByScalar(0.6);
-        toward.copy(walker.position);
-        toward.y += 1.2;
-        if (building.containsPoint(toward)) return true;
-        sight.origin.copy(camera.position);
-        sight.direction.subVectors(toward, camera.position);
-        const length = sight.direction.length();
-        if (length < 1e-6) return false;
-        sight.direction.multiplyScalar(1 / length);
-        return sight.intersectBox(building, crossing) !== null && crossing.distanceTo(camera.position) <= length;
+    const seenThrough = (camera) => {
+        if (!scene.opens) return false;
+        if (building.isEmpty()) {
+            solid.updateWorldMatrix(true, true);
+            building.setFromObject(solid);
+        }
+        return scene.opens(building, camera.position);
     };
     const inBuilding = (x, z) => x > BALL_WEST && x < BALL_EAST && z < BALL_SOUTH && z > balconyFar;
     const onBalcony = (x, z) => x > balconyWest && x < balconyEast && z < BALL_NORTH && z > balconyFar;
@@ -5499,6 +5491,8 @@ function buildBall({ extras, still, materials, bright = null }) {
         onSay: null,
         /** Called with the podium (a world point) for the walking camera to take in while the speech is seen, then null. */
         onWatch: null,
+        /** Whether an opening of the dust reaches a box this frame (dust.js reaches), or null with no dust: stage.js. */
+        opens: null,
         /** Whether the speech is being given. */
         get speaking() {
             return speech !== null && speech < BALL_SPEECH.band;
@@ -5519,7 +5513,7 @@ function buildBall({ extras, still, materials, bright = null }) {
         /** Every frame: the scene's clock; whoever's walking (or flying), and where; and where the eye is. */
         update(dt, walker, camera) {
             clock += dt;
-            if (camera) insides.visible = camera.position.distanceTo(middle) < BALL_INSIDE_SEEN || seenThrough(walker, camera);
+            if (camera) insides.visible = camera.position.distanceTo(middle) < BALL_INSIDE_SEEN || seenThrough(camera);
             const walking = Boolean(walker?.walking);
             const x = walker?.position.x ?? 0;
             const z = walker?.position.z ?? 0;
