@@ -30,6 +30,7 @@ import { createBright } from './modules/bright.js';
 import { createCreatures } from './modules/creatures.js';
 import { speak, wantedExtras } from './modules/extras.js';
 import { createFlowers } from './modules/flowers.js';
+import { frameGiver } from './modules/frame.js';
 import { createHotspots, createPointList } from './modules/hotspots.js';
 import { createInventory } from './modules/inventory.js';
 import { showMegaScreen } from './modules/megascreen.js';
@@ -463,6 +464,8 @@ async function boot() {
     // bio is read from the site's own bio page (if it can't be, he isn't there).
     const giving = trialOn('creatures');
     const allisonOn = trialOn('allison');
+    // (A passage's giver framed with its shade beside its open passage, a trial: frame.js.)
+    const FRAME = trialOn('frame');
     // (President Oedipus's flowers, a trial, gather with the givers: each holds a part of the essay, read from its page.)
     const plantsOn = giving && trialOn('plants');
     const [placeData, fragmentData, paper, signData, creatureData, bioPage, lostData, flowerData, poPage] = await Promise.all([
@@ -594,6 +597,11 @@ async function boot() {
         places,
         // (Walking, the camera is the shadow's: it doesn't drift off when a passage closes.)
         onClose: () => {
+            // (A giver framed beside its passage comes to the middle as the passage closes: frameFragment.)
+            if (framed && stage && !stage.walk?.state.walking) {
+                stage.rig.focus(framed.place, framed.centre, (framed.theta * 180) / Math.PI, { distance: framed.distance, height: framed.distance * Math.cos(framed.phi) });
+            }
+            framed = null;
             if (!stage?.walk?.state.walking) stage?.rig.setDrifting(true);
             if (winWaiting) {
                 winWaiting = false;
@@ -629,6 +637,34 @@ async function boot() {
         if (!stage) return;
         stage.rig.focus(fragment.place, hotspots?.positionOf(fragment.id), fragment.facing ?? null);
     };
+    // A passage's giver, framed with its shade in the open part of the screen beside its open passage (a trial,
+    // frame.js: Elm's "B"); else centred, as before. Its view is kept, so as the passage closes the giver comes to the
+    // middle (unless the visitor is flying: then the camera is their hum's again).
+    let framed = null;
+    const frameFragment = (fragment) => {
+        framed = null;
+        if (!stage) return;
+        const framing = FRAME && creatures ? creatures.framing(fragment.id) : null;
+        const frame = framing ? frameGiver({
+            framing,
+            way: creatures.shadeWay,
+            rig: stage.rig,
+            camera: stage.camera,
+            canvas: byId('stage'),
+            dialog: byId('reader'),
+            facing: fragment.facing ?? null,
+            place: stage.rig.places?.get(fragment.place) ?? null,
+            occluders: hotspots?.occluders ?? [],
+            hints: framing.hints,
+            flying: Boolean(stage.walk?.state.walking),
+        }) : null;
+        if (!frame) {
+            focusFragment(fragment);
+            return;
+        }
+        framed = { place: fragment.place, ...frame };
+        stage.rig.focus(fragment.place, frame.target, (frame.theta * 180) / Math.PI, { distance: frame.distance, height: frame.distance * Math.cos(frame.phi) });
+    };
     let list = null;
     // A bud won't open (plants, a trial: only the flower in bloom does): it shivers, the bloom glints wherever it stands,
     // and a reader who can't see that is told where it is.
@@ -663,11 +699,14 @@ async function boot() {
         // the win waits for the passage to be closed.
         creatures?.give(fragment.id, stageTime);
         if (inventory?.gathered(fragment.id)) winWaiting = true;
+        // (The passage opened first, so the camera knows where on the screen it leaves the city in view; a giver's
+        // stands to one side on a wide screen, its giver framed beside it: frame.js.)
+        byId('reader')?.classList.toggle('is-beside', FRAME && Boolean(creatures?.has(fragment.id)));
+        reader.open(fragment, opener);
         if (stage) {
             stage.rig.setDrifting(false);
-            focusFragment(fragment);
+            frameFragment(fragment);
         }
-        reader.open(fragment, opener);
     };
     list = createPointList({
         nav: byId('points'),

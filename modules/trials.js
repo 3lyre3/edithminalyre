@@ -80,13 +80,20 @@
  *   brightens, a crystal chimes, a lantern turns"): its lamps and the golden bridges' lanterns brighten, the market's
  *   strung lights run with light from the bulb touched, Cafiarmaí's lantern turns, the charity ball's chandeliers chime
  *   (places.js, bright.js, audio.js); off, a touch on them walks there, as before
+ * - frame: as a passage opens, its giver is framed with its shade in the open part of the screen, beside the passage
+ *   on a computer, above it on a phone: a hum from the side its shade lies along (Elm's "B": "The fly-in to a giver
+ *   frames the hum and its shade together"), a pug from its own side, its board painting itself in where it's seen
+ *   (frame.js, main.js); off, the giver is centred, behind the passage, as before
+ * - banshees: the hums' shades as banshees: broader, the robe spread, billowing (its robe swelling and falling from the
+ *   hem up, its hood swaying), and out on the water lit along their edge as the ripples catch the light (Elm: "investigate
+ *   some means of making the shadow easier to see"; creatures.js); off, the still, narrower shades they were
  */
 
 // =============================================================================
 // Constants
 // =============================================================================
 
-export const TRIALS = Object.freeze(['jetty', 'whisper', 'names', 'hint', 'wraith', 'dust', 'dock', 'hostel', 'hum', 'choice', 'onebutton', 'jettysigns', 'cyclolite', 'creatures', 'allison', 'inside', 'megascreen', 'cassandra', 'ball', 'plants', 'sections', 'whole', 'settle', 'nimble', 'dive', 'metal', 'sculpted', 'bright']);
+export const TRIALS = Object.freeze(['jetty', 'whisper', 'names', 'hint', 'wraith', 'dust', 'dock', 'hostel', 'hum', 'choice', 'onebutton', 'jettysigns', 'cyclolite', 'creatures', 'allison', 'inside', 'megascreen', 'cassandra', 'ball', 'plants', 'sections', 'whole', 'settle', 'nimble', 'dive', 'metal', 'sculpted', 'bright', 'frame', 'banshees']);
 
 // =============================================================================
 // Main Code
