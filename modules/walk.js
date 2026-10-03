@@ -835,9 +835,13 @@ export function createWalk({ light, reducedMotion, gradientMap = null }) {
 
     /**
      * Try a step from the walker's place by (dx, dz): true, with `next` set, if
-     * there's floor within a step's height and no wall there. (Standing in a
-     * wall already, as it might where it was first set down, any step is
-     * allowed, so nothing ever holds the walker fast.)
+     * there's floor within a step's height and no wall there. (Against a wall
+     * already, or in one, as it might be where it was first set down, a step
+     * out of it or along it is allowed, so nothing ever holds the walker fast;
+     * but never further in. Elm, 3 Oct, "flew into wall next to hostel and got
+     * stuck": from the hostel's sand, which runs up to the sea-wall's face, a
+     * step went on through the face into the hollow within the wall, and every
+     * step back met the face from inside. Walls all round, any way is out.)
      */
     function tryStep(dx, dz) {
         next.set(state.position.x + dx, state.position.y, state.position.z + dz);
@@ -848,7 +852,11 @@ export function createWalk({ light, reducedMotion, gradientMap = null }) {
         if (HUM ? floor - state.position.y > HUM_CLIMB : Math.abs(floor - state.position.y) > STEP) return false;
         next.y = floor;
         if (aloft(next.x, next.z, floor)) return true;
-        return !blocked(next.x, next.z) || blocked(state.position.x, state.position.z);
+        if (!blocked(next.x, next.z)) return true;
+        if (!blocked(state.position.x, state.position.z)) return false;
+        const away = wallNormal(state.position.x, state.position.z);
+        if (!away) return true;
+        return dx * away.x + dz * away.z >= -0.25 * Math.hypot(dx, dz);
     }
 
     /**
