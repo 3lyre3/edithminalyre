@@ -750,7 +750,7 @@ async function boot() {
                     });
                 }
                 if (allisonAt) {
-                    allison = createAllison({ at: allisonAt.at, facing: allisonAt.facing, gradientMap: stage.gradientMap, reducedMotion });
+                    allison = await createAllison({ at: allisonAt.at, facing: allisonAt.facing, gradientMap: stage.gradientMap, reducedMotion });
                     // (A body doesn't fly through him.)
                     stage.walk?.standsIn(allisonAt.at[0], allisonAt.at[2], 0.32);
                 }

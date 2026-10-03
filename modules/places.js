@@ -66,6 +66,7 @@ import { trialOn } from './trials.js';
 import { WALKER_GLSL } from './walk.js';
 import {
     Buckets,
+    GOLD_SHOWS,
     SEA_LEVEL,
     alsoBeforeCompile,
     breathe,
@@ -78,6 +79,7 @@ import {
     paint,
     paintBy,
     pose,
+    reflective,
     rimRadius,
     taperedTube,
     wallX,
@@ -5380,7 +5382,8 @@ function buildBall({ extras, still, materials }) {
     panel(balconyMiddle, balconyFar + 0.035, balconyEast, balconyFar + 0.035);
     panel(balconyWest, BALL_NORTH, balconyWest, balconyFar);
     panel(balconyEast, BALL_NORTH, balconyEast, balconyFar);
-    const railing = new Mesh(mergeGeometries(panels, false), new MeshToonMaterial({ gradientMap: materials.gold.gradientMap, map: filigree, color: RAIL_GOLD, alphaTest: 0.45, side: DoubleSide }));
+    // (Gold, metal: the city's cube in it, as in the halls': kit.js.)
+    const railing = new Mesh(mergeGeometries(panels, false), reflective(new MeshToonMaterial({ gradientMap: materials.gold.gradientMap, map: filigree, color: RAIL_GOLD, alphaTest: 0.45, side: DoubleSide }), GOLD_SHOWS));
     railing.name = 'ball-railing';
     group.add(railing);
     // The hidden door, dark, its bar of polished gold at waist height on the hall's side: on its west hinge, it swings

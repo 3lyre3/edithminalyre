@@ -14,19 +14,24 @@
 // =============================================================================
 
 import {
+    CubeCamera,
     DirectionalLight,
     FogExp2,
+    HalfFloatType,
     HemisphereLight,
+    LinearMipmapLinearFilter,
     NeutralToneMapping,
     PCFShadowMap,
     PerspectiveCamera,
     Scene,
+    UnsignedByteType,
     Vector2,
     Vector3,
+    WebGLCubeRenderTarget,
     WebGLRenderer,
 } from 'three';
 import { createDust, INSIDE_LAYER } from './dust.js';
-import { Buckets, breathe, createMaterials, duskLight, flutter, wallX } from './kit.js';
+import { Buckets, METAL_SKY, breathe, createMaterials, duskLight, flutter, loadMetalSky, wallX } from './kit.js';
 import { inscriptionTexture } from './extras.js';
 import { HOLLOWED, createHollows, hollows } from './hollows.js';
 import { NIMBLE, createInk } from './ink.js';
@@ -81,6 +86,12 @@ const SLOW_FRAME = 1 / 38;
 const SLOW_STRETCH = NIMBLE ? 1.5 : 2.5;
 const RATIO_STEP = 0.25;
 const SETTLING = NIMBLE ? 2 : 4;
+/**
+ * The metals' cube (kit.js, METAL_SKY): its faces' size, and where it's taken from: high over the middle of the city,
+ * the halls' roofs below it, the dusk all round.
+ */
+const METAL_CUBE = 128;
+const METAL_EYE = new Vector3(4, 20, 0);
 
 // =============================================================================
 // Main Code
@@ -106,6 +117,41 @@ function createReadout() {
 /** Let a frame through, so the threshold keeps moving while the city is built. */
 function pause() {
     return new Promise((resolve) => requestAnimationFrame(() => resolve()));
+}
+
+/**
+ * The metals' cubemap (Elm: "cubemap reflections specifically so extra simple"): one look round from high over the
+ * city's middle, the city built and its programs made, a face at a time with a frame let through between; then the
+ * gold, the golden bridges and the hums show it by their reflections (kit.js, reflective). Taken so only to be kept
+ * (?debug=1&metalbake=1, bake-metal-sky.mjs reads it back into assets/metal-sky.png): taken on every visit, it held a
+ * phone's way in for seconds (round 32's suite: the city ready 5.6-7 s after the card's tap, not under one).
+ */
+async function takeMetalSky(renderer, scene) {
+    const canFloat = renderer.extensions.has('EXT_color_buffer_float') || renderer.extensions.has('EXT_color_buffer_half_float');
+    const target = new WebGLCubeRenderTarget(METAL_CUBE, { type: canFloat ? HalfFloatType : UnsignedByteType, generateMipmaps: true, minFilter: LinearMipmapLinearFilter });
+    // (Taken before the city's first frame, which draws its shadows (once: shadowMap.autoUpdate off): drawn now, with
+    // the first face, or every shadowed surface would look up its shadow in no shadow map at all: the suite's WebGL
+    // warnings, "Mismatch between texture format and sampler type", 107 of them, round 32.)
+    renderer.shadowMap.needsUpdate = true;
+    const eye = new CubeCamera(1, 900, target);
+    eye.position.copy(METAL_EYE);
+    if (eye.coordinateSystem !== renderer.coordinateSystem) {
+        eye.coordinateSystem = renderer.coordinateSystem;
+        eye.updateCoordinateSystem();
+    }
+    eye.updateMatrixWorld(true);
+    // (Face by face as three's CubeCamera does, its mipmaps made after the last.)
+    for (let face = 0; face < 6; face += 1) {
+        const kept = [renderer.getRenderTarget(), renderer.getActiveCubeFace(), renderer.getActiveMipmapLevel()];
+        target.texture.generateMipmaps = face === 5;
+        renderer.setRenderTarget(target, face);
+        renderer.render(scene, eye.children[face]);
+        renderer.setRenderTarget(...kept);
+        if (face < 5) await pause();
+    }
+    METAL_SKY.value = target.texture;
+    // (Kept, for the local checks to read back.)
+    METAL_SKY.target = target;
 }
 
 /**
@@ -209,6 +255,10 @@ export function fitRenderer(renderer, canvas, cap = MAX_PIXEL_RATIO) {
  * @param {Set<string>} [options.extras] - the optional extras asked for (extras.js); none, unless asked
  */
 export async function createStage({ renderer, canvas, data, reducedMotion, debug, onLost, extras = new Set() }) {
+    // The metals' kept cube, fetched while the city is built (kit.js; the metal trial). Taken live instead only to keep
+    // it anew: ?debug=1&metalbake=1, for bake-metal-sky.mjs.
+    const baking = debug && new URLSearchParams(globalThis.location?.search ?? '').has('metalbake');
+    const metalSky = baking ? Promise.resolve() : loadMetalSky();
     const scene = new Scene();
     // Thin enough that the gold still shines through at the whole city's distance.
     scene.fog = new FogExp2(0x4a2c4c, 0.0024);
@@ -377,7 +427,11 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
 
     await pause();
     // (Walking or not, the same programs: what the dust opens shows its inside by copies of its own, dust.js.)
+    // (The kept cube in the metals before their programs are made, so it's sent with every other texture.)
+    await metalSky;
     await prepareAll(renderer, scene, camera, ink.target);
+    // (Keeping it anew: the city's cube taken live, now the programs are made.)
+    if (baking && trialOn('metal')) await takeMetalSky(renderer, scene);
 
     // What the camera may not pass through is worked out in a worker while the flight plays;
     // until it's ready, the camera orbits free.
@@ -534,6 +588,12 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
             for (const texture of textures) renderer.initTexture(texture);
             await prepareAll(renderer, scene, camera, ink.target);
         },
+        /** For the local checks: one frame drawn through the ink, seen from `view` (a camera of the checks' own). */
+        drawFrom(view, elapsed = 0) {
+            ink.render(scene, view, elapsed, 1);
+        },
+        /** For the local checks: the metals' cube, as the materials hold it (kit.js). */
+        metalSky: METAL_SKY,
         start() {
             if (running) return;
             running = true;
