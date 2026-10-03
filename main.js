@@ -707,7 +707,7 @@ async function boot() {
                 const pages = first && last && last > first ? `pp. ${first}–${last}` : `p. ${first}`;
                 open({ ...fragment, nodes: whole.nodes, source: `${fragment.source.replace(/\s*\(thesis p\. \d+\)$/, '')}: its lost page whole (thesis ${pages})` }, opener);
             },
-            loadEngine: () => loadData('handwrite'),
+            // (The win's page, both works by hand, is kept on the site: read-by-hand.html.)
             // (Numbered as the texts number them, every lost page counted, trials on or off.)
             numberOf: (id) => {
                 const at = lostData?.lost?.indexOf(id) ?? -1;

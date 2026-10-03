@@ -1172,12 +1172,15 @@ async function creaturesRound(chromium, pass, outDir, name) {
             won: !document.querySelector('[data-inventory-win]').hidden,
             toggle: document.querySelector('#inventory-toggle [data-inventory-count]').textContent,
             focus: document.activeElement?.dataset?.inventoryWrite !== undefined ? 'write' : document.activeElement?.tagName ?? null,
+            byHand: document.querySelector('[data-inventory-win] .inventory-by-hand')?.getAttribute('href') ?? null,
         }));
         await page.screenshot({ path: path.join(outDir, `${name}-win.png`) });
         if (!result.win.open) problems.push('the win did not show');
         if (!result.win.won) problems.push('the inventory did not say it was won');
         if (result.win.toggle !== `${pieces.length} / ${pieces.length}`) problems.push(`the count said ${JSON.stringify(result.win.toggle)} at the end`);
         if (result.win.focus !== 'write') problems.push(`focus on the win was on ${result.win.focus}`);
+        // (Beside the taking, the page itself, read at once on the site.)
+        if (result.win.byHand !== 'read-by-hand.html') problems.push(`the win's "read it now" led to ${JSON.stringify(result.win.byHand)}`);
         // The page the win writes.
         await page.click('[data-inventory-write]');
         const download = await downloading;
@@ -1187,9 +1190,22 @@ async function creaturesRound(chromium, pass, outDir, name) {
             const file = path.join(outDir, `${name}-${download.suggestedFilename()}`);
             await download.saveAs(file);
             const html = await readFile(file, 'utf8');
-            // (Each lost page's first words, as the page writes them: its own escaping aside.)
-            const plain = html.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
-            const missing = pieces.filter((id) => !cityTexts.has(id) || !plain.includes(cityTexts.get(id).replace(/^…\s*/, '').split(/\s+/).slice(0, 4).join(' ')));
+            // (Each lost page's first words, as the page holds them in type for the pen to draw: both works whole, from
+            // the essay pages (the mission's build_by_hand.py), so a page's words may run across the works' own inline
+            // tags; blocks and line breaks part words, inline tags don't, as the build's own word check reads them.)
+            const ENTITY = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ' };
+            const plain = html
+                .replace(/<!--[\s\S]*?-->/g, ' ')
+                .replace(/<(script|style)\b[\s\S]*?<\/\1>/gi, ' ')
+                .replace(/<\/?(?:p|div|h[1-6]|li|ol|ul|blockquote|br|hr|section|figure|figcaption|header|footer|article|svg)\b[^>]*>/gi, ' ')
+                .replace(/<[^>]+>/g, '')
+                .replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCodePoint(parseInt(hex, 16)))
+                .replace(/&#(\d+);/g, (_, decimal) => String.fromCodePoint(Number(decimal)))
+                .replace(/&([a-z]+);/gi, (match, entity) => ENTITY[entity.toLowerCase()] ?? match)
+                .replace(/­/g, '')
+                .replace(/\s+/g, ' ');
+            const firstWords = (text) => text.replace(/^…\s*/, '').split(/\s+/).slice(0, 4).join(' ');
+            const missing = pieces.filter((id) => !cityTexts.has(id) || !plain.includes(firstWords(cityTexts.get(id))));
             if (missing.length) problems.push(`the written page lacks ${missing.join(', ')}`);
             if (!html.includes('handToggle') || !html.includes('const G = {')) problems.push('the written page lacks the handwrite engine');
             result.written = { file: path.basename(file), bytes: html.length, missing };

@@ -8,8 +8,10 @@
  * found as it's read (state.js remembers it from visit to visit). Once one is found, a small count in the corner opens
  * the inventory: the lost pages numbered as the texts number them (read.html, data/lost-pages.json), each found one
  * read again with a tap or found in the texts, each still waiting with who holds it and where. Every lost page found
- * is the win: all of them written out by hand as it's scrolled, by Elm's own engine (handwrite;
- * data/handwrite.json), as one page to take away.
+ * is the win: the Read page's whole, both works, written out by hand as it's scrolled, by Elm's own engine, to take
+ * away (Elm: "the handwritten document should be everything on the Stay - Read page ... just as a handwritten version
+ * instead"; "it should just be the file. There's absolutely no need for it to rehandwrite the page each time"): one
+ * page, made once (the mission's sources/build_by_hand.py) and kept on the site (read-by-hand.html).
  */
 
 // =============================================================================
@@ -22,93 +24,15 @@ import { WORKS } from './reader.js';
 // Constants
 // =============================================================================
 
-/** The page the win writes: its name, title and credit (the texts as the site has them: read.html). */
-const REWARD_FILE = 'lost-pages-found-in-elysicester.html';
-const REWARD_TITLE = 'The lost pages, found in Elysicester';
-const REWARD_AUTHOR = 'Edith Lyre';
-const REWARD_CREDIT = 'From President Oedipus (Overland 239, Winter 2020) and Numbers by Paint: Quantifying aesthetic receptions (MPhil thesis, Adelaide University, October 2021)';
-const REWARD_CREDIT_URL = 'https://edithminalyre.com/read.html';
-const CITY_URL = 'https://edithminalyre.com/';
+/**
+ * The win's page: both works written by hand, kept on the site (read-by-hand.html, made once by the mission's
+ * sources/build_by_hand.py), and the name it's saved under.
+ */
+const BY_HAND = 'read-by-hand.html';
+const BY_HAND_FILE = 'president-oedipus-and-numbers-by-paint-by-hand.html';
 
 /** Who holds a lost page, in a few words. */
 const HOLDERS = { pug: 'a pug', hum: 'a hum', light: 'a point of light', flower: 'a flower' };
-
-/**
- * The engine's page in the city's dusk (laid over its own colours; Elm: "feel free to adjust aesthetics and stuff with
- * it as see fit"): warm paper and violet ink by day, the plaques' gold on the dusk by night.
- */
-const CITY_COLOURS = `
-:root { --paper:#f5ecdc; --ink:#2a1d2e; --hand:#5a2f6e; --muted:#7a6a5c; --flare:#b0502c; --rule:#d9c7a8; --bubble:rgba(42,29,46,.07); --focus:#5a2f6e; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --paper:#140f1c; --ink:#f3e2bd; --hand:#e9b860; --muted:#a8977c; --flare:#ff9a70; --rule:#3a2c40; --bubble:rgba(243,226,189,.08); --focus:#e9b860; } }
-:root[data-theme="dark"] { --paper:#140f1c; --ink:#f3e2bd; --hand:#e9b860; --muted:#a8977c; --flare:#ff9a70; --rule:#3a2c40; --bubble:rgba(243,226,189,.08); --focus:#e9b860; }
-h2 { color:var(--hand); }
-.place-source { font-size:.86em; color:var(--muted); text-indent:0; }
-`;
-
-// =============================================================================
-// The page the win writes
-// =============================================================================
-
-const escape = (text) => String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-
-/** A passage's paragraph as HTML, its italic runs (the fragment's "italic" list) in <em>, as the reader shows them. */
-function withItalics(text, runs) {
-    const marks = [];
-    for (const run of runs) {
-        for (let at = text.indexOf(run); at > -1; at = text.indexOf(run, at + run.length)) marks.push([at, at + run.length]);
-    }
-    marks.sort((a, b) => a[0] - b[0]);
-    let cursor = 0;
-    let html = '';
-    for (const [start, end] of marks) {
-        if (start < cursor) continue;
-        html += `${escape(text.slice(cursor, start))}<em>${escape(text.slice(start, end))}</em>`;
-        cursor = end;
-    }
-    return html + escape(text.slice(cursor));
-}
-
-/**
- * The page: Elm's engine's own (as handwrite.py's render writes it), its title and credit, then each lost page under
- * its number and its place's name, its words as they stand, where it comes from, and a break between.
- */
-export function writtenByHand({ fragments, places, engine, numberOf = () => null, date = new Date() }) {
-    const BREAK = '<div class="break" role="separator" aria-label="Section break"><i></i><i></i><i></i></div>';
-    const body = fragments.map((fragment) => {
-        const label = places.get(fragment.place)?.label ?? '';
-        const number = numberOf(fragment.id);
-        const paragraphs = fragment.text.split(/\n{2,}/).map((paragraph) => `<p>${withItalics(paragraph, fragment.italic ?? [])}</p>`).join('\n');
-        return `<h2>${number ? `Lost page ${number}: ` : ''}${escape(label)}</h2>\n${paragraphs}\n<p class="place-source">${escape(WORKS[fragment.work] ?? '')}, ${escape(fragment.source)}</p>`;
-    }).join(`\n${BREAK}\n`);
-    const when = date.toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
-    return `<!doctype html>
-<html lang="en" class="no-js">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>${escape(REWARD_TITLE)} — ${escape(REWARD_AUTHOR)}</title>
-<meta name="author" content="${escape(REWARD_AUTHOR)}">
-<meta name="color-scheme" content="light dark">
-${engine.fonts}<style>${engine.css}${CITY_COLOURS}</style>
-</head>
-<body>
-<script>document.documentElement.className = 'js';</script>
-<article>
-<header class="title">
-  <h1>${escape(REWARD_TITLE)}</h1>
-  <p class="byline">${escape(REWARD_AUTHOR)}</p>
-  <p class="credit"><a href="${escape(REWARD_CREDIT_URL)}">${escape(REWARD_CREDIT)}</a></p>
-  <p class="controls"><button type="button" id="handToggle" aria-pressed="false">Set the handwriting in type</button><button type="button" id="themeToggle">Dark</button></p>
-</header>
-<hr class="rule">
-${body}
-<footer class="colophon"><p>Found among the pugs and hums of <a href="${escape(CITY_URL)}">Elysicester</a>, ${escape(when)}. Written by hand with Edith's handwrite.</p></footer>
-</article>
-<script>${engine.js}</script>
-</body>
-</html>
-`;
-}
 
 // =============================================================================
 // Main Code
@@ -124,11 +48,11 @@ ${body}
  * @param {(id: string) => 'pug' | 'hum' | 'light'} options.kindOf - who holds each
  * @param {string} [options.texts] - the texts' page (read.html), where each lost page is marked (#lost-ID)
  * @param {(fragment: object, opener: HTMLElement) => void} options.onRead - read a found page again
- * @param {() => Promise<object>} options.loadEngine - Elm's engine (data/handwrite.json)
  * @param {(id: string) => number | null} [options.numberOf] - a lost page's number as the texts number it (all of
  *   them, read.html's), so a place whose trial is off leaves a gap rather than renumbering the rest; else by order
+ * @param {string} [options.byHand] - the win's page, both works written by hand (read-by-hand.html)
  */
-export function createInventory({ toggle, dialog, pieces, gathered, places, kindOf, texts = 'read.html', onRead, loadEngine, numberOf = null }) {
+export function createInventory({ toggle, dialog, pieces, gathered, places, kindOf, texts = 'read.html', onRead, numberOf = null, byHand = BY_HAND }) {
     const ordered = [...pieces];
     const numbers = new Map(ordered.map((fragment, index) => [fragment.id, numberOf?.(fragment.id) ?? index + 1]));
     const count = toggle.querySelector('[data-inventory-count]');
@@ -219,28 +143,15 @@ export function createInventory({ toggle, dialog, pieces, gathered, places, kind
         returnTo = null;
     });
 
-    write.addEventListener('click', async () => {
-        write.disabled = true;
-        status.textContent = 'Writing…';
-        try {
-            const engine = await loadEngine();
-            const html = writtenByHand({ fragments: ordered, places, engine, numberOf: (id) => numbers.get(id) });
-            const url = URL.createObjectURL(new Blob([html], { type: 'text/html;charset=utf-8' }));
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = REWARD_FILE;
-            document.body.append(link);
-            link.click();
-            link.remove();
-            window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
-            status.textContent = `Saved as ${REWARD_FILE}: open it, and scroll.`;
-            if (window.elysicesterDebug) window.elysicesterDebug.reward = html;
-        } catch (error) {
-            console.error('The lost pages could not be written:', error);
-            status.textContent = 'It could not be written just now.';
-        } finally {
-            write.disabled = false;
-        }
+    // (Taken as it's kept: the one page, already written, saved under its name.)
+    write.addEventListener('click', () => {
+        const link = document.createElement('a');
+        link.href = byHand;
+        link.download = BY_HAND_FILE;
+        document.body.append(link);
+        link.click();
+        link.remove();
+        status.textContent = `Saved as ${BY_HAND_FILE}: open it, and scroll.`;
     });
 
     render();
