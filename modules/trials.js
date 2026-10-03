@@ -76,13 +76,17 @@
  *   (stage.js, kit.js); off, they're drawn as before
  * - sculpted: Allison modelled as clay is, one smooth body under his clothes, his long curls, his face (Elm: "a lot more
  *   fully developed ... a more aesthetically pleasant and tasteful model"; allison.js, sculpt.js); off, the figure he was
+ * - bright: the city's bright things answer a touch (Elm's yes to "eye-catching things answer a touch: a lamp
+ *   brightens, a crystal chimes, a lantern turns"): its lamps and the golden bridges' lanterns brighten, the market's
+ *   strung lights run with light from the bulb touched, Cafiarmaí's lantern turns, the charity ball's chandeliers chime
+ *   (places.js, bright.js, audio.js); off, a touch on them walks there, as before
  */
 
 // =============================================================================
 // Constants
 // =============================================================================
 
-export const TRIALS = Object.freeze(['jetty', 'whisper', 'names', 'hint', 'wraith', 'dust', 'dock', 'hostel', 'hum', 'choice', 'onebutton', 'jettysigns', 'cyclolite', 'creatures', 'allison', 'inside', 'megascreen', 'cassandra', 'ball', 'plants', 'sections', 'whole', 'settle', 'nimble', 'dive', 'metal', 'sculpted']);
+export const TRIALS = Object.freeze(['jetty', 'whisper', 'names', 'hint', 'wraith', 'dust', 'dock', 'hostel', 'hum', 'choice', 'onebutton', 'jettysigns', 'cyclolite', 'creatures', 'allison', 'inside', 'megascreen', 'cassandra', 'ball', 'plants', 'sections', 'whole', 'settle', 'nimble', 'dive', 'metal', 'sculpted', 'bright']);
 
 // =============================================================================
 // Main Code

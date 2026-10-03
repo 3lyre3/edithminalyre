@@ -26,6 +26,7 @@
 
 import { ALLISON_SAYS, bioFrom, createAllison } from './modules/allison.js';
 import { createAudio } from './modules/audio.js';
+import { createBright } from './modules/bright.js';
 import { createCreatures } from './modules/creatures.js';
 import { speak, wantedExtras } from './modules/extras.js';
 import { createFlowers } from './modules/flowers.js';
@@ -759,8 +760,11 @@ async function boot() {
                     flowers = createFlowers({ flowers: flowerSpots, read, gradientMap: stage.gradientMap, stage, reducedMotion });
                     for (const spot of flowerSpots.filter((candidate) => !candidate.floats)) stage.walk?.standsIn(spot.at[0], spot.at[2], 0.22);
                 }
+                // The city's bright things (a trial: places.js lists them): touched, each answers with its own light.
+                const bright = stage.touch?.some((thing) => thing.lights) ? createBright({ stage, reducedMotion }) : null;
                 const more = {
-                    objects: [...(creatures?.objects ?? []), ...(flowers?.objects ?? []), ...(allison ? [allison.object] : [])],
+                    // (The bright things' light isn't the dust's to dissolve: its object only, not its material.)
+                    objects: [...(creatures?.objects ?? []), ...(flowers?.objects ?? []), ...(allison ? [allison.object] : []), ...(bright ? [bright.object] : [])],
                     materials: [...(creatures?.materials ?? []), ...(flowers?.materials ?? []), ...(allison ? [allison.material] : [])],
                     textures: creatures?.textures ?? [],
                 };
@@ -775,7 +779,7 @@ async function boot() {
                     flowers?.update(elapsed, dt);
                     allison?.update(elapsed);
                 });
-                if (debug) Object.assign(window.elysicesterDebug, { creatures, flowers, allison });
+                if (debug) Object.assign(window.elysicesterDebug, { creatures, flowers, allison, bright });
                 let touch = null;
                 hotspots = createHotspots({
                     stage,
@@ -814,6 +818,12 @@ async function boot() {
                     onMiss: (x, y) => {
                         if (!touch || stage.walk?.claimsTap(x, y) || signOverlay?.claimsTap(x, y, Infinity)) return;
                         const found = touch.find(x, y);
+                        // (A bright thing answers with its own light and sound, and opens nothing: bright.js.)
+                        if (found?.target?.lights && bright) {
+                            bright.answer(found.target, found.point);
+                            audio.answer(found.kind);
+                            return;
+                        }
                         // (Cassandra's door, touched, is knocked on: places.js plays the rest.)
                         if (found?.kind === 'cassandra-door') {
                             if (!reducedMotion) hotspots.ripple(found.point);
@@ -838,6 +848,7 @@ async function boot() {
                     },
                 });
                 touch = createTouch({ stage, occluders: hotspots.occluders });
+                if (debug) window.elysicesterDebug.touch = touch;
                 // The scenes that speak (trials: places.js): Cassandra's door (its knock, its slam, her shadow's
                 // answer) and the charity ball (the speech, the applause, the band, the hidden door's bar, her on the
                 // balcony). Their sounds; and their words where they're said, while they're said, one voice at a time.

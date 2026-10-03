@@ -167,6 +167,11 @@ h2, h3 { color:var(--hand); }
 /* Paper after the last words: the pen's line (two thirds down the screen) passes them with room to spare, and the
    end still shows them, the colophon under them. */
 article { padding-bottom:60vh; }
+/* Set in type (or where its script can't run), the contents stand close, as a contents does: a line to an entry, a
+   little room before each work (the playtester: in type, ~87 px an entry, running past two screens; each entry took
+   a paragraph's spacing from the drawing it follows, hidden in type). */
+.typed .contents-by-hand p, .no-js .contents-by-hand p { margin:0; line-height:1.6; }
+.typed .contents-by-hand p.contents-work, .no-js .contents-by-hand p.contents-work { margin-top:.9em; }
 </style>
 </head>
 <body>

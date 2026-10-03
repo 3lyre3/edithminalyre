@@ -10,6 +10,8 @@
  * below, the rock's underside and its roots (Numbers by Paint's view of the
  * city from far beneath it). The nearest one the city doesn't hide is found;
  * main.js answers it (a ring of light, a sound of its own, then the words).
+ * And the city's bright things (a trial, bright.js), which answer with their
+ * own light and sound, and no words: its lamps, its lanterns, its crystals.
  */
 
 // =============================================================================
@@ -44,7 +46,7 @@ export function createTouch({ stage, occluders }) {
 
     return {
         /**
-         * What lies under a tap at (x, y), if anything answers there: { kind, fragment, point }, or null. The
+         * What lies under a tap at (x, y), if anything answers there: { kind, fragment, point, target }, or null. The
          * first surface along the line of sight decides: a target counts if it's no further than that surface
          * (give or take its own size, since it is that surface).
          */
@@ -60,7 +62,7 @@ export function createTouch({ stage, occluders }) {
                 if (!ray.intersectSphere(target.sphere, hit)) continue;
                 const distance = hit.distanceTo(ray.origin);
                 if (distance > blocked + target.radius) continue;
-                if (!best || distance < best.distance) best = { kind: target.kind, fragment: target.fragment, point: hit.clone(), distance };
+                if (!best || distance < best.distance) best = { kind: target.kind, fragment: target.fragment, point: hit.clone(), distance, target };
             }
             if (best) return best;
             // From below, the rock itself: its curtain, its belly, its roots (anything under the cliff's foot).

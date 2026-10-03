@@ -106,7 +106,8 @@ function street(context) {
  * A touch answered, softly, in the thing's own voice: the steel sycamore's leaves rustle, a bird statue rings
  * like struck metal, a small dog's feet patter, and the rock's underside gives a deep swell. (And Cassandra's
  * door: a knock, then its slam; and the charity ball: the old Greek's muttering, the applause, the band, the hidden
- * door's bar, and Cassandra talking to herself.)
+ * door's bar, and Cassandra talking to herself. And the bright things, a trial: a lamp's flame catching, a lantern's
+ * run of little bells, a crystal's chime.)
  */
 function answer(context, output, noise, kind) {
     const now = context.currentTime;
@@ -541,6 +542,62 @@ function answer(context, output, noise, kind) {
             tone.start(now + step);
             tone.stop(now + step + 0.12);
         }
+    } else if (kind === 'lamp') {
+        // A lamp brightening (bright.js): a soft breath of flame catching, and a warm tone swelling with it and settling.
+        const flameNoise = context.createBufferSource();
+        flameNoise.buffer = noise;
+        const flame = context.createBiquadFilter();
+        flame.type = 'lowpass';
+        flame.frequency.setValueAtTime(500, now);
+        flame.frequency.exponentialRampToValueAtTime(1400, now + 0.12);
+        flame.frequency.exponentialRampToValueAtTime(420, now + 0.7);
+        const breath = context.createGain();
+        envelope(breath, 0.14, 0.06, 0.65);
+        flameNoise.connect(flame).connect(breath).connect(output);
+        flameNoise.start(now, Math.random() * (noise.duration - 0.9), 0.85);
+        for (const [frequency, level] of [[330, 0.05], [495, 0.03], [660, 0.015]]) {
+            const tone = context.createOscillator();
+            tone.frequency.setValueAtTime(frequency * 0.97, now);
+            tone.frequency.exponentialRampToValueAtTime(frequency, now + 0.3);
+            const gain = context.createGain();
+            envelope(gain, level, 0.12, 1.1);
+            tone.connect(gain).connect(output);
+            tone.start(now);
+            tone.stop(now + 1.3);
+        }
+    } else if (kind === 'lantern') {
+        // A lantern turning (bright.js): small glassy ticks one after another, as a run of little bells.
+        [1760, 1976, 2217, 2349, 2637, 2960].forEach((frequency, index) => {
+            const at = now + index * 0.075;
+            const tone = context.createOscillator();
+            tone.type = 'triangle';
+            tone.frequency.value = frequency * (1 + (Math.random() - 0.5) * 0.01);
+            const gain = context.createGain();
+            gain.gain.setValueAtTime(0.0001, at);
+            gain.gain.exponentialRampToValueAtTime(0.035, at + 0.004);
+            gain.gain.exponentialRampToValueAtTime(0.0001, at + 0.35);
+            tone.connect(gain).connect(output);
+            tone.start(at);
+            tone.stop(at + 0.4);
+        });
+    } else if (kind === 'crystal') {
+        // A crystal chiming (bright.js): drops of glass struck in turn, each ringing clear and inharmonic, the higher
+        // partials dying first.
+        [0, 0.13, 0.24, 0.41].forEach((delay, strike) => {
+            const at = now + delay;
+            const base = [2093, 2637, 3136, 2349][strike];
+            for (const [ratio, level, fall] of [[1, 0.05, 1.8], [2.76, 0.022, 0.9], [5.4, 0.01, 0.4]]) {
+                const tone = context.createOscillator();
+                tone.frequency.value = base * ratio;
+                const gain = context.createGain();
+                gain.gain.setValueAtTime(0.0001, at);
+                gain.gain.exponentialRampToValueAtTime(level, at + 0.003);
+                gain.gain.exponentialRampToValueAtTime(0.0001, at + fall);
+                tone.connect(gain).connect(output);
+                tone.start(at);
+                tone.stop(at + fall + 0.05);
+            }
+        });
     } else {
         // The underside: a deep swell, rising and settling.
         const warmth = context.createBiquadFilter();
