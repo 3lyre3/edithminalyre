@@ -10,8 +10,8 @@
 /elysicester/plainly.html /read.html 301
 /elysicester/plainly /read.html 301
 
-# Pages kept beside the work since 4 Oct, off the site (every word of each is on the Read page, which is built from
-# them): an old link to one still finds its place there.
+# Pages kept beside the work since 4 Oct, off the site (each is on the Read page whole, under its own title, in its
+# own order; the Read page is built from the thesis's): an old link to one still finds its place there.
 /essays/numbers-by-paint.html /read#numbers-by-paint 301
 /essays/numbers-by-paint /read#numbers-by-paint 301
 /essays/otototoi.html /read#deleted-otototoi 301
@@ -20,10 +20,6 @@
 /essays/big-nothings /read#deleted-big-nothings 301
 /stories/mycenae-gate.html /read#deleted-mycenae-gate 301
 /stories/mycenae-gate /read#deleted-mycenae-gate 301
-/essays/broken-memory.html /read#p42 301
-/essays/broken-memory /read#p42 301
-/stories/song-of-paris.html /read#p81 301
-/stories/song-of-paris /read#p81 301
 
 # Everything that was under /elysicester/ is now at the top, at the same name.
 /elysicester/* /:splat 301
