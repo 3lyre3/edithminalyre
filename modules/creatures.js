@@ -32,6 +32,8 @@
 // =============================================================================
 
 import {
+    AdditiveBlending,
+    Box3,
     BoxGeometry,
     BufferGeometry,
     CanvasTexture,
@@ -64,6 +66,7 @@ import { blurGeometry, humGeometry } from './hum.js';
 import { birdMaterial, createSteam } from './hums.js';
 import { SEA_LEVEL, alsoBeforeCompile, paint, pose, rimRadius, rimRadiusGLSL, taperedTube, wallX } from './kit.js';
 import { SWELL_GLSL } from './sea.js';
+import { trialOn } from './trials.js';
 
 // =============================================================================
 // Constants
@@ -125,6 +128,19 @@ const SHADE_CELL = [128, 336];
  * dusk's shadows are (Elm: "all the character shadows ... clearly visible").
  */
 const SHADE_SIZE = { hum: [2.1, 0.8], pug: [1.9, 0.72] };
+/**
+ * The hums' shades as banshees (a trial: ?banshees=off; Elm, 4 Oct: "check every hum giver and confirm its shadow lands
+ * where it's seeable. And/or investigate some means of making the shadow easier to see"). Looked at where a visitor
+ * meets each hum, a shade lay as a thin dark bar, edge on as often as not, among the city's own long shadows, as still
+ * as they are, and on the dark water not at all. So: broader, the robe spread as the wraith's own is (its length and
+ * breadth on the floor); billowing, its robe swelling and falling from the hem up and its hood swaying (this share of
+ * its breadth at the hem), as nothing else lying on the floor does; and out on the water, lit along its edge, as the
+ * ripples catch the light there (in the colour of the sea's own crest lines, a little warmed: sea.js).
+ */
+const BANSHEES = trialOn('banshees');
+const BANSHEE_SIZE = [2.4, 1.2];
+const BILLOW = 0.16;
+const GLINT = new Color(0.62, 0.48, 0.56);
 /**
  * How dark a shade lies (the colour the floor is multiplied toward), and how much: as dark and as violet as the
  * walker's own shadow (walk.js: three quarters of the light gone, toward a near-black violet), which Elm's
@@ -845,16 +861,36 @@ function shadeAtlas() {
 const shadeVertex = /* glsl */ `
     attribute float keep;
     attribute float water;
+    attribute float along;
+    attribute float side;
+    attribute float phase;
+    attribute float lit;
     uniform float pull;
     uniform float time;
+    uniform float billow;
+    uniform vec3 across;
+    uniform float breadth;
     varying vec2 vUv;
     varying float vKeep;
+    varying float vWater;
+    varying float vLit;
     ${rimRadiusGLSL()}
     ${SWELL_GLSL}
     void main() {
         vUv = uv;
         vKeep = keep;
+        vWater = water;
+        vLit = lit;
         vec3 at = position;
+        // (A banshee's shade billows: its robe swells and falls in a wave running from the hem (at its feet) up to the
+        // hood, most at the hem, and the hood sways a little from side to side. Its edges go out and in; its middle
+        // stays. A pug's shade stands still: its billow is none.)
+        if (billow > 0.0) {
+            float hem = 1.0 - along;
+            float swell = billow * (0.3 + 0.7 * hem) * sin(time * 2.1 + phase - along * 5.0);
+            float sway = billow * 0.4 * along * sin(time * 1.3 + phase * 1.7);
+            at += across * breadth * (side * 2.0 * swell + sway);
+        }
         // (On the bay, it rides the swell, as the sea does: sea.js.)
         if (water > 0.5) {
             float sea;
@@ -889,13 +925,36 @@ const shadeFragment = /* glsl */ `
 `;
 
 /**
+ * Out on the water, a banshee's shade is lit along its edge, as the ripples catch the light there (and on a floor too
+ * dark for a shade to show, the charity ball's: data/creatures.json shadeLit, its polish catching the chandeliers): a
+ * line where its cover crosses a half (a pixel or so wide, by how fast the cover changes on the screen), and a faint
+ * glow just inside it; added to what's drawn (the water's own dark would swallow a shade's dark alone: Elm's ledger,
+ * "clear on the water"). On any other floor, nothing.
+ */
+const glintFragment = /* glsl */ `
+    uniform sampler2D map;
+    uniform vec3 glint;
+    varying vec2 vUv;
+    varying float vKeep;
+    varying float vLit;
+    void main() {
+        if (vLit < 0.5) discard;
+        float cover = texture2D(map, vUv, 1.5).a * vKeep;
+        float edge = abs(cover - 0.5) / max(fwidth(cover), 1e-4);
+        float line = 1.0 - smoothstep(0.7, 2.0, edge);
+        float glow = smoothstep(0.08, 0.5, cover) * (1.0 - smoothstep(0.5, 0.75, cover));
+        gl_FragColor = vec4(glint * (line * 0.85 + glow * 0.3), 1.0);
+    }
+`;
+
+/**
  * A shade's strip of floor: from (x, z) along `way` for `length`, `breadth` across, laid on the floor as it lies
  * (`floorAt`), fading out where the floor ends or drops away; and where a wall catches it (`wallAt`, once the walls are
  * known), the rest climbs the wall from its foot, as high as the light's `slope` takes it, as the walker's own shadow
  * does (walk.js: "as far as that wall ... and the rest climbs it"; Elm's ledger, the playtester's: "shades for the
  * flying givers on walls ... as the visitor's hum has"). uv runs over its cell, feet to head.
  */
-function shadeStrip({ x, y, z, way, length, breadth, cell, floorAt, surfaceAt, wallAt = null, slope = 1 }) {
+function shadeStrip({ x, y, z, way, length, breadth, cell, floorAt, surfaceAt, wallAt = null, slope = 1, phase = 0, lit = false }) {
     const ALONG = 12;
     const ACROSS = 2;
     const across = new Vector3(-way.z, 0, way.x);
@@ -903,6 +962,9 @@ function shadeStrip({ x, y, z, way, length, breadth, cell, floorAt, surfaceAt, w
     const uvs = [];
     const keeps = [];
     const waters = [];
+    // (Where each corner lies on the figure, feet to hood and side to side, and its own phase: a banshee's billows.)
+    const alongs = [];
+    const sides = [];
     const grid = [];
     // (A shade that begins on a surface drawn above the walk's floor, the Steel Garden's disc or the hostel's room, lies
     // on that surface and ends where it ends, never dropping through it to the floor, the sand or the sea beneath, as
@@ -940,7 +1002,7 @@ function shadeStrip({ x, y, z, way, length, breadth, cell, floorAt, surfaceAt, w
             }
             if (climbs[j] !== null) {
                 const foot = climbs[j];
-                row.push({ p: [foot.x, foot.y + (along - foot.along) * slope + 0.018, foot.z], uv: [cell[0] + (s + 0.5) * cell[2], cell[1] + t * cell[3]], keep: 1, water: 0, climbing: true });
+                row.push({ p: [foot.x, foot.y + (along - foot.along) * slope + 0.018, foot.z], uv: [cell[0] + (s + 0.5) * cell[2], cell[1] + t * cell[3]], keep: 1, water: 0, climbing: true, t, s });
                 continue;
             }
             let floor;
@@ -957,7 +1019,7 @@ function shadeStrip({ x, y, z, way, length, breadth, cell, floorAt, surfaceAt, w
             const lost = ended[j] || floor === null || Math.abs(floor - y) > 1.2;
             const py = (lost ? y : floor) + 0.018;
             last = lost ? last : floor;
-            row.push({ p: [px, py, pz], uv: [cell[0] + (s + 0.5) * cell[2], cell[1] + t * cell[3]], keep: lost ? 0 : 1, water: water ? 1 : 0 });
+            row.push({ p: [px, py, pz], uv: [cell[0] + (s + 0.5) * cell[2], cell[1] + t * cell[3]], keep: lost ? 0 : 1, water: water ? 1 : 0, t, s });
         }
         grid.push(row);
     }
@@ -966,6 +1028,8 @@ function shadeStrip({ x, y, z, way, length, breadth, cell, floorAt, surfaceAt, w
         uvs.push(...vertex.uv);
         keeps.push(vertex.keep);
         waters.push(vertex.water);
+        alongs.push(vertex.t);
+        sides.push(vertex.s);
     };
     for (let i = 0; i < ALONG; i += 1) {
         for (let j = 0; j < ACROSS; j += 1) {
@@ -987,6 +1051,11 @@ function shadeStrip({ x, y, z, way, length, breadth, cell, floorAt, surfaceAt, w
     geometry.setAttribute('uv', new Float32BufferAttribute(uvs, 2));
     geometry.setAttribute('keep', new Float32BufferAttribute(keeps, 1));
     geometry.setAttribute('water', new Float32BufferAttribute(waters, 1));
+    geometry.setAttribute('along', new Float32BufferAttribute(alongs, 1));
+    geometry.setAttribute('side', new Float32BufferAttribute(sides, 1));
+    geometry.setAttribute('phase', new Float32BufferAttribute(new Float32Array(alongs.length).fill(phase), 1));
+    // (Lit along its edge, a banshee's: out on the water, and where it lies on a floor too dark for a shade to show.)
+    geometry.setAttribute('lit', new Float32BufferAttribute(waters.map((water) => (water || lit ? 1 : 0)), 1));
     return geometry;
 }
 
@@ -1329,11 +1398,37 @@ export function createCreatures({ creatures, given, gradientMap, light, floorAt,
      * Every giver's shade strip, the pugs' and the hums' apart: laid on its floor, and, given the walls, climbing the
      * wall that catches it.
      */
+    const humSize = BANSHEES ? BANSHEE_SIZE : SHADE_SIZE.hum;
+    // (Where each giver's shade lies, as laid: the box round its kept corners, in the world, for the camera that
+    // frames a giver with its shade: main.js.)
+    const shadeBoxes = new Map();
+    // (And spots on it as it lies, down its middle from its feet to its head, on the floor or up the wall that caught
+    // it: what the camera must see of it, frame.js.)
+    const shadeSpots = new Map();
+    const corner = new Vector3();
+    const boxOf = (geometry) => {
+        const box = new Box3();
+        const { position, keep } = geometry.attributes;
+        for (let index = 0; index < position.count; index += 1) if (keep.getX(index) > 0.5) box.expandByPoint(corner.fromBufferAttribute(position, index));
+        return box.isEmpty() ? null : box;
+    };
+    const spotsOf = (geometry) => {
+        const { position, keep, along: alongs, side: sides } = geometry.attributes;
+        const nearest = [0.15, 0.4, 0.65, 0.9].map(() => ({ gap: Infinity, at: null }));
+        for (let index = 0; index < position.count; index += 1) {
+            if (keep.getX(index) < 0.5 || Math.abs(sides.getX(index)) > 0.01) continue;
+            const t = alongs.getX(index);
+            [0.15, 0.4, 0.65, 0.9].forEach((want, slot) => {
+                if (Math.abs(t - want) < nearest[slot].gap) nearest[slot] = { gap: Math.abs(t - want), at: new Vector3().fromBufferAttribute(position, index) };
+            });
+        }
+        return nearest.filter((spot) => spot.gap < 0.08).map((spot) => spot.at);
+    };
     const layStrips = (walls) => {
         let wraith = 0;
         let bullBoy = 0;
         const laid = { pug: [], hum: [] };
-        for (const creature of creatures) {
+        for (const [order, creature] of creatures.entries()) {
             if (creature.noShade) continue;
             const [x, y, z] = creature.at;
             const kind = creature.kind === 'pug' ? 'pug' : 'hum';
@@ -1345,15 +1440,24 @@ export function createCreatures({ creatures, given, gradientMap, light, floorAt,
                 ground = creature.floor ?? surfaceAt?.(x, z) ?? floorAt?.(x, z, y - 1) ?? (onBay(x, z) ? SEA_LEVEL : null);
                 if (ground === null || ground > y || y - ground > SHADE_REACH) continue;
             }
-            const [length, breadth] = SHADE_SIZE[kind];
-            laid[kind].push(shadeStrip({ x, y: ground, z, way, length, breadth, cell: shades.cell(index), floorAt, surfaceAt, wallAt: walls, slope }));
+            const [length, breadth] = kind === 'hum' ? humSize : SHADE_SIZE[kind];
+            const strip = shadeStrip({ x, y: ground, z, way, length, breadth, cell: shades.cell(index), floorAt, surfaceAt, wallAt: walls, slope, phase: order * 2.399, lit: Boolean(creature.shadeLit) });
+            shadeBoxes.set(creature.fragment, boxOf(strip));
+            shadeSpots.set(creature.fragment, spotsOf(strip));
+            laid[kind].push(strip);
         }
         return laid;
     };
     const laid = layStrips(null);
-    const shadeUniforms = { map: { value: shades.texture }, tint: { value: SHADE_TINT }, depth: { value: SHADE_DEPTH }, pull: { value: SHADE_PULL }, time: { value: 0 } };
-    const shadeMaterial = (late) => new ShaderMaterial({
-        uniforms: shadeUniforms,
+    const across = new Vector3(-way.z, 0, way.x);
+    const shadeUniforms = {
+        map: { value: shades.texture }, tint: { value: SHADE_TINT }, depth: { value: SHADE_DEPTH }, pull: { value: SHADE_PULL }, time: { value: 0 },
+        billow: { value: 0 }, across: { value: across }, breadth: { value: SHADE_SIZE.pug[1] },
+    };
+    // (The hums' share all but their billow and breadth: banshees billow, bull-boys stand. Still, under reduced motion.)
+    const humUniforms = { ...shadeUniforms, billow: { value: BANSHEES && !reducedMotion ? BILLOW : 0 }, breadth: { value: humSize[1] } };
+    const shadeMaterial = (late, uniforms = shadeUniforms) => new ShaderMaterial({
+        uniforms,
         vertexShader: shadeVertex,
         fragmentShader: shadeFragment,
         transparent: late,
@@ -1374,9 +1478,25 @@ export function createCreatures({ creatures, given, gradientMap, light, floorAt,
     const shadeMesh = new Mesh(merged(laid.pug), shadeMaterial(false));
     shadeMesh.name = 'giver-shades';
     shadeMesh.renderOrder = 1;
-    const humShadeMesh = new Mesh(merged(laid.hum), shadeMaterial(true));
+    const humShadeMesh = new Mesh(merged(laid.hum), shadeMaterial(true, humUniforms));
     humShadeMesh.name = 'giver-shades-hums';
     humShadeMesh.renderOrder = 3;
+    // Out on the water, the banshees' edges lit (BANSHEES): the same strips again, drawn after, added to the light.
+    const glintMesh = BANSHEES ? new Mesh(humShadeMesh.geometry, new ShaderMaterial({
+        uniforms: { ...humUniforms, glint: { value: GLINT } },
+        vertexShader: shadeVertex,
+        fragmentShader: glintFragment,
+        transparent: true,
+        depthWrite: false,
+        blending: AdditiveBlending,
+        polygonOffset: true,
+        polygonOffsetFactor: -2,
+        polygonOffsetUnits: -2,
+    })) : null;
+    if (glintMesh) {
+        glintMesh.name = 'giver-shades-hums-glint';
+        glintMesh.renderOrder = 4;
+    }
     // Once the walls are laid (the hollows' worker, done with the city as built), the shades are laid again: where a
     // wall catches one, the rest climbs it, as the walker's own does. (Laid before, they'd stop at its foot.)
     if (wallAt && wallsReady) {
@@ -1388,13 +1508,14 @@ export function createCreatures({ creatures, given, gradientMap, light, floorAt,
                 mesh.geometry = merged(strips);
                 old.dispose();
             }
+            if (glintMesh) glintMesh.geometry = humShadeMesh.geometry;
         }, () => {});
     }
     for (const mesh of [pugMesh, boardMesh, humMesh]) mesh.renderOrder = 2;
 
     // (They stand in the city's own long shadows, as everything does; they cast none of their own, having their shades.)
     for (const mesh of [pugMesh, boardMesh, humMesh]) mesh.receiveShadow = true;
-    group.objects.push(shadeMesh, humShadeMesh, boardMesh, pugMesh, humMesh, blurMesh, steam.points);
+    group.objects.push(shadeMesh, humShadeMesh, ...(glintMesh ? [glintMesh] : []), boardMesh, pugMesh, humMesh, blurMesh, steam.points);
     // (What comes apart in the dust as the city does: the boards. The pugs and the hums never do: Elm, 4 Oct, "the
     // humanoids, pugs, flowers, and hums are all exceptions to the dissolve".)
     group.materials.push(boardMesh.material);
@@ -1551,6 +1672,34 @@ export function createCreatures({ creatures, given, gradientMap, light, floorAt,
         textures: [faces.texture, boards.texture, shades.texture],
         /** Whether a passage has a giver. */
         has: (id) => spots.has(id),
+        /** Where a passage's giver's shade lies (the box round it, in the world, as laid), or null: main.js frames it. */
+        shadeOf: (id) => shadeBoxes.get(id) ?? null,
+        /**
+         * What's to be kept in view when a passage's giver is framed (frame.js): its body (a pug's, and the board on its
+         * easel behind it) and its shade, as points in the world; or null if it has no giver.
+         */
+        framing(id) {
+            const spot = spots.get(id);
+            if (!spot) return null;
+            const points = [];
+            const ball = (center, radius) => {
+                for (const [dx, dy, dz] of [[1, 0, 0], [-1, 0, 0], [0, 1, 0], [0, -1, 0], [0, 0, 1], [0, 0, -1]]) points.push(center.clone().add(new Vector3(dx, dy, dz).multiplyScalar(radius)));
+            };
+            const pug = spot.creature.kind === 'pug';
+            const body = spot.at.clone().setY(spot.at.y + (pug ? 0.24 : 0) * PUG_SIZE);
+            ball(body, pug ? 0.26 * PUG_SIZE : 0.32);
+            if (pug) {
+                const facing = spot.creature.facing ?? 0;
+                const back = spot.creature.boardBack ?? 0.34;
+                ball(new Vector3(spot.at.x - Math.sin(facing) * back, spot.at.y + 0.45, spot.at.z - Math.cos(facing) * back), 0.42);
+            }
+            const shade = shadeBoxes.get(id) ?? null;
+            if (shade) for (let index = 0; index < 8; index += 1) points.push(new Vector3(index & 1 ? shade.max.x : shade.min.x, index & 2 ? shade.max.y : shade.min.y, index & 4 ? shade.max.z : shade.min.z));
+            // (And the side and nearness found for it beforehand, for a wide screen and a narrow one: frame.js.)
+            return { points, body, shade, spots: shadeSpots.get(id) ?? [], kind: spot.creature.kind, hasShade: Boolean(shade), hints: spot.creature.frames ?? null };
+        },
+        /** The way every shade runs from beneath its giver (away from the light), along the floor. */
+        shadeWay: way.clone(),
         /** Where a passage's giver is to be found (its word shown, a tap taken): above a pug's head, at a hum. */
         pointOf: (id) => spots.get(id)?.point ?? null,
         /** A passage's giver's body, as a ball (a tap anywhere on it finds it): { center, radius }, or null. */

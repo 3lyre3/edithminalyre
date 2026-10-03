@@ -1245,6 +1245,15 @@ html[data-returning] .veil {
     box-shadow: 0 0 60px rgba(0, 0, 0, 0.6);
 }
 
+/* A giver's passage stands to the left on a wide screen, so its giver can be seen beside it with its shade, framed in
+   the open part (a trial, ?frame=off: frame.js, Elm's "B"). On a phone it rises from the bottom as ever. */
+@media (min-width: 900px) {
+    .reader.is-beside {
+        margin-left: max(24px, 4vw);
+        margin-right: auto;
+    }
+}
+
 .reader::backdrop {
     background: rgba(5, 5, 6, 0.35);
 }
