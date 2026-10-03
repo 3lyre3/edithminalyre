@@ -219,9 +219,11 @@ export function taperedTube(points, fromRadius, toRadius, color, segments = 24, 
 const BREATHE_EVERY = 30;
 /** How much of the city's cube the metals show (reflective): the gold of the halls, trees and bridges; the hums' bronze. */
 // (The cube is the dusk in linear light, before the ink's tone map: dark but for the horizon's glow and the city's lights,
-// which is what metal at dusk shows; so it's shown strongly, its dark adding little and its bright streaks a sheen.)
-export const GOLD_SHOWS = 1;
-export const BRONZE_SHOWS = 1.4;
+// which is what metal at dusk shows; so it's shown strongly, its dark adding little and its bright streaks a sheen. Elm,
+// 3 Oct, of the preview's strengths: "metallicity 2.5x is good": two and a half times the first, so the gold takes the
+// sunset's rose and orange.)
+export const GOLD_SHOWS = 2.5;
+export const BRONZE_SHOWS = 3.5;
 let breathed = 0;
 export async function breathe() {
     const now = performance.now();

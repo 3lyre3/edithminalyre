@@ -35,7 +35,6 @@ import {
 } from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { alsoBeforeCompile, light, paint, pose, taperedTube } from './kit.js';
-import { NIMBLE } from './ink.js';
 import { ball, band, cut, distanceOf, egg, limb, sculpt } from './sculpt.js';
 import { trialOn } from './trials.js';
 
@@ -423,13 +422,6 @@ async function sculptedAllison() {
  * @param {boolean} options.reducedMotion
  */
 export async function createAllison({ at, facing, gradientMap, reducedMotion }) {
-    // (Elm's other Allison, revised with Codex (3 Oct), for her to set beside these: ?allison=codex. Its own module,
-    // fetched only when asked for; on a touch screen its lighter detail.)
-    const asked = new URLSearchParams(globalThis.location?.search ?? '').get('allison');
-    if (asked === 'codex' || asked === 'codex-light') {
-        const codex = await import('./allison-codex.js');
-        return codex.createAllison({ at, facing, gradientMap, reducedMotion, detail: NIMBLE || asked === 'codex-light' ? 'mobile' : 'high' });
-    }
     // (Sculpted, a trial: ?sculpted=off, the figure he was.)
     const sculpted = trialOn('sculpted');
     const geometry = sculpted ? await sculptedAllison() : allisonGeometry();
