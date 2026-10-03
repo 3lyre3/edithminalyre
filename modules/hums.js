@@ -35,7 +35,7 @@ import {
     Vector3,
 } from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { createRandom, paint, pose } from './kit.js';
+import { BRONZE_SHOWS, createRandom, paint, pose, reflective } from './kit.js';
 
 // =============================================================================
 // Constants
@@ -110,7 +110,8 @@ export function birdMaterial(gradientMap, clock) {
                 'transformed.xy = mat2(cos(lift), sin(lift), -sin(lift), cos(lift)) * transformed.xy;',
             ].join('\n'));
     };
-    return material;
+    // (Bronze, metal: the city's cube in it, as in the gold: kit.js.)
+    return reflective(material, BRONZE_SHOWS);
 }
 
 // =============================================================================

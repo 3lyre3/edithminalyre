@@ -17,6 +17,7 @@ import {
     BufferGeometry,
     CatmullRomCurve3,
     Color,
+    CubeTexture,
     DataTexture,
     DoubleSide,
     Euler,
@@ -32,6 +33,7 @@ import {
     RGBAFormat,
     RedFormat,
     RepeatWrapping,
+    SRGBColorSpace,
     TubeGeometry,
     UnsignedByteType,
     Vector2,
@@ -39,6 +41,7 @@ import {
     Vector4,
 } from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { trialOn } from './trials.js';
 
 // =============================================================================
 // The island's shape and the noise, from shape.js
@@ -214,6 +217,13 @@ export function taperedTube(points, fromRadius, toRadius, color, segments = 24, 
  * nothing built changes.
  */
 const BREATHE_EVERY = 30;
+/** How much of the city's cube the metals show (reflective): the gold of the halls, trees and bridges; the hums' bronze. */
+// (The cube is the dusk in linear light, before the ink's tone map: dark but for the horizon's glow and the city's lights,
+// which is what metal at dusk shows; so it's shown strongly, its dark adding little and its bright streaks a sheen. Elm,
+// 3 Oct, of the preview's strengths: "metallicity 2.5x is good": two and a half times the first, so the gold takes the
+// sunset's rose and orange.)
+export const GOLD_SHOWS = 2.5;
+export const BRONZE_SHOWS = 3.5;
 let breathed = 0;
 export async function breathe() {
     const now = performance.now();
@@ -340,11 +350,12 @@ export function createMaterials() {
     const weathered = (material, look) => (ageing ? weather(material, look) : material);
     return {
         /** The halls and houses, the great golden trees: a tarnish in patches, moss where the sun never comes. */
-        gold: weathered(toon({ emissive: 0x8a7424, emissiveIntensity: 0.3 }), {
+        // (Gold, metal: the city's cube in it, as in the bridges' and the hums': reflective.)
+        gold: reflective(weathered(toon({ emissive: 0x8a7424, emissiveIntensity: 0.3 }), {
             mottle: 0.8, streaks: 0.75, damp: 0.7, moss: 0.55, salt: 0.25, age: 0.38, tint: 0x6e6440, seed: 0.13,
-        }),
+        }), GOLD_SHOWS),
         /** The golden bridges between the buildings (places.js): gold of their own, which comes apart into dust. */
-        bridge: toon({ emissive: 0x8a7424, emissiveIntensity: 0.32, side: DoubleSide }),
+        bridge: reflective(toon({ emissive: 0x8a7424, emissiveIntensity: 0.32, side: DoubleSide }), GOLD_SHOWS),
         /** The sea-wall's golden bricking: salted and weeded low down, where the sea "erupts" against it. */
         bricking: weathered(bricks(toon({ emissive: 0x8a7424, emissiveIntensity: 0.28 })), {
             mottle: 0.6, streaks: 0.85, damp: 0.6, moss: 0.7, salt: 0.9, age: 0.3, tint: 0x6a6a48, seed: 0.41,
@@ -448,6 +459,103 @@ export function duskLight(material, { sun, rim = 0, shine = 0, tip = 0, tipFrom 
                 '    float mirror = max(dot(reflect(-sunView, normal), toEye), 0.0);',
                 '    outgoingLight += duskShine * diffuseColor.rgb * smoothstep(0.84, 0.92, mirror);',
                 '    outgoingLight += duskTip * diffuseColor.rgb * smoothstep(duskTipRange.x, duskTipRange.y, vDuskHeight);',
+                '}',
+                '#include <opaque_fragment>',
+            ].join('\n'));
+    });
+    return material;
+}
+
+/**
+ * The metals' cubemap (Elm, 3 Oct: "a simple reflective map to the birds and gold buildings which are technically
+ * made of metal"; "cubemap reflections specifically so extra simple"): one cube of the finished city, taken from high
+ * over its middle (stage.js, takeMetalSky) and kept as a picture (bake-metal-sky.mjs: assets/metal-sky.png, its six
+ * faces side by side, +x, -x, +y, -y, +z, -z), which every metal surface shows by its reflection. Taken live, as it
+ * first was, it held a phone's way in for seconds (six renders of the whole city); kept, it costs a small picture.
+ * Until it's loaded (or if it can't be), a cube of the dusk's own violet. Shared: every reflective material reads
+ * this one uniform.
+ */
+export const METAL_SKY = { value: null };
+
+/** The kept cube: its faces as the city's cube holds them, row for row (sRGB, eight bits). */
+const METAL_SKY_FILE = '../assets/metal-sky.png';
+
+/** Load the kept cube into METAL_SKY (the metal trial only); until it comes, and if it can't, the dusk's violet. */
+export async function loadMetalSky() {
+    if (!trialOn('metal')) return;
+    try {
+        const response = await fetch(new URL(METAL_SKY_FILE, import.meta.url));
+        if (!response.ok) return;
+        const strip = await createImageBitmap(await response.blob());
+        const size = strip.height;
+        const faces = Array.from({ length: 6 }, (_, face) => {
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            canvas.getContext('2d').drawImage(strip, face * size, 0, size, size, 0, 0, size, size);
+            return canvas;
+        });
+        // (Uploaded unflipped, as a cube's faces are: each picture's first row is the face's first, as it was taken.)
+        const cube = new CubeTexture(faces);
+        cube.colorSpace = SRGBColorSpace;
+        cube.generateMipmaps = true;
+        cube.minFilter = LinearMipmapLinearFilter;
+        cube.magFilter = LinearFilter;
+        cube.needsUpdate = true;
+        METAL_SKY.value = cube;
+    } catch {
+        // (The dusk's violet stays.)
+    }
+}
+
+/** The cube before the city's is taken: each face one pixel of the dusk's violet. */
+function duskCube() {
+    const faces = Array.from({ length: 6 }, () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = 1;
+        canvas.height = 1;
+        const context = canvas.getContext('2d');
+        context.fillStyle = '#2a1838';
+        context.fillRect(0, 0, 1, 1);
+        return canvas;
+    });
+    const cube = new CubeTexture(faces);
+    cube.needsUpdate = true;
+    return cube;
+}
+
+/**
+ * A metal: what its reflection meets in the city's cube (METAL_SKY), coloured by the metal itself, added over its
+ * drawn light, and more of it at a glancing angle, as metal shows its surroundings most where it turns away. (The
+ * inside of anything the dust has opened is drawn black before this, so it stays black: dust.js.)
+ * @param {import('three').Material} material
+ * @param {number} strength - how much of the cube it shows (0 none)
+ */
+export function reflective(material, strength) {
+    // (A trial: ?metal=off leaves the metals as they were.)
+    if (!trialOn('metal')) return material;
+    METAL_SKY.value ??= duskCube();
+    alsoBeforeCompile(material, `reflective-${strength}`, (shader) => {
+        shader.uniforms.metalSky = METAL_SKY;
+        // (?debug=1&metalshow=N: every metal's strength times N, for the local checks to try.)
+        const search = new URLSearchParams(globalThis.location?.search ?? '');
+        const scale = search.has('debug') ? Number(search.get('metalshow') ?? 1) || 1 : 1;
+        shader.uniforms.metalStrength = { value: strength * scale };
+        shader.fragmentShader = shader.fragmentShader
+            .replace('#include <common>', '#include <common>\nuniform samplerCube metalSky;\nuniform float metalStrength;')
+            .replace('#include <opaque_fragment>', [
+                '{',
+                '    vec3 metalToEye = normalize(vViewPosition);',
+                '    vec3 metalBounce = inverseTransformDirection(reflect(-metalToEye, normal), viewMatrix);',
+                '    float metalGlance = pow(1.0 - clamp(dot(normal, metalToEye), 0.0, 1.0), 3.0);',
+                '    // What the reflection meets, sharp (the cube\'s finer levels: a blurred dusk is only a tint); laid in as the',
+                '    // city\'s light is, in steps: the dark sky nothing, the horizon\'s glow a band, the city\'s lights the brightest,',
+                '    // each in its own hue, coloured by the metal.',
+                '    vec3 metalSeen = textureLod(metalSky, metalBounce, 0.0).rgb;',
+                '    float metalBright = dot(metalSeen, vec3(0.3, 0.55, 0.15));',
+                '    // (Steps where the city\'s light lies in the kept cube: a fifth of it brighter than the first, one part in twenty the second.)',
+                '    float metalStep = 0.35 * smoothstep(0.115, 0.16, metalBright) + 0.65 * smoothstep(0.46, 0.64, metalBright);',
+                '    outgoingLight += diffuseColor.rgb * (metalSeen / max(metalBright, 1e-3)) * metalStep * metalStrength * (0.5 + 0.5 * metalGlance);',
                 '}',
                 '#include <opaque_fragment>',
             ].join('\n'));

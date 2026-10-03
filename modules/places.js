@@ -66,6 +66,7 @@ import { trialOn } from './trials.js';
 import { WALKER_GLSL } from './walk.js';
 import {
     Buckets,
+    GOLD_SHOWS,
     SEA_LEVEL,
     alsoBeforeCompile,
     breathe,
@@ -78,6 +79,7 @@ import {
     paint,
     paintBy,
     pose,
+    reflective,
     rimRadius,
     taperedTube,
     wallX,
@@ -124,6 +126,18 @@ const DOOR = light(0xffd23a, 2.6);
 const BEYOND = light(0xfff4d0, 4.6);
 const STAR = light(0xfff0c0, 4.4);
 const GLITCH = [light(0xff3ad8, 3.0), light(0x3afff0, 3.0)];
+
+/**
+ * The bright things a touch may find (a trial, trials.js; bright.js answers them): how fast the light runs along a
+ * string of lights from the bulb touched (metres a second), and how a lamp is listed. Each is { kind, center, radius,
+ * fragment: null, lights: [{ at, color, size, after?, kind? }] }.
+ */
+const BRIGHT_RUNS = 3.4;
+
+/** A lamp, touched, brightens: its one light swells and settles. */
+function brightLamp(at, radius, size, color = LAMP) {
+    return { kind: 'lamp', center: at.clone(), radius, fragment: null, lights: [{ at: at.clone(), color, size }] };
+}
 
 const GATE_Z = -3.2;
 /**
@@ -1201,7 +1215,7 @@ function buildQuay(buckets, { north, south, jetty }) {
  * stage's middle, so the way from the jetty to the gate in the wall runs
  * straight between them. Each as built and as aged (CAFE_BUILDS).
  */
-function buildCafes({ buckets, place, mounts, extras, animated, wanted, materials, still }) {
+function buildCafes({ buckets, place, mounts, extras, animated, wanted, materials, still, bright = null }) {
     const z = place.position[2];
     // Their stage: a platform out from the wall, with an apron before the cafés (where the footlights stand)
     // wide enough to walk, running on past the last café's outer wall toward the sun-dock. Its north end is
@@ -1231,6 +1245,8 @@ function buildCafes({ buckets, place, mounts, extras, animated, wanted, material
     for (let x = jettyStart + 1.5; x < jettyEnd; x += 3.6) {
         buckets.add('steel', cylinder(0.05, 0.06, 1.7, 5, { x, y: 1.0, z: z + 0.78 }, STEEL_DARK));
         buckets.add('glow', ball(0.16, { x, y: 1.95, z: z + 0.78 }, LAMP, 8, 6));
+        // (A bright thing: touched, it brightens. bright.js)
+        bright?.push(brightLamp(new Vector3(x, 1.95, z + 0.78), 0.36, 1.2));
     }
 
     const audience = new Vector3(21, 0, z);
@@ -1294,6 +1310,14 @@ function buildCafes({ buckets, place, mounts, extras, animated, wanted, material
         for (const piece of frame(pieces, at)) buckets.add('brick', piece);
         for (const piece of frame(glows, at)) buckets.add('glow', piece);
         washes.push(frame([wash], at)[0]);
+        // (A bright thing: Cafiarmaí's lantern, touched, turns: its light goes round from side to side, and again.
+        // bright.js)
+        if (build.lantern && bright) {
+            const high = towerBase + towerTall * 0.62;
+            const sides = [-1, 1].map((side) => inFrame(side * (tower / 2 + 0.01), high, 0.55, at));
+            const lights = [0, 1, 2, 3].map((turn) => ({ at: sides[turn % 2], color: WINDOW_LOW, size: 0.6, after: turn * 0.3 }));
+            bright.push({ kind: 'lantern', center: inFrame(0, high, 0.55, at), radius: tower / 2 + 0.22, fragment: null, lights });
+        }
         // A board above the awning, under the gable.
         mount(mounts, `jetty-cafes/cafe-${index + 1}`, {
             position: inFrame(0, 2.03, 1.09, at),
@@ -2758,7 +2782,7 @@ function sweptBar(at, segments, width, thickness, color, tilt = 0) {
  * One golden bridge, from a to b (each { point: its deck's top at that end, door: the face's outward normal where
  * it leaves a hall, or ring: the tree it leaves, or wall: true }), in the style its span asks for.
  */
-function goldenBridge(buckets, a, b, random) {
+function goldenBridge(buckets, a, b, random, touch = null) {
     const span = Math.hypot(b.point.x - a.point.x, b.point.z - a.point.z);
     const way = new Vector3(b.point.x - a.point.x, 0, b.point.z - a.point.z).normalize();
     const side = new Vector3(-way.z, 0, way.x);
@@ -2786,6 +2810,8 @@ function goldenBridge(buckets, a, b, random) {
             const foot = deckAt(t).add(offset);
             pieces.push(box(0.06, BRIDGE_RAIL + 0.3, 0.06, { x: foot.x, y: foot.y + (BRIDGE_RAIL + 0.3) / 2, z: foot.z }, GOLDS[3]));
             glows.push(ball(0.08, { x: foot.x, y: foot.y + BRIDGE_RAIL + 0.36, z: foot.z }, LAMP, 6, 4));
+            // (A bright thing: touched, it brightens. bright.js)
+            touch?.push(brightLamp(new Vector3(foot.x, foot.y + BRIDGE_RAIL + 0.36, foot.z), 0.26, 0.8));
         }
     }
     // Arched beneath: an arch springing from below each end, rising to meet the deck at its middle, and slender
@@ -2859,7 +2885,7 @@ function goldenBridge(buckets, a, b, random) {
  * passes through one, it comes apart into glittering gold dust. (?bridges=off leaves them out, to compare.)
  * A stream of its own. Returns the uniforms the dust needs, for the walk to keep the sight line in.
  */
-async function buildGoldenBridges(buckets, materials, halls, trees, byId) {
+async function buildGoldenBridges(buckets, materials, halls, trees, byId, touch = null) {
     if (!halls?.length || new URLSearchParams(globalThis.location?.search ?? '').get('bridges') === 'off') return null;
     const random = createRandom(6007);
     // The ends a bridge may leave from, building by building.
@@ -3019,7 +3045,7 @@ async function buildGoldenBridges(buckets, materials, halls, trees, byId) {
         candidate.B.used += 1;
     }
     for (const { a, b } of taken) {
-        goldenBridge(buckets, a, b, random);
+        goldenBridge(buckets, a, b, random, touch);
         await breathe();
     }
 
@@ -3195,7 +3221,7 @@ function unindexed(geometry) {
     return geometry.index ? geometry.toNonIndexed() : geometry;
 }
 
-async function buildDressing(buckets, { halls, spires, byId, extras, animated, still, keepOff = null }) {
+async function buildDressing(buckets, { halls, spires, byId, extras, animated, still, keepOff = null, touch = null }) {
     const random = createRandom(7331);
     // (Where another place stands that came after the dressing, Cassandra's house, a trial: what would stand there is
     // laid out as ever, from the same stream, taking its room, but isn't built.)
@@ -3241,6 +3267,8 @@ async function buildDressing(buckets, { halls, spires, byId, extras, animated, s
         at.add('glow', ball(0.12, { x, y: y + 2.58, z }, LAMP, 8, 6));
         take(x, z, 0.3);
         counts.lamps += 1;
+        // (A bright thing: touched, it brightens. bright.js)
+        if (touch && at !== UNBUILT) touch.push(brightLamp(new Vector3(x, y + 2.58, z), 0.34, 1.1));
     };
 
     // A bench for two, its seat facing +z in its own frame (turned by facing).
@@ -3439,10 +3467,15 @@ async function buildDressing(buckets, { halls, spires, byId, extras, animated, s
         buckets.add('steel', paint(new TubeGeometry(curve, 14, 0.012, 3, false), IRON), { passable: true });
         const length = curve.getLength();
         const bulbs = Math.floor(length / 0.42);
+        const lit = [];
         for (let bulb = 1; bulb < bulbs; bulb += 1) {
             const at = curve.getPointAt(bulb / bulbs);
-            buckets.add('glow', ball(0.05, { x: at.x, y: at.y - 0.07, z: at.z }, pick(BULBS), 6, 4), { passable: true });
+            const color = pick(BULBS);
+            buckets.add('glow', ball(0.05, { x: at.x, y: at.y - 0.07, z: at.z }, color, 6, 4), { passable: true });
+            lit.push({ at: new Vector3(at.x, at.y - 0.07, at.z), color, size: 0.36 });
         }
+        // (Bright things: a bulb touched, the light runs along its string from it, both ways. bright.js)
+        if (touch) for (const bulb of lit) touch.push({ kind: 'lantern', center: bulb.at.clone(), radius: 0.24, fragment: null, lights: lit, runs: BRIGHT_RUNS });
         counts.strings += 1;
     }
 
@@ -5010,7 +5043,7 @@ function silhouettes(feet, atlas, cells, { color, name }) {
  * Cassandra's thanks; the band); on the balcony, she says it. A stream of its own, so nothing else moves. Returns its
  * floors, the scene (stage.js steps it; main.js voices it) and what a touch finds (her, on the balcony).
  */
-function buildBall({ extras, still, materials }) {
+function buildBall({ extras, still, materials, bright = null }) {
     const random = createRandom(7707);
     const floor = BALL_FLOOR;
     const width = BALL_EAST - BALL_WEST;
@@ -5268,6 +5301,16 @@ function buildBall({ extras, still, materials }) {
             drop.setAttribute('sparkle', new Float32BufferAttribute(new Array(drop.attributes.position.count).fill(random()), 1));
             crystals.push(drop);
         }
+        // (A bright thing: a chandelier, touched, chimes, its drops flashing in turn as stars. bright.js)
+        if (bright) {
+            const lights = [];
+            for (let arm = 0; arm < 8; arm += 1) {
+                const angle = (arm / 8) * Math.PI * 2 + 0.39;
+                lights.push({ at: new Vector3(cx + Math.cos(angle) * 0.4, hang - 0.13, z + Math.sin(angle) * 0.4), color: 0xe8f4ff, size: 0.26, kind: 'star', after: ((arm * 3) % 8) * 0.07 });
+            }
+            lights.push({ at: new Vector3(cx, hang - 0.14, z), color: 0xfff2d0, size: 0.9 });
+            bright.push({ kind: 'crystal', center: new Vector3(cx, hang + 0.1, z), radius: 0.55, fragment: null, lights });
+        }
     }
     // Behind the wall: the corridor's "abandoned costume lockers" (one hangs open, a fae robe still in it, pinks and
     // greens) and its "empty changerooms", their curtains half drawn.
@@ -5380,7 +5423,8 @@ function buildBall({ extras, still, materials }) {
     panel(balconyMiddle, balconyFar + 0.035, balconyEast, balconyFar + 0.035);
     panel(balconyWest, BALL_NORTH, balconyWest, balconyFar);
     panel(balconyEast, BALL_NORTH, balconyEast, balconyFar);
-    const railing = new Mesh(mergeGeometries(panels, false), new MeshToonMaterial({ gradientMap: materials.gold.gradientMap, map: filigree, color: RAIL_GOLD, alphaTest: 0.45, side: DoubleSide }));
+    // (Gold, metal: the city's cube in it, as in the halls': kit.js.)
+    const railing = new Mesh(mergeGeometries(panels, false), reflective(new MeshToonMaterial({ gradientMap: materials.gold.gradientMap, map: filigree, color: RAIL_GOLD, alphaTest: 0.45, side: DoubleSide }), GOLD_SHOWS));
     railing.name = 'ball-railing';
     group.add(railing);
     // The hidden door, dark, its bar of polished gold at waist height on the hall's side: on its west hinge, it swings
@@ -5634,11 +5678,13 @@ export async function buildPlaces(buckets, placeData, materials, pause = async (
 
     const anchors = new Map();
     const built = new Map();
+    // The bright things a touch may find (a trial: bright.js), listed as each place builds them.
+    const bright = trialOn('bright') ? [] : null;
     // (A place on trial, trials.js, is built only while its trial is on.)
     for (const place of placeData.places.filter((entry) => entry.tier === 1 && (!entry.trial || trialOn(entry.trial)))) {
         const builder = BUILDERS[place.id];
         if (builder) {
-            built.set(place.id, await builder({ buckets, place, random, byId, extras, animated, materials, mounts, wanted, still, grand, halls: houses.hallSpecs ?? [] }));
+            built.set(place.id, await builder({ buckets, place, random, byId, extras, animated, materials, mounts, wanted, still, grand, halls: houses.hallSpecs ?? [], bright }));
             await pause();
         }
         anchors.set(place.id, new Vector3().fromArray(place.position));
@@ -5653,7 +5699,7 @@ export async function buildPlaces(buckets, placeData, materials, pause = async (
         buildChute(buckets, spires);
     }
     // The golden bridges between the buildings (a stream of their own), and the clock their dust keeps.
-    const bridges = await buildGoldenBridges(buckets, materials, houses.hallSpecs, spires ?? [], byId);
+    const bridges = await buildGoldenBridges(buckets, materials, houses.hallSpecs, spires ?? [], byId, bright);
     if (bridges) animated.push((time) => { bridges.uniforms.bridgeTime.value = time; });
     // The city dressed: its market, lamps, benches, plants, and its park and fountain (Elm's ask; a stream of its
     // own; the grand city's; ?dressing=off leaves it out).
@@ -5662,7 +5708,7 @@ export async function buildPlaces(buckets, placeData, materials, pause = async (
     const lots = [built.has('cassandras-house') ? onCassandrasLot : null, built.has('charity-ball') ? onBallsLot : null].filter(Boolean);
     const keepOff = lots.length ? (x, z, r) => lots.some((onLot) => onLot(x, z, r)) : null;
     const dressing = dressed && houses.hallSpecs
-        ? await buildDressing(buckets, { halls: houses.hallSpecs, spires: spires ?? [], byId, extras, animated, still, keepOff })
+        ? await buildDressing(buckets, { halls: houses.hallSpecs, spires: spires ?? [], byId, extras, animated, still, keepOff, touch: bright })
         : null;
 
     return {
@@ -5698,8 +5744,13 @@ export async function buildPlaces(buckets, placeData, materials, pause = async (
         bridgeDust: bridges?.dustOf ?? null,
         /** What the dressing set down, by kind (for the local checks), or null. */
         dressing,
-        /** What a touch may find, and the words it opens: [{ kind, center, radius, fragment }] (touch.js). */
-        touch: [...built.values()].flatMap((result) => result?.touch ?? []),
+        /**
+         * What a touch may find, and the words it opens: [{ kind, center, radius, fragment }] (touch.js); and the
+         * bright things (a trial), which open none: [{ kind, center, radius, fragment: null, lights }] (bright.js).
+         */
+        touch: [...[...built.values()].flatMap((result) => result?.touch ?? []), ...(bright ?? [])],
+        /** How many bright things a touch may find, by kind (for the local checks), or null. */
+        bright: bright ? Object.fromEntries(['lamp', 'lantern', 'crystal'].map((kind) => [kind, bright.filter((thing) => thing.kind === kind).length])) : null,
         update(time) {
             for (const step of animated) step(time);
         },
