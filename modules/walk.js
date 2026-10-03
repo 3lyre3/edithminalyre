@@ -835,9 +835,13 @@ export function createWalk({ light, reducedMotion, gradientMap = null }) {
 
     /**
      * Try a step from the walker's place by (dx, dz): true, with `next` set, if
-     * there's floor within a step's height and no wall there. (Standing in a
-     * wall already, as it might where it was first set down, any step is
-     * allowed, so nothing ever holds the walker fast.)
+     * there's floor within a step's height and no wall there. (Against a wall
+     * already, or in one, as it might be where it was first set down, a step
+     * out of it or along it is allowed, so nothing ever holds the walker fast;
+     * but never further in. Elm, 3 Oct, "flew into wall next to hostel and got
+     * stuck": from the hostel's sand, which runs up to the sea-wall's face, a
+     * step went on through the face into the hollow within the wall, and every
+     * step back met the face from inside. Walls all round, any way is out.)
      */
     function tryStep(dx, dz) {
         next.set(state.position.x + dx, state.position.y, state.position.z + dz);
@@ -848,7 +852,11 @@ export function createWalk({ light, reducedMotion, gradientMap = null }) {
         if (HUM ? floor - state.position.y > HUM_CLIMB : Math.abs(floor - state.position.y) > STEP) return false;
         next.y = floor;
         if (aloft(next.x, next.z, floor)) return true;
-        return !blocked(next.x, next.z) || blocked(state.position.x, state.position.z);
+        if (!blocked(next.x, next.z)) return true;
+        if (!blocked(state.position.x, state.position.z)) return false;
+        const away = wallNormal(state.position.x, state.position.z);
+        if (!away) return true;
+        return dx * away.x + dz * away.z >= -0.25 * Math.hypot(dx, dz);
     }
 
     /**
@@ -1377,6 +1385,16 @@ export function createWalk({ light, reducedMotion, gradientMap = null }) {
             followDistance = MathUtils.clamp(followDistance * factor, FOLLOW_NEAR, FOLLOW_FAR);
         },
 
+        /**
+         * Walking, swivel the camera round the hum (Elm: "a two-finger gesture in which the fingers turn in opposite
+         * directions to swivel the camera around the hum"), by radians, clockwise on the screen: the city turns as the
+         * fingers do. It stays so while the hum is still; going on, the camera comes round behind it again, as ever.
+         */
+        turnBy(angle) {
+            if (!state.walking) return;
+            followTheta += angle;
+        },
+
         /** Walking, set how far back the camera stands (it eases there), from close over the shadow to FOLLOW_FAR. */
         zoomTo(distance) {
             if (!state.walking) return;
@@ -1435,8 +1453,10 @@ export function createWalk({ light, reducedMotion, gradientMap = null }) {
             dustTargets = parts.dustTargets ?? null;
             dustNear = parts.dustNear ?? null;
             if (dustNear) lensOpen.copy(dustNear);
-            // Walking, the wheel, a pinch, or + and − bring the camera closer or draw it back (the rig hands them on).
+            // Walking, the wheel, a pinch, or + and − bring the camera closer or draw it back, and a twist of two
+            // fingers swivels it round the hum (the rig hands them on).
             rig.handsOffZoom = (factor) => walk.zoomBy(factor);
+            rig.handsOffTurn = (angle) => walk.turnBy(angle);
 
             // The shadow waits at the end of the jetty, looking out to sea (in place of the one on the café
             // wall), a ring breathing on the boards at its feet to say it can be taken.
@@ -1524,7 +1544,8 @@ export function createWalk({ light, reducedMotion, gradientMap = null }) {
             pressDown = (event) => {
                 if (event.pointerType !== 'mouse') touches.add(event.pointerId);
                 if (!state.walking) return;
-                // A second finger down makes a pinch (the camera's: the rig hands it on), and the first stops steering.
+                // A second finger down makes a pinch or a twist (the camera's: the rig hands them on), and the first
+                // stops steering.
                 if (touches.size > 1) {
                     if (press) {
                         if (stick.active) releaseStick();

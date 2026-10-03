@@ -356,6 +356,43 @@ export function createHotspots({ stage, fragments, read, places, label, reducedM
         return candidates.find(({ entry }) => visible(entry)) ?? null;
     }
 
+    // The label (a place's name, or a giver's line) stands centred above its point, but always whole on the screen and
+    // never over the controls along the top (the one option, the count, the hum's button): with no room above, it
+    // stands below the point. (Elm's phone, 3 Oct: Allison's line over "zoom out" and the count, and off the edge.)
+    // Its size and the controls' edge are measured as its words change (and on a resize), not every frame.
+    const LABEL_MARGIN = 10;
+    const LABEL_GAP = 18;
+    const topControls = ['one-button', 'inventory-toggle', 'hum-button'].map((id) => document.getElementById(id)).filter(Boolean);
+    let labelBox = null;
+    const measureLabel = () => {
+        let top = LABEL_MARGIN;
+        for (const control of topControls) {
+            if (control.hidden) continue;
+            const box = control.getBoundingClientRect();
+            if (box.height > 0 && box.top < innerHeight * 0.25) top = Math.max(top, box.bottom + 6);
+        }
+        labelBox = { width: label.offsetWidth, height: label.offsetHeight, top };
+    };
+    addEventListener('resize', () => {
+        labelBox = null;
+    });
+    function placeLabel(screen) {
+        if (!labelBox || !labelBox.width) measureLabel();
+        const { width, height, top } = labelBox;
+        // (Its CSS sets it centred on the spot it's given, its foot LABEL_GAP above: translate(-50%, -100% - 18px).)
+        const half = width / 2;
+        const x = MathUtils.clamp(screen.x, LABEL_MARGIN + half, Math.max(LABEL_MARGIN + half, innerWidth - LABEL_MARGIN - half));
+        let y = screen.y;
+        if (screen.y - LABEL_GAP - height < top) {
+            const below = screen.y + LABEL_GAP;
+            y = below + height <= innerHeight - LABEL_MARGIN ? below + height + LABEL_GAP : top + height + LABEL_GAP;
+        }
+        // (And whatever the point's place, its head even above the screen with the camera close: the box itself between
+        // the controls' edge and the screen's foot.)
+        y = MathUtils.clamp(y, top + height + LABEL_GAP, Math.max(top + height + LABEL_GAP, innerHeight - LABEL_MARGIN + LABEL_GAP));
+        label.style.translate = `${Math.round(x)}px ${Math.round(y)}px`;
+    }
+
     function setLit(entry) {
         const attribute = geometry.attributes.aLit;
         if (lit) attribute.setX(lit.index, 0);
@@ -373,6 +410,7 @@ export function createHotspots({ stage, fragments, read, places, label, reducedM
         }
         label.classList.toggle('is-speech', Boolean(speech));
         label.classList.toggle('is-near', Boolean(lit) && lit === pinned);
+        labelBox = null;
         onLight?.(lit?.fragment ?? null);
     }
 
@@ -442,8 +480,8 @@ export function createHotspots({ stage, fragments, read, places, label, reducedM
         uniforms.pixelRatio.value = renderer.getPixelRatio();
         if (lit) {
             const screen = screenOf(lit);
-            label.style.translate = `${Math.round(screen.x)}px ${Math.round(screen.y)}px`;
             label.hidden = !screen.inFront;
+            if (screen.inFront) placeLabel(screen);
         }
     });
 

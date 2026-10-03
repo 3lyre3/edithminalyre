@@ -2,8 +2,11 @@
  * rigs/orbit.js — the tier-1 camera rig: orbit the floating city.
  *
  * One finger or the mouse drags to orbit; a pinch or the wheel zooms within
- * limits; the arrow keys orbit, + and − zoom, and Home returns to the whole
- * view. Left alone, the view drifts slowly round, except under reduced
+ * limits; a twist of two fingers turns the view round (Elm: "a two-finger
+ * gesture in which the fingers turn in opposite directions to swivel the
+ * camera around the hum", "without zooming out": a two-finger gesture is a
+ * pinch or a twist, never both); the arrow keys orbit, + and − zoom, and Home
+ * returns to the whole view. Left alone, the view drifts slowly round, except under reduced
  * motion. focus(placeId) eases the camera toward a named place (and cuts
  * straight there under reduced motion).
  *
@@ -36,6 +39,12 @@ const POLAR_MAX = 1.95;
 const RADIUS_MIN = 7;
 const TAP_SLOP = 7;
 const TAP_TIME = 800;
+/**
+ * How far (px) two fingers must move before their gesture is told apart: a pinch (each finger along the line between
+ * them) or a twist (each round their middle), whichever moved them further, until a finger lifts. Before then it's
+ * neither, so a twist never zooms and a pinch never turns.
+ */
+const GESTURE_SLOP = 14;
 /** How near the camera may come to anything solid (past the near plane's corners). */
 const CLEARANCE = 0.7;
 /** On a flight to a place, how far something may hold the camera back from its path before it lets go. */
@@ -97,8 +106,12 @@ export class OrbitRig {
         this.passesThrough = false;
         /** While something else steers, where the wheel, a pinch, and + and − go instead: (factor) => void, or null. */
         this.handsOffZoom = null;
+        /** While something else steers, where a twist goes instead: (radians, clockwise on the screen) => void, or null. */
+        this.handsOffTurn = null;
         /** Two fingers have been down since the screen was last clear (a pinch is never a tap). */
         this.pinched = false;
+        /** The two fingers' gesture: where they began, and once told apart, 'pinch' or 'twist' (GESTURE_SLOP). */
+        this.gesture = null;
         this.nominal = new Vector3();
         this.resolved = new Vector3();
         this.offset = new Vector3();
@@ -124,21 +137,20 @@ export class OrbitRig {
                 x: event.clientX, y: event.clientY, startX: event.clientX, startY: event.clientY, startTime: event.timeStamp,
             });
             if (this.pointers.size > 1) this.pinched = true;
+            // (A second finger begins a gesture afresh: told apart again by how the two move.)
+            if (this.pointers.size === 2) this.gesture = null;
             this.idle = 0;
         });
         listen(element, 'pointermove', (event) => {
             const pointer = this.pointers.get(event.pointerId);
             if (!pointer) return;
-            // While something else steers the camera (walking as the shadow), a drag is its to use, and a pinch is
-            // handed on to it (handsOffZoom).
+            // While something else steers the camera (walking as the shadow), a drag is its to use, and a pinch or a
+            // twist is handed on to it (handsOffZoom, handsOffTurn).
             if (this.handsOff) {
-                if (this.pointers.size === 2) {
-                    const [a, b] = [...this.pointers.values()];
-                    const before = Math.hypot(a.x - b.x, a.y - b.y);
-                    pointer.x = event.clientX;
-                    pointer.y = event.clientY;
-                    const after = Math.hypot(a.x - b.x, a.y - b.y);
-                    if (before > 0 && after > 0) this.handsOffZoom?.(before / after);
+                if (this.pointers.size >= 2) {
+                    const move = this.twoFingers(pointer, event.clientX, event.clientY);
+                    if (move?.zoom) this.handsOffZoom?.(move.zoom);
+                    if (move?.turn) this.handsOffTurn?.(move.turn);
                 }
                 pointer.x = event.clientX;
                 pointer.y = event.clientY;
@@ -149,13 +161,10 @@ export class OrbitRig {
             if (this.pointers.size === 1) {
                 this.goal.theta -= ((event.clientX - pointer.x) / rect.width) * DRAG;
                 this.goal.phi = MathUtils.clamp(this.goal.phi - ((event.clientY - pointer.y) / rect.height) * DRAG * 0.6, POLAR_MIN, POLAR_MAX);
-            } else if (this.pointers.size === 2) {
-                const [a, b] = [...this.pointers.values()];
-                const before = Math.hypot(a.x - b.x, a.y - b.y);
-                pointer.x = event.clientX;
-                pointer.y = event.clientY;
-                const after = Math.hypot(a.x - b.x, a.y - b.y);
-                if (before > 0 && after > 0) this.zoomBy(before / after);
+            } else if (this.pointers.size >= 2) {
+                const move = this.twoFingers(pointer, event.clientX, event.clientY);
+                if (move?.zoom) this.zoomBy(move.zoom);
+                if (move?.turn) this.goal.theta += move.turn;
             }
             pointer.x = event.clientX;
             pointer.y = event.clientY;
@@ -166,6 +175,7 @@ export class OrbitRig {
             if (!pointer) return;
             const wasSingle = this.pointers.size === 1 && !this.pinched;
             this.pointers.delete(event.pointerId);
+            if (this.pointers.size < 2) this.gesture = null;
             if (this.pointers.size === 0) this.pinched = false;
             if (element.hasPointerCapture(event.pointerId)) element.releasePointerCapture(event.pointerId);
             const moved = Math.hypot(event.clientX - pointer.startX, event.clientY - pointer.startY);
@@ -214,6 +224,33 @@ export class OrbitRig {
     /** Called for a click or tap that didn't turn into a drag: (clientX, clientY, pointerType). */
     onTap(listener) {
         this.tapListeners.push(listener);
+    }
+
+    /**
+     * One of two fingers has moved to (x, y): what their gesture asks, now it's told apart (GESTURE_SLOP), from this
+     * move: { zoom: factor } for a pinch, { turn: radians, clockwise on the screen } for a twist, or null while it's
+     * neither yet. (The first two fingers down make the gesture; a third is let be.)
+     */
+    twoFingers(pointer, x, y) {
+        const [a, b] = this.pointers.values();
+        const between = () => ({ span: Math.hypot(b.x - a.x, b.y - a.y), angle: Math.atan2(b.y - a.y, b.x - a.x) });
+        const before = between();
+        pointer.x = x;
+        pointer.y = y;
+        const after = between();
+        if (!(before.span > 0 && after.span > 0)) return null;
+        this.gesture ??= { kind: null, span: before.span, angle: before.angle };
+        const gesture = this.gesture;
+        if (!gesture.kind) {
+            // Each finger's way so far: along the line between them (a pinch), and round their middle (a twist).
+            const along = Math.abs(after.span - gesture.span) / 2;
+            const round = (Math.abs(shortest(after.angle - gesture.angle)) * after.span) / 2;
+            if (Math.max(along, round) < GESTURE_SLOP) return null;
+            gesture.kind = round > along ? 'twist' : 'pinch';
+            // (What moved before it was told apart is let go: nothing jumps.)
+            return null;
+        }
+        return gesture.kind === 'pinch' ? { zoom: before.span / after.span } : { turn: shortest(after.angle - before.angle) };
     }
 
     zoomBy(factor) {
@@ -413,5 +450,6 @@ export class OrbitRig {
         this.tapListeners = [];
         this.keys.clear();
         this.pointers.clear();
+        this.gesture = null;
     }
 }
