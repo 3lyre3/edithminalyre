@@ -721,6 +721,24 @@ export function createDust({ reducedMotion, inside = false }) {
             }
         },
 
+        /**
+         * Whether an opening reaches a box this frame, found as the lingering dust is (cull): the lens's, and while
+         * walking or flying, the lines kept open to the one casting the shadow and the whole of the shadow (walk.js
+         * aims them). What lies wholly out of reach is whole: nothing of it has come apart. (The ball asks it of its
+         * hall, so its insides are drawn wherever they may be seen through its walls: places.js.)
+         * @param {import('three').Box3} box
+         * @param {import('three').Vector3} from - the camera's position
+         */
+        reaches(box, from) {
+            if (box.distanceToPoint(from) < uniforms.dustNear.value.y + 0.25) return true;
+            if (uniforms.dustSight.value.w < 0.5) return false;
+            for (const target of uniforms.dustTargets.value) {
+                if (target.w < 0) continue;
+                if (segmentNear(from, reachOf.set(target.x, target.y, target.z), box, SIGHT_FADE + 0.25, grown)) return true;
+            }
+            return false;
+        },
+
         /** How many squares of lingering dust are drawn this frame, of how many (for the local checks). */
         get lingeringShown() {
             return { shown: lingering.filter((cell) => cell.visible).length, of: lingering.length };

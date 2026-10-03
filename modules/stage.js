@@ -362,6 +362,8 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
     if (walk && places.cassandra) walk.standsIn(places.cassandra.bars.x, places.cassandra.bars.z, places.cassandra.bars.radius);
     // (The charity ball's speech, while it's given, is taken in by the walking camera along with the walker: places.js.)
     if (walk && places.ball) places.ball.onWatch = (point) => walk.watch(point);
+    // (And its insides are drawn wherever the dust may have opened its walls: dust.js reaches, places.js.)
+    if (dust && places.ball) places.ball.opens = (box, from) => dust.reaches(box, from);
     if (walk) {
         for (const key of [...HOLLOWED, 'rock']) walkerShadow(materials[key], walk);
         walkerClears(materials.steel, walk);
