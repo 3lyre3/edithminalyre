@@ -136,25 +136,6 @@ a:focus-visible {
     pointer-events: none;
 }
 
-.plainly .sep {
-    margin: 0 0.4em;
-    color: var(--stone);
-}
-
-/* On a narrow screen the corner's words (read plainly, the book's name, dúrrync) stand one above another, clear of the controls opposite. */
-@media (max-width: 560px) {
-    .plainly {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 2px;
-    }
-
-    .plainly .sep {
-        display: none;
-    }
-}
-
 .diorama {
     position: fixed;
     inset: 0;
@@ -594,13 +575,6 @@ a:focus-visible {
     display: none;
 }
 
-/* Left for the choice again (main.js), the city's own options step away until it's come back to. */
-html[data-left] .one-button,
-html[data-left] .hum-button,
-html[data-left] .inventory-toggle {
-    display: none;
-}
-
 /*
  * What a giver says (a trial: creatures.js), where a place's name would be: its word, in italics, as Elm wrote them
  * (*squur*, *chirp*); Allison's line is longer, and wraps (allison.js).
@@ -842,138 +816,6 @@ html[data-onebutton] .controls:not(:focus-within)::before {
 .control.sound-corner:focus-visible,
 .control.sound-corner[aria-pressed="true"] {
     color: var(--honey);
-}
-
-/*
- * Out of the Intermaze, a choice of two sides (a trial: main.js), in Elm's words: "Explore" on one side, "Read"
- * on the other (first "Explore - Win" and "Stay - Read"). Each side is the whole of its half of the screen: the city's warmth behind the first, the page's
- * paler light behind the second, a gold hairline between them. (On a screen held upright they stand one above the
- * other.)
- */
-.choice {
-    position: fixed;
-    inset: 0;
-    z-index: 47;
-    display: flex;
-    background: #040305;
-    opacity: 0;
-    transition: opacity 0.9s ease;
-}
-
-.choice.is-shown {
-    opacity: 1;
-}
-
-.choice.is-leaving {
-    pointer-events: none;
-}
-
-.choice[hidden] {
-    display: none;
-}
-
-/* The choice first (a trial): it's the page's first paint, before any script, and the card waits (main.js takes the
- * choice over from here; "Explore" fades it, the Mega-Screen's card beneath it). */
-html[data-choosing] .threshold {
-    display: none;
-}
-
-html[data-choosing] .choice {
-    display: flex;
-    opacity: 1;
-    transition: none;
-}
-
-.choice-side {
-    position: relative;
-    flex: 1 1 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0;
-    padding: 24px;
-    font: inherit;
-    color: var(--ivory);
-    text-decoration: none;
-    border: 0;
-    cursor: pointer;
-    transition: background 0.6s ease;
-}
-
-.choice-explore {
-    background: radial-gradient(ellipse 80% 70% at 50% 58%, rgba(216, 152, 64, 0.16), transparent 70%);
-}
-
-.choice-explore:hover,
-.choice-explore:focus-visible {
-    background: radial-gradient(ellipse 80% 70% at 50% 58%, rgba(216, 152, 64, 0.3), transparent 72%);
-}
-
-.choice-read {
-    background: radial-gradient(ellipse 80% 70% at 50% 58%, rgba(200, 200, 208, 0.08), transparent 70%);
-}
-
-.choice-read:hover,
-.choice-read:focus-visible {
-    background: radial-gradient(ellipse 80% 70% at 50% 58%, rgba(200, 200, 208, 0.16), transparent 72%);
-}
-
-.choice-read::before {
-    content: '';
-    position: absolute;
-    top: 18%;
-    bottom: 18%;
-    left: 0;
-    width: 1px;
-    background: linear-gradient(transparent, rgba(216, 152, 64, 0.55), transparent);
-}
-
-.choice-words {
-    font-family: var(--font-display);
-    font-weight: 400;
-    font-size: clamp(30px, 5.4vw, 68px);
-    line-height: 1.15;
-    letter-spacing: 0.06em;
-    text-align: center;
-    color: #f1e6cf;
-    text-shadow: 0 0 18px rgba(216, 152, 64, 0.35);
-}
-
-.choice-read .choice-words {
-    color: #e6e6ee;
-    text-shadow: 0 0 18px rgba(200, 200, 230, 0.25);
-}
-
-.choice-side:focus-visible {
-    outline: none;
-}
-
-.choice-side:focus-visible .choice-words {
-    outline: 1px solid var(--honey);
-    outline-offset: 10px;
-}
-
-@media (max-aspect-ratio: 4/5) {
-    .choice {
-        flex-direction: column;
-    }
-
-    .choice-read::before {
-        top: 0;
-        bottom: auto;
-        left: 18%;
-        right: 18%;
-        width: auto;
-        height: 1px;
-        background: linear-gradient(90deg, transparent, rgba(216, 152, 64, 0.55), transparent);
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .choice,
-    .choice-side {
-        transition: none;
-    }
 }
 
 /*

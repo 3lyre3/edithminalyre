@@ -52,8 +52,8 @@ const PROMPT_FRAGMENT = 'nbp-e1-mega-screen-1';
 /** E's lines in the Intermaze (Elm, 1 Oct, cut "They?" and the rail, so they end on "You never remember the dreams."). */
 const VOICE_FRAGMENTS = ['nbp-e3-intermaze-1'];
 /**
- * Where "Read" goes: the texts, whole, with the lost pages marked (and the one option's "leave", without the
- * choice, a trial; with it, "leave" goes back to the choice: Elm, 2 Oct).
+ * Where "Read" goes (the corner's link: index.html), and the one option's "leave": the texts, whole, with the lost pages
+ * marked. (Until 5 Oct "leave" went back to the choice that came first: Elm, 2 Oct.)
  */
 const TEXT_PAGE = 'read.html';
 
@@ -238,44 +238,13 @@ function fillPrompt(fragment) {
 }
 
 /**
- * The choice, first (a trial, trials.js; Elm: "a screen that offers 'Explore - Win' on one side and 'Stay - Read' on
- * the other", and "the choice ... should come before the ascii swirl"). It's already on the screen (the page's first
- * paint shows it: index.html, style.css); this takes it over (its sides just "Explore" and "Read" since 2 Oct, as Elm asked). "Read" is a link, to the texts (read.html);
- * "Explore" brings the Mega-Screen's card up beneath it as it fades (Elm: "the mega screen could show up after
- * the choice page and before the ascii swirl"), and the card's gesture begins the swirl, as it always did.
- */
-function offerChoice(threshold, onCard) {
-    const choice = byId('choice');
-    const explore = byId('choice-explore');
-    choice.hidden = false;
-    choice.classList.add('is-shown');
-    delete root.dataset.choosing;
-    explore.focus({ preventScroll: true });
-    explore.addEventListener('click', () => {
-        // (Fading, it's out of reach: a second tap meets the card beneath it, not "Read".)
-        choice.classList.remove('is-shown');
-        choice.classList.add('is-leaving');
-        choice.inert = true;
-        window.setTimeout(() => {
-            choice.hidden = true;
-        }, reducedMotion ? 0 : 900);
-        threshold.showCard();
-        onCard?.();
-    }, { once: true });
-    // ("Explore" pressed while the code was still arriving: index.html kept the wish, and here it's taken up.)
-    if (root.dataset.exploreWanted !== undefined) {
-        delete root.dataset.exploreWanted;
-        explore.click();
-    }
-}
-
-/**
  * One option at the top of the screen (a trial, trials.js; Elm: "there can just be one option at the top of the
  * screen: zoom out, zoom out, back", and then: "the 'back' button should take you to the choice menu, and also i think
  * it should say 'leave' instead"). Flying close, it draws the camera back as far as it follows; flying drawn back, it
  * lets the hum hover where it is and goes out to the whole city (looking about, it goes there too); at the whole city,
- * "leave" goes back to the choice (without the choice, a trial, to the city's text). Taking the hum again (a tap on it,
- * or the hum's own button) brings the camera back in close, and the round begins again.
+ * "leave" opens the texts in a new tab, so the city stays where it was left (until 5 Oct it went back to the choice
+ * that came first; with the choice gone, Elm, 5 Oct, the texts). Taking the hum again (a tap on it, or the hum's own
+ * button) brings the camera back in close, and the round begins again.
  */
 function wireOneButton(stage) {
     const one = byId('one-button');
@@ -298,8 +267,6 @@ function wireOneButton(stage) {
             stage.rig.toHome();
         } else if (now === 'away') {
             stage.rig.toHome();
-        } else if (trialOn('choice')) {
-            leaveForChoice(stage);
         } else {
             window.open(TEXT_PAGE, '_blank', 'noopener');
         }
@@ -332,39 +299,6 @@ function wireHumButton(stage) {
     });
 }
 
-/**
- * Leave (the one option's last step): the choice again, over the city, which rests behind it. "Explore" comes
- * back into the city just where it was left (the card and the Intermaze were the way in); "Read" opens the
- * texts in a new tab, so the city stays where it was left (Elm: "links that make new tabs for ... stuff that takes us
- * out of the game").
- */
-function leaveForChoice(stage) {
-    const choice = byId('choice');
-    const explore = byId('choice-explore');
-    const read = byId('choice-read');
-    if (read) Object.assign(read, { target: '_blank', rel: 'noopener' });
-    root.dataset.left = '';
-    choice.hidden = false;
-    choice.inert = false;
-    choice.classList.remove('is-leaving');
-    requestAnimationFrame(() => choice.classList.add('is-shown'));
-    explore.focus({ preventScroll: true });
-    // (Once the choice has covered it, the city stops drawing until it's come back to.)
-    const resting = window.setTimeout(() => stage.stop(), reducedMotion ? 0 : 900);
-    explore.addEventListener('click', () => {
-        window.clearTimeout(resting);
-        stage.start();
-        delete root.dataset.left;
-        choice.classList.remove('is-shown');
-        choice.classList.add('is-leaving');
-        choice.inert = true;
-        window.setTimeout(() => {
-            choice.hidden = true;
-        }, reducedMotion ? 0 : 900);
-        byId('one-button')?.focus({ preventScroll: true });
-    }, { once: true });
-}
-
 /** Let the city lift out of the dark after the flight, whichever city it is. */
 function liftVeil(arrive) {
     const veil = byId('veil');
@@ -388,11 +322,11 @@ async function boot() {
     }
     wireSound(audio);
     if (debug) window.elysicesterDebug.audio = audio;
-    // The choice first (a trial): not when coming back within the visit (straight into the city), and an address that
-    // came to read a passage (#read-…) goes straight to it, as one coming back does.
+    // The Mega-Screen's card first (Elm, 5 Oct: "skip the explore/read choice and make the browser open straight onto
+    // this page"): not when coming back within the visit (straight into the city), and an address that came to read a
+    // passage (#read-…) goes straight to it, as one coming back does.
     const reading = window.location.hash.startsWith('#read-');
-    const returning = crossedThisVisit() || (trialOn('choice') && reading);
-    const choosing = trialOn('choice') && !returning;
+    const returning = crossedThisVisit() || reading;
     const threshold = createThreshold({
         root,
         card: byId('threshold'),
@@ -403,7 +337,6 @@ async function boot() {
             if (soundWanted()) audio.start();
         },
         returning,
-        choosing,
         // (Waited through, a trial: Elm, "compulsory to wait for the mega screen to settle and then for the swirling to
         // resolve".)
         waiting: trialOn('settle'),
@@ -439,7 +372,6 @@ async function boot() {
             console.error('The Mega-Screen could not be drawn:', error);
         });
     };
-    if (choosing) offerChoice(threshold, startMegaScreen);
     // Until the city is entered, its reading points wait behind the card.
     const pointsNav = byId('points');
     pointsNav.inert = true;
@@ -1074,9 +1006,9 @@ async function boot() {
             stage.walk.steersFrom(pointLabel);
         }
     }
-    // If the card or the choice held focus (they've gone now), land it on the city's name.
+    // If the card held focus (it's gone now), land it on the city's name.
     const focused = document.activeElement;
-    if (!focused || focused === document.body || byId('threshold').contains(focused) || byId('choice').contains(focused)) {
+    if (!focused || focused === document.body || byId('threshold').contains(focused)) {
         byId('diorama-title').focus({ preventScroll: true });
     }
 
