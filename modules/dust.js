@@ -371,8 +371,38 @@ export function createDust({ reducedMotion, inside = false }) {
         // (1 while the insides are drawn: showInsides.)
         dustInsides: { value: 0 },
     };
-    /** The squares of lingering dust (linger), and what cull reckons with. */
+    /**
+     * The lingering dust (linger): each piece of the city that comes apart as one copy, drawing only its squares an
+     * opening is near (its index gathered from theirs whenever which are near changes, as the insides' is: one draw for
+     * each piece, however many squares, where each square was a draw of its own until 5 Oct: on a phone's processor a
+     * draw costs about what its triangles cost the graphics chip, probe-cpu.mjs), and drawn in the order of the
+     * squares it shows (its bounds theirs, so it's sorted among the other see-through things where they are).
+     */
     const lingering = [];
+    const lingerBounds = new Box3();
+    function gatherLinger(entry) {
+        const { array } = entry.index;
+        let at = 0;
+        lingerBounds.makeEmpty();
+        for (let square = 0; square < entry.squares.length; square += 1) {
+            if (!entry.near[square]) continue;
+            array.set(entry.squares[square].index, at);
+            at += entry.squares[square].index.length;
+            lingerBounds.union(entry.squares[square].local);
+        }
+        // (Only what it draws is sent again; with nothing to draw, nothing is: it isn't drawn.)
+        if (at) {
+            entry.index.clearUpdateRanges();
+            entry.index.addUpdateRange(0, at);
+            entry.index.needsUpdate = true;
+            entry.dust.geometry.boundingBox.copy(lingerBounds);
+            lingerBounds.getBoundingSphere(entry.dust.geometry.boundingSphere);
+        }
+        entry.dust.geometry.setDrawRange(0, at);
+        entry.dust.visible = at > 0;
+        entry.shown = 0;
+        for (const near of entry.near) entry.shown += near;
+    }
     /**
      * The insides, drawn from behind (insides): each of the city's still pieces as one copy, standing where it stands,
      * drawing only its squares within reach (its index rebuilt from theirs whenever which are within reach changes:
@@ -590,17 +620,29 @@ export function createDust({ reducedMotion, inside = false }) {
                 return kinds.get(key);
             };
             for (const mesh of meshes) {
-                for (const { geometry, box } of cellsOf(mesh)) {
-                    const cell = new Mesh(geometry, materialFor(geometry));
-                    cell.name = `${mesh.name}-dust`;
-                    cell.matrixAutoUpdate = false;
-                    cell.matrix.copy(mesh.matrixWorld);
-                    cell.renderOrder = 3;
-                    cell.visible = false;
-                    cell.userData.box = box;
-                    lingering.push(cell);
-                    group.add(cell);
+                // (Its squares: each one's bounds in the world, for the cull, and in the piece's own, for the draw's.)
+                const squares = cellsOf(mesh).map(({ geometry, box }) => ({ box, local: geometry.boundingBox, index: geometry.index.array }));
+                if (!squares.length) continue;
+                const total = squares.reduce((sum, square) => sum + square.index.length, 0);
+                const geometry = new BufferGeometry();
+                for (const name of ['position', 'normal', 'color', 'sway']) {
+                    if (mesh.geometry.attributes[name]) geometry.setAttribute(name, mesh.geometry.attributes[name]);
                 }
+                const wide = mesh.geometry.attributes.position.count > 65535;
+                const index = new BufferAttribute(wide ? new Uint32Array(total) : new Uint16Array(total), 1);
+                index.setUsage(DynamicDrawUsage);
+                geometry.setIndex(index);
+                geometry.setDrawRange(0, 0);
+                geometry.boundingBox = new Box3();
+                geometry.boundingSphere = new Sphere();
+                const dust = new Mesh(geometry, materialFor(geometry));
+                dust.name = `${mesh.name}-dust`;
+                dust.matrixAutoUpdate = false;
+                dust.matrix.copy(mesh.matrixWorld);
+                dust.renderOrder = 3;
+                dust.visible = false;
+                lingering.push({ dust, squares, index, near: new Uint8Array(squares.length), shown: 0 });
+                group.add(dust);
                 await breathe();
             }
             return group;
@@ -682,23 +724,29 @@ export function createDust({ reducedMotion, inside = false }) {
             const walking = uniforms.dustSight.value.w > 0.5;
             const from = camera.position;
             within(lingerReach, from, lens, SIGHT_FADE + 0.25, walking);
-            for (const cell of lingering) {
-                const box = cell.userData.box;
-                if (!box.intersectsBox(lingerReach)) {
-                    cell.visible = false;
-                    continue;
-                }
-                let near = box.distanceToPoint(from) < lens;
-                if (!near && walking) {
-                    for (const target of uniforms.dustTargets.value) {
-                        if (target.w < 0) continue;
-                        if (segmentNear(from, reachOf.set(target.x, target.y, target.z), box, SIGHT_FADE + 0.25, grown)) {
-                            near = true;
-                            break;
+            for (const entry of lingering) {
+                let changed = false;
+                for (let square = 0; square < entry.squares.length; square += 1) {
+                    const { box } = entry.squares[square];
+                    let near = 0;
+                    if (box.intersectsBox(lingerReach)) {
+                        near = box.distanceToPoint(from) < lens ? 1 : 0;
+                        if (!near && walking) {
+                            for (const target of uniforms.dustTargets.value) {
+                                if (target.w < 0) continue;
+                                if (segmentNear(from, reachOf.set(target.x, target.y, target.z), box, SIGHT_FADE + 0.25, grown)) {
+                                    near = 1;
+                                    break;
+                                }
+                            }
                         }
                     }
+                    if (entry.near[square] !== near) {
+                        entry.near[square] = near;
+                        changed = true;
+                    }
                 }
-                cell.visible = near;
+                if (changed) gatherLinger(entry);
             }
             // (Not walking, no inside shows: showInsides.)
             if (!walking) return;
@@ -741,7 +789,7 @@ export function createDust({ reducedMotion, inside = false }) {
 
         /** How many squares of lingering dust are drawn this frame, of how many (for the local checks). */
         get lingeringShown() {
-            return { shown: lingering.filter((cell) => cell.visible).length, of: lingering.length };
+            return { shown: lingering.reduce((sum, entry) => sum + entry.shown, 0), of: lingering.reduce((sum, entry) => sum + entry.squares.length, 0) };
         },
 
         /**
