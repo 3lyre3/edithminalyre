@@ -18,6 +18,7 @@
 // =============================================================================
 
 import { AdditiveBlending, BufferGeometry, Color, Float32BufferAttribute, MathUtils, Points, ShaderMaterial, Vector2 } from 'three';
+import { DRAWN } from './ink.js';
 
 // =============================================================================
 // Constants
@@ -146,8 +147,9 @@ export function createBright({ stage, reducedMotion = false }) {
     const keep = (elapsed) => {
         uniforms.time.value = elapsed;
         renderer.getDrawingBufferSize(drawingBuffer);
-        uniforms.scale.value = drawingBuffer.y / (2 * Math.tan(MathUtils.degToRad(camera.fov) / 2));
-        uniforms.pixelRatio.value = renderer.getPixelRatio();
+        // (In the city's picture's pixels, drawn smaller than the screen when the governor asks: ink.js DRAWN.)
+        uniforms.scale.value = drawingBuffer.y * DRAWN.scale / (2 * Math.tan(MathUtils.degToRad(camera.fov) / 2));
+        uniforms.pixelRatio.value = renderer.getPixelRatio() * DRAWN.scale;
     };
     stage.onFrame((dt, elapsed) => {
         now = elapsed;

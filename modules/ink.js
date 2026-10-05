@@ -62,6 +62,15 @@ const WOBBLE_MOST = 3.2;
  */
 export const NIMBLE = trialOn('nimble') && Boolean(globalThis.matchMedia?.('(pointer: coarse)').matches);
 
+/**
+ * The city's own picture, drawn smaller than the screen when a device can't keep up (the governor: governor.js, Elm,
+ * 5 Oct, fewer pixels): the ink, its lines, the paper's grain and the glow stay the screen's own size; only the city
+ * beneath them is drawn smaller and laid in larger. scale: the city's picture over the screen's (1, its own size).
+ * What sizes points in pixels in the city reads it (hums.js, bright.js, hotspots.js, flowers.js). Only the stage's ink
+ * is governed; the Mega-Screen's is always whole.
+ */
+export const DRAWN = { scale: 1 };
+
 // =============================================================================
 // Shaders
 // =============================================================================
@@ -278,13 +287,18 @@ const blurShader = /* glsl */ `
  * @param {import('three').WebGLRenderer} renderer
  * @param {object} options
  * @param {boolean} options.reducedMotion - hold lines and grain still
+ * @param {boolean} [options.governed] - the city's (the stage's) ink, whose picture the governor may draw smaller (DRAWN)
  */
-export function createInk(renderer, { reducedMotion }) {
+export function createInk(renderer, { reducedMotion, governed = false }) {
     const size = renderer.getDrawingBufferSize(new Vector2());
     const canFloat = renderer.extensions.has('EXT_color_buffer_float') || renderer.extensions.has('EXT_color_buffer_half_float');
+    // (The most samples to a pixel the city's picture is drawn with: four on a computer, none on a touch screen. The
+    // governor may drop them, and may draw the picture smaller than the screen: scale.)
+    const most = NIMBLE ? 0 : Math.min(4, renderer.capabilities.maxSamples ?? 0);
+    let scale = 1;
     const target = new WebGLRenderTarget(size.x, size.y, {
         type: canFloat ? HalfFloatType : UnsignedByteType,
-        samples: NIMBLE ? 0 : Math.min(4, renderer.capabilities.maxSamples ?? 0),
+        samples: most,
         depthTexture: new DepthTexture(size.x, size.y),
     });
 
@@ -350,7 +364,7 @@ export function createInk(renderer, { reducedMotion }) {
     }
 
     function glow() {
-        draw(gather, target, near[0], (u) => u.texel.value.set(1 / size.x, 1 / size.y));
+        draw(gather, target, near[0], (u) => u.texel.value.set(1 / target.width, 1 / target.height));
         draw(blur, near[0], near[1], (u, from) => u.direction.value.set(1 / from.width, 0));
         draw(blur, near[1], near[0], (u, from) => u.direction.value.set(0, 1 / from.height));
         draw(shrink, near[0], far[0], (u, from) => u.texel.value.set(1 / from.width, 1 / from.height));
@@ -358,16 +372,42 @@ export function createInk(renderer, { reducedMotion }) {
         draw(blur, far[1], far[0], (u, from) => u.direction.value.set(0, 1 / from.height));
     }
 
+    /** Match the drawing buffer; lines stay a little over one CSS pixel wide, like a fine nib. */
+    function resize() {
+        renderer.getDrawingBufferSize(size);
+        // (The city's picture at its scale of the screen; the glow, the lines and the grain at the screen's own, so
+        // their look holds whatever the city beneath them is drawn at.)
+        target.setSize(Math.max(1, Math.round(size.x * scale)), Math.max(1, Math.round(size.y * scale)));
+        for (const glowAt of near) glowAt.setSize(Math.max(1, Math.floor(size.x / 4)), Math.max(1, Math.floor(size.y / 4)));
+        for (const glowAt of far) glowAt.setSize(Math.max(1, Math.floor(size.x / 8)), Math.max(1, Math.floor(size.y / 8)));
+        uniforms.resolution.value.copy(size);
+        uniforms.lineWidth.value = Math.max(1.3, renderer.getPixelRatio() * 1.15);
+    }
+
     return {
         target,
-        /** Match the drawing buffer; lines stay a little over one CSS pixel wide, like a fine nib. */
-        resize() {
-            renderer.getDrawingBufferSize(size);
-            target.setSize(size.x, size.y);
-            for (const glowAt of near) glowAt.setSize(Math.max(1, Math.floor(size.x / 4)), Math.max(1, Math.floor(size.y / 4)));
-            for (const glowAt of far) glowAt.setSize(Math.max(1, Math.floor(size.x / 8)), Math.max(1, Math.floor(size.y / 8)));
-            uniforms.resolution.value.copy(size);
-            uniforms.lineWidth.value = Math.max(1.3, renderer.getPixelRatio() * 1.15);
+        resize,
+        /** The most samples to a pixel the city's picture may have (0 on a touch screen). */
+        most,
+        /** The city's picture's scale of the screen (DRAWN), and its samples to a pixel now. */
+        get scale() { return scale; },
+        get samples() { return target.samples; },
+        /**
+         * Draw the city's picture at `scale` of the screen, with `samples` to a pixel (0, or up to the most); true if
+         * anything changed. (Only for the governed ink: governor.js.)
+         */
+        govern({ scale: drawnAt = scale, samples = target.samples }) {
+            const wanted = Math.min(samples, most);
+            if (drawnAt === scale && wanted === target.samples) return false;
+            scale = drawnAt;
+            if (governed) DRAWN.scale = scale;
+            if (wanted !== target.samples) {
+                // (Made again with the samples asked for, the next time it's drawn into.)
+                target.samples = wanted;
+                target.dispose();
+            }
+            resize();
+            return true;
         },
         /**
          * Draw the scene through the ink onto the canvas. zoom: how far in the eye has come (the whole

@@ -30,10 +30,12 @@ import {
     WebGLCubeRenderTarget,
     WebGLRenderer,
 } from 'three';
+import { createChunks } from './chunks.js';
 import { createDust, INSIDE_LAYER } from './dust.js';
 import { Buckets, METAL_SKY, breathe, createMaterials, duskLight, flutter, loadMetalSky, wallX } from './kit.js';
 import { inscriptionTexture } from './extras.js';
 import { HOLLOWED, createHollows, hollows } from './hollows.js';
+import { createGovernor, ladder } from './governor.js';
 import { NIMBLE, createInk } from './ink.js';
 import { buildIsland } from './island.js';
 import { stagePaper } from './paper.js';
@@ -84,15 +86,18 @@ const DUST_ON_WALLS = ['cafe-shadow', 'footlight-wash', 'paper', 'hostel', 'cass
  */
 const DUST_SPARES = new Set(['ball-greek', 'ball-cassandra', 'ball-cassandra-balcony', 'ball-crowd', 'ball-band', 'cassandra-shadow', 'cassandra-faces']);
 /**
- * A safety net for slower phones: if frames run slower than this (seconds) for a sustained stretch,
- * the drawing buffer steps down a quarter at a time, never below 1. It only ever steps down, so it can't
- * see-saw; a phone that keeps up never notices it. (On a touch screen, drawn lighter, it looks sooner and
+ * The frame rate's keeper (governor.js): how long frames must run slow (under 38 a second) before it draws fewer
+ * pixels, and how long after the start before frames count. (On a touch screen, drawn lighter, it looks sooner and
  * steps sooner.)
  */
-const SLOW_FRAME = 1 / 38;
 const SLOW_STRETCH = NIMBLE ? 1.5 : 2.5;
-const RATIO_STEP = 0.25;
 const SETTLING = NIMBLE ? 2 : 4;
+/**
+ * The city drawn only where the camera looks (a trial: ?chunks=off; chunks.js): its buckets laid in squares this wide
+ * (metres; ?debug=1&square=N tries another), and those out of view left out of each frame.
+ */
+const CHUNKS = trialOn('chunks');
+const CHUNK_SQUARE = 8;
 /**
  * The metals' cube (kit.js, METAL_SKY): its faces' size, and where it's taken from: high over the middle of the city,
  * the halls' roofs below it, the dusk all round.
@@ -111,11 +116,11 @@ function createReadout() {
     document.body.append(panel);
     let frames = 0;
     let seconds = 0;
-    return (dt, info) => {
+    return (dt, info, drawing = '') => {
         frames += 1;
         seconds += dt;
         if (seconds < 0.5) return;
-        panel.textContent = `${Math.round(frames / seconds)} fps · ${info.calls} calls · ${info.triangles} tris`;
+        panel.textContent = `${Math.round(frames / seconds)} fps · ${info.calls} calls · ${info.triangles} tris${drawing ? ` · ${drawing}` : ''}`;
         frames = 0;
         seconds = 0;
     };
@@ -318,7 +323,9 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
     // its inside pure black, not empty (a trial too: ?inside=off).
     const dust = trialOn('dust') ? createDust({ reducedMotion, inside: trialOn('inside') }) : null;
     if (dust) for (const key of DUST_DISSOLVES) dust.dissolve(materials[key]);
-    const buckets = new Buckets();
+    const asksSquare = new URLSearchParams(window.location.search);
+    const square = debug && asksSquare.has('square') ? Number(asksSquare.get('square')) || CHUNK_SQUARE : CHUNK_SQUARE;
+    const buckets = new Buckets({ square: CHUNKS ? square : 0 });
     await pause();
     buildIsland(buckets);
     await pause();
@@ -333,6 +340,8 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         mesh.receiveShadow = TAKES_SHADOW.has(mesh.name);
         scene.add(mesh);
     }
+    // (Each frame, what of them is out of the camera's view is left out: chunks.js.)
+    const chunks = CHUNKS ? createChunks(meshes.values()) : null;
     for (const extra of places.extras) scene.add(extra);
     // The golden bridges' dust, drawn over them where they come apart (places.js): only while walking, or while
     // the camera is among them, as it's nowhere else. (Where the whole city comes apart, a trial, their dust
@@ -410,14 +419,27 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
     const rig = new OrbitRig({ places: rigPlaces, reducedMotion });
     rig.attach(camera, canvas);
 
-    const ink = createInk(renderer, { reducedMotion });
+    const ink = createInk(renderer, { reducedMotion, governed: true });
 
-    // The drawing buffer's ceiling, lowered only if this device can't keep up (SLOW_FRAME). Under ?debug=1
-    // (the local checks and the stills) it holds, so their pictures stay exact, unless ?adapt=1 asks.
+    // The drawing buffer's ceiling, and the city's picture beneath the ink, lowered only if this device can't keep up
+    // and raised again when it can (governor.js; a trial: ?governor=off keeps the old net, the ceiling only ever
+    // lowered, never below 1). Under ?debug=1 (the local checks and the stills) it holds, so their pictures stay exact,
+    // unless ?adapt=1 asks; ?debug=1&rung=N holds rung N of its ladder.
     let ratioCap = MAX_PIXEL_RATIO;
-    const adaptive = !debug || new URLSearchParams(window.location.search).has('adapt');
-    let slowFor = 0;
-    let runningFor = 0;
+    const asked = new URLSearchParams(window.location.search);
+    const adaptive = !debug || asked.has('adapt');
+    const governs = trialOn('governor');
+    const governor = createGovernor({
+        rungs: ladder({ ratio: Math.min(window.devicePixelRatio || 1, MAX_PIXEL_RATIO), samples: ink.most, ceiling: MAX_PIXEL_RATIO }, { drop: governs, shrink: governs }),
+        apply: (rung) => {
+            ratioCap = rung.ratio;
+            ink.govern({ scale: rung.scale, samples: rung.samples });
+            resize();
+        },
+        slowStretch: SLOW_STRETCH,
+        settling: SETTLING,
+        climbs: governs,
+    });
 
     function resize() {
         fitRenderer(renderer, canvas, ratioCap);
@@ -431,6 +453,8 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
     }
     const observer = new ResizeObserver(resize);
     observer.observe(canvas);
+    // (?debug=1&rung=N: the governor holds a rung of its ladder from the first, for the checks and the stills.)
+    if (debug && asked.has('rung')) governor.hold(Number(asked.get('rung')) || 0);
     resize();
     rig.update(0);
 
@@ -489,19 +513,9 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         last = now;
         if (!reducedMotion) elapsed += dt;
 
-        // A sustained run of slow frames (not a single hitch, nor the gap a hidden tab leaves) steps the
-        // drawing buffer down, once in a while, until it keeps up or reaches 1.
-        runningFor += Math.min(real, 1);
-        if (adaptive && runningFor > SETTLING && real < 1) {
-            slowFor = real > SLOW_FRAME ? slowFor + real : Math.max(0, slowFor - real * 2);
-            const current = Math.min(window.devicePixelRatio || 1, ratioCap);
-            if (slowFor > SLOW_STRETCH && current > 1) {
-                ratioCap = Math.max(1, current - RATIO_STEP);
-                slowFor = 0;
-                runningFor = 0;
-                resize();
-            }
-        }
+        // How long frames take, for the governor: a sustained run of slow ones (not a single hitch, nor the gap a
+        // hidden tab leaves) draws fewer pixels; a good while of easy ones, more again (governor.js).
+        if (adaptive) governor.frame(real);
 
         renderer.info.reset();
         // (The walker keeps its pace on a slow screen, down to ten frames a second, in steps no longer than the rest.)
@@ -527,14 +541,21 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         if (bridgeDust) bridgeDust.visible = Boolean(walk?.state.walking) || bridgeReach.containsPoint(camera.position);
         // (Walking, what the dust opens shows its inside black: dust.js. Only while the city is drawn.)
         dust?.showInsides(Boolean(walk?.state.walking));
-        ink.render(scene, camera, elapsed, rig.home.radius / Math.max(rig.now.radius, 1e-3));
+        // (What of the city is out of view is left out of this frame, and put back straight after; never on the frame
+        // that draws the sun's shadows, which needs all of it: chunks.js.)
+        if (chunks && !renderer.shadowMap.needsUpdate) chunks.cull(camera);
+        try {
+            ink.render(scene, camera, elapsed, rig.home.radius / Math.max(rig.now.radius, 1e-3));
+        } finally {
+            chunks?.whole();
+        }
         dust?.showInsides(false);
 
         const { calls, triangles, points, lines } = renderer.info.render;
         lastInfo = { calls, triangles, points, lines };
         for (const listener of frameListeners) listener(dt, elapsed);
         // The readout counts real time, so a slow device shows its true rate (dt is clamped for the animation).
-        readout?.(Math.min(real, 1), lastInfo);
+        readout?.(Math.min(real, 1), lastInfo, governor.describe(renderer.getPixelRatio()));
         next = requestAnimationFrame(frame);
     }
 
@@ -629,6 +650,6 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
         },
     };
 
-    if (debug) Object.assign(window.elysicesterDebug ??= {}, { info: () => stage.info(), rig, stage, solids, houses: places.houses, bridges: places.bridges, dressing: places.dressing, pixelRatio: () => renderer.getPixelRatio(), hollows: hollowMap, walk, dust });
+    if (debug) Object.assign(window.elysicesterDebug ??= {}, { info: () => stage.info(), rig, stage, solids, houses: places.houses, bridges: places.bridges, dressing: places.dressing, pixelRatio: () => renderer.getPixelRatio(), hollows: hollowMap, walk, dust, governor, ink, chunks });
     return stage;
 }
