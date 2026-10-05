@@ -1,11 +1,7 @@
 /**
- * threshold.js — the way in: a choice, then the Mega-Screen, then the Intermaze (with ?choice=off, the Mega-Screen
- * first).
- *
- * On trial (choice: trials.js; main.js), the choice comes first, and nothing before it (Elm: "the choice of staying and
- * reading or playing and winning should come before the ascii swirl"); "Explore" brings the Mega-Screen's card
- * (showCard: Elm, "the mega-screen card was still good ... is there any chance though that the mega screen could show
- * up after the choice page and before the ascii swirl?"), and the card's own gesture begins the Intermaze.
+ * threshold.js — the way in: the Mega-Screen, then the Intermaze. (Until 5 Oct a choice came first, "Explore" or
+ * "Read", and "Explore" brought the card; Elm, 5 Oct: "skip the explore/read choice and make the browser open straight
+ * onto this page with just 'Read' in the top left": index.html's corner.)
  *
  * The Mega-Screen's title card: a dark screen across which
  * enormous letters roll in from the right, a short step left with each
@@ -216,15 +212,13 @@ function secondsFor(line) {
  * @param {boolean} [options.returning] - back within the same visit: no card and
  *   no flight; begun at once, with no gesture (so any sound waits for the
  *   visitor's first touch); see comeBack
- * @param {boolean} [options.choosing] - the way in begins at a choice (a trial,
- *   main.js: "Explore" or "Read"): no card yet; the threshold waits
- *   at 'choice' until main.js calls showCard (the visitor chose to explore)
+
  * @param {boolean} [options.waiting] - the way in is waited through (a trial, settle: Elm, "compulsory to wait for the
  *   mega screen to settle and then for the swirling to resolve"): the card can't be begun until main.js calls
  *   settled (the Mega-Screen has stood), and the swirl can't be cut short
  */
-export function createThreshold({ root, card, begin, voice, onBegin, returning = false, choosing = false, waiting = false }) {
-    root.dataset.threshold = returning ? 'returning' : choosing ? 'choice' : 'card';
+export function createThreshold({ root, card, begin, voice, onBegin, returning = false, waiting = false }) {
+    root.dataset.threshold = returning ? 'returning' : 'card';
     let resolveBegun;
     const begun = new Promise((resolve) => {
         resolveBegun = resolve;
@@ -269,7 +263,7 @@ export function createThreshold({ root, card, begin, voice, onBegin, returning =
         }
         // (While the Mega-Screen settles, a key does nothing, and goes on to the browser as if the card weren't there.)
         if (settling) return;
-        // (Nor a key still held from the choice before it.)
+        // (Nor a key pressed with another, or held down.)
         if (['Tab', 'Shift', 'Control', 'Alt', 'Meta'].includes(event.key) || event.altKey || event.ctrlKey || event.metaKey || event.repeat) return;
         const target = event.target;
         if (target === begin && (event.key === 'Enter' || event.key === ' ')) return;
@@ -282,9 +276,6 @@ export function createThreshold({ root, card, begin, voice, onBegin, returning =
         started = true;
         card.hidden = true;
         resolveBegun();
-    } else if (choosing) {
-        // (The choice's own "Explore" brings the card: main.js calls showCard.)
-        card.hidden = true;
     } else {
         document.addEventListener('keydown', onKey, true);
         if (settling) settleTimer = window.setTimeout(settle, SETTLE_MOST_MS);
@@ -311,18 +302,6 @@ export function createThreshold({ root, card, begin, voice, onBegin, returning =
         /** Begin, as the card's gesture does. Runs onBegin within it. */
         start,
 
-        /**
-         * After the choice ("Explore": main.js): the Mega-Screen's card, its letters rolling in from the start,
-         * waiting for its own tap, click or keypress to begin.
-         */
-        showCard() {
-            if (started || root.dataset.threshold !== 'choice') return;
-            root.dataset.threshold = 'card';
-            card.hidden = false;
-            document.addEventListener('keydown', onKey, true);
-            begin.focus({ preventScroll: true });
-            if (settling) settleTimer = window.setTimeout(settle, SETTLE_MOST_MS);
-        },
 
         /** The Mega-Screen has stood (or there's none to wait for): its prompt comes, and the card can be begun. */
         settled: settle,

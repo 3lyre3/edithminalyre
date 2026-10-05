@@ -25,19 +25,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;1,300;1,400&amp;family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&amp;display=swap" rel="stylesheet">
     <title>Elysicester – Edith Mina Lyre</title>
     <script>
-        // Back within the same visit (modules/state.js keeps it), or come to read a passage (#read-…): no card and no
-        // choice, not even for a moment before the city. Otherwise the choice comes first (a trial: ?choice=off keeps
-        // the card), from the very first paint.
+        // Back within the same visit (modules/state.js keeps it), or come to read a passage (#read-…): no card, not even
+        // for a moment before the city. Otherwise the Mega-Screen's card, from the very first paint (Elm, 5 Oct: "skip
+        // the explore/read choice and make the browser open straight onto this page with just 'Read' in the top left").
         (() => {
-            const asked = new URLSearchParams(location.search);
-            const choosing = asked.get('choice') !== 'off' && asked.get('trials') !== 'off';
             let crossed = false;
             try { crossed = sessionStorage.getItem('elysicester:crossed') === 'yes'; } catch (error) {}
-            if (crossed || (choosing && location.hash.startsWith('#read-'))) document.documentElement.dataset.returning = '';
-            else if (choosing) document.documentElement.dataset.choosing = '';
+            if (crossed || location.hash.startsWith('#read-')) document.documentElement.dataset.returning = '';
         })();
     </script>
-    <link rel="stylesheet" href="v/15451b34e0/style.css">
+    <link rel="stylesheet" href="v/65ab6eff75/style.css">
     <noscript><style>.threshold, .veil, .controls { display: none; }</style></noscript>
     <script type="importmap">
     {
@@ -47,13 +44,11 @@
         }
     }
     </script>
-    <script type="module" src="v/15451b34e0/main.js"></script>
+    <script type="module" src="v/65ab6eff75/main.js"></script>
 </head>
 <body>
     <nav class="plainly" aria-label="Leave the diorama">
-        <a href="read.html" target="_blank" rel="noopener">the texts<span class="visually-hidden"> (opens in a new tab)</span></a>
-        <span class="sep" aria-hidden="true">·</span>
-        <a href="read.html#numbers-by-paint" target="_blank" rel="noopener">Numbers by Paint<span class="visually-hidden"> (the book, opens in a new tab)</span></a>
+        <a href="read.html" target="_blank" rel="noopener">Read<span class="visually-hidden"> (the texts, opens in a new tab)</span></a>
     </nav>
 
     <div class="controls">
@@ -105,11 +100,6 @@
             </button>
         </section>
         <p id="threshold-voice" class="threshold-voice" aria-live="polite"></p>
-        <section id="choice" class="choice" aria-labelledby="choice-title" hidden>
-            <h2 id="choice-title" class="visually-hidden">Explore the city, or stay and read</h2>
-            <button type="button" id="choice-explore" class="choice-side choice-explore"><span class="choice-words">Explore</span></button>
-            <a id="choice-read" class="choice-side choice-read" href="read.html"><span class="choice-words">Read</span></a>
-        </section>
         <div id="veil" class="veil" aria-hidden="true"></div>
     </main>
 
@@ -158,26 +148,18 @@
         <p class="noscript">Elysicester is drawn by script. Without it, the city stays in the book: <a href="read.html#numbers-by-paint">Numbers by Paint</a>.</p>
     </noscript>
     <script>
-        // Until the city's code arrives and takes over (main.js marks it: data-booted), this keeps the way in open.
-        // "Explore" is on the screen from the first paint: pressed before the code is here, the wish is kept and
-        // taken up when it arrives (main.js offerChoice). If the code never can arrive (a script that fails to load, a
-        // browser that can't read modules or the map that names three.js for them), the city is held still, with the
-        // way to the texts: at once, or, while the choice is up (its "Read" a plain link that always works), when
-        // "Explore" is pressed.
+        // Until the city's code arrives and takes over (main.js marks it: data-booted), this keeps the way in open: if
+        // the code never can arrive (a script that fails to load, a browser that can't read modules or the map that
+        // names three.js for them), the city is held still at once, with the way to the texts.
         (() => {
             const root = document.documentElement;
             const tookOver = () => root.dataset.booted !== undefined;
             const scripts = HTMLScriptElement;
-            let failed = !('noModule' in scripts.prototype) || (typeof scripts.supports === 'function' && !scripts.supports('importmap'));
-            let wanted = false;
             const still = () => {
                 if (tookOver() || root.dataset.mode === 'still') return;
-                delete root.dataset.choosing;
                 delete root.dataset.returning;
-                delete root.dataset.exploreWanted;
                 root.dataset.mode = 'still';
                 root.dataset.threshold = 'done';
-                document.getElementById('choice').hidden = true;
                 document.getElementById('threshold').hidden = true;
                 document.getElementById('points').hidden = true;
                 const fallback = document.getElementById('fallback');
@@ -185,24 +167,13 @@
                 fallback.querySelector('.fallback-failed').hidden = false;
                 fallback.hidden = false;
             };
-            const fail = () => {
-                if (tookOver()) return;
-                failed = true;
-                if (wanted || root.dataset.choosing === undefined) still();
-            };
             // (A module that can't be fetched fires its error here; one that can't be read, or names what isn't there,
             // fires it on the window, from the city's own files.)
-            document.querySelector('script[type="module"]')?.addEventListener('error', fail);
+            document.querySelector('script[type="module"]')?.addEventListener('error', still);
             window.addEventListener('error', (event) => {
-                if (typeof event.filename === 'string' && event.filename.startsWith(location.origin)) fail();
+                if (typeof event.filename === 'string' && event.filename.startsWith(location.origin)) still();
             });
-            document.getElementById('choice-explore')?.addEventListener('click', () => {
-                if (tookOver()) return;
-                wanted = true;
-                root.dataset.exploreWanted = '';
-                if (failed) still();
-            });
-            if (failed) fail();
+            if (!('noModule' in scripts.prototype) || (typeof scripts.supports === 'function' && !scripts.supports('importmap'))) still();
         })();
     </script>
 </body>
