@@ -35,6 +35,7 @@ import {
     Vector3,
 } from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { DRAWN } from './ink.js';
 import { BRONZE_SHOWS, createRandom, paint, pose, reflective } from './kit.js';
 
 // =============================================================================
@@ -110,9 +111,10 @@ export function birdMaterial(gradientMap, clock) {
                 'transformed.xy = mat2(cos(lift), sin(lift), -sin(lift), cos(lift)) * transformed.xy;',
             ].join('\n'));
     };
-    // (Bronze, metal: the city's cube in it, as in the gold, but turned over, so a hum is lit on its back and dark beneath:
-    // Elm, 4 Oct, "darker underneath and brighter on top". kit.js.)
-    return reflective(material, BRONZE_SHOWS, { over: true });
+    // (Bronze, metal: the city's cube in it, as in the gold, the right way up, so a hum is brightest beneath, where it
+    // shows the city's lights below it: Elm, 5 Oct, "could you please alter the hums' cubemapping so they're brighter on
+    // the bottom again". From 4 Oct it was turned over, darker beneath: kit.js keeps the way, { over: true }.)
+    return reflective(material, BRONZE_SHOWS);
 }
 
 // =============================================================================
@@ -164,7 +166,8 @@ export function createSteam(count, scale = 1) {
     points.frustumCulled = false;
     const size = new Vector2();
     points.onBeforeRender = (renderer) => {
-        uniforms.viewportHeight.value = renderer.getDrawingBufferSize(size).y;
+        // (The city's picture's own height, drawn smaller than the screen when the governor asks: ink.js DRAWN.)
+        uniforms.viewportHeight.value = renderer.getDrawingBufferSize(size).y * DRAWN.scale;
     };
     return { points, positions, ages, geometry };
 }

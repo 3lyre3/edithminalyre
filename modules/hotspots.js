@@ -31,6 +31,7 @@ import {
     Vector2,
     Vector3,
 } from 'three';
+import { DRAWN } from './ink.js';
 import { WORKS } from './reader.js';
 
 // =============================================================================
@@ -476,8 +477,9 @@ export function createHotspots({ stage, fragments, read, places, label, reducedM
             if (waiting.length) glintAt(waiting[Math.floor(Math.random() * waiting.length)], elapsed);
         }
         renderer.getDrawingBufferSize(drawingBuffer);
-        uniforms.scale.value = drawingBuffer.y / (2 * Math.tan(MathUtils.degToRad(camera.fov) / 2));
-        uniforms.pixelRatio.value = renderer.getPixelRatio();
+        // (In the city's picture's pixels, drawn smaller than the screen when the governor asks: ink.js DRAWN.)
+        uniforms.scale.value = drawingBuffer.y * DRAWN.scale / (2 * Math.tan(MathUtils.degToRad(camera.fov) / 2));
+        uniforms.pixelRatio.value = renderer.getPixelRatio() * DRAWN.scale;
         if (lit) {
             const screen = screenOf(lit);
             label.hidden = !screen.inFront;

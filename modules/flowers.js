@@ -38,6 +38,7 @@ import {
     ZeroFactor,
 } from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { DRAWN } from './ink.js';
 import { alsoBeforeCompile, paint, pose, taperedTube } from './kit.js';
 import { SWELL_GLSL } from './sea.js';
 import { SEA_LEVEL, rimRadiusGLSL } from './shape.js';
@@ -342,8 +343,8 @@ function glintPoints(pivots, floating, uniforms) {
     geometry.setAttribute('aFlower', new Float32BufferAttribute(pivots.map((_, index) => index), 1));
     geometry.setAttribute('aFloats', new Float32BufferAttribute(floating.map((floats) => (floats ? 1 : 0)), 1));
     const points = new Points(geometry, new ShaderMaterial({
-        uniforms: { uFlowers: uniforms.uFlowers, uTime: uniforms.uTime, scale: uniforms.scale },
-        vertexShader: `attribute float aFlower; attribute float aFloats; uniform vec4 uFlowers[5]; uniform float uTime; uniform float scale; varying float vGlint;
+        uniforms: { uFlowers: uniforms.uFlowers, uTime: uniforms.uTime, scale: uniforms.scale, uDrawn: uniforms.uDrawn },
+        vertexShader: `attribute float aFlower; attribute float aFloats; uniform vec4 uFlowers[5]; uniform float uTime; uniform float scale; uniform float uDrawn; varying float vGlint;
 ${rimRadiusGLSL()}
 ${SWELL_GLSL}
 void main() {
@@ -358,7 +359,7 @@ void main() {
     }
     vec4 view = modelViewMatrix * vec4(at, 1.0);
     gl_Position = projectionMatrix * view;
-    gl_PointSize = vGlint > 0.001 ? max(26.0, 1.6 * scale / -view.z) * (0.6 + 0.6 * vGlint) : 0.0;
+    gl_PointSize = vGlint > 0.001 ? max(26.0 * uDrawn, 1.6 * scale / -view.z) * (0.6 + 0.6 * vGlint) : 0.0;
 }`,
         fragmentShader: `varying float vGlint;
 void main() {
@@ -399,6 +400,8 @@ export function createFlowers({ flowers, read, gradientMap, stage, reducedMotion
         uFlowers: { value: ordered.map(() => new Vector4()) },
         uTime: { value: 0 },
         scale: { value: 400 },
+        // (The city's picture over the screen's: ink.js DRAWN.)
+        uDrawn: { value: 1 },
     };
     const pieces = ordered.flatMap((flower, index) => flowerPieces(flower, index));
     const mesh = new Mesh(mergeGeometries(pieces, false), flowerMaterial(gradientMap, uniforms));
@@ -506,7 +509,9 @@ export function createFlowers({ flowers, read, gradientMap, stage, reducedMotion
             clock += dt;
             uniforms.uTime.value = elapsed;
             stage.renderer.getDrawingBufferSize(buffer);
-            uniforms.scale.value = buffer.y / (2 * Math.tan(MathUtils.degToRad(stage.camera.fov) / 2));
+            // (In the city's picture's pixels, drawn smaller than the screen when the governor asks: ink.js DRAWN.)
+            uniforms.scale.value = buffer.y * DRAWN.scale / (2 * Math.tan(MathUtils.degToRad(stage.camera.fov) / 2));
+            uniforms.uDrawn.value = DRAWN.scale;
             for (const state of states) {
                 if (state.wiltFrom !== null) {
                     state.wilt = reducedMotion ? 1 : Math.min(1, (clock - state.wiltFrom) / WILT_SECONDS);

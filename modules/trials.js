@@ -87,13 +87,20 @@
  * - banshees: the hums' shades as banshees: broader, the robe spread, billowing (its robe swelling and falling from the
  *   hem up, its hood swaying), and out on the water lit along their edge as the ripples catch the light (Elm: "investigate
  *   some means of making the shadow easier to see"; creatures.js); off, the still, narrower shades they were
+ * - governor: the frame rate kept up on a device that can't draw the city as fast as its screen asks, by drawing fewer
+ *   pixels a rung at a time (the four samples to a pixel dropped, the pixel ratio lowered, then the city's own picture
+ *   drawn smaller beneath the ink), and given back when there's room (Elm, 5 Oct, of the ways to faster frames: "all
+ *   your suggestions seem good"; governor.js, ink.js); off, the old safety net, the pixel ratio only ever lowered,
+ *   never below one pixel to the page's
+ * - chunks: the city drawn only where the camera looks: each of its merged meshes laid in squares of the city, and the
+ *   squares out of view left out of the frame (Elm, the same; chunks.js, kit.js); off, every mesh drawn whole
  */
 
 // =============================================================================
 // Constants
 // =============================================================================
 
-export const TRIALS = Object.freeze(['jetty', 'whisper', 'names', 'hint', 'wraith', 'dust', 'dock', 'hostel', 'hum', 'choice', 'onebutton', 'jettysigns', 'cyclolite', 'creatures', 'allison', 'inside', 'megascreen', 'cassandra', 'ball', 'plants', 'sections', 'whole', 'settle', 'nimble', 'dive', 'metal', 'sculpted', 'bright', 'frame', 'banshees']);
+export const TRIALS = Object.freeze(['jetty', 'whisper', 'names', 'hint', 'wraith', 'dust', 'dock', 'hostel', 'hum', 'choice', 'onebutton', 'jettysigns', 'cyclolite', 'creatures', 'allison', 'inside', 'megascreen', 'cassandra', 'ball', 'plants', 'sections', 'whole', 'settle', 'nimble', 'dive', 'metal', 'sculpted', 'bright', 'frame', 'banshees', 'governor', 'chunks']);
 
 // =============================================================================
 // Main Code

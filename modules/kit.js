@@ -250,11 +250,18 @@ function normalise(geometry, keep) {
  * A piece added as passable (a wire, a string of flags, a trailing root) is
  * drawn like any other, but the camera may pass through it: each mesh keeps,
  * in userData.solidRanges, the [first vertex, count] runs of everything else.
+ *
+ * Asked for squares (square: how wide, in metres), each mesh's pieces are laid
+ * in squares of the city, neighbouring squares together along a Hilbert curve,
+ * and the mesh keeps, in userData.squares, each square's [first vertex, count]
+ * and its bounds: so what's out of the camera's view can be left out of a
+ * frame (chunks.js).
  */
 export class Buckets {
-    constructor() {
+    constructor({ square = 0 } = {}) {
         this.pieces = new Map();
         this.passable = new Set();
+        this.square = square;
     }
 
     add(key, geometry, { passable = false } = {}) {
@@ -294,24 +301,93 @@ export class Buckets {
     mesh(key, materials, geometries, flats) {
         const material = materials[key];
         if (!material) throw new Error(`No material for bucket "${key}"`);
-        const merged = mergeGeometries(flats, false);
+        // (In squares of the city, when asked, each piece in the square its middle stands in.)
+        const laid = this.square > 0 ? inSquares(flats, this.square) : null;
+        const order = laid ? laid.order : flats.map((_, index) => index);
+        const merged = mergeGeometries(order.map((index) => flats[index]), false);
         merged.computeBoundingSphere();
         const mesh = new Mesh(merged, material);
         mesh.name = key;
         const solidRanges = [];
+        const squares = [];
         let first = 0;
-        flats.forEach((flat, index) => {
-            const count = flat.attributes.position.count;
+        for (const index of order) {
+            const count = flats[index].attributes.position.count;
             if (!this.passable.has(geometries[index])) {
                 const last = solidRanges[solidRanges.length - 1];
                 if (last && last[0] + last[1] === first) last[1] += count;
                 else solidRanges.push([first, count]);
             }
+            if (laid) {
+                const last = squares[squares.length - 1];
+                if (last && last.key === laid.keys[index]) {
+                    last.count += count;
+                    last.box.union(laid.boxes[index]);
+                } else squares.push({ key: laid.keys[index], first, count, box: laid.boxes[index].clone() });
+            }
             first += count;
-        });
+        }
         mesh.userData.solidRanges = solidRanges;
+        if (laid) mesh.userData.squares = squares.map(({ first: from, count, box }) => ({ first: from, count, box }));
         return mesh;
     }
+}
+
+/**
+ * A square's place along a Hilbert curve over a size by size grid (size a power of two): squares next to each other
+ * on the curve are next to each other in the city, so a view's squares fall in few runs of it.
+ */
+export function hilbert(size, x, y) {
+    let d = 0;
+    let across = x;
+    let down = y;
+    for (let half = size >> 1; half > 0; half >>= 1) {
+        const rx = (across & half) > 0 ? 1 : 0;
+        const ry = (down & half) > 0 ? 1 : 0;
+        d += half * half * ((3 * rx) ^ ry);
+        if (ry === 0) {
+            if (rx === 1) {
+                across = size - 1 - across;
+                down = size - 1 - down;
+            }
+            [across, down] = [down, across];
+        }
+    }
+    return d;
+}
+
+/**
+ * The order a bucket's pieces are laid in, by squares of the city (square metres wide) along a Hilbert curve (a piece
+ * in the square its middle stands in; the pieces of a square in the order they were added), each piece's square (its
+ * place on the curve) and bounds.
+ */
+function inSquares(flats, square) {
+    const boxes = flats.map((flat) => {
+        flat.computeBoundingBox();
+        return flat.boundingBox;
+    });
+    const middle = new Vector3();
+    let minX = Infinity;
+    let minZ = Infinity;
+    let maxX = -Infinity;
+    let maxZ = -Infinity;
+    for (const box of boxes) {
+        box.getCenter(middle);
+        minX = Math.min(minX, middle.x);
+        minZ = Math.min(minZ, middle.z);
+        maxX = Math.max(maxX, middle.x);
+        maxZ = Math.max(maxZ, middle.z);
+    }
+    const across = Math.floor((maxX - minX) / square) + 1;
+    const down = Math.floor((maxZ - minZ) / square) + 1;
+    let size = 1;
+    while (size < Math.max(across, down)) size *= 2;
+    const keys = boxes.map((box) => {
+        box.getCenter(middle);
+        return hilbert(size, Math.floor((middle.x - minX) / square), Math.floor((middle.z - minZ) / square));
+    });
+    const order = flats.map((_, index) => index).sort((a, b) => keys[a] - keys[b] || a - b);
+    return { order, keys, boxes };
 }
 
 // =============================================================================
@@ -530,8 +606,9 @@ function duskCube() {
  * inside of anything the dust has opened is drawn black before this, so it stays black: dust.js.)
  * @param {import('three').Material} material
  * @param {number} strength - how much of the cube it shows (0 none)
- * @param {{ over?: boolean }} [options] - over: the cube read turned over, its light above and its dark below (the hums:
- *   Elm, 4 Oct, "darker underneath and brighter on top")
+ * @param {{ over?: boolean }} [options] - over: the cube read turned over, its light above and its dark below (the hums
+ *   wore it from Elm's "darker underneath and brighter on top", 4 Oct, until her "brighter on the bottom again", 5 Oct;
+ *   nothing wears it now)
  */
 export function reflective(material, strength, { over = false } = {}) {
     // (A trial: ?metal=off leaves the metals as they were.)
