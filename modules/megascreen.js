@@ -685,7 +685,10 @@ export async function showMegaScreen({ renderer, fit, reducedMotion, showing, on
     function frame() {
         renderer.getDrawingBufferSize(size);
         const aspect = size.x / Math.max(1, size.y);
-        const tall = aspect < 0.8;
+        // (Tall up to 4:5 itself, as the page's door takes it, style.css @media (max-aspect-ratio: 4/5): the door's tall
+        // picture is baked at 4:5 (tools/bake-door.mjs), and taken there as wide it showed a phone a horizon that jumped
+        // when this scene took its place.)
+        const tall = aspect <= 0.8;
         camera.aspect = aspect;
         camera.fov = tall ? 64 : 54;
         const halfAcross = Math.atan(Math.tan(MathUtils.degToRad(camera.fov / 2)) * aspect);
