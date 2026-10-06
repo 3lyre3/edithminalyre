@@ -31,17 +31,29 @@
         (() => {
             let crossed = false;
             try { crossed = sessionStorage.getItem('elysicester:crossed') === 'yes'; } catch (error) {}
-            if (crossed || location.hash.startsWith('#read-')) document.documentElement.dataset.returning = '';
+            const returning = crossed || location.hash.startsWith('#read-');
+            if (returning) document.documentElement.dataset.returning = '';
             // (One option at the top of the screen, the rest standing aside, from the first paint, not only once the code
             // has come: a trial, ?onebutton=off, main.js.)
             const asked = new URLSearchParams(location.search);
             if (asked.get('onebutton') !== 'off' && asked.get('trials') !== 'off') document.documentElement.dataset.onebutton = '';
+            // The door's picture, wanted at the first paint (style.css .threshold::before), the one for this screen's
+            // shape: asked for at once, but only where the card will show it (not coming back, when there's no card, nor
+            // with the Mega-Screen's trial off, when the card is the flat one).
+            if (!returning && asked.get('megascreen') !== 'off' && asked.get('trials') !== 'off') {
+                for (const [shape, media] of [['wide', 'not all and (max-aspect-ratio: 4/5)'], ['tall', '(max-aspect-ratio: 4/5)']]) {
+                    const door = document.createElement('link');
+                    door.rel = 'preload';
+                    door.as = 'image';
+                    door.href = `v/6925f98568/assets/door-${shape}.webp`;
+                    door.media = media;
+                    door.fetchPriority = 'high';
+                    document.head.append(door);
+                }
+            }
         })();
     </script>
     <link rel="stylesheet" href="v/6925f98568/style.css">
-    <!-- The door's picture, wanted at the first paint (style.css .threshold::before): the one for this screen's shape. -->
-    <link rel="preload" as="image" href="v/6925f98568/assets/door-wide.webp" media="(min-aspect-ratio: 4/5)" fetchpriority="high">
-    <link rel="preload" as="image" href="v/6925f98568/assets/door-tall.webp" media="(max-aspect-ratio: 4/5)" fetchpriority="high">
     <noscript><style>.threshold, .veil, .controls { display: none; }</style></noscript>
     <script type="importmap">
     {

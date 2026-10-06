@@ -13,7 +13,8 @@
  *     coined); a word Elm gave herself ("given") must quote her, word and gloss;
  *     missing words say what they need instead
  *   - the diorama stays inside its budget: total size, file size, no audio
- *     files, no image wider or taller than 1024 px
+ *     files, no image wider or taller than 1024 px (the door's pictures, no
+ *     larger than they're baked)
  *   - the page's import map points at files that exist in vendor/, and the
  *     vendored three.js matches the version pinned in package.json
  *   - the page loads its code through a stamped address that is current (a
@@ -53,6 +54,12 @@ const DATA_FILES = ['places.json', 'fragments.json', 'signs.json', 'paper.json']
 const BUDGET_TOTAL_BYTES = 2_500_000;
 const BUDGET_FILE_BYTES = 1_000_000;
 const MAX_IMAGE_SIDE = 1024;
+/**
+ * The door's pictures (tools/bake-door.mjs) are the Mega-Screen scene's first frame, fitted to the screen's height until
+ * the scene itself takes their place: smaller, they would soften, and the scene would sharpen as it took over. So each
+ * may be as large as it's baked (the widest screen its framing serves, 1200 px tall), and no larger.
+ */
+const DOOR_PICTURES = new Map([['assets/door-wide.webp', { width: 2880, height: 1200 }], ['assets/door-tall.webp', { width: 960, height: 1200 }]]);
 const MAX_FRAGMENT_WORDS = 60;
 const AUDIO_FILE = /\.(?:mp3|ogg|oga|opus|wav|m4a|aac|flac|weba|mid|midi)$/i;
 const IMAGE_FILE = /\.(?:png|webp|jpe?g|gif)$/i;
@@ -413,8 +420,11 @@ async function checkBudget(files) {
         if (AUDIO_FILE.test(file)) fail(`${file}: the diorama synthesises its sound; no audio files`);
         if (IMAGE_FILE.test(file)) {
             const size = imageSize(buffer, file);
+            const door = DOOR_PICTURES.get(file.split(path.sep).join('/'));
             if (!size) fail(`${file}: could not read the image's size`);
-            else if (size.width > MAX_IMAGE_SIDE || size.height > MAX_IMAGE_SIDE) {
+            else if (door && (size.width > door.width || size.height > door.height)) {
+                fail(`${file}: ${size.width}×${size.height} is larger than the door's ${door.width}×${door.height}`);
+            } else if (!door && (size.width > MAX_IMAGE_SIDE || size.height > MAX_IMAGE_SIDE)) {
                 fail(`${file}: ${size.width}×${size.height} is larger than ${MAX_IMAGE_SIDE} px`);
             }
         }
