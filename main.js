@@ -406,12 +406,15 @@ async function boot() {
     // gives way to it as soon as can be: the renderer, then its scene, while the city's data is on its way. Where it
     // can't be drawn at all, the card is the flat one.
     const canvas = byId('stage');
-    // (three.js draws with WebGL 2 only: where the renderer can't be made, there's none.)
+    // (three.js draws with WebGL 2 only: asked first, quietly (hasWebGL2), so a browser without it meets no errors from
+    // the renderer trying; and where it still can't be made, there's none.)
     let renderer = null;
-    try {
-        renderer = createRenderer(canvas);
-    } catch (error) {
-        console.warn('No WebGL 2 here:', error?.message ?? error);
+    if (hasWebGL2()) {
+        try {
+            renderer = createRenderer(canvas);
+        } catch (error) {
+            console.warn('No WebGL 2 here:', error?.message ?? error);
+        }
     }
     if (renderer) {
         sceneRenderer = renderer;
