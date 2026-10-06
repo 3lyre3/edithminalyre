@@ -135,6 +135,8 @@ export class OrbitRig {
             element.setPointerCapture(event.pointerId);
             this.pointers.set(event.pointerId, {
                 x: event.clientX, y: event.clientY, startX: event.clientX, startY: event.clientY, startTime: event.timeStamp,
+                // (The right button held, on a computer: a swivel, never a tap.)
+                swivel: event.pointerType === 'mouse' && event.button === 2,
             });
             if (this.pointers.size > 1) this.pinched = true;
             // (A second finger begins a gesture afresh: told apart again by how the two move.)
@@ -147,6 +149,12 @@ export class OrbitRig {
             // While something else steers the camera (walking as the shadow), a drag is its to use, and a pinch or a
             // twist is handed on to it (handsOffZoom, handsOffTurn).
             if (this.handsOff) {
+                // (On a computer, the right button held and dragged swivels the camera round the hum, as two fingers
+                // twisted do on a phone; the drag goes the way the whole city's does, a hand turning the world.)
+                if (pointer.swivel && this.pointers.size === 1) {
+                    const across = element.getBoundingClientRect().width || 1;
+                    this.handsOffTurn?.(-((event.clientX - pointer.x) / across) * DRAG);
+                }
                 if (this.pointers.size >= 2) {
                     const move = this.twoFingers(pointer, event.clientX, event.clientY);
                     if (move?.zoom) this.handsOffZoom?.(move.zoom);
@@ -173,7 +181,7 @@ export class OrbitRig {
         const release = (event) => {
             const pointer = this.pointers.get(event.pointerId);
             if (!pointer) return;
-            const wasSingle = this.pointers.size === 1 && !this.pinched;
+            const wasSingle = this.pointers.size === 1 && !this.pinched && !pointer.swivel;
             this.pointers.delete(event.pointerId);
             if (this.pointers.size < 2) this.gesture = null;
             if (this.pointers.size === 0) this.pinched = false;
@@ -185,6 +193,8 @@ export class OrbitRig {
         };
         listen(element, 'pointerup', release);
         listen(element, 'pointercancel', release);
+        // (The right button is the camera's, so the browser's own menu doesn't come up over the city.)
+        listen(element, 'contextmenu', (event) => event.preventDefault());
         listen(element, 'wheel', (event) => {
             event.preventDefault();
             const lines = event.deltaMode === 1 ? 16 : 1;

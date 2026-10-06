@@ -14,7 +14,7 @@
 // =============================================================================
 
 import { BufferGeometry, Color, Euler, Float32BufferAttribute, Matrix4, Vector3 } from 'three';
-import { breathe } from './kit.js';
+import { breathe, breatheDue } from './kit.js';
 
 // =============================================================================
 // Shapes
@@ -248,8 +248,9 @@ export async function sculpt({ layers, from, to, cell, extra = {}, seam = cell *
                     localFields.set(index, field(localLayers(layers, middle, halfDiagonal + cell, band), band, seam));
                 }
             }
+            // (Breathing by the clock, not by the count: kit.js breathe. A count, on a phone, ran a tenth of a second.)
+            if (breatheDue()) await breathe();
         }
-        await breathe();
     }
     lap('coarse');
     values.fill(NaN);
@@ -304,7 +305,7 @@ export async function sculpt({ layers, from, to, cell, extra = {}, seam = cell *
             active.push([ni, nj, nk]);
             queue.push([ni, nj, nk]);
         }
-        if (worked % 64 === 0) await breathe();
+        if (breatheDue()) await breathe();
     }
     sculptTimes.followed = active.length;
     // (The quiet blocks: their middle's side, where nothing was worked out.)
@@ -355,6 +356,7 @@ export async function sculpt({ layers, from, to, cell, extra = {}, seam = cell *
                 }
             }
         }
+        if (breatheDue()) await breathe();
     }
     await breathe();
 
@@ -396,7 +398,7 @@ export async function sculpt({ layers, from, to, cell, extra = {}, seam = cell *
             if (normalAlong * out >= 0) indices.push(quad[0], quad[1], quad[2], quad[0], quad[2], quad[3]);
             else indices.push(quad[0], quad[2], quad[1], quad[0], quad[3], quad[2]);
         }
-        if (cellIndex % 6000 === 0) await breathe();
+        if (cellIndex % 300 === 0 && breatheDue()) await breathe();
     }
 
     // (Scraps of surface apart from the rest, a few faces where two layers almost touch, are no part of the figure: the
@@ -432,17 +434,21 @@ export async function sculpt({ layers, from, to, cell, extra = {}, seam = cell *
     }
     sculptTimes.scraps = (indices.length - kept) / 3;
     indices.length = kept;
-    // (For the local checks: the edges only one face has, which a hole in the surface leaves, and where.)
-    const edgeUses = new Map();
-    for (let f = 0; f < indices.length; f += 3) {
-        for (const [a, b] of [[indices[f], indices[f + 1]], [indices[f + 1], indices[f + 2]], [indices[f + 2], indices[f]]]) {
-            const key = a < b ? a * 1e7 + b : b * 1e7 + a;
-            edgeUses.set(key, (edgeUses.get(key) ?? 0) + 1);
+    // (For the local checks: the edges only one face has, which a hole in the surface leaves, and where. Only for them,
+    // test-sculpt.mjs and ?debug=1: counted on every visit, it cost a phone a long stretch for nothing seen.)
+    if (!globalThis.document || new URLSearchParams(globalThis.location?.search ?? '').has('debug')) {
+        const edgeUses = new Map();
+        for (let f = 0; f < indices.length; f += 3) {
+            for (const [a, b] of [[indices[f], indices[f + 1]], [indices[f + 1], indices[f + 2]], [indices[f + 2], indices[f]]]) {
+                const key = a < b ? a * 1e7 + b : b * 1e7 + a;
+                edgeUses.set(key, (edgeUses.get(key) ?? 0) + 1);
+            }
+            if (f % 3000 === 0 && breatheDue()) await breathe();
         }
+        const open = [...edgeUses].filter(([, uses]) => uses === 1).map(([key]) => Math.floor(key / 1e7));
+        sculptTimes.openEdges = open.length;
+        sculptTimes.openAt = open.slice(0, 6).map((v) => [positions[v * 3], positions[v * 3 + 1], positions[v * 3 + 2]].map((n) => +n.toFixed(3)));
     }
-    const open = [...edgeUses].filter(([, uses]) => uses === 1).map(([key]) => Math.floor(key / 1e7));
-    sculptTimes.openEdges = open.length;
-    sculptTimes.openAt = open.slice(0, 6).map((v) => [positions[v * 3], positions[v * 3 + 1], positions[v * 3 + 2]].map((n) => +n.toFixed(3)));
     // Each face turned to face out by itself (a quad of the surface nets can twist where the surface is thin or tightly
     // curved, and one of its two faces then faces in: culled, it's a hole the ink draws as a speck): its own normal
     // against the field's rise at its middle.
@@ -473,7 +479,7 @@ export async function sculpt({ layers, from, to, cell, extra = {}, seam = cell *
             indices[f + 2] = b / 3;
             turned += 1;
         }
-        if (f % 30000 === 0) await breathe();
+        if (f % 600 === 0 && breatheDue()) await breathe();
     }
     sculptTimes.turned = turned;
 
@@ -504,7 +510,7 @@ export async function sculpt({ layers, from, to, cell, extra = {}, seam = cell *
         colours[v * 3 + 1] = colour.g;
         colours[v * 3 + 2] = colour.b;
         for (const [name, of] of Object.entries(extra)) more[name][v] = of(x, y, z, layer);
-        if (v % 4000 === 3999) await breathe();
+        if (v % 200 === 199 && breatheDue()) await breathe();
     }
     lap('normals');
     const geometry = new BufferGeometry();

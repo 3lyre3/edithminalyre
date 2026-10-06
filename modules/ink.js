@@ -105,6 +105,7 @@ const fragmentShader = /* glsl */ `
     uniform mat4 cameraWorld;
     uniform float lineBreaks;
     uniform float wobbleScale;
+    uniform float vignette;
 
     varying vec2 vUv;
 
@@ -215,7 +216,7 @@ const fragmentShader = /* glsl */ `
         color += grain * grainAmount + fibre * grainAmount * 0.35;
 
         vec2 centred = vUv - 0.5;
-        color *= 1.0 - dot(centred, centred) * 0.6;
+        color *= 1.0 - dot(centred, centred) * 0.6 * vignette;
 
         gl_FragColor = vec4(color, 1.0);
     }
@@ -341,6 +342,8 @@ export function createInk(renderer, { reducedMotion, governed = false }) {
         lineBreaks: { value: new URLSearchParams(window.location.search).get('lines') === 'whole' ? 0 : 1 },
         // How much the wobble is scaled up by the eye coming closer (render's zoom; 1 at the whole city).
         wobbleScale: { value: 1 },
+        // The corners darkened (1), or not (0: plain, for the door's picture, which the page darkens itself: plain).
+        vignette: { value: 1 },
     };
     const material = new ShaderMaterial({ uniforms, vertexShader, fragmentShader, depthTest: false, depthWrite: false });
 
@@ -389,6 +392,34 @@ export function createInk(renderer, { reducedMotion, governed = false }) {
         resize,
         /** The most samples to a pixel the city's picture may have (0 on a touch screen). */
         most,
+        /**
+         * Drawn plain (true): no darkened corners and no paper grain, for a picture the page lays its own over (the
+         * door's, before its scene can be drawn: megascreen.js, tools/bake-door.mjs); or as ever (false).
+         */
+        plain(on) {
+            uniforms.vignette.value = on ? 0 : 1;
+            uniforms.grainAmount.value = on ? 0 : 0.025;
+        },
+        /**
+         * Make its own programs now (its glow's passes, each for a target as it draws into one, and its last draw, onto
+         * the screen), waiting for them, where the browser can make them aside, without holding the page. Otherwise they're
+         * made by its first frame, which is held while they are (a phone's Mega-Screen, 6 Oct: its first frame a quarter of
+         * a second late, the wind's grains jumping as it came).
+         */
+        async compile() {
+            const parallel = renderer.extensions.has('KHR_parallel_shader_compile');
+            const kept = renderer.getRenderTarget();
+            const waits = [];
+            for (const [passMaterial, into] of [[gather, near[0]], [blur, near[1]], [shrink, far[0]], [material, null]]) {
+                quad.material = passMaterial;
+                renderer.setRenderTarget(into);
+                if (parallel) waits.push(renderer.compileAsync(scene, camera));
+                else renderer.compile(scene, camera);
+            }
+            quad.material = material;
+            renderer.setRenderTarget(kept);
+            await Promise.all(waits);
+        },
         /** The city's picture's scale of the screen (DRAWN), and its samples to a pixel now. */
         get scale() { return scale; },
         get samples() { return target.samples; },

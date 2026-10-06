@@ -26,6 +26,7 @@ import {
     RIM_SEGMENTS,
     SEA_LEVEL,
     bellyDepth,
+    breathe,
     createRandom,
     curtainDrop,
     fbm2,
@@ -348,10 +349,13 @@ function buildHangings(random) {
  * rock and its spikes to "rock" (which draws their striae), the roots to
  * "stone".
  */
-export function buildIsland(buckets) {
+export async function buildIsland(buckets) {
     const random = createRandom(2021);
+    // (Breathing between its pieces, each a long stretch of a phone's: kit.js breathe.)
     buckets.add('dimGold', buildGround());
+    await breathe();
     buckets.add('rock', buildRock());
+    await breathe();
     const { spikes, roots } = buildHangings(random);
     for (const spike of spikes) buckets.add('rock', spike);
     for (const root of roots) buckets.add('stone', root, { passable: true });

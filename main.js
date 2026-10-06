@@ -33,6 +33,7 @@ import { createFlowers } from './modules/flowers.js';
 import { frameGiver } from './modules/frame.js';
 import { createHotspots, createPointList } from './modules/hotspots.js';
 import { createInventory } from './modules/inventory.js';
+import { breathe } from './modules/kit.js';
 import { showMegaScreen } from './modules/megascreen.js';
 import { createNames } from './modules/names.js';
 import { WORKS, createReader } from './modules/reader.js';
@@ -56,6 +57,13 @@ const VOICE_FRAGMENTS = ['nbp-e3-intermaze-1'];
  * marked. (Until 5 Oct "leave" went back to the choice that came first: Elm, 2 Oct.)
  */
 const TEXT_PAGE = 'read.html';
+
+/**
+ * How long the city's build waits after the Mega-Screen's first frame (ms): through the start of its roll-in, where it
+ * moves fastest, and no longer, so the city is built by the time it has stood (main.js boot; a phone, 6 Oct, built it in
+ * about five seconds behind the card).
+ */
+const BUILD_AFTER_SHOWN = 2500;
 
 /** Walking as the shadow, a reading point within this of its head names its place. */
 const NEAR_POINT = 3.2;
@@ -313,12 +321,15 @@ async function boot() {
     const audio = createAudio();
     // With one option at the top of the screen (a trial), the rest stands aside (style.css), and the sound switch
     // keeps a quiet corner of its own.
+    // (The page sets both from its first paint: index.html.)
     const oneButton = trialOn('onebutton');
     if (oneButton) {
         root.dataset.onebutton = '';
+    } else {
+        // (Without it, the sound switch stands with the other controls.)
         const toggle = byId('sound-toggle');
-        toggle.classList.add('sound-corner');
-        document.body.append(toggle);
+        toggle.classList.remove('sound-corner');
+        document.querySelector('.controls')?.prepend(toggle);
     }
     wireSound(audio);
     if (debug) window.elysicesterDebug.audio = audio;
@@ -327,12 +338,21 @@ async function boot() {
     // passage (#read-…) goes straight to it, as one coming back does.
     const reading = window.location.hash.startsWith('#read-');
     const returning = crossedThisVisit() || reading;
+    // The city's build waits until the Mega-Screen has rolled for a few seconds (BUILD_AFTER_SHOWN): its first moments,
+    // where it moves fastest, go unheld by the build's long stretches (on a phone, 6 Oct, they held its first frames for
+    // a third of a second at a time), and the build still finishes behind the card. With no Mega-Screen to roll in, or
+    // once the visitor begins, it starts at once.
+    let letBuild;
+    const mayBuild = new Promise((resolve) => {
+        letBuild = resolve;
+    });
     const threshold = createThreshold({
         root,
         card: byId('threshold'),
         begin: byId('threshold-begin'),
         voice: byId('threshold-voice'),
         onBegin: () => {
+            letBuild();
             if (debug) window.elysicesterDebug.begunAt = performance.now();
             if (soundWanted()) audio.start();
         },
@@ -348,15 +368,17 @@ async function boot() {
     let sceneStarted = false;
     // (Once it's drawn, the Mega-Screen gives this its dive: megascreen.js.)
     const megaScreen = {};
+    const card = byId('threshold');
     const startMegaScreen = () => {
         if (sceneStarted || root.dataset.threshold !== 'card') return;
         if (!trialOn('megascreen')) {
+            // (Without it, the card is the flat one: its letters rolling across a dark band.)
+            card.classList.add('is-flat');
             threshold.settled();
             return;
         }
         if (!sceneRenderer) return;
         sceneStarted = true;
-        const card = byId('threshold');
         showMegaScreen({
             renderer: sceneRenderer,
             fit: () => fitRenderer(sceneRenderer, byId('stage')),
@@ -364,14 +386,40 @@ async function boot() {
             // (Drawn while the card is up, and through the dive into it.)
             showing: () => root.dataset.threshold === 'card' || root.dataset.threshold === 'dive',
             control: trialOn('dive') ? megaScreen : null,
-            onShown: () => card.classList.add('is-scene'),
+            onShown: () => {
+                card.classList.add('is-scene');
+                // (The city's build waits a little more, while it rolls: above. Standing still from the first, under
+                // reduced motion, it needn't.)
+                window.setTimeout(letBuild, reducedMotion ? 0 : BUILD_AFTER_SHOWN);
+            },
             onSettled: () => threshold.settled(),
         }).catch((error) => {
             card.classList.remove('is-scene');
+            card.classList.add('is-flat');
             threshold.settled();
+            letBuild();
             console.error('The Mega-Screen could not be drawn:', error);
         });
     };
+
+    // The Mega-Screen first, before anything else is fetched or built, so the door's picture (index.html, style.css)
+    // gives way to it as soon as can be: the renderer, then its scene, while the city's data is on its way. Where it
+    // can't be drawn at all, the card is the flat one.
+    const canvas = byId('stage');
+    // (three.js draws with WebGL 2 only: where the renderer can't be made, there's none.)
+    let renderer = null;
+    try {
+        renderer = createRenderer(canvas);
+    } catch (error) {
+        console.warn('No WebGL 2 here:', error?.message ?? error);
+    }
+    if (renderer) {
+        sceneRenderer = renderer;
+        startMegaScreen();
+    } else {
+        card.classList.add('is-flat');
+    }
+    if (!sceneStarted) letBuild();
     // Until the city is entered, its reading points wait behind the card.
     const pointsNav = byId('points');
     pointsNav.inert = true;
@@ -690,20 +738,14 @@ async function boot() {
     }
 
     // Build the city now, behind the card, while the visitor reads the Mega-Screen.
-    const canvas = byId('stage');
-    let renderer = null;
     let building;
-    if (hasWebGL2()) {
-        renderer = createRenderer(canvas);
-        // (If the card is up already, the Mega-Screen can be drawn now.)
-        sceneRenderer = renderer;
-        startMegaScreen();
-        building = createStage({ renderer, canvas, data: { places: placeData, paper, signs: signData }, reducedMotion, debug, onLost: showStill, extras })
+    if (renderer) {
+        building = mayBuild.then(() => createStage({ renderer, canvas, data: { places: placeData, paper, signs: signData }, reducedMotion, debug, onLost: showStill, extras })
             .then(async (built) => {
                 stage = built;
                 // The givers (pugs and hums, each with its shade) and Allison, built into the city before it's seen.
                 if (givers.length) {
-                    creatures = createCreatures({
+                    creatures = await createCreatures({
                         creatures: givers,
                         given: read,
                         gradientMap: stage.gradientMap,
@@ -728,6 +770,8 @@ async function boot() {
                 }
                 // President Oedipus's flowers (plants, a trial): the first not yet opened in bloom, the rest buds.
                 if (flowerSpots.length) {
+                    // (A breath first: kit.js.)
+                    await breathe();
                     flowers = createFlowers({ flowers: flowerSpots, read, gradientMap: stage.gradientMap, stage, reducedMotion });
                     for (const spot of flowerSpots.filter((candidate) => !candidate.floats)) stage.walk?.standsIn(spot.at[0], spot.at[2], 0.22);
                 }
@@ -871,7 +915,7 @@ async function boot() {
                 });
                 if (debug) window.elysicesterDebug.readyAt = performance.now();
                 return stage;
-            });
+            }));
     } else {
         showStill();
         // (No Mega-Screen can be drawn: nothing to wait for.)

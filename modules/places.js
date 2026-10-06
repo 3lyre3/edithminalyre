@@ -71,6 +71,7 @@ import {
     SEA_LEVEL,
     alsoBeforeCompile,
     breathe,
+    breatheDue,
     createRandom,
     groundY,
     light,
@@ -2343,10 +2344,12 @@ function buildSeaWall({ buckets, place, mounts }) {
     }
     const landingWest = face + 0.7;
     buckets.add('gold', box(top - landingWest, 0.18, STEPS_WIDE, { x: (top + landingWest) / 2, y: BALCONY_TOP - 0.1, z: mid }, GOLDS[3]));
-    // Stringers under each side, and legs down into the water (passable: a pole the camera may pass).
+    // Stringers under each side, and legs down into the water (passable: a pole the camera may pass). (Each stands a
+    // little proud of the treads' ends, as a stair's stringer does: flush, its face and theirs lay in one plane, two
+    // colours fighting for it as the camera moved, the flickering on the steps beside Allison, 6 Oct.)
     const pitch = Math.atan2(BALCONY_TOP - platformTop, foot - top);
     const slope = Math.hypot(BALCONY_TOP - platformTop, foot - top);
-    for (const side of [south - 0.03, north + 0.03]) {
+    for (const side of [south - 0.015, north + 0.015]) {
         buckets.add('dimGold', box(slope, 0.3, 0.06, { x: (foot + top) / 2, y: (platformTop + BALCONY_TOP) / 2 - 0.3, z: side, rz: -pitch }, PAVE_DARK));
     }
     for (const x of [foot - 0.2, (foot + top) / 2, top + 0.15]) {
@@ -3816,7 +3819,7 @@ function sandHeight(x, z) {
  * shore; wet and darker at the water, a lace of foam where it meets it. The dune grass on it, and at its point,
  * where she washed up, weed and a few stones and a branch of driftwood thrown up with her.
  */
-function buildPromontory(buckets, random) {
+async function buildPromontory(buckets, random) {
     const rows = Math.ceil((SAND_TO - SAND_FROM) / 0.2);
     const cols = 30;
     const positions = [];
@@ -3861,10 +3864,13 @@ function buildPromontory(buckets, random) {
         out.lerp(foam, 0.85 * Math.exp(-(((y - SEA_LEVEL - 0.03) / 0.045) ** 2)));
     });
     buckets.add('sand', sand);
+    // (Breathing between its parts, and between its dunes' grass: kit.js breathe. The random stream as it was.)
+    await breathe();
 
     // Dune grass, in tufts on the dunes, pale and dry, leaning away from the sea.
     const GRASS_BLADES = [0xd0c47e, 0xb8b46a, 0xe0cc8a, 0xa8ac62];
     for (const [dx, dz, radius, height] of DUNES) {
+        if (breatheDue()) await breathe();
         const tufts = Math.round(6 + radius * 9 * height);
         for (let tuft = 0; tuft < tufts; tuft += 1) {
             const angle = random() * Math.PI * 2;
@@ -3996,8 +4002,12 @@ function silhouetteQuad(size, at, color, cell) {
  */
 async function buildHostel({ buckets, extras, still, materials }) {
     const random = createRandom(6061);
-    buildPromontory(buckets, random);
+    // (Breathing between its pieces, a long stretch of a phone's otherwise: kit.js breathe. The order, and so the
+    // random stream, as it was.)
+    await buildPromontory(buckets, random);
+    await breathe();
     buildLane(buckets, random);
+    await breathe();
 
     const BRICK_PALE = 0xecd8a4;
     const TRIM = 0xd8ceb2;
@@ -4057,6 +4067,7 @@ async function buildHostel({ buckets, extras, still, materials }) {
         }
     }
     for (const trim of trims) buckets.add('stone', trim);
+    await breathe();
 
     // The roof: two slopes of slate over the eaves, a ridge, a chimney at the back, and on the front of the ridge
     // a mouse for a weathervane (the silhouette's, as it were, looking out to sea).
@@ -4107,10 +4118,11 @@ async function buildHostel({ buckets, extras, still, materials }) {
         ['lit', 'shut', 'dark', 'lit', 'shut'],
         ['gold', 'dark', 'lit', 'shut', 'lit'],
     ];
-    HOSTEL_FLOORS.forEach((floor, storey) => {
+    for (const [storey, floor] of HOSTEL_FLOORS.entries()) {
         bays.forEach((z, bay) => windowAt(HOSTEL_EAST + 0.01, floor + (storey ? 0.72 : 0.62), z, Math.PI / 2, eastKinds[storey][bay]));
         windowAt(HOSTEL_EAST + 0.01, floor + 0.9, inner.z1 - 0.4, Math.PI / 2, storey === 1 ? 'dark' : 'lit', 0.4, 0.6);
-    });
+        await breathe();
+    }
     windowAt(DOOR_X, first + 0.72, HOSTEL_NORTH - 0.01, Math.PI, 'lit');
     windowAt(DOOR_X, second + 0.72, HOSTEL_NORTH - 0.01, Math.PI, 'dark');
     windowAt(DOOR_X - 1.55, ground + 0.75, HOSTEL_NORTH - 0.01, Math.PI, 'lit', 0.5, 0.75);
@@ -5044,7 +5056,7 @@ function silhouettes(feet, atlas, cells, { color, name }) {
  * Cassandra's thanks; the band); on the balcony, she says it. A stream of its own, so nothing else moves. Returns its
  * floors, the scene (stage.js steps it; main.js voices it) and what a touch finds (her, on the balcony).
  */
-function buildBall({ extras, still, materials, bright = null }) {
+async function buildBall({ extras, still, materials, bright = null }) {
     const random = createRandom(7707);
     const floor = BALL_FLOOR;
     const width = BALL_EAST - BALL_WEST;
@@ -5232,6 +5244,8 @@ function buildBall({ extras, still, materials, bright = null }) {
     const bottle = new LatheGeometry([[0, 0], [0.034, 0], [0.036, 0.018], [0.036, 0.11], [0.026, 0.145], [0.011, 0.162], [0.011, 0.215], [0.014, 0.22], [0, 0.224]].map(([r, y]) => new Vector2(r, y)), 7);
     shell.add('brick', paint(pose(bottle, { x: BALL_COGNAC[0], y: floor, z: BALL_COGNAC[1] }), 0x8a4a14), { passable: true });
 
+    // (Breathing between its parts: kit.js breathe. Built at a stretch, it held a phone a tenth of a second.)
+    await breathe();
     // Inside. The parquet; the corridor's floor of dusty gold; velvet round the walls; the vault's underside, deep red.
     inside.add('brick', box(innerEast - innerWest, 0.012, innerSouth - BALL_STAGE_BACK, { x: cx, y: floor + 0.006, z: (innerSouth + BALL_STAGE_BACK) / 2 }, PARQUET));
     inside.add('brick', box(innerEast - innerWest, 0.012, partitionNorth - innerNorth, { x: cx, y: floor + 0.006, z: (partitionNorth + innerNorth) / 2 }, DUSTY));
@@ -5337,6 +5351,7 @@ function buildBall({ extras, still, materials, bright = null }) {
         inside.add('cloth', curtain(x0 + 0.03, x0 + (x1 - x0) * 0.45, innerNorth + 0.8, floor + 0.1, 1.82, 0x4e6e46, 0x2a4228), { passable: true });
     }
 
+    await breathe();
     // Built: the shell, a solid to the camera (solids.js); the rest, together.
     const solid = new Group();
     solid.name = 'ball-solid';
@@ -5356,6 +5371,7 @@ function buildBall({ extras, still, materials, bright = null }) {
     }
     group.add(insides);
 
+    await breathe();
     // The people: the old Greek at the podium, and Cassandra, one at a time there; Cassandra on the balcony.
     const figureMaterial = new MeshToonMaterial({ gradientMap: materials.gold.gradientMap, vertexColors: true });
     const stands = new Vector3(podium.x, stageTop, podium.z - 0.32);
@@ -5406,6 +5422,7 @@ function buildBall({ extras, still, materials, bright = null }) {
     const chandeliers = new Mesh(mergeGeometries(crystals, false), crystalMaterial);
     chandeliers.name = 'ball-crystals';
     insides.add(chandeliers);
+    await breathe();
     // The filigreed railing, between the balcony's posts: panels of scrollwork, gold in the dusk light.
     const filigree = filigreePanel();
     filigree.wrapS = RepeatWrapping;
@@ -5683,6 +5700,7 @@ export async function buildPlaces(buckets, placeData, materials, pause = async (
     const mounts = new Map();
 
     buildWall(buckets, mounts);
+    await breathe();
     buildPavements(buckets);
     await pause();
     // The grand city: far fewer buildings, much larger (Elm's idea, and her choice); ?city=small keeps the city of
@@ -5691,6 +5709,7 @@ export async function buildPlaces(buckets, placeData, materials, pause = async (
     const houses = await buildHouses(buckets, random, byId, { grand });
     await pause();
     buildSignalTowers(buckets);
+    await breathe();
 
     const anchors = new Map();
     const built = new Map();
@@ -5708,11 +5727,15 @@ export async function buildPlaces(buckets, placeData, materials, pause = async (
 
     // Details from the text about the city, each on a random stream of its own (so nothing above moves).
     buildShoreWeed(buckets, { underSand: built.has('door-in-the-floor') });
+    await breathe();
     const spires = built.get('bridge');
     if (spires) {
         buildVines(buckets, spires);
+        await breathe();
         buildRibbons(buckets, spires);
+        await breathe();
         buildChute(buckets, spires);
+        await breathe();
     }
     // The golden bridges between the buildings (a stream of their own), and the clock their dust keeps.
     const bridges = await buildGoldenBridges(buckets, materials, houses.hallSpecs, spires ?? [], byId, bright);

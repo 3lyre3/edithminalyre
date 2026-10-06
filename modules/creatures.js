@@ -64,7 +64,7 @@ import {
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { blurGeometry, humGeometry } from './hum.js';
 import { birdMaterial, createSteam } from './hums.js';
-import { SEA_LEVEL, alsoBeforeCompile, paint, pose, rimRadius, rimRadiusGLSL, taperedTube, wallX } from './kit.js';
+import { SEA_LEVEL, alsoBeforeCompile, breathe, breatheDue, paint, pose, rimRadius, rimRadiusGLSL, taperedTube, wallX } from './kit.js';
 import { SWELL_GLSL } from './sea.js';
 import { trialOn } from './trials.js';
 
@@ -1307,7 +1307,7 @@ function shortest(angle) {
  * @param {boolean} options.reducedMotion
  * @param {import('three').Camera} [options.camera] - givers far from it aren't drawn (DRAW_FAR)
  */
-export function createCreatures({ creatures, given, gradientMap, light, floorAt, surfaceAt = null, wallAt = null, wallsReady = null, reducedMotion, camera = null }) {
+export async function createCreatures({ creatures, given, gradientMap, light, floorAt, surfaceAt = null, wallAt = null, wallsReady = null, reducedMotion, camera = null }) {
     const pugs = creatures.filter((creature) => creature.kind === 'pug');
     const hums = creatures.filter((creature) => creature.kind === 'hum');
     const group = { objects: [], materials: [] };
@@ -1367,6 +1367,8 @@ export function createCreatures({ creatures, given, gradientMap, light, floorAt,
         return new Matrix4().compose(place, turn.setFromEuler(euler.set(0, facing, 0)), one);
     });
 
+    // (Breathing between its parts, and between the shades it lays, by the clock: kit.js breathe.)
+    await breathe();
     // ---- The hums.
     const clock = { value: 0 };
     const humMesh = new InstancedMesh(humGeometry(), birdMaterial(gradientMap, clock), Math.max(1, hums.length));
@@ -1388,6 +1390,7 @@ export function createCreatures({ creatures, given, gradientMap, light, floorAt,
     steam.points.name = 'giver-hums-steam';
     const puffs = Array.from({ length: Math.max(1, hums.length) * PUFFS }, () => ({ origin: new Vector3(), last: Infinity }));
 
+    await breathe();
     // ---- The shades.
     const shades = shadeAtlas();
     const toLight = light.clone().normalize();
@@ -1424,11 +1427,12 @@ export function createCreatures({ creatures, given, gradientMap, light, floorAt,
         }
         return nearest.filter((spot) => spot.gap < 0.08).map((spot) => spot.at);
     };
-    const layStrips = (walls) => {
+    const layStrips = async (walls) => {
         let wraith = 0;
         let bullBoy = 0;
         const laid = { pug: [], hum: [] };
         for (const [order, creature] of creatures.entries()) {
+            if (breatheDue()) await breathe();
             if (creature.noShade) continue;
             const [x, y, z] = creature.at;
             const kind = creature.kind === 'pug' ? 'pug' : 'hum';
@@ -1448,7 +1452,7 @@ export function createCreatures({ creatures, given, gradientMap, light, floorAt,
         }
         return laid;
     };
-    const laid = layStrips(null);
+    const laid = await layStrips(null);
     const across = new Vector3(-way.z, 0, way.x);
     const shadeUniforms = {
         map: { value: shades.texture }, tint: { value: SHADE_TINT }, depth: { value: SHADE_DEPTH }, pull: { value: SHADE_PULL }, time: { value: 0 },
@@ -1500,9 +1504,9 @@ export function createCreatures({ creatures, given, gradientMap, light, floorAt,
     // Once the walls are laid (the hollows' worker, done with the city as built), the shades are laid again: where a
     // wall catches one, the rest climbs it, as the walker's own does. (Laid before, they'd stop at its foot.)
     if (wallAt && wallsReady) {
-        wallsReady.then((ok) => {
+        wallsReady.then(async (ok) => {
             if (!ok) return;
-            const again = layStrips(wallAt);
+            const again = await layStrips(wallAt);
             for (const [mesh, strips] of [[shadeMesh, again.pug], [humShadeMesh, again.hum]]) {
                 const old = mesh.geometry;
                 mesh.geometry = merged(strips);

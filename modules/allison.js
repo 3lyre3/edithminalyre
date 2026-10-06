@@ -34,7 +34,7 @@ import {
     Vector3,
 } from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { alsoBeforeCompile, light, paint, pose, taperedTube } from './kit.js';
+import { alsoBeforeCompile, breathe, breatheDue, light, paint, pose, taperedTube } from './kit.js';
 import { ball, band, cut, distanceOf, egg, limb, sculpt } from './sculpt.js';
 import { trialOn } from './trials.js';
 
@@ -326,7 +326,7 @@ function drape(points, radiusAt, touch) {
 }
 
 /** His long curls: from the crown down his back past his shoulders, and over the front of each shoulder. */
-function curls(touch) {
+async function curls(touch) {
     const locks = [];
     // [round the head (radians from straight behind), where it starts (height), where it ends (height), its fall's
     // lean outward, front: over the shoulder]
@@ -335,7 +335,10 @@ function curls(touch) {
         [0.95, 1.6, 1.28, 0.03], [-0.95, 1.6, 1.27, 0.03], [0.16, 1.58, 1.17, 0], [-0.16, 1.58, 1.18, 0], [0.48, 1.57, 1.2, 0.02],
         [-0.48, 1.57, 1.19, 0.02], [0.8, 1.57, 1.24, 0.03], [-0.8, 1.57, 1.23, 0.03],
     ];
-    falls.forEach(([round, top, end, lean], index) => {
+    // (Breathing between locks, by the clock: kit.js breathe. Each is laid on him by asking his surface, and the whole
+    // head of them ran long on a phone.)
+    for (const [index, [round, top, end, lean]] of falls.entries()) {
+        if (breatheDue()) await breathe();
         const points = [];
         const steps = 9;
         for (let s = 0; s <= steps; s += 1) {
@@ -349,10 +352,11 @@ function curls(touch) {
             points.push(new Vector3(x, y, z));
         }
         locks.push(closedTube(drape(points, (t) => 0.022 - 0.015 * t, touch), 0.022, 0.007, index % 3 === 1 ? HAIR_LIGHT : HAIR, 26, 7));
-    });
+    }
     // Framing his face, and falling over the front of each shoulder: fine strands, three apiece, waved.
     for (const side of [-1, 1]) {
         for (const [ahead, end, phase, spread] of [[0.0, 1.33, 0.4, 0.0], [0.02, 1.3, 2.2, 0.012], [0.035, 1.35, 4.1, 0.024]]) {
+            if (breatheDue()) await breathe();
             const points = [];
             const steps = 10;
             for (let s = 0; s <= steps; s += 1) {
@@ -404,7 +408,8 @@ async function sculptedAllison() {
             head: (x, y, z) => headShare(x, y, z),
         },
     });
-    const pieces = [body, ...curls(distanceOf(layers())), ...features(), ...drips()];
+    const pieces = [body, ...(await curls(distanceOf(layers()))), ...features(), ...drips()];
+    await breathe();
     const geometry = mergeGeometries(pieces, false);
     geometry.scale(TALL / H, TALL / H, TALL / H);
     return geometry;

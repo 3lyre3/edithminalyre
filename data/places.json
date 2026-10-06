@@ -5,7 +5,7 @@
       "id": "sun-dock",
       "tier": 1,
       "district": "docks",
-      "label": "The sun-dock",
+      "label": "Sun-Dock",
       "position": [12.4, 0.6, 5],
       "focus": { "distance": 17, "height": 6 }
     },
@@ -13,7 +13,7 @@
       "id": "jetty-cafes",
       "tier": 1,
       "district": "docks",
-      "label": "The three cafés",
+      "label": "Cafés",
       "position": [13.4, 3.4, -3.2],
       "focus": { "distance": 16, "height": 5 }
     },
@@ -29,7 +29,7 @@
       "id": "flags",
       "tier": 1,
       "district": "crossroads",
-      "label": "The turquoise flags",
+      "label": "The Flags",
       "position": [5, 8.4, -1],
       "focus": { "distance": 18, "height": 5 }
     },
@@ -45,7 +45,7 @@
       "id": "bridge",
       "tier": 1,
       "district": "spires",
-      "label": "The golden bridgework",
+      "label": "Bridgework",
       "position": [-6.5, 13, -2],
       "focus": { "distance": 26, "height": 4, "azimuth": 40 }
     },
@@ -53,7 +53,7 @@
       "id": "sky-grottos",
       "tier": 1,
       "district": "grottos",
-      "label": "The sky-grottos",
+      "label": "Sky-Grottos",
       "position": [-14.2, 24.6, -8.6],
       "focus": { "distance": 21, "height": 1, "azimuth": 72 },
       "links": [
@@ -79,7 +79,7 @@
       "id": "gas-station",
       "tier": 1,
       "district": "walkway",
-      "label": "The gas station",
+      "label": "Gas Station",
       "position": [-2, 2.6, 14],
       "focus": { "distance": 15, "height": 5 }
     },
@@ -121,7 +121,7 @@
       "id": "charity-ball",
       "tier": 1,
       "district": "rim",
-      "label": "The charity ball",
+      "label": "Charity Ball",
       "position": [4.0, 1.8, -37.6],
       "focus": { "distance": 21, "height": 6.5, "azimuth": 140 },
       "trial": "ball"

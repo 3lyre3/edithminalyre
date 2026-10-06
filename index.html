@@ -32,9 +32,16 @@
             let crossed = false;
             try { crossed = sessionStorage.getItem('elysicester:crossed') === 'yes'; } catch (error) {}
             if (crossed || location.hash.startsWith('#read-')) document.documentElement.dataset.returning = '';
+            // (One option at the top of the screen, the rest standing aside, from the first paint, not only once the code
+            // has come: a trial, ?onebutton=off, main.js.)
+            const asked = new URLSearchParams(location.search);
+            if (asked.get('onebutton') !== 'off' && asked.get('trials') !== 'off') document.documentElement.dataset.onebutton = '';
         })();
     </script>
-    <link rel="stylesheet" href="v/cb13aed252/style.css">
+    <link rel="stylesheet" href="v/6925f98568/style.css">
+    <!-- The door's picture, wanted at the first paint (style.css .threshold::before): the one for this screen's shape. -->
+    <link rel="preload" as="image" href="v/6925f98568/assets/door-wide.webp" media="(min-aspect-ratio: 4/5)" fetchpriority="high">
+    <link rel="preload" as="image" href="v/6925f98568/assets/door-tall.webp" media="(max-aspect-ratio: 4/5)" fetchpriority="high">
     <noscript><style>.threshold, .veil, .controls { display: none; }</style></noscript>
     <script type="importmap">
     {
@@ -44,7 +51,7 @@
         }
     }
     </script>
-    <script type="module" src="v/cb13aed252/main.js"></script>
+    <script type="module" src="v/6925f98568/main.js"></script>
 </head>
 <body>
     <nav class="plainly" aria-label="Leave the diorama">
@@ -52,9 +59,19 @@
     </nav>
 
     <div class="controls">
-        <button type="button" id="sound-toggle" class="control" aria-pressed="false">sound: off</button>
         <button type="button" id="home-view" class="control" hidden>the whole city</button>
     </div>
+    <button type="button" id="sound-toggle" class="control sound-corner" aria-pressed="false">sound: off</button>
+    <script>
+        // (Its words as the visitor last left them, from the first paint: main.js keeps them so.)
+        try {
+            if (JSON.parse(localStorage.getItem('elysicester:sound')) === 'on') {
+                const toggle = document.getElementById('sound-toggle');
+                toggle.textContent = 'sound: on';
+                toggle.setAttribute('aria-pressed', 'true');
+            }
+        } catch (error) {}
+    </script>
     <button type="button" id="hum-button" class="hum-button" aria-label="recentre on the hum" title="recentre on the hum" hidden><svg viewBox="0 0 100 100" aria-hidden="true"><ellipse cx="50" cy="60" rx="23" ry="11" transform="rotate(-41.25 50 60)"/><circle cx="67" cy="40" r="11"/><path d="M73 35 100 46 72 44Z M57 50Q54 20 26 0Q36 28 42 58Z M38 70 18 92 29 84 25 100 45 74Z"/></svg></button>
     <button type="button" id="one-button" class="one-button" hidden>zoom out</button>
     <button type="button" id="inventory-toggle" class="inventory-toggle" aria-haspopup="dialog" aria-controls="inventory" hidden><span class="visually-hidden">Lost pages found: </span><span data-inventory-count>0 / 0</span></button>
@@ -158,6 +175,8 @@
             const still = () => {
                 if (tookOver() || root.dataset.mode === 'still') return;
                 delete root.dataset.returning;
+                // (Nor the one option's ways: the code that brings them never came, and the corner's "Read" stays.)
+                delete root.dataset.onebutton;
                 root.dataset.mode = 'still';
                 root.dataset.threshold = 'done';
                 document.getElementById('threshold').hidden = true;

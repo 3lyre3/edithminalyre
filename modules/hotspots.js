@@ -303,7 +303,56 @@ export function createHotspots({ stage, fragments, read, places, label, reducedM
         const distance = direction.length();
         raycaster.set(camera.position, direction.normalize());
         raycaster.far = Math.max(0, distance - 0.6);
-        return raycaster.intersectObjects(occluders, false).length === 0;
+        return !occluders.some(blocks);
+    }
+
+    // A ray is tried only against the squares of each of the city's buckets whose bounds it passes through (kit.js lays
+    // each bucket in squares, and keeps where each square's triangles are and their bounds: chunks.js): against every
+    // triangle of the city, one ray cost a computer 5 to 6 ms, so a mouse moved over a giver close to the eye, where each
+    // move asks again, held a slower machine's frames (the author, 6 Oct: "moving close to Allison is causing some
+    // lagging"). The answer is the same: a ray that misses a square's bounds misses every triangle in it.
+    const squaresOf = new WeakMap();
+    function blocks(mesh) {
+        const squares = mesh.userData.squares;
+        if (!squares || squares.length < 2) return raycaster.intersectObject(mesh, false).length > 0;
+        let placed = squaresOf.get(mesh);
+        if (!placed) {
+            // (In the world, as the ray is; a hair wider, so no triangle on a bound's very face is missed.)
+            mesh.updateMatrixWorld();
+            placed = squares.map(({ first, count, box }) => ({ first, count, box: box.clone().applyMatrix4(mesh.matrixWorld).expandByScalar(1e-3) }));
+            squaresOf.set(mesh, placed);
+        }
+        const { start, count } = mesh.geometry.drawRange;
+        try {
+            for (const square of placed) {
+                if (!crosses(square.box)) continue;
+                mesh.geometry.setDrawRange(square.first, square.count);
+                if (raycaster.intersectObject(mesh, false).length) return true;
+            }
+            return false;
+        } finally {
+            mesh.geometry.setDrawRange(start, count);
+        }
+    }
+    /** Whether the ray, from its origin to its far end, passes through the box (the slabs, axis by axis). */
+    function crosses(box) {
+        const { origin, direction } = raycaster.ray;
+        let from = 0;
+        let to = raycaster.far;
+        for (const axis of ['x', 'y', 'z']) {
+            const o = origin[axis];
+            const d = direction[axis];
+            if (Math.abs(d) < 1e-12) {
+                if (o < box.min[axis] || o > box.max[axis]) return false;
+                continue;
+            }
+            const a = (box.min[axis] - o) / d;
+            const b = (box.max[axis] - o) / d;
+            from = Math.max(from, Math.min(a, b));
+            to = Math.min(to, Math.max(a, b));
+            if (from > to) return false;
+        }
+        return true;
     }
 
     const across = new Vector3();
@@ -517,6 +566,8 @@ export function createHotspots({ stage, fragments, read, places, label, reducedM
         },
         /** The city's solid surfaces, as the points are hidden by them (touch.js feels along the same). */
         occluders,
+        /** For the local checks: whether nothing of the city stands between the camera and `target` (a Vector3). */
+        clearTo,
         /**
          * Light a point (from the list's focus) or none. Pinned (the walking shadow is beside it), it stays lit
          * as the pointer passes over the city, and its name can be clicked.
