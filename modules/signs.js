@@ -36,6 +36,7 @@ import {
     Vector3,
 } from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { breathe, breatheDue } from './kit.js';
 import { createRayGrid } from './rays.js';
 
 // =============================================================================
@@ -282,6 +283,8 @@ export async function createSigns({ data, mounts, material, renderer }) {
     const geometries = [];
     const entries = [];
     for (const sign of signs) {
+        // (Breathing between signs, by the clock: kit.js breathe.)
+        if (breatheDue()) await breathe();
         const mount = mounts.get(sign.mount);
         const style = STYLES[mount.style];
         const text = sign.danaeam;

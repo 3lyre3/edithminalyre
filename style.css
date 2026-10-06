@@ -631,6 +631,15 @@ a:focus-visible {
     display: none;
 }
 
+/* (It comes in gently, once the lost pages are counted, rather than appearing at once: inventory.js.) */
+.inventory-toggle:not([hidden]) {
+    animation: inventory-arrive 0.6s ease both;
+}
+
+@keyframes inventory-arrive {
+    from { opacity: 0; }
+}
+
 .inventory-note {
     margin: 10px 0 12px;
     font-size: 16px;
@@ -771,7 +780,10 @@ a:focus-visible {
  * the controls stay for keyboards (Tab brings them into view, as a skip link comes), and sound has a quiet corner
  * of its own, low on the left.
  */
-html[data-onebutton]:not([data-threshold="card"]) .plainly {
+/* (Before the code has come, the card is what shows, and its corner's "Read" with it, from the first paint; unless coming
+   back, when the city is what's coming. index.html sets both.) */
+html[data-onebutton][data-threshold]:not([data-threshold="card"]) .plainly,
+html[data-onebutton][data-returning] .plainly {
     display: none;
 }
 
@@ -866,10 +878,58 @@ html[data-onebutton] .controls:not(:focus-within)::before {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    transition: opacity 0.9s ease;
+}
+
+/*
+ * The door's picture, from the page's first paint (the opener should come straight away, and not flicker as it opens,
+ * 6 Oct): the Mega-Screen scene's first frame, baked (tools/bake-door.mjs: the desert under the red sky, the screen
+ * still past the view's right edge), fitted to the screen's height and centred, as the scene itself frames its shot
+ * (with the same vertical angle, a narrower view is that one cropped at its sides); the corners darkened as the ink
+ * darkens them; beneath it, the sky in plain colour, for a screen wider than the picture and the moment before it has
+ * arrived. Once the scene's own first frame is on the canvas beneath (is-scene: main.js), it fades, and the scene goes
+ * on from just where it showed.
+ */
+.threshold::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+        radial-gradient(ellipse farthest-corner at 50% 50%, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.019) 25%, rgba(0, 0, 0, 0.075) 50%, rgba(0, 0, 0, 0.169) 75%, rgba(0, 0, 0, 0.3) 100%),
+        url('assets/door-wide.webp') center / auto 100% no-repeat,
+        linear-gradient(to bottom, #a42520 0%, #c23823 30%, #cb3c24 50%, #df5d33 60%, #f17f50 70%, #f38152 72.3%, #aa1d00 72.4%, #a31300 100%);
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+}
+
+@media (max-aspect-ratio: 4/5) {
+    .threshold::before {
+        background:
+            radial-gradient(ellipse farthest-corner at 50% 50%, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.019) 25%, rgba(0, 0, 0, 0.075) 50%, rgba(0, 0, 0, 0.169) 75%, rgba(0, 0, 0, 0.3) 100%),
+            url('assets/door-tall.webp') center / auto 100% no-repeat,
+            linear-gradient(to bottom, #881623 0%, #b63221 30%, #cb3c24 50%, #d24a29 60%, #f07e4f 70%, #f38152 72.3%, #aa1d00 72.4%, #a41400 100%);
+    }
+}
+
+.threshold.is-scene::before {
+    opacity: 0;
+}
+
+/* Where the scene can't be drawn (no WebGL2, its trial off, or its drawing failed: main.js), the card is the flat one:
+ * a dark band across which the letters roll. */
+.threshold.is-flat {
     background:
         radial-gradient(ellipse 120% 60% at 50% 115%, rgba(150, 40, 24, 0.42), transparent 62%),
         #040305;
-    transition: opacity 0.9s ease;
+}
+
+.threshold.is-flat::before {
+    display: none;
+}
+
+.threshold:not(.is-flat) .mega-screen {
+    visibility: hidden;
 }
 
 .threshold.is-leaving {

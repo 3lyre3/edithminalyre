@@ -702,10 +702,26 @@ export async function showMegaScreen({ renderer, fit, reducedMotion, showing, on
     }
     fit();
     frame();
+    // Its programs made, and its letters sent, before its first frame (which is then drawn as quickly as any other): the
+    // scene's, for the ink's target it's drawn into, and the ink's own, side by side where the browser can make them aside.
     renderer.setRenderTarget(ink.target);
-    if (renderer.extensions.has('KHR_parallel_shader_compile')) await renderer.compileAsync(scene, camera);
-    else renderer.compile(scene, camera);
+    const parallel = renderer.extensions.has('KHR_parallel_shader_compile');
+    const scenePrograms = parallel ? renderer.compileAsync(scene, camera) : renderer.compile(scene, camera);
     renderer.setRenderTarget(null);
+    renderer.initTexture(strip.texture);
+    await Promise.all([parallel ? scenePrograms : null, ink.compile()]);
+    // (?debug=1&doorbake=1: its first frame, before anything has moved, the screen still past the view's right edge,
+    // drawn plain (no darkened corners, no grain) and kept on the page for tools/bake-door.mjs: the door's picture, what
+    // a visitor sees from the page's first paint until this scene's first frame takes its place: index.html, style.css.)
+    const asked = new URLSearchParams(globalThis.location?.search ?? '');
+    if (asked.has('debug') && asked.has('doorbake')) {
+        rig.position.set(startX, 0, STAND_Z);
+        sky.position.copy(camera.position);
+        ink.plain(true);
+        ink.render(scene, camera, 0, 1);
+        (globalThis.elysicesterDebug ??= {}).doorFrame = renderer.domElement.toDataURL('image/webp', 0.9);
+        ink.plain(false);
+    }
 
     // Rolling in: braking all the way, the wheels turning as far as it goes, its tall crown pressing on while it slows
     // and rocking back once it stands (a spring at its foot).

@@ -32,7 +32,7 @@ import {
 } from 'three';
 import { createChunks } from './chunks.js';
 import { createDust, INSIDE_LAYER } from './dust.js';
-import { Buckets, METAL_SKY, breathe, createMaterials, duskLight, flutter, loadMetalSky, wallX } from './kit.js';
+import { Buckets, METAL_SKY, breathe, createMaterials, duskLight, flutter, loadMetalSky, wallX, wornMapMade } from './kit.js';
 import { inscriptionTexture } from './extras.js';
 import { HOLLOWED, createHollows, hollows } from './hollows.js';
 import { createGovernor, ladder } from './governor.js';
@@ -128,7 +128,9 @@ function createReadout() {
 
 /** Let a frame through, so the threshold keeps moving while the city is built. */
 function pause() {
-    return new Promise((resolve) => requestAnimationFrame(() => resolve()));
+    // (Going on just after the frame is drawn, not before it: from within the frame's own callbacks, the next stretch of
+    // the building held the frame back until it was done.)
+    return new Promise((resolve) => requestAnimationFrame(() => setTimeout(resolve, 0)));
 }
 
 /**
@@ -306,6 +308,8 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
     underglow.position.set(0.2, -1, 0.35).multiplyScalar(60);
     scene.add(new HemisphereLight(0x9a86c8, 0x6a4450, 0.75), key, sunset, seaFill, underglow);
 
+    // (The weathering's noise made first, breathing as it's made: the materials take it as they're made.)
+    await wornMapMade();
     const materials = createMaterials();
     // Dusk on the city: warm edges toward the sunken sun, gold's glint, and the last light up high.
     duskLight(materials.gold, { sun: SUN_DIRECTION, rim: 0.55, shine: 0.35, tip: 0.3, tipFrom: 9, tipTo: 30 });
@@ -327,7 +331,7 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
     const square = debug && asksSquare.has('square') ? Number(asksSquare.get('square')) || CHUNK_SQUARE : CHUNK_SQUARE;
     const buckets = new Buckets({ square: CHUNKS ? square : 0 });
     await pause();
-    buildIsland(buckets);
+    await buildIsland(buckets);
     await pause();
     const places = await buildPlaces(buckets, data.places, materials, pause, extras, reducedMotion);
     // The sun-dock's warmth on the water round it (the dock is a half-sun unfurled from the wall).
@@ -463,6 +467,8 @@ export async function createStage({ renderer, canvas, data, reducedMotion, debug
     // (The kept cube in the metals before their programs are made, so it's sent with every other texture.)
     await metalSky;
     await prepareAll(renderer, scene, camera, ink.target);
+    // (And the ink's own, so the city's first frame isn't held while they're made.)
+    await ink.compile();
     // (Keeping it anew: the city's cube taken live, now the programs are made.)
     if (baking && trialOn('metal')) await takeMetalSky(renderer, scene);
 

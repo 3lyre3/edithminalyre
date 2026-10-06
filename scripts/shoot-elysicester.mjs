@@ -1272,7 +1272,7 @@ async function plantsRound(chromium, pass, outDir, name) {
             problems.push('a bud opened out of its turn');
             await page.keyboard.press('Escape');
         }
-        if (!/won't open yet\. The flower in bloom is at the gas station\./.test(result.bud.status)) problems.push(`a bud said ${JSON.stringify(result.bud.status)}`);
+        if (!/won't open yet\. The flower in bloom is at Gas Station\./.test(result.bud.status)) problems.push(`a bud said ${JSON.stringify(result.bud.status)}`);
         // Each in its turn.
         for (let number = 1; number <= 5; number += 1) {
             const id = `po-part-${number}`;

@@ -228,9 +228,26 @@ let breathed = 0;
 export async function breathe() {
     const now = performance.now();
     if (now - breathed < BREATHE_EVERY) return;
-    await (globalThis.scheduler?.yield?.() ?? new Promise((resolve) => { setTimeout(resolve, 0); }));
+    // (On a page that's showing, it waits until the browser has drawn its next frame: a turn given any other way
+    // (scheduler.yield, a timeout) let the building go on first, and a phone, 6 Oct, drew the Mega-Screen's roll-in only
+    // every tenth of a second or so while the city was built. Unseen, or if no frame comes, it goes on regardless.)
+    await (globalThis.document && !document.hidden ? afterFrame() : yieldOnce());
     breathed = performance.now();
 }
+/** Whether breathe() would wait now: for a busy loop to ask each time round, cheaply, before awaiting it. */
+export const breatheDue = () => performance.now() - breathed >= BREATHE_EVERY;
+const yieldOnce = () => globalThis.scheduler?.yield?.() ?? new Promise((resolve) => { setTimeout(resolve, 0); });
+const afterFrame = () => new Promise((resolve) => {
+    let gone = false;
+    const go = () => {
+        if (gone) return;
+        gone = true;
+        resolve();
+    };
+    // (The timeout from within the frame's callbacks runs once the frame is drawn.)
+    requestAnimationFrame(() => setTimeout(go, 0));
+    setTimeout(go, 100);
+});
 
 /** Bring a geometry to the shape every merged bucket shares. */
 function normalise(geometry, keep) {
@@ -897,55 +914,87 @@ let wornMapTexture = null;
  * read a few times a pixel (cheaper than working noise out in the shader).
  * r: broad mottling; g: streaks (fine across, long up, for grime running down
  * a wall); b: fine tufts; a: patches.
+ * Made a band of rows at a time, so the making can breathe between bands (wornMapMade); and each lattice's values are
+ * worked out once, not four times a pixel for every octave: the same numbers to the last bit, in a fraction of the time
+ * (a phone spent a third of a second on them at a stretch, 6 Oct, the Mega-Screen held still as it rolled in).
  */
-function wornMap() {
-    if (wornMapTexture) return wornMapTexture;
+function* wornMapMaking() {
     const size = 256;
     const data = new Uint8Array(size * size * 4);
-    // Value noise on a lattice that wraps (period cells across the texture), so the texture tiles seamlessly.
-    const lattice = (ix, iy, period, seed) => {
-        const x = ((ix % period.x) + period.x) % period.x;
-        const y = ((iy % period.y) + period.y) % period.y;
+    // Value noise on a lattice that wraps (period cells across the texture), so the texture tiles seamlessly: each
+    // lattice's values found once, and where each column and each row of the texture falls on it (between which of its
+    // points, and how far: the same for every pixel of that column, or that row).
+    const lattice = (x, y, seed) => {
         let h = Math.imul(x + seed * 131, 374761393) ^ Math.imul(y + seed * 71, 668265263);
         h = Math.imul(h ^ (h >>> 13), 1274126177);
         return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
     };
-    const noise = (u, v, period, seed) => {
-        const x = u * period.x;
-        const y = v * period.y;
-        const ix = Math.floor(x);
-        const iy = Math.floor(y);
-        const fx = x - ix;
-        const fy = y - iy;
-        const sx = fx * fx * (3 - 2 * fx);
-        const sy = fy * fy * (3 - 2 * fy);
-        const a = lattice(ix, iy, period, seed);
-        const b = lattice(ix + 1, iy, period, seed);
-        const c = lattice(ix, iy + 1, period, seed);
-        const d = lattice(ix + 1, iy + 1, period, seed);
+    const layer = (px, py, seed) => {
+        const values = new Float64Array(px * py);
+        for (let y = 0; y < py; y += 1) for (let x = 0; x < px; x += 1) values[y * px + x] = lattice(x, y, seed);
+        const left = new Int32Array(size);
+        const right = new Int32Array(size);
+        const across = new Float64Array(size);
+        const below = new Int32Array(size);
+        const above = new Int32Array(size);
+        const up = new Float64Array(size);
+        for (let at = 0; at < size; at += 1) {
+            const x = (at / size) * px;
+            const ix = Math.floor(x);
+            const fx = x - ix;
+            across[at] = fx * fx * (3 - 2 * fx);
+            left[at] = ((ix % px) + px) % px;
+            right[at] = (((ix + 1) % px) + px) % px;
+            const y = (at / size) * py;
+            const iy = Math.floor(y);
+            const fy = y - iy;
+            up[at] = fy * fy * (3 - 2 * fy);
+            below[at] = (((iy % py) + py) % py) * px;
+            above[at] = ((((iy + 1) % py) + py) % py) * px;
+        }
+        return { values, left, right, across, below, above, up };
+    };
+    const noise = (col, row, { values, left, right, across, below, above, up }) => {
+        const sx = across[col];
+        const sy = up[row];
+        const a = values[below[row] + left[col]];
+        const b = values[below[row] + right[col]];
+        const c = values[above[row] + left[col]];
+        const d = values[above[row] + right[col]];
         return a + (b - a) * sx + (c - a) * sy + (a - b - c + d) * sx * sy;
     };
-    const fbm = (u, v, base, octaves, seed) => {
+    // (An octave's cells double, its weight halves, its seed moves on by 17.)
+    const octaves = (base, count, seed) => Array.from({ length: count }, (_, octave) => layer(base * 2 ** octave, base * 2 ** octave, seed + octave * 17));
+    const fbm = (col, row, layers) => {
         let sum = 0;
         let weight = 0;
-        for (let octave = 0, amount = 1, cells = base; octave < octaves; octave += 1, amount *= 0.5, cells *= 2) {
-            sum += amount * noise(u, v, { x: cells, y: cells }, seed + octave * 17);
+        for (let octave = 0, amount = 1; octave < layers.length; octave += 1, amount *= 0.5) {
+            sum += amount * noise(col, row, layers[octave]);
             weight += amount;
         }
         return sum / weight;
     };
+    const mottling = octaves(4, 3, 1);
+    // Streaks: narrow ones across, each long up the texture, broken along its length, some finer beside.
+    const streaksWide = layer(16, 2, 5);
+    const streaksFine = layer(32, 5, 9);
+    const tufts = octaves(16, 2, 23);
+    const patches = octaves(3, 3, 41);
     const channels = [new Float32Array(size * size), new Float32Array(size * size), new Float32Array(size * size), new Float32Array(size * size)];
-    for (let row = 0; row < size; row += 1) {
-        for (let col = 0; col < size; col += 1) {
-            const u = col / size;
-            const v = row / size;
-            const at = row * size + col;
-            channels[0][at] = fbm(u, v, 4, 3, 1);
-            // Streaks: narrow ones across, each long up the texture, broken along its length, some finer beside.
-            channels[1][at] = noise(u, v, { x: 16, y: 2 }, 5) * 0.7 + noise(u, v, { x: 32, y: 5 }, 9) * 0.3;
-            channels[2][at] = fbm(u, v, 16, 2, 23);
-            channels[3][at] = fbm(u, v, 3, 3, 41);
+    const fill = (from, to) => {
+        for (let row = from; row < to; row += 1) {
+            for (let col = 0; col < size; col += 1) {
+                const at = row * size + col;
+                channels[0][at] = fbm(col, row, mottling);
+                channels[1][at] = noise(col, row, streaksWide) * 0.7 + noise(col, row, streaksFine) * 0.3;
+                channels[2][at] = fbm(col, row, tufts);
+                channels[3][at] = fbm(col, row, patches);
+            }
         }
+    };
+    for (let row = 0; row < size; row += 64) {
+        fill(row, row + 64);
+        yield;
     }
     // Each stretched to the whole range, so a threshold in the shader means the same share of the surface.
     channels.forEach((channel, index) => {
@@ -964,10 +1013,30 @@ function wornMap() {
     texture.minFilter = LinearMipmapLinearFilter;
     texture.generateMipmaps = true;
     texture.needsUpdate = true;
-    wornMapTexture = texture;
     return texture;
 }
+/** The weathering's noise, made at once if it hasn't been yet. */
+function wornMap() {
+    if (wornMapTexture) return wornMapTexture;
+    const making = wornMapMaking();
+    let step = making.next();
+    while (!step.done) step = making.next();
+    wornMapTexture = step.value;
+    return wornMapTexture;
+}
 
+/** The weathering's noise made ahead, breathing between its bands (stage.js, before the materials want it). */
+export async function wornMapMade() {
+    if (wornMapTexture) return wornMapTexture;
+    const making = wornMapMaking();
+    let step = making.next();
+    while (!step.done) {
+        await breathe();
+        step = making.next();
+    }
+    wornMapTexture ??= step.value;
+    return wornMapTexture;
+}
 /**
  * Weather a material, as the years would (Elm: "spread the ageing", after the
  * cafés): laid on its colour before the light falls on it, as a painter

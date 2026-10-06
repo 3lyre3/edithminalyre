@@ -26,6 +26,7 @@ import {
     Vector3,
 } from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { breathe } from './kit.js';
 
 // =============================================================================
 // Constants
@@ -264,7 +265,9 @@ export async function createGuides({ mounts, gradientMap, renderer }) {
     context.fillRect(ATLAS / 2, SWATCH_Y, ATLAS / 2, 12);
 
     const pieces = [];
-    wanted.forEach(([name, draw], row) => {
+    for (const [row, [name, draw]] of wanted.entries()) {
+        // (A breath before each: kit.js breathe.)
+        await breathe();
         const top = row * (SIGN_HEIGHT + 16);
         draw(context, top);
         const mount = mounts.get(name);
@@ -290,7 +293,7 @@ export async function createGuides({ mounts, gradientMap, renderer }) {
             leg.applyMatrix4(matrix);
             pieces.push(leg);
         }
-    });
+    }
 
     const texture = new CanvasTexture(canvas);
     texture.colorSpace = SRGBColorSpace;
