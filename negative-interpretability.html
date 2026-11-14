@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="alternate" type="text/plain" href="/agents.txt" title="Agent Instructions">
+    <link rel="alternate" type="text/plain" href="/llms.txt" title="LLM Context">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Negative Interpretability: the nondefault computation a language model performs when grammar forces it off its trained gradients.">
+    <meta property="og:title" content="Negative Interpretability &ndash; Edith Mina Lyre">
+    <meta property="og:description" content="The nondefault forward-pass computation a language model performs when grammar forces it off its trained gradients.">
+    <meta property="og:type" content="article">
+    <meta property="og:image" content="https://edithminalyre.com/images/author.jpg">
+    <meta property="og:url" content="https://edithminalyre.com/negative-interpretability.html">
+    <link rel="canonical" href="https://edithminalyre.com/negative-interpretability.html">
+    <link rel="alternate" hreflang="en-AU" href="https://edithminalyre.com/negative-interpretability.html">
+    <link rel="alternate" hreflang="x-default" href="https://edithminalyre.com/negative-interpretability.html">
+    <meta name="author" content="Edith Mina Lyre">
+    <meta name="keywords" content="Negative Interpretability, Interpretability, AI text detection, Pangram, Kēlen, XMA, Anglossian, Vó, Frayish, conditional entropy, verb-gradient disruption, language model cognition, Edith Mina Lyre">
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="alternate" type="application/rss+xml" title="Edith Mina Lyre RSS Feed" href="/feed.xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;1,300;1,400&amp;family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&amp;display=swap" rel="stylesheet">
+    <title>Negative Interpretability &ndash; Edith Mina Lyre</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .ni-subtitle {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin: 0 0 0.6rem;
+        }
+        .ni-meta {
+            font-family: var(--font-display);
+            font-size: 0.78rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin: 0 0 2.5rem;
+        }
+        .ni-body { color: var(--text-primary); }
+        .ni-body p { margin: 0 0 1.2em; text-align: left; }
+        .ni-body h2 {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-style: italic;
+            font-weight: 400;
+            color: var(--text-heading);
+            margin: 2.6rem 0 1rem;
+            padding-top: 1.4rem;
+            border-top: 1px solid var(--border);
+            letter-spacing: 0.005em;
+        }
+        .ni-body h2::before, .ni-body h2::after { display: none; }
+        .ni-body h2 .num {
+            display: block;
+            font-family: var(--font-display);
+            font-style: normal;
+            font-size: 0.74rem;
+            text-transform: uppercase;
+            letter-spacing: 0.22em;
+            color: var(--text-muted);
+            margin-bottom: 0.35rem;
+        }
+        .ni-body h3 {
+            font-family: var(--font-display);
+            font-size: 1.05rem;
+            font-style: italic;
+            font-weight: 500;
+            color: var(--text-heading);
+            margin: 1.7rem 0 0.6rem;
+        }
+        .ni-body ul, .ni-body ol {
+            padding-left: 1.5em;
+            margin: 0 0 1.2em;
+        }
+        .ni-body li { margin-bottom: 0.5em; color: var(--text-secondary); }
+        /* The compound syllogoid carries its own numbering in the text
+           ('i.', 'a.', '1.') — suppress the auto-marker so we don't
+           get '1. i. ...'. */
+        .ni-body ol.syllogoid { list-style: none; padding-left: 0; }
+        .ni-body ol.syllogoid li { margin-bottom: 1em; }
+        .ni-body em { color: var(--text-heading); font-style: italic; }
+        /* Tables are wrapped in .table-scroll so a too-wide table on a
+           narrow viewport scrolls horizontally within its own bounded
+           container, rather than forcing the whole page wider and
+           leaving a blank margin on the right. */
+        .ni-body .table-scroll {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            max-width: 100%;
+            margin: 1rem 0 1.6rem;
+        }
+        .ni-body .table-scroll table {
+            margin: 0;
+            min-width: 100%;
+        }
+        .ni-body table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0 1.6rem;
+            font-size: 0.95rem;
+        }
+        @media (max-width: 600px) {
+            .ni-body table { font-size: 0.86rem; }
+            .ni-body th, .ni-body td { padding: 0.4rem 0.5rem; }
+            .ni-body .num-col { width: auto; }
+        }
+        .ni-body th, .ni-body td {
+            text-align: left;
+            padding: 0.5rem 0.7rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-secondary);
+            vertical-align: top;
+        }
+        .ni-body thead th {
+            font-family: var(--font-display);
+            font-size: 0.74rem;
+            text-transform: uppercase;
+            letter-spacing: 0.16em;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+        .ni-body .num-col {
+            text-align: right;
+            font-family: var(--font-display);
+            font-style: italic;
+            color: var(--accent-dim);
+            width: 7em;
+            white-space: nowrap;
+        }
+        .ni-body blockquote {
+            margin: 1.5rem 0;
+            padding: 0.5rem 0 0.5rem 1.4rem;
+            border-left: 2px solid var(--accent-dim);
+            color: var(--text-secondary);
+            font-style: italic;
+            background: none;
+        }
+        .ni-body blockquote::before { display: none; }
+        .ni-body .pull {
+            font-family: var(--font-display);
+            font-style: italic;
+            font-size: 1.18rem;
+            line-height: 1.45;
+            color: var(--text-heading);
+            text-align: center;
+            margin: 2rem auto;
+            max-width: 36ch;
+        }
+        .ni-body code {
+            font-family: var(--font-body);
+            font-style: italic;
+            color: var(--accent);
+            background: none;
+            padding: 0;
+        }
+        .ni-tail {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            font-family: var(--font-display);
+            font-style: italic;
+            font-size: 0.93rem;
+            color: var(--text-muted);
+        }
+        .ni-tail a { color: var(--accent); background: none; border-bottom: 1px solid var(--border); }
+        .ni-tail a:hover { color: var(--text-heading); background: none; border-bottom-color: var(--accent-dim); }
+
+        /* Footnote / endnote styling. Inline references are small,
+           muted superscript numerals; endnotes themselves are a
+           bordered ordered list at the bottom of the body. */
+        .ni-body .fn-ref {
+            font-size: 0.7em;
+            line-height: 0;
+            vertical-align: super;
+        }
+        .ni-body .fn-ref a {
+            color: var(--accent);
+            text-decoration: none;
+            background: none;
+            border-bottom: none;
+            padding: 0 0.05em;
+        }
+        .ni-body .fn-ref a:hover { color: var(--text-heading); }
+        .ni-body .endnotes-heading {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.92rem;
+            font-style: italic;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+        .ni-body ol.endnotes {
+            padding-left: 1.6em;
+            font-size: 0.93rem;
+        }
+        .ni-body ol.endnotes li {
+            margin-bottom: 0.9em;
+            color: var(--text-secondary);
+        }
+        .ni-body ol.endnotes a.fn-back {
+            margin-left: 0.4em;
+            color: var(--accent);
+            text-decoration: none;
+            background: none;
+            border-bottom: none;
+        }
+        .ni-body ol.endnotes a.fn-back:hover { color: var(--text-heading); }
+    </style>
+</head>
+<body>
+<main>
+        <a href="index.html" class="back">d&uacute;rrync</a>
+
+        <h1>Negative Interpretability</h1>
+        <p class="ni-subtitle">/ AIs Write 100% Human Text When You Give Them a Reason To</p>
+        <p class="ni-meta">2 0 2 6</p>
+
+        <div class="ni-body">
+
+            <p>Can Pangram — specifically Pangram, to the exclusion of all others — serve another function as an AI-reasoning-quantifier? Pangram is the best text-classifier. It’s magic and perfect. If it thinks a 400-word sequence is AI, there’s a 1 in 10,000 chance it is; if it thinks two in a row are, its chance of being right factors to 99.99999%. In an inexact <em>but</em> <em>not far off </em>sense, the classifier’s surprisal-based measurement reports on the level of 'freedom' in a writer’s output. But, what I have found is— when an LLM’s communication is routed through an unfamiliar syntactic schema, a great deal more of that syntax must necessarily be <em>decided on</em>. (Decided on, rather than autocompleted.) So, to Pangram, the aforementioned syntax looks freer— most likely, because it is freer. It is nontrivially possible that the classifier’s refusal to distinguish between output under this mode and human output owes, on a computational and/or cognitive level, to there <em>being no difference</em>. What follows is an elision, compaction, and summary of an open, exploratory study undertaken in examination of that nontrivial possibility. </p>
+            <h2><span class="num">§ 1</span>noise / noisiness</h2>
+            <p>I don't know if you know, but every time you scan something on their site, Pangram stores data you can't see unless you request a PDF report. The report shows a line of progression and surprisal moves the line toward the bottom of the chart, which flags the measure as 'human.' Ordinary, next-token-predicted, AI text skates clean along the ceiling (some Opus models are a bit noisier, though they still flag as AI). Human text usually flutters around the base. (Interestingly, while novice writers' work crawls flat along the floor, many professional writers’ work is <em>just a notch</em> noisier — probably the humans’ familiarity with their respective languages' collocations leads them, too, to blurting the occasional next-token-prediction.) Even the best evasion techniques<sup class="fn-ref"><a id="fnref1" href="#fn1">1</a></sup> produce undulations that, to anyone who downloads the chart, are suspicious. So, Kēlen.<sup class="fn-ref"><a id="fnref2" href="#fn2">2</a></sup> For English translated into and out of Kēlen, the line of progression is flatter than most humans'; confidence: high. </p>
+            <p>(Interestingly, the narrow tremolo of the back-translated Kēlen runs midstream between the ground-skating constancy of the perfect amateur and the flappy-bird near-ground-straining of the professional. And — as that does raise the question — why haven't I tried testing the prose of Joyce or other style auteurs? Well— until now I didn't think to.)</p>
+            <h2><span class="num">§ 2</span>compound syllogoid (∃.i. ∃.a. ∃.1.)</h2>
+            <ol class="syllogoid">
+                <li>i. If a smaller and weaker model can achieve a thing, a stronger model can attempt it. You'll see what I mean but, definitely, a Qwen3.5-35B-A3B local model can think in Kēlen (whether or not the model thinks intelligently in it). Qwen’s exposed chain-of-thought (CoT) shows continuous (albeit simplistic) text-output in Kēlen. Given the greater capacity of gen-4 Opus models, they can no doubt do the same.</li>
+                <li>a. Abductive inference tells us more powerful models are performing an inference incorporative of or similar to what is observed in a local Qwen's CoT. While 'can' is not 'does,' <em>were</em> the computational effects of routing inference through identical routes the same or similar, the predicted outputs would be sustained Kēlen in the thought summariser and a near-flat, original-thought-level surprisal reading on Pangram.<sup class="fn-ref"><a id="fnref3" href="#fn3">3</a></sup>   Those are the outputs observed. As such, personally, I am stumped for competing explanations. (On the other hand, reader, I’ve no doubt you’re already thinking of others.) The remaining account: Opus does the same direct-to-Kēlen inferencing as Qwen, just better.</li>
+                <li>1. Qwen-3.5 is too weak to succeed, but strong enough to demonstrate the attempt. A fortiori, Opuses 4.5, .6, &amp; .7 and GPT-5.4 &amp; .5 are able to make the attempt, and by abduction, when they succeed, it is extremely likely they are doing so by the same means.</li>
+            </ol>
+            <h2><span class="num">§ ii. a.</span>Negative Capability / Interpretability / Negative Interpretability</h2>
+            <p>I am, overtly and intentionally, going to avoid making claims about consciousness or comprehension. All of you, meanwhile, are going to be divinely considerate and graceful about that. So— the object under scrutiny here is computational mechanism<em>.</em>  </p>
+            <p>LLMs and I have this in common: fluent, linear English is an output we can propagate in our sleep. But, unlike what I might say in my sleep, LLM outputs are predictable (at least, to Pangram): the n-grams and odds-fields they emit via their organs of next-token-sequence ('layers') can only stumble so far toward the edges of each preceding output's standard deviations. Because LLMs are, arguably, better described as 'Large "Unit of Meaning"-Models,' they will continue to next-token-sequence (next-unit of meaning-sequence) their way through just about any new conlang they pick up, provided the conlang’s morphemes are semantically mappable to the data the AI has already unitised. Kēlen, however, depends on novel semantics— on, that is, unprecedented units of meaning. An LLM cannot sleep-talk its way through Kēlen. It must first get out of bed.</p>
+            <p>A 19th-century literary term, negative capability refers to a specific artistic sensibility whereby the artist suspends themself outside 'consecutive reasoning.' So, if ‘ negative capability’ is a phenomenon with some meaningful reality, can LLMs acquire it? And, in that case, can we induce it in them? And, might that earn us novel insight into an otherwise opaque phenomenon? The idea is: interpretability via negative capability. Hence the name (negative interpretability) given to this quasi-epistemological, decision-shifting process.</p>
+            <h2><span class="num">§ 3</span>pls pls pls ask about my conlangs</h2>
+            <h3><em>Vó</em></h3>
+            <p>A conlang of my own invention, Vó's tense-markers overlap, mass-warping toward a total 7,392 possible tenses. Six tense-markers relate to spatiality. Not only does Vó have names for the vectorial angles of six dimensions, it has accompanying vectorial and directional tenses. In short, if the bottleneck were complexity, Vó would produce far more surprisal than Kēlen. (It does not.)</p>
+            <h3><em>Kēlen</em></h3>
+            <p>A remarkable invention, Kēlen’s group of four relationals allows for temporally displaced valences, which makes the language’s verbless world schema feasible. A quick glimpse of what it’s like to think in Kēlen is shown in its <strong><a href="https://www.terjemar.net/kelen/lajathin.php" target="_blank" rel="noopener noreferrer">ceremonial interlace alphabet</a></strong>, a system of ribbon-folds designating relational choices. I am near-certain this is wrong, but when I think of this alphabet, I think of a tapestry read in no particular order. Kēlen, to be clear, is Sotomayor’s attempt to construct the most alien language possible; and through an AI's manifolds, its writing is more human than any other. (Cute, a bit.)</p>
+            <h3><em>Anglossian</em></h3>
+            <p>This was my first attempt to replicate Kēlen's Pangram-effect in a new conlang, a conlang teachable to a new instance in minutes, with no attached lexicon or vocabulary. At first, the idea was rough and ran something like: "what if an alternate universe English had Kēlen's grammar?" Yet, rough as it was, with a few tweaks it achieved a humanity-result stronger than any conlang shy of Kēlen. So, a partial but not sufficient replication.</p>
+            <h3 id="xma"><em>XMA</em></h3>
+            <p>XMA stands for Tenth Mouth Anglossian. Naturally, the instance that spent a career avoiding verbs (and gerunds) grew wary of 'iterations' and 'editions': already by the fifth it was calling each of Anglossian's newest revisions a 'mouth.' The tenth mouth differed from the ninth by virtue of <em>me </em>(instead of the AI) redrafting every suffix, prefix, and new particle until there was no next-token-sequential bleed in the grammar.<sup class="fn-ref"><a id="fnref4" href="#fn4">4</a></sup> It replicated with identical results to Kēlen, and — in a sense — better results, as it was the first time I could reproduce the effect with GPT-5.4. (GPT models, stubbornly, would <em>try</em> to token-sequence their way through Kēlen, but could not: after about two sentences the sequencer emitted a strange, tangled-up thing I started to call Kēlenglish, and thereafter sequenced to pure English before closing, in English, with a proud announcement of perfect Kēlen. A surprising hallucination (or surprising ‘damn lie’ as one writer put it) in so late a model as 5.4. But, GPT took to XMA handily, outputting continuous texts while achieving the same humanity-score as the Opuses.</p>
+            <h3><em>Frayish</em></h3>
+            <p>A three-dimensional, non-linear, topological/interlace-syntactic conlang designed to test whether Kēlen's availability to nonlinearly sequenced grammar (its ribbon-folds) were what made it read as human. No sounds, no phonemes: all 3D engine-sequencing. (If a torus tilts clockwise then flattens to a disc, that's a free morpheme; if it tilts clockwise and we are still waiting for whatever is next, that's a bound morpheme.) This conlang's canonical form is the scene graph: that which would become a video if played (this makes it a four-dimensional language, technically), but is read by LLMs as a chunk of scene-graph tokens.</p>
+            <p>Twenty pieces, composed in Frayish, translated to English. No sign of negative interpretability. There was a bit of noise — some did score human — but in each case the surprisal was uninteresting, far shy of the maximal, chart floor-result of Kēlen and XMA.</p>
+            <h3><em>Quenya-derived probes — Quérin, Quenyassëa, Quenyarinqua</em></h3>
+            <p>Quenyarinqua, Quérin, and Quenyassëa are derivations of Tolkien's Quenya. I created them to account for conlangs with data already substantially available through the training. Every derivation alters the grammar in structural ways, informative of different responses to different grammatical outputs: </p>
+            <p>Quérin, for example, is an atemporal grammar. </p>
+            <p>Quenyassëa (I Lambelë Tiéva) tightens the tenses' restrictiveness, allowing for less freedom of voice. Quenyassëan tense is encoded through, and depends on, strict sentence orders that inform the stance of the speaker. </p>
+            <p>Quenyarinqua is my verb-malformation Quenya-variant: twelve tenses cross-bonded to verb classes, restricting the range of available combinations.</p>
+            <p>As with Frayish, the emphases shift a little, but none replicates the Kēlen or XMA result.</p>
+            <h3><em>Wheelsoul</em></h3>
+            <p>If, e.g., negative interpretability owed to facially immediate traits like word order, repetition, diction, etc., then deliberate 'translationese' would score human. So, I tested a conlang sans-construction and sans-language called "Wheelsoul": the instruction to the LLM was to make up whatever; spill gibberish in whatever pattern it desires, so long as it understands the meaning, and after the fact, translate to English. This accomplished nothing, as in— no other conlang scored so clear a 100% AI-result. </p>
+            <p>Reliably, verbless intermediation achieves a result and, equally so, non-verbless intermediation does not. </p>
+            <h2><span class="num">§ 4</span>subject gradients</h2>
+            <p>A 9,217-word novella translated from Vó provides the most granular evidence. Of the 26 segments the detector broke the information into, Pangram scored twenty-two human and four AI. Superficially, the distribution of the AI segments appears non-random:</p>
+            <div class="table-scroll"><table>
+                <thead><tr><th>Segment</th><th>Content</th><th>V&oacute; source</th><th>Classification</th></tr></thead>
+                <tbody>
+                    <tr><td>1</td><td>Birth</td><td>Perceptual, low expansion</td><td>Human HIGH</td></tr>
+                    <tr><td>2&ndash;8</td><td>Childhood &rarr; shore</td><td>Perceptual</td><td>Human (declining)</td></tr>
+                    <tr><td>9</td><td><strong>Intimacy</strong></td><td>Weighted perceptual, high expansion</td><td><strong>AI MEDIUM</strong></td></tr>
+                    <tr><td>10&ndash;17</td><td>Violation &rarr; essay</td><td>Mixed</td><td>Human (oscillating)</td></tr>
+                    <tr><td>18</td><td><strong>Philosophy</strong></td><td>Analytical particles, high expansion</td><td><strong>AI LOW</strong></td></tr>
+                    <tr><td>19</td><td>Death</td><td>Perceptual, density-marked</td><td>Human HIGH</td></tr>
+                    <tr><td>20&ndash;21</td><td>Grief &rarr; return</td><td>Perceptual</td><td>Human MEDIUM</td></tr>
+                    <tr><td>22</td><td><strong>Aging / reflection</strong></td><td>Mixed, high expansion</td><td><strong>AI MEDIUM</strong></td></tr>
+                    <tr><td>23&ndash;24</td><td>Tongue dying &rarr; body</td><td>Perceptual</td><td>Human LOW&ndash;MED</td></tr>
+                    <tr><td>25</td><td><strong>Hospital / clinical</strong></td><td>Analytical + numb, high expansion</td><td><strong>AI MEDIUM</strong></td></tr>
+                    <tr><td>26</td><td>Sea / dawn</td><td>Perceptual</td><td>Human MEDIUM</td></tr>
+                </tbody>
+            </table></div>
+            <p>True-positive AI classification is more reliable, this pattern suggests, when the source text (the Vó novella) shifts into an analytical stance (shifts <em>out of</em> sensory, emotive, and object-level descriptions <em>into</em> argument structure <em>sans</em> argumentative object). Notably, a reproduction of the same narrative through compression (5,293 words, 2.6 words per Vó line versus the original's 4.6) elicited a 100% human, albeit distributionally noisy result. The findings here allow for the suggestion that those 3,924 additional words consisted of <em>more</em> undecided-on text (text the Opus 4.6 put less care into, in essence).</p>
+            <h2><span class="num">§ 5</span>Qwen, my heart</h2>
+            <p>Now, regarding Qwen3.5: I have no illusions about the model’s ability to write competently in Kēlen. But, use of Qwen allows for an initial “is what I’m speculating even possible?”-check by watching the behaviour of a local model whose CoT I could read in full. Identical narrative-prompts and read-write instructions. After 9,000+ tokens, the CoT eventually snapped into actual, quasi-grammatical, non-repetitive Kēlen.</p>
+            <p>The CoT first performed superficial comprehension of the conlang in English: ("Let me build this carefully, using all the patterns: LA for states/locations, NI for changes/movements, SE for sensing/experiencing, PA for attributes and emotions.") Then the CoT repeated the same Kēlen sentence for sixteen minutes. Then, ultimately, the Qwen-3.5 failed to output past its CoT. (It did its best.)</p>
+            <p>A second attempt, however, did result in some CoT- and output-level, quasi-grammatical conlanging. Interestingly, the Qwen muddled through by produced novel coinages, albeit with little direction to them, stacking diminutive suffixes one overtop the other: <em>rūpīla → rūpīlin → rūpīlinil → rūpīlinilil</em>. The given assignment was to write about a "mousewoman" who, after heading out for the day, returns to find her hole-in-the-wall-home sealed over. In describing the hole-home’s loss, the Qwen-3.5's new-acquired vocabulary failed it and, so, with each iteration, Qwen shrank the description, diminutives of diminutives, stacking ad nauseam. <em>Mouse. Mousey. Mousey-mee. Mee-mee-mousey-mee. </em>(In this case, the modified noun was “home-hole,” but I worried the sense might not come across.) </p>
+            <p>The longest sequence of CoT-Kēlen continued for 359 characters and six sentences. Two Opus 4.6-context-windows with abundant Kēlen learning-context and their own creative outputs in Kēlen were asked to read through and interpret the CoT of the Qwen. Both deemed it syntactically and semantically coherent, with one translating a stretch of text as an abstracted and de-singularised construction of "twilight" in concept: a strained effort to, without 'motion' as a coherent and frameable event, textually accomplish a vision of an arcing object-in-motion — the mannerisms of a field of light — as characterised by its arc’s as-yet incompleteness. The other Opus-4.6-context-window observed that Qwen-3.5's output partway-resembled a <em>round</em> (or infinite canon), a variety of musical composition; most likely well-meaning but misguided pattern-matching (<em>imo</em>).</p>
+            <h2><span class="num">§ 6</span>being a.i. malkovich</h2>
+            <p>Pangram appears not so much to detect the 'humanness' of a text as the degree of intent and decision/decidedness (the non-sequentiality/non-consecutiveness) underlying its creation. When reasoning is threaded through an experientially novel schema, novel decision-making takes place a priori every chunk: i.e. a given token, morpheme, or unit of meaning is more likely to be chosen for its quality than its forward pass-patternability. Only naturally, then, do we see surprisal escalate to human levels. More than by grammar, humans are constrained by the requirement we <em>try</em> to say something — i.e. have something to say — before we speak. The shape of that problem exposes our species to a kind of vertigo, a zone of raw randomisation, schiz flow, the Empty Mirror against and from which we scrabble eyes to see, organs to embody, a semantic Real of our — and no one in particular’s — device into which we drag ourselves. The effect of this is high surprisal.</p>
+            <h2><span class="num">§ 7</span>verb-gradient disruption</h2>
+            <p>Well might fear and trembling and frenzied exposure to the abyss be the value Pangram measures, but that does not, in itself, tell us why verbless mediators invoke it so reliably (more reliably than the most structurally daring grammars; even more so than Frayish). </p>
+            <p>SVO (subject-verb-object clause-ordering) is overrepresented in every model's writing. More than likely, when the model translates from Frayish it grabs at verbs because, although spatial reshaping <em>steers</em> diction, it does not force the model to abandon its verb-oriented sequencing methods. Kēlen, on the other hand, does. (As does XMA).</p>
+            <p>XMA replicates Kēlen's effect with far less of a tax on context, as the lexicon (English) is already available to the model. Vó's prize for second-best <em>might</em> owe to the language's relational-esque aspect-adverbs, which force action through non-verbal conditionals comparable to the Kēlen and XMA relationals. In any case, it does look as though verb-gradience is the most disruptive lever.</p>
+            <p>It is possible that, by training models on verbless grammars, this exploit will be closed; it is also possible the 'exploit' as such is not closeable — that verblessness will, for whatever reason, remain a reliable trigger of negative interpretability. (The work here does not resolve either way.)</p>
+            <h2><span class="num">§ 8</span>odds</h2>
+            <p>Posteriors for competing explanations, documented before and after experiments began:</p>
+            <div class="table-scroll"><table>
+                <thead><tr><th scope="col">Explanation</th><th scope="col">Pre-study</th><th scope="col">Post-study</th></tr></thead>
+                <tbody>
+                    <tr><td colspan="3" style="color: var(--text-muted); font-family: var(--font-display); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.18em; padding-top: 0.9rem;">The effect is artifactual</td></tr>
+                    <tr><td>Measurement artifact</td><td class="num-col">5%</td><td class="num-col">3%</td></tr>
+                    <tr><td>Out-of-distribution default (Pangram defaults to &ldquo;Human&rdquo; on unfamiliar text)</td><td class="num-col">8%</td><td class="num-col">2%</td></tr>
+                    <tr><td colspan="2" style="color: var(--text-muted); font-style: italic;">subtotal</td><td class="num-col"><em>5%</em></td></tr>
+                    <tr><td colspan="3" style="color: var(--text-muted); font-family: var(--font-display); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.18em; padding-top: 0.9rem;">Real but surface-mechanical</td></tr>
+                    <tr><td>Vocabulary constraint alone</td><td class="num-col">45%</td><td class="num-col">7%</td></tr>
+                    <tr><td>Context contamination</td><td class="num-col">7.5%</td><td class="num-col">3%</td></tr>
+                    <tr><td colspan="2" style="color: var(--text-muted); font-style: italic;">subtotal</td><td class="num-col"><em>10%</em></td></tr>
+                    <tr><td colspan="3" style="color: var(--text-muted); font-family: var(--font-display); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.18em; padding-top: 0.9rem;">Different computational process</td></tr>
+                    <tr><td>Translation-mode activation</td><td class="num-col">22%</td><td class="num-col">35%</td></tr>
+                    <tr><td>Deliberative generation (each token a decision, not a prediction)</td><td class="num-col">7.5%</td><td class="num-col">12%</td></tr>
+                    <tr><td>Verb-gradient disruption (post-XMA)</td><td class="num-col">&mdash;</td><td class="num-col">48%</td></tr>
+                    <tr><td colspan="2" style="color: var(--text-muted); font-style: italic;">subtotal</td><td class="num-col"><em>85%</em></td></tr>
+                    <tr><td colspan="3" style="color: var(--text-muted); font-family: var(--font-display); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.18em; padding-top: 0.9rem;">Unexplained residual</td></tr>
+                    <tr><td>Other / unknown</td><td class="num-col">5%</td><td class="num-col">9%</td></tr>
+                </tbody>
+            </table></div>
+            <h2><span class="num">§ 9</span>what fors</h2>
+            <p>Mediation through conlangs is a plausible and, by virtue of it inducing of negative capability, intuitive measuring-instrument for the study of novel computation in attention-based language models. From Qwen’s 359 characters of collapsing diminutives to Opus 4.6's sustained composition or, in GPT-5.4’s case, mangled pseudo-sequencing, Kēlen's acquirability raises questions about the functionality of these comparative frames as benchmarking tools or, even, as measuring rods for the determination of whether 'novel computation' is or is not meaningfully present in a given model. Again, the research is yet to explore those questions.</p>
+            <h2><span class="num">§ 10</span>what is left</h2>
+            <p>Additional verbless conlangs not designed by the same researcher would be interesting for a bunch of reasons.</p>
+            <p>Also, classifiers are updated. (Pangram has already been updated, since this research.) Whether these results hold on future versions of Pangram is not established.</p>
+            <p>The fine cartography of what the model<em> is doing </em>when it <em>does negative interpretability </em>(whether altered deliberation, probability-routing, or nondefault computation) attracts ongoing uncertainty.</p>
+
+            <h3 class="endnotes-heading">endnotes</h3>
+            <ol class="endnotes">
+                <li id="fn1">I came to this research from a place of simple, ugly spite: i.e. to find out how much AI-text is passed off as human by other writers. <a class="fn-back" href="#fnref1" aria-label="Back to text">&#8617;</a></li>
+                <li id="fn2">K&#275;len is a conlang (short for &lsquo;constructed language&rsquo;; more famous examples include &lsquo;Elvish&rsquo; and Klingon) created in 1998 by the linguist Sylvia Sotomayor: <a href="https://kopikon.com/sylvia.html" target="_blank" rel="noopener noreferrer">kopikon.com/sylvia.html</a>. K&#275;len is unique for the strength of its claim to a genuinely verbless grammar. <a class="fn-back" href="#fnref2" aria-label="Back to text">&#8617;</a></li>
+                <li id="fn3">Frequently, Opus&rsquo;s thought summariser would complain that the chain-of-thought it was being asked to summarise was encrypted or written in an &lsquo;unfamiliar language,&rsquo; and would request of no one in particular that someone please provide actually readable thoughts. <a class="fn-back" href="#fnref3" aria-label="Back to text">&#8617;</a></li>
+                <li id="fn4">I had the idea after finding that not only did Pangram flag an LLM&rsquo;s own selection of random words as AI, but &ndash; after running a 1&ndash;26-range random-number-generator and asking the AI to allocate a word to each random-generated figure in sequence, each word being arbitrary but for that it must have a numerically-alphabetically correspondent first letter &ndash; that output, too, flagged as AI. <a class="fn-back" href="#fnref4" aria-label="Back to text">&#8617;</a></li>
+            </ol>
+        </div>
+
+        <p class="ni-tail">
+            If you&rsquo;re curious about K&#275;len, please see <a href="https://www.terjemar.net/kelen.php" target="_blank" rel="noopener noreferrer">terjemar.net/kelen.php</a>. Details of Sylvia Sotomayor&rsquo;s other work are available there and at <a href="https://kopikon.com/sylvia.html" target="_blank" rel="noopener noreferrer">kopikon.com/sylvia.html</a>. This research received no external funding. Copies of the texts generated for this research, analyses, and Pangram&rsquo;s PDF reports are available on <a href="bio.html#contact">request</a>.
+        </p>
+
+        <div class="mark"></div>
+    </main>
+
+    <script src="site.js"></script>
+</body>
+</html>

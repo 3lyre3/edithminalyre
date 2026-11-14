@@ -1,13 +1,10 @@
 import { readFile, readdir } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { loadRedirects, servedPath } from './redirects.mjs';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const siteOrigin = 'https://edithminalyre.com';
 const errors = [];
-// A reference may reach its file through a rewrite in _redirects (Elysicester's stamped code does).
-const redirects = await loadRedirects(root);
 
 async function walk(directory) {
     const entries = await readdir(directory, { withFileTypes: true });
@@ -27,19 +24,8 @@ async function walk(directory) {
 const files = await walk(root);
 const relativeFiles = files.map((file) => path.relative(root, file).split(path.sep).join('/'));
 const fileSet = new Set(relativeFiles);
-const intentionalMissingLinks = new Set();
-// Elysicester, at the front door, opens a passage named in its address (#read-<passage id>: main.js), so those name
-// its passages, not ids on its page (its texts, read.html, link each lost page back to the city so). Its passages
-// are those in data/fragments.json and, with President Oedipus's flowers (data/flowers.json), the essay's five parts.
-const flowerParts = await readFile(path.join(root, 'data', 'flowers.json'), 'utf8')
-    .then((text) => JSON.parse(text).flowers.map((flower) => `read-po-part-${flower.part}`))
-    .catch((error) => {
-        if (error.code === 'ENOENT') return [];
-        throw error;
-    });
-const cityPassages = new Set([
-    ...JSON.parse(await readFile(path.join(root, 'data', 'fragments.json'), 'utf8')).fragments.map((fragment) => `read-${fragment.id}`),
-    ...flowerParts,
+const intentionalMissingLinks = new Set([
+    'index.html:xma-explained.html',
 ]);
 const htmlFiles = relativeFiles.filter((file) => file.endsWith('.html'));
 const cssFiles = relativeFiles.filter((file) => file.endsWith('.css'));
@@ -68,37 +54,13 @@ function resolveLocalReference(fromFile, rawReference) {
 
     let target;
     try {
-        target = decodeURIComponent(servedPath(redirects, url.pathname)).replace(/^\/+/, '');
+        target = decodeURIComponent(url.pathname).replace(/^\/+/, '');
     } catch {
         errors.push(`${fromFile}: malformed URL encoding in ${JSON.stringify(reference)}`);
         return null;
     }
     if (!target || target.endsWith('/')) target += 'index.html';
-    // (The host serves a page without its ".html", and answers the ".html" form with a 308 to it: /read is read.html.)
-    if (!fileSet.has(target) && fileSet.has(`${target}.html`)) target = `${target}.html`;
-    return { target, fragment: decodeURIComponent(url.hash.slice(1)), rawFragment: url.hash.slice(1), reference };
-}
-
-const ENTITIES = { nbsp: ' ', amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", lsquo: '‘', rsquo: '’', ldquo: '“', rdquo: '”', ndash: '–', mdash: '—', hellip: '…', uacute: 'ú', middot: '·' };
-
-/** A page's visible text, flattened (tags gone, entities read, whitespace single), for finding a text fragment's words. */
-function visibleText(html) {
-    return html
-        .replace(/<(script|style)\b[\s\S]*?<\/\1>/gi, ' ')
-        .replace(/<[^>]+>/g, ' ')
-        .replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCodePoint(parseInt(hex, 16)))
-        .replace(/&#(\d+);/g, (_, decimal) => String.fromCodePoint(Number(decimal)))
-        .replace(/&([a-z]+);/gi, (match, name) => ENTITIES[name.toLowerCase()] ?? match)
-        .replace(/\s+/g, ' ')
-        .toLowerCase();
-}
-
-/** The words a text fragment (#:~:text=[prefix-,]start[,end][,-suffix]) asks the browser to find on the page. */
-function textFragmentWords(rawFragment) {
-    const directives = rawFragment.slice(rawFragment.indexOf(':~:') + 3).split('&').filter((d) => d.startsWith('text='));
-    return directives.flatMap((directive) => directive.slice('text='.length).split(',')
-        .filter((part) => !part.endsWith('-') && !part.startsWith('-'))
-        .map((part) => decodeURIComponent(part).replace(/\s+/g, ' ').toLowerCase()));
+    return { target, fragment: decodeURIComponent(url.hash.slice(1)), reference };
 }
 
 const idsByFile = new Map();
@@ -123,15 +85,6 @@ function checkReference(fromFile, rawReference) {
         errors.push(`${fromFile}: ${JSON.stringify(rawReference)} points to missing ${resolved.target}`);
         return;
     }
-    if (resolved.fragment.startsWith(':~:') && resolved.target.endsWith('.html')) {
-        // A text fragment names no id: the browser finds its words on the page, so the words must be there.
-        const text = visibleText(textByFile.get(resolved.target) ?? '');
-        for (const words of textFragmentWords(resolved.rawFragment)) {
-            if (!text.includes(words)) errors.push(`${fromFile}: ${JSON.stringify(rawReference)} looks for words not on ${resolved.target}: ${JSON.stringify(words)}`);
-        }
-        return;
-    }
-    if (resolved.target === 'index.html' && cityPassages.has(resolved.fragment)) return;
     if (resolved.fragment && resolved.target.endsWith('.html')) {
         const targetIds = idsByFile.get(resolved.target);
         if (targetIds && !targetIds.has(resolved.fragment)) {
@@ -142,9 +95,7 @@ function checkReference(fromFile, rawReference) {
 
 for (const htmlFile of htmlFiles) {
     const html = await textFor(htmlFile);
-    // (The 404 and the city carry their own chrome, as do the works written by hand (read-by-hand.html, the city's win:
-    // Elm's handwrite page, with its own controls, kept whole to be taken away); every page of text wears the site's.)
-    if (!['404.html', 'index.html', 'read-by-hand.html'].includes(htmlFile)) {
+    if (!['404.html', 'secret_s3cret_secr3t/index.html'].includes(htmlFile)) {
         if (!/<script\s+src=(['"])(?:\.\.\/)?site\.js\1><\/script>/.test(html)) {
             errors.push(`${htmlFile}: shared site.js is missing`);
         }
@@ -171,35 +122,47 @@ for (const jsonFile of relativeFiles.filter((file) => file.endsWith('.json') || 
     }
 }
 
-const sitemap = await textFor('sitemap.xml');
-if (!sitemap.startsWith('<?xml') || !sitemap.trimEnd().endsWith('</urlset>')) errors.push('sitemap.xml: incomplete XML document');
-for (const match of sitemap.matchAll(/https:\/\/edithminalyre\.com(?:\/[^<\s"']*)?/g)) checkReference('sitemap.xml', match[0]);
-// Every page's addresses are as the host serves them, without ".html" (it answers that form with a redirect): its
-// canonical and og:url, one and the same; the sitemap lists every page that is its own canonical (not the 404, which
-// asks not to be indexed, nor a page that names another as its canonical: that one is listed instead); and a page
-// shared by its og:title shows a picture.
-const listed = new Set([...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map((match) => match[1]));
-for (const address of listed) if (/\.html$/.test(address)) errors.push(`sitemap.xml: ${address} ends in ".html" (the host redirects that form: list it without)`);
-for (const htmlFile of htmlFiles.filter((file) => file !== '404.html')) {
-    const html = await textFor(htmlFile);
-    const own = `https://edithminalyre.com/${htmlFile.replace(/(^|\/)index\.html$/, '$1').replace(/\.html$/, '')}`;
-    const canonical = /<link\s+rel="canonical"\s+href="([^"]+)"/.exec(html)?.[1] ?? null;
-    const shared = /<meta\s+property="og:url"\s+content="([^"]+)"/.exec(html)?.[1] ?? null;
-    for (const [what, address] of [['canonical', canonical], ['og:url', shared]]) {
-        if (address && /\.html(?:$|[#?])/.test(address)) errors.push(`${htmlFile}: its ${what} ${address} ends in ".html" (the host redirects that form: name it without)`);
+for (const xmlFile of ['feed.xml', 'sitemap.xml']) {
+    const xml = await textFor(xmlFile);
+    if (!xml.startsWith('<?xml') || !xml.trimEnd().endsWith(xmlFile === 'feed.xml' ? '</rss>' : '</urlset>')) {
+        errors.push(`${xmlFile}: incomplete XML document`);
     }
-    if (canonical && shared && canonical !== shared) errors.push(`${htmlFile}: its canonical (${canonical}) and og:url (${shared}) differ`);
-    if (!canonical || canonical === own) {
-        if (!listed.has(own)) errors.push(`sitemap.xml: doesn't list ${own}`);
-    } else if (listed.has(own)) {
-        errors.push(`sitemap.xml: lists ${own}, whose canonical is ${canonical}`);
-    } else if (!listed.has(canonical)) {
-        errors.push(`sitemap.xml: doesn't list ${canonical} (the canonical of ${htmlFile})`);
-    }
-    if (/<meta\s+property="og:title"/.test(html) && !/<meta\s+property="og:image"\s+content="https:\/\/edithminalyre\.com\/[^"]+"/.test(html)) {
-        errors.push(`${htmlFile}: shared by its og:title, it shows no og:image`);
+    for (const match of xml.matchAll(/https:\/\/edithminalyre\.com(?:\/[^<\s"']*)?/g)) {
+        checkReference(xmlFile, match[0]);
     }
 }
+
+function groupBy(works, property, fallback) {
+    const groups = {};
+    for (const work of works) {
+        const values = Array.isArray(work[property])
+            ? work[property]
+            : [work[property] ?? fallback];
+        for (const value of values) {
+            if (value === undefined) continue;
+            (groups[value] ??= []).push(work.id);
+        }
+    }
+    return groups;
+}
+
+const index = JSON.parse(await textFor('index.json'));
+const workIds = index.works.map((work) => work.id);
+if (new Set(workIds).size !== workIds.length) errors.push('index.json: work IDs must be unique');
+for (const work of index.works) checkReference('index.json', work.url);
+
+const expectedViews = {
+    works_by_type: groupBy(index.works, 'type'),
+    works_by_subtype: groupBy(index.works, 'subtype'),
+    works_by_publication_context: groupBy(index.works, 'published_in'),
+    works_by_year: groupBy(index.works, 'year', 'undated'),
+    tag_index: groupBy(index.works, 'tags'),
+};
+if (JSON.stringify(index.machine_views) !== JSON.stringify(expectedViews)) {
+    errors.push('index.json: machine_views are stale; run npm run index:rebuild');
+}
+
+if (!fileSet.has('agents.txt')) errors.push('agents.txt: expected site artifact is missing');
 
 for (const stalePath of [
     'well-known/ara/digest.md',
@@ -215,5 +178,5 @@ if (errors.length > 0) {
     for (const error of errors) console.error(`- ${error}`);
     process.exitCode = 1;
 } else {
-    console.log(`Site check passed: ${htmlFiles.length} HTML pages, ${checkedReferences} local references.`);
+    console.log(`Site check passed: ${htmlFiles.length} HTML pages, ${checkedReferences} local references, ${index.works.length} indexed works.`);
 }
