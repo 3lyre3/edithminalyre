@@ -302,10 +302,6 @@ main {
     0% {
         opacity: 0;
         transform: translateY(30px);
-        filter: blur(4px);
-    }
-    60% {
-        filter: blur(0);
     }
     100% {
         opacity: 1;
@@ -501,12 +497,10 @@ a:hover {
     from {
         opacity: 0;
         transform: translateY(12px) translateX(-8px);
-        filter: blur(2px);
     }
     to {
         opacity: 1;
         transform: translateY(0) translateX(0);
-        filter: blur(0);
     }
 }
 
