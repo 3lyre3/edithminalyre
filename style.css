@@ -935,8 +935,27 @@ a:hover {
     opacity: 0;
 }
 
-body:hover .cursor-glow {
-    opacity: 1;
+/* Only where there is a real pointer: on a touch screen a tap counts as
+   hovering, and the glow would surface and slide toward the tap. */
+@media (hover: hover) and (pointer: fine) {
+    body:hover .cursor-glow {
+        opacity: 1;
+    }
+}
+
+/* Theme switch (see site.js): no element runs its own colour transition,
+   so everything changes together; browsers that can cross-fade the whole
+   page do it over the 0.4 s the colours used to take. */
+html.theme-switching,
+html.theme-switching *,
+html.theme-switching *::before,
+html.theme-switching *::after {
+    transition: none !important;
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation-duration: 0.4s;
+    animation-timing-function: ease;
 }
 
 /* ═══════════════════════════════════════════════════════════

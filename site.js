@@ -66,10 +66,31 @@
         };
 
         labelToggle();
+        // Every colour on the page changes together. Element transitions are
+        // paused for the switch (they ran on different clocks, so cards and
+        // titles fell out of step with the page), and where the browser can,
+        // the whole page cross-fades over the same 0.4 s instead.
+        let switching = 0;
+        const settle = () => {
+            switching -= 1;
+            if (switching === 0) root.classList.remove('theme-switching');
+        };
         toggle.addEventListener('click', () => {
-            root.dataset.theme = root.dataset.theme === 'day' ? 'night' : 'day';
-            saveTheme(root.dataset.theme);
-            labelToggle();
+            const next = root.dataset.theme === 'day' ? 'night' : 'day';
+            const apply = () => {
+                root.dataset.theme = next;
+                saveTheme(next);
+                labelToggle();
+            };
+            switching += 1;
+            root.classList.add('theme-switching');
+            if (document.startViewTransition && !motionQuery.matches) {
+                document.startViewTransition(apply).finished.finally(settle);
+            } else {
+                apply();
+                getComputedStyle(document.body).color;
+                requestAnimationFrame(() => requestAnimationFrame(settle));
+            }
         });
 
         document.body.prepend(toggle);
