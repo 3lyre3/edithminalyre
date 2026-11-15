@@ -81,16 +81,34 @@
     function animateGlow(glow) {
         if (motionQuery.matches) return;
 
+        // Moved by transform (no layout per frame), and the loop rests once
+        // the glow has caught up with the pointer, waking on the next move.
         let x = pointer.x;
         let y = pointer.y;
+        let running = false;
+        glow.style.left = '0px';
+        glow.style.top = '0px';
+        const place = () => {
+            glow.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
+        };
         const frame = () => {
             x += (pointer.x - x) * 0.08;
             y += (pointer.y - y) * 0.08;
-            glow.style.left = `${x}px`;
-            glow.style.top = `${y}px`;
+            place();
+            if (Math.abs(pointer.x - x) < 0.1 && Math.abs(pointer.y - y) < 0.1) {
+                running = false;
+                return;
+            }
             requestAnimationFrame(frame);
         };
-        requestAnimationFrame(frame);
+        const wake = () => {
+            if (running) return;
+            running = true;
+            requestAnimationFrame(frame);
+        };
+        document.addEventListener('mousemove', wake, { passive: true });
+        place();
+        wake();
     }
 
     function mountWisp() {
