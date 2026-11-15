@@ -4,7 +4,7 @@
   "also_known_as": [
     "Elm Alee"
   ],
-  "updated": "2026-08-12",
+  "updated": "2026-11-16",
   "version": "1.2.0",
   "format": "application/json",
   "machine_use": "allowed",
@@ -101,14 +101,6 @@
       "type": "story",
       "year": 2019,
       "url": "https://edithminalyre.com/stories/mycenae-gate.html",
-      "published_in": "site"
-    },
-    {
-      "id": "if-i-trusted",
-      "title": "If I Trusted Any of You, I Would Be In Real Trouble",
-      "type": "essay",
-      "year": 2026,
-      "url": "https://edithminalyre.com/essays/if-i-trusted.html",
       "published_in": "site"
     },
     {
@@ -320,19 +312,18 @@
         "song-of-paris",
         "mycenae-gate"
       ],
-      "essay": [
-        "if-i-trusted",
-        "president-oedipus",
-        "big-nothings",
-        "broken-memory",
-        "otototoi"
-      ],
       "thesis": [
         "false-cows",
         "numbers-by-paint"
       ],
       "research": [
         "negative-interpretability"
+      ],
+      "essay": [
+        "president-oedipus",
+        "big-nothings",
+        "broken-memory",
+        "otototoi"
       ],
       "poem": [
         "found-you",
@@ -377,7 +368,6 @@
         "handmirror",
         "song-of-paris",
         "mycenae-gate",
-        "if-i-trusted",
         "false-cows",
         "negative-interpretability",
         "big-nothings",
@@ -435,7 +425,6 @@
         "engagement"
       ],
       "2026": [
-        "if-i-trusted",
         "negative-interpretability"
       ],
       "2027": [
